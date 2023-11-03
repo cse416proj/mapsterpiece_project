@@ -114,7 +114,6 @@ registerUser = async (req, res) => {
                     errorMessage: "Please enter a password of at least 8 characters."
                 });
         }
-        console.log("password long enough");
         if (password !== passwordVerify) {
             return res
                 .status(400)
