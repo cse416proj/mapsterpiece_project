@@ -36,7 +36,7 @@ function Hero(){
                     <Button
                         id='filled-btn'
                         variant='contained'
-                        onClick={handleSignin}
+                        onClick={handleRegister}
                     >
                         Create Account
                     </Button>
@@ -44,7 +44,7 @@ function Hero(){
                         id='filled-btn'
                         variant='contained'
                         style={{ marginLeft: '2.5vw' }}
-                        onClick={handleRegister}
+                        onClick={handleSignin}
                     >
                         Login
                     </Button>
