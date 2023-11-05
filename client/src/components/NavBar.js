@@ -22,6 +22,16 @@ function NavBar(){
         navigate('/');
     }
 
+    function handleSignin(event){
+        closeMenu();
+        navigate('/signin');
+    }
+
+    function handleRegister(event){
+        closeMenu();
+        navigate('/signup');
+    }
+
     return(
         <AppBar position='static'>
             <Toolbar id='navbar'>
@@ -39,7 +49,6 @@ function NavBar(){
                     <PersonIcon id='icon'/>
                 </Avatar>
                 <Menu
-                    id="basic-menu"
                     anchorEl={anchorEl}
                     open={open}
                     onClose={closeMenu}
@@ -47,8 +56,8 @@ function NavBar(){
                         'aria-labelledby': 'basic-button',
                     }}
                 >
-                    <MenuItem onClick={closeMenu}>Login</MenuItem>
-                    <MenuItem onClick={closeMenu}>Register</MenuItem>
+                    <MenuItem onClick={handleRegister}>Register</MenuItem>
+                    <MenuItem onClick={handleSignin}>Login</MenuItem>
                 </Menu>
             </Toolbar>
         </AppBar>

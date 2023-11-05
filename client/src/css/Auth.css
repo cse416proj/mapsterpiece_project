@@ -1,0 +1,74 @@
+.form-content{
+    height: 84.5vh;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#signup-form{
+    height: 63vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#signin-form{
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#signup-title, #signin-title{
+    font-weight: 600;
+    -webkit-text-stroke: 0.75px black;
+}
+
+#signup-title{
+    color: var(--tertiary-color);
+}
+
+#signin-title{
+    color: var(--logo-color);
+}
+
+#signup-textfield-container, #signin-textfield-container{
+    width: 35vw;
+    margin: 1.5% auto;
+    display: grid;
+    grid-gap: 1.5vh;
+}
+
+#signup-textfield-container{
+    height: 30vh;
+}
+
+#signin-textfield-container{
+    height: 20vh;
+}
+
+#signup-redirect-prompt, #signin-redirect-prompt{
+    font-size: 15px;
+    font-weight: 600;
+    align-self: flex-start;
+    margin-left: 32.5vw;
+}
+
+#signup-redirect-prompt{
+    margin-top: 3vh;
+}
+
+#signin-redirect-prompt{
+    margin-bottom: 4vh;
+}
+
+#redirect{
+    color: var(--secondary-color);
+}
+
+#redirect:hover{
+    color: var(--primary-color);
+}

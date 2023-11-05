@@ -1,0 +1,84 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Box, Typography, TextField, Button } from '@mui/material';
+
+function Register(){
+    // Form contains 4 following fields
+    const [form, setForm] = useState({
+        userName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    });
+
+    // Use map to render 4 text fields
+    const textFieldsProps = [
+        { name: 'userName', label: 'User Name', value: form.userName },
+        { name: 'email', label: 'Email', value: form.email },
+        { name: 'password', label: 'Password', value: form.password },
+        { name: 'confirmPassword', label: 'Confirm Password', value: form.confirmPassword }
+    ]
+
+    const textFields = textFieldsProps.map((field) => {
+        return <TextField
+            name={field.name}
+            key={field.name}
+            label={field.label}
+            value={field.value}
+            onChange={updateForm}
+            required
+        />;
+    });
+
+    // Update form field data when text field changes
+    function updateForm(event){
+        const field = event.target.name;
+        setForm({
+            ...form,
+            [field]: event.target.value
+        });
+    }
+
+    // Handle event when user submit for registration
+    function handleSubmit(event){
+        // prevent default submit form action
+        event.preventDefault();
+
+        console.log('form has been submitted');
+    }
+
+    return(
+        <Box className='form-content'>
+            <Typography
+                id='signup-title'
+                variant='h2'
+            >
+                Sign Up
+            </Typography>
+            <form
+                id='signup-form'
+                onSubmit={handleSubmit}
+            >
+                <Box id='signup-textfield-container'>
+                    { textFields }
+                </Box>
+                <Typography
+                    id='signup-redirect-prompt'
+                    variant='p'
+                >
+                    Already has an account? Login <Link id='redirect' to='/signin'>here</Link>.
+                </Typography>
+
+                <Button
+                    id='filled-btn'
+                    type='submit'
+                    variant='contained'
+                >
+                    Create Account
+                </Button>
+            </form>
+        </Box>
+    )
+}
+
+export default Register;

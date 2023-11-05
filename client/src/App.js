@@ -1,10 +1,12 @@
-import './App.css';
+import './css/App.css';
+import './css/Auth.css';
 
 import { Box } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import Home from './components/homepage/Home';
 import NavBar from './components/NavBar';
+import HomeScreen from './components/screens/home/HomeScreen';
+import AuthScreen from './components/screens/auth/AuthScreen';
 
 function App() {
   return (
@@ -12,8 +14,9 @@ function App() {
        <Box className='App'>
           <NavBar/>
           <Routes>
-            <Route path='/' element={<Home/>}></Route>
-            {/* <Route path='/map' element={<Map/>}></Route> */}
+            <Route path='/' element={<HomeScreen/>}></Route>
+            <Route path='/signup' element={<AuthScreen/>}></Route>
+            <Route path='/signin' element={<AuthScreen/>}></Route>
           </Routes>
       </Box>
     </Router>

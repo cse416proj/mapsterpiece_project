@@ -1,13 +1,21 @@
+/*
+  Define color palette
+*/
 :root {
   --primary-color: #86C9B5;
+  --secondary-color: #0A4D68;
+  --secondary-color-hover: #0c6f96;
+  --tertiary-color: #088395;
+  --logo-color: #B7FFC7;
   --navbar: #DEEBE4;
   --background: #F5F5F5;
   --gray: #D9D9D9;
-  --button: #0A4D68;
-  --button-hover: #0c6f96;
   --icon: #126469;
 }
 
+/*
+  For main App render
+*/
 .App {
   background-color: var(--background);
   text-align: center;
@@ -15,6 +23,9 @@
   padding: 0;
 }
 
+/*
+  Common CSS properties
+*/
 .flex-column{
   display: flex;
   flex-direction: column;
@@ -27,6 +38,52 @@
   align-items: center;
 }
 
+.content{
+  height: 84.5vh;
+  margin: 0 auto;
+  justify-content: space-around;
+}
+
+#outline-btn, #filled-btn{
+  height: 9vh;
+  width: 15vw;
+}
+
+#outline-btn{
+  border: 3px solid var(--secondary-color);
+  color: var(--secondary-color);
+  font-weight: 600;
+}
+
+#outline-btn:hover{
+  border-color: var(--secondary-color-hover);
+  color: var(--secondary-color-hover);
+}
+
+#filled-btn{
+  background-color: var(--secondary-color);
+}
+
+#filled-btn:hover{
+  background-color: var(--secondary-color-hover);
+}
+
+/*
+  For Copyright
+*/
+#footer{
+  height: 5.5vh;
+  padding-left: 1.5vw;
+
+  font-size: 12.5px;
+  font-weight: 450;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/*
+  For Nav Bar
+*/
 #navbar{
   background-color: var(--navbar);
   height: 10vh;
@@ -59,12 +116,9 @@
   color: white;
 }
 
-#content{
-  height: 84.5vh;
-  margin: 0 auto;
-  justify-content: space-around;
-}
-
+/*
+  For Home Page
+*/
 #prompt, #hero{
   justify-content: space-around;
 }
@@ -82,36 +136,6 @@
   border-bottom: 7.5px double var(--primary-color);
 }
 
-#outline-btn, #filled-btn{
-  height: 9vh;
-  width: 15vw;
-}
-
-#outline-btn{
-  border: 3px solid var(--button);
-  color: var(--button);
-  font-weight: 600;
-}
-
-#outline-btn:hover{
-  border-color: var(--button-hover);
-  color: var(--button-hover);
-}
-
-#filled-btn{
-  background-color: var(--button);
-}
-
-#filled-btn:hover{
-  background-color: var(--button-hover);
-}
-
-#footer{
-  height: 5.5vh;
-  padding-left: 1.5vw;
-
-  font-size: 12.5px;
-  font-weight: 450;
-  background-color: var(--primary-color);
-  color: white;
+#highlight:hover{
+  color: var(--icon);
 }
