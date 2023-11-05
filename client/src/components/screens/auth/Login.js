@@ -42,10 +42,10 @@ function Login(){
     function handleSubmit(event){
         // prevent default submit form action
         event.preventDefault();
-        const formData = new FormData(event.currentTarget);
+        
         auth.loginUser(
-            formData.get('email'),
-            formData.get('password')
+            form.email,
+            form.password,
         );
         console.log('form has been submitted');
     }

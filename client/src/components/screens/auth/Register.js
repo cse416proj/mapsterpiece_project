@@ -23,7 +23,6 @@ function Register(){
         { name: 'email', label: 'Email', value: form.email },
         { name: 'password', label: 'Password', value: form.password },
         { name: 'confirmPassword', label: 'confirm Password', value: form.confirmPassword }
-        //confirm or verify?
     ]
 
     const textFields = textFieldsProps.map((field) => {
@@ -51,18 +50,16 @@ function Register(){
         // prevent default submit form action
         event.preventDefault();
 
-        const formData = new FormData(event.currentTarget);
         auth.registerUser(
-            formData.get('firstName'),
-            formData.get('lastName'),
-            formData.get('userName'),
-            formData.get('email'),
-            formData.get('password'),
-            formData.get('confirmPassword'),
+            form.firstName,
+            form.lastName,
+            form.userName,
+            form.email,
+            form.password,
+            form.confirmPassword
         )
 
         console.log('form has been submitted');
-        console.log(formData);
     }
 
     return(

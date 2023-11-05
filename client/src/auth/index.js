@@ -119,6 +119,7 @@ function AuthContextProvider(props){
     }
 
     auth.loginUser = async function(email, password){
+        console.log("login console: ", email, password);
         let response;
         try {
             response=await api.loginUser(email, password);
