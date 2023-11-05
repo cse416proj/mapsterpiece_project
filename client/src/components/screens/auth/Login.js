@@ -69,7 +69,7 @@ function Login(){
                     id='signin-redirect-prompt'
                     variant='p'
                 >
-                    Haven't registered for an account? Sign up <Link id='redirect' to='/signup'>here</Link>.
+                    Haven't registered for an account? Sign up <Link id='redirect' to='/register'>here</Link>.
                 </Typography>
 
                 <Button

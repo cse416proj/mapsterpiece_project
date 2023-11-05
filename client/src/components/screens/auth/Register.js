@@ -84,7 +84,7 @@ function Register(){
                     id='signup-redirect-prompt'
                     variant='p'
                 >
-                Already has an account? Login <Link id='redirect' to='/signin'>here</Link>.
+                Already has an account? Login <Link id='redirect' to='/login'>here</Link>.
                 </Typography>
                 
                 <Button

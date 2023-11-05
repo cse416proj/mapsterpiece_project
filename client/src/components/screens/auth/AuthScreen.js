@@ -17,7 +17,7 @@ function AuthScreen(){
     return(
         <Box className='content'>
             {
-                (location.pathname === '/signin')
+                (location.pathname === '/login')
                     ? <Login/>
                     : <Register/>
             }

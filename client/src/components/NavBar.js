@@ -26,12 +26,12 @@ function NavBar(){
 
     function handleSignin(event){
         closeMenu();
-        navigate('/signin');
+        navigate('/login');
     }
 
     function handleRegister(event){
         closeMenu();
-        navigate('/signup');
+        navigate('/register');
     }
 
     return(

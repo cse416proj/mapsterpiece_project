@@ -9,11 +9,11 @@ function Hero(){
     const navigate = useNavigate();
 
     function handleSignin(event){
-        navigate('/signin');
+        navigate('/login');
     }
 
     function handleRegister(event){
-        navigate('/signup');
+        navigate('/register');
     }
 
     return(

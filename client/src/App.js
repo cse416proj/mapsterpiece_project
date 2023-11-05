@@ -31,8 +31,8 @@ function App() {
           <NavBar/>
           <Routes>
             <Route path='/' element={<HomeScreen/>}></Route>
-            <Route path='/signup' element={<AuthScreen/>}></Route>
-            <Route path='/signin' element={<AuthScreen/>}></Route>
+            <Route path='/register' element={<AuthScreen/>}></Route>
+            <Route path='/login' element={<AuthScreen/>}></Route>
           </Routes>
       </Box>
     </AuthContextProvider>
