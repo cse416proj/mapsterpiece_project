@@ -7,7 +7,7 @@
 }
 
 #signup-form{
-    height: 63vh;
+    height: 73vh;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -43,7 +43,7 @@
 }
 
 #signup-textfield-container{
-    height: 30vh;
+    height: 50vh;
 }
 
 #signin-textfield-container{

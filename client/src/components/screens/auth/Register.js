@@ -13,6 +13,8 @@ function Register(){
 
     // Use map to render 4 text fields
     const textFieldsProps = [
+        { name: 'firstName', label: 'First Name', value: form.userName },
+        { name: 'lastName', label: 'Last Name', value: form.userName },
         { name: 'userName', label: 'User Name', value: form.userName },
         { name: 'email', label: 'Email', value: form.email },
         { name: 'password', label: 'Password', value: form.password },
@@ -66,9 +68,9 @@ function Register(){
                     id='signup-redirect-prompt'
                     variant='p'
                 >
-                    Already has an account? Login <Link id='redirect' to='/signin'>here</Link>.
+                Already has an account? Login <Link id='redirect' to='/signin'>here</Link>.
                 </Typography>
-
+                
                 <Button
                     id='filled-btn'
                     type='submit'
