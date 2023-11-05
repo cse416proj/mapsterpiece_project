@@ -4,6 +4,7 @@ import Login from './screens/auth/Login';
 import Register from './screens/auth/Register';
 import Hero from './screens/home/Hero';
 import HomeScreen from './screens/home/HomeScreen';
+import MUIAccountErrorModal from './MUIAccountErrorModal';
 //import MUIAccountErrorModal from './MUIAccountErrorModal'
 /*
     This serves as a module so that we can import
@@ -17,5 +18,6 @@ export {
     AuthScreen, 
     Login, 
     Register, 
-    Hero
+    Hero, 
+    MUIAccountErrorModal
  }
