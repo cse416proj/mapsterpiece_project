@@ -1,7 +1,11 @@
 import { Box, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
+import { useContext } from 'react';
+import AuthContext from '../../../auth';
+
 function Hero(){
+    const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
 
     function handleSignin(event){

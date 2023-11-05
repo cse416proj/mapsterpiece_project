@@ -35,6 +35,7 @@ loginUser = async (req, res) => {
     console.log("loginUser");
     try {
         const { email, password } = req.body;
+        console.log(email, password);
 
         if (!email || !password) {
             return res

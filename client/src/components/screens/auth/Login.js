@@ -1,17 +1,20 @@
-import { useState } from "react";
+import { useState, useContext } from 'react';
 import { Box, Typography, TextField, Button } from "@mui/material";
 import { Link } from 'react-router-dom'
+import AuthContext from '../../../auth';
 
 function Login(){
+    const { auth } = useContext(AuthContext);   ////
     // Form contains 2 following fields
     const [form, setForm] = useState({
-        userNameOrEmail: '',
+        email: '',
         password: '',
     });
 
     // Use map to render 2 text fields
+    // Temporarily accept email only, might add userName
     const textFieldsProps = [
-        { name: 'userNameOrEmail', label: 'User Name / Email', value: form.userNameOrEmail },
+        { name: 'email', label: 'Email', value: form.email },
         { name: 'password', label: 'Password', value: form.password },
     ]
 
@@ -39,7 +42,11 @@ function Login(){
     function handleSubmit(event){
         // prevent default submit form action
         event.preventDefault();
-
+        const formData = new FormData(event.currentTarget);
+        auth.loginUser(
+            formData.get('email'),
+            formData.get('password')
+        );
         console.log('form has been submitted');
     }
 

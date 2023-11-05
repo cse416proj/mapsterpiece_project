@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Typography, TextField, Button } from '@mui/material';
+import AuthContext from '../../../auth';
 
 function Register(){
+    const { auth } = useContext(AuthContext); 
     // Form contains 4 following fields
     const [form, setForm] = useState({
+        firstName: '',
+        lastName: '',
         userName: '',
         email: '',
         password: '',
@@ -13,12 +17,13 @@ function Register(){
 
     // Use map to render 4 text fields
     const textFieldsProps = [
-        { name: 'firstName', label: 'First Name', value: form.userName },
-        { name: 'lastName', label: 'Last Name', value: form.userName },
+        { name: 'firstName', label: 'First Name', value: form.firstName },
+        { name: 'lastName', label: 'Last Name', value: form.lastName },
         { name: 'userName', label: 'User Name', value: form.userName },
         { name: 'email', label: 'Email', value: form.email },
         { name: 'password', label: 'Password', value: form.password },
-        { name: 'confirmPassword', label: 'Confirm Password', value: form.confirmPassword }
+        { name: 'confirmPassword', label: 'confirm Password', value: form.confirmPassword }
+        //confirm or verify?
     ]
 
     const textFields = textFieldsProps.map((field) => {
@@ -46,7 +51,18 @@ function Register(){
         // prevent default submit form action
         event.preventDefault();
 
+        const formData = new FormData(event.currentTarget);
+        auth.registerUser(
+            formData.get('firstName'),
+            formData.get('lastName'),
+            formData.get('userName'),
+            formData.get('email'),
+            formData.get('password'),
+            formData.get('confirmPassword'),
+        )
+
         console.log('form has been submitted');
+        console.log(formData);
     }
 
     return(
