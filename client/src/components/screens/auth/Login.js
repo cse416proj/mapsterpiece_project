@@ -42,14 +42,15 @@ function Login(){
     function handleSubmit(event){
         // prevent default submit form action
         event.preventDefault();
-        
         auth.loginUser(
             form.email,
             form.password,
         );
+        console.log("login form: ",form);
         console.log('form has been submitted');
+        console.log(auth);
     }
-
+    
     return(
         <Box className='form-content'>
             <Typography

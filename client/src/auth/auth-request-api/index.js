@@ -5,7 +5,7 @@ const api = axios.create({
 })
 
 // All requests that will be making
-export const getLoggedIn = () => api.get(`/loggedIn/`);
+export const getLoggedIn = () => api.get(`/loggedIn/`)
 
 export const loginUser = (email, password)=>{
     return api.post(`/login/`,{

@@ -39,10 +39,10 @@ function AuthContextProvider(props){
             }
             case AuthActionType.LOGIN_USER:{
                 return setAuth({
-                    user: payload.user, 
-                    loggedIn: true, 
+                    user: payload.user,
+                    loggedIn: true,
                     errMsg: null
-                });
+                })
             }
             case AuthActionType.LOGOUT_USER:{
                 return setAuth({
@@ -79,6 +79,9 @@ function AuthContextProvider(props){
 
     auth.getLoggedIn = async function(){
         const response = await api.getLoggedIn();
+
+        console.log(response.data);
+
         if(response.status === 200){
             authReducer({
                 type: AuthActionType.GET_LOGGED_IN,
@@ -109,7 +112,7 @@ function AuthContextProvider(props){
         }
         if(response.status === 200){
             authReducer({
-                type: AuthActionType.registerUser,
+                type: AuthActionType.REGISTER_USER,
                 payload: {
                     user: response.data.user
                 }
@@ -122,7 +125,9 @@ function AuthContextProvider(props){
         console.log("login console: ", email, password);
         let response;
         try {
-            response=await api.loginUser(email, password);
+            response=await api.loginUser(email, password);  // success
+            console.log(response.status); //// 200
+            // console.log("user to loggin: ",response.data.user);
         } catch (error) {
             let errMsg = error.response.data. errorMessage;
             console.log("error 400", errMsg);
@@ -136,21 +141,23 @@ function AuthContextProvider(props){
             return;
         }
         if(response.status === 200){
+            console.log("user to loggin: ",response.data.user);
             authReducer({
-                type: AuthActionType.loginUser,
+                type: AuthActionType.LOGIN_USER,
                 payload: {
                     user: response.data.user
                 }
             })
             navigate("/");
         }
+        
     }
 
     auth.logoutUser = async function(){
         const response = await api.logoutUser();
         if(response.status === 200){
             authReducer({
-                type: AuthActionType.logoutUser,
+                type: AuthActionType.LOGOUT_USER,
                 payload: null
             })
             navigate("/");

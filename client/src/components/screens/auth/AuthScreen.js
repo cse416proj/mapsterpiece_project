@@ -10,7 +10,6 @@ import Copyright from '../../Copyright';
 
 function AuthScreen(){
     const { auth } = useContext(AuthContext);
-    console.log(auth);
     // use current web location to determine whether render sign-in/sign-up screen
     const location = useLocation();
 
