@@ -71,7 +71,7 @@ loginUser = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: true
         }).status(200).json({
             success: true,
@@ -93,7 +93,7 @@ logoutUser = async (req, res) => {
     res.cookie("token", "", {
         httpOnly: true,
         expires: new Date(0),
-        secure: true,
+        secure: false,
         sameSite: "none"
     }).send();
 }
@@ -162,7 +162,7 @@ registerUser = async (req, res) => {
 
         await res.cookie("token", token, {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: "none"
         }).status(200).json({
             success: true,

@@ -48,7 +48,6 @@ function Login(){
             form.email,
             form.password,
         );
-        console.log("login form: ",form);
         console.log('form has been submitted');
         console.log(auth);
     }
