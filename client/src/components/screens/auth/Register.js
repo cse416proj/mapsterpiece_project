@@ -1,8 +1,9 @@
 import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Typography, TextField, Button } from '@mui/material';
+
 import AuthContext from '../../../auth';
-import MUIAccountErrorModal from '../../modals/MUIAccountErrorModal';
+import { AuthErrorModal } from '../../index';
 
 function Register(){
     const { auth } = useContext(AuthContext); 
@@ -93,7 +94,7 @@ function Register(){
                     Create Account
                 </Button>
             </form>
-            <MUIAccountErrorModal/>
+            <AuthErrorModal/>
         </Box>
     )
 }
