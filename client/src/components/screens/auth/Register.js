@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Typography, TextField, Button } from '@mui/material';
 import AuthContext from '../../../auth';
-import MUIAccountErrorModal from '../../MUIAccountErrorModal';
+import MUIAccountErrorModal from '../../modals/MUIAccountErrorModal';
 
 function Register(){
     const { auth } = useContext(AuthContext); 

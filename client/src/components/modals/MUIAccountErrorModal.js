@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import authContext from "../auth";
+import authContext from "../../auth";
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
