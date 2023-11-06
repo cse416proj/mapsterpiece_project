@@ -5,14 +5,9 @@ import { React } from 'react';
 import { Box } from '@mui/material';
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 
-// import { GlobalStoreContextProvider } from './store';
 import { AuthContextProvider } from './auth';
 // import { GlobalStoreContextProvider } from './store'
-
-// import NavBar from './components/NavBar';
-import { NavBar } from './components';
-import HomeScreen from './components/screens/home/HomeScreen';
-import AuthScreen from './components/screens/auth/AuthScreen';
+import { NavBar, HomeScreen, AuthScreen } from './components';
 
 function App() {
   return (

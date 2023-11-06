@@ -8,7 +8,7 @@ import HomeScreen from './screens/home/HomeScreen';
 import Login from './screens/auth/Login';
 import Register from './screens/auth/Register';
 import AuthScreen from './screens/auth/AuthScreen';
-import MUIAccountErrorModal from './modals/MUIAccountErrorModal';
+import AuthErrorModal from './modals/AuthErrorModal';
 
 /*
     This is a module of import/export components
@@ -22,5 +22,5 @@ export {
     HomeScreen,
     AuthScreen,
     UserHomeScreen,
-    MUIAccountErrorModal
+    AuthErrorModal
 }
