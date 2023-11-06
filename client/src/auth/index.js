@@ -24,7 +24,9 @@ function AuthContextProvider(props){
     const navigate = useNavigate();
 
     useEffect(() => {
-        auth?.getLoggedIn();
+        if(auth){
+            auth.getLoggedIn();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
