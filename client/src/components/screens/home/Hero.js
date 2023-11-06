@@ -1,15 +1,19 @@
 import { Box, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
+import { useContext } from 'react';
+import AuthContext from '../../../auth';
+
 function Hero(){
+    const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
 
     function handleSignin(event){
-        navigate('/signin');
+        navigate('/login');
     }
 
     function handleRegister(event){
-        navigate('/signup');
+        navigate('/register');
     }
 
     return(

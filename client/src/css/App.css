@@ -87,7 +87,8 @@
 #navbar{
   background-color: var(--navbar);
   height: 10vh;
-  display: flex;
+  display:fixed;
+  bottom: 0;
   justify-content: space-between;
 }
 

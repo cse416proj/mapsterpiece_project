@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Box, Avatar, Menu, MenuItem } from '@mui/material';
 
 import PersonIcon from '@mui/icons-material/Person';
+import AuthContext from '../auth';
 
 function NavBar(){
+    const { auth } = useContext(AuthContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -24,12 +26,45 @@ function NavBar(){
 
     function handleSignin(event){
         closeMenu();
-        navigate('/signin');
+        navigate('/login');
     }
 
     function handleRegister(event){
         closeMenu();
-        navigate('/signup');
+        navigate('/register');
+    }
+
+    function handleLogout(event){
+        closeMenu();
+        auth.logoutUser();
+    }
+
+    var menu = null;
+    
+    if(auth?.loggedIn && auth?.user !== null){
+        menu = <Menu
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={closeMenu}
+                    MenuListProps={{
+                        'aria-labelledby': 'basic-button',
+                    }}
+                >
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </Menu>
+    }
+    else{
+        menu = <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={closeMenu}
+            MenuListProps={{
+                'aria-labelledby': 'basic-button',
+            }}
+        >
+            <MenuItem onClick={handleRegister}>Register</MenuItem>
+            <MenuItem onClick={handleSignin}>Login</MenuItem>
+        </Menu>
     }
 
     return(
@@ -48,17 +83,7 @@ function NavBar(){
                 >
                     <PersonIcon id='icon'/>
                 </Avatar>
-                <Menu
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={closeMenu}
-                    MenuListProps={{
-                        'aria-labelledby': 'basic-button',
-                    }}
-                >
-                    <MenuItem onClick={handleRegister}>Register</MenuItem>
-                    <MenuItem onClick={handleSignin}>Login</MenuItem>
-                </Menu>
+                { menu }
             </Toolbar>
         </AppBar>
     )

@@ -1,6 +1,7 @@
-const auth = require('../auth')
-const User = require('../models/user-model')
-const bcrypt = require('bcryptjs')
+const auth = require('../auth');
+const User = require('../models/user-model');
+const bcrypt = require('bcryptjs');
+const XRegExp = require('xregexp');
 
 getLoggedIn = async (req, res) => {
     try {
@@ -35,6 +36,7 @@ loginUser = async (req, res) => {
     console.log("loginUser");
     try {
         const { email, password } = req.body;
+        console.log(email, password);
 
         if (!email || !password) {
             return res
@@ -107,6 +109,17 @@ registerUser = async (req, res) => {
                 .json({ errorMessage: "Please enter all required fields." });
         }
         console.log("all fields provided");
+
+        // Define the regular expression pattern for matching email
+        const emailPattern = XRegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$');
+        if(!XRegExp.test(email, emailPattern)) {
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "Invalid email address"
+                });
+        }
+
         if (password.length < 8) {
             return res
                 .status(400)
