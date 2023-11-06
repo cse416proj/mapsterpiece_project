@@ -63,7 +63,6 @@ function Register(){
 
         console.log('form has been submitted');
     }
-    console.log(auth);
     return(
         <Box className='form-content'>
             <Typography

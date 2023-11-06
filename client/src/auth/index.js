@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import api from './auth-request-api';
 
 const AuthContext = createContext();
-console.log("create AuthContext " + AuthContext);
 
 // All the types of updates to our auth state that can be processed
 export const AuthActionType = {
@@ -110,7 +109,6 @@ function AuthContextProvider(props){
                     errMsg: errMsg
                 }
             })
-            // console.log(auth.errMsg !== null + "-----------" + auth.errMsg);
             return;
         }
         if(response.status === 200){
@@ -128,9 +126,8 @@ function AuthContextProvider(props){
         console.log("login console: ", email, password);
         let response;
         try {
-            response=await api.loginUser(email, password);  // success
-            console.log(response.status); //// 200
-            // console.log("user to loggin: ",response.data.user);
+            response=await api.loginUser(email, password); 
+            console.log(response.status); 
         } catch (error) {
             let errMsg = error.response.data.errorMessage;
             console.log("error 400", errMsg);
@@ -140,7 +137,6 @@ function AuthContextProvider(props){
                     errMsg: errMsg
                 }
             })
-            // console.log(auth.errMsg !== null, "######", auth.errMsg);
             return;
         }
         if(response.status === 200){
@@ -173,7 +169,6 @@ function AuthContextProvider(props){
             initials += auth.user.firstName.charAt(0);
             initials += auth.user.lastName.charAt(0);
         }
-        console.log("user initials: " + initials);
         return initials;
     }
 
