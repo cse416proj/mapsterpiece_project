@@ -12,7 +12,7 @@ const app = express()
 // SETUP THE MIDDLEWARE
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
-    origin: ["http://localhost:3000", "https://mapsterpiece.online"],
+    origin: ["http://localhost:3000", "http://mapsterpiece.online"],
     credentials: true
 }))
 app.use(express.json())
