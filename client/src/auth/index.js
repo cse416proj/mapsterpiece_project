@@ -23,9 +23,9 @@ function AuthContextProvider(props){
     });
     const navigate = useNavigate();
 
-    useEffect(()=>{
-        auth.getLoggedIn();
-    },[])
+    useEffect(() => {
+        auth?.getLoggedIn();
+    }, [])
 
     const authReducer = (action) => {
         const { type, payload } = action;
@@ -107,7 +107,7 @@ function AuthContextProvider(props){
                     errMsg: errMsg
                 }
             })
-            console.log(auth.errMsg != null + "-----------" + auth.errMsg);
+            // console.log(auth.errMsg !== null + "-----------" + auth.errMsg);
             return;
         }
         if(response.status === 200){
@@ -129,7 +129,7 @@ function AuthContextProvider(props){
             console.log(response.status); //// 200
             // console.log("user to loggin: ",response.data.user);
         } catch (error) {
-            let errMsg = error.response.data. errorMessage;
+            let errMsg = error.response.data.errorMessage;
             console.log("error 400", errMsg);
             authReducer({
                 type: AuthActionType.OPEN_MODAL, 
@@ -137,7 +137,7 @@ function AuthContextProvider(props){
                     errMsg: errMsg
                 }
             })
-            console.log(auth.errMsg != null, "######", auth.errMsg);
+            // console.log(auth.errMsg !== null, "######", auth.errMsg);
             return;
         }
         if(response.status === 200){

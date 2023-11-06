@@ -109,12 +109,25 @@
   color: var(--icon);
 }
 
+#initialsIcon{
+  color: white;
+  background-color: var(--icon);
+  border: 2px solid var(--icon);
+  padding-bottom: 3px;
+}
+
 #avatar:hover{
   background-color: var(--icon);
 }
 
 #avatar:hover #icon{
   color: white;
+}
+
+#avatar:hover #initialsIcon{
+  color: var(--icon);
+  background-color: white;
+  border: 2px solid white;
 }
 
 /*

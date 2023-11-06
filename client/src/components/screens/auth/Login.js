@@ -1,11 +1,12 @@
 import { useState, useContext } from 'react';
 import { Box, Typography, TextField, Button } from "@mui/material";
 import { Link } from 'react-router-dom'
+
 import AuthContext from '../../../auth';
-import MUIAccountErrorModal from '../../modals/MUIAccountErrorModal';
+import { MUIAccountErrorModal } from '../../index';
 
 function Login(){
-    const { auth } = useContext(AuthContext);   ////
+    const { auth } = useContext(AuthContext);
     // Form contains 2 following fields
     const [form, setForm] = useState({
         email: '',
