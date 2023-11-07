@@ -144,6 +144,7 @@ registerUser = async (req, res) => {
         const existingUser = await User.findOne({ email: email });
         const existingUsername = await User.findOne({ userName: userName});
         console.log("existingUser: " + existingUser);
+        console.log("existingUsername: " + existingUsername);
         if (existingUser || existingUsername) {
             return res
                 .status(400)
@@ -162,15 +163,7 @@ registerUser = async (req, res) => {
         const savedUser = await newUser.save();
         console.log("new user saved: " + savedUser._id);
 
-        // LOGIN THE USER
-        const token = auth.signToken(savedUser._id);
-        console.log("token:" + token);
-
-        await res.cookie("token", token, {
-            httpOnly: true,
-            secure: false,
-            sameSite: "none"
-        }).status(200).json({
+        return res.status(200).json({
             success: true,
             user: {
                 firstName: savedUser.firstName,
@@ -179,9 +172,6 @@ registerUser = async (req, res) => {
                 userName: savedUser.userName                    
             }
         })
-
-        console.log("token sent");
-
     } catch (err) {
         console.error(err);
         res.status(500).send();
@@ -189,7 +179,7 @@ registerUser = async (req, res) => {
 }
 
 deleteUser = async (req, res) => {
-    console.log("REGISTERING USER IN BACKEND");
+    console.log("deleteUser function: req res");
     try{
         if(!req.body){
             return res
@@ -197,14 +187,32 @@ deleteUser = async (req, res) => {
                 .json({ errorMessage: "Request body not found." });
         }
 
+        console.log(req);
+
+        console.log(req.body);
+
         const { userName } = req.body;
+        console.log(`userName: ${userName}`);
+
+        // if(!userName){
+        //     return res
+        //         .status(400)
+        //         .json({ errorMessage: "Empty User Name is not valid" });
+        // }
         
-        // call async function to remove user by tttt
+        // call async function to remove user by userName
         async function asyncDeleteUser(userName) {
             User.findOneAndDelete({ userName: userName }, () => {
-                return res.status(200).json({
+                console.log(`userFound: ${userName}`)
+                res.cookie("token", "", {
+                    httpOnly: true,
+                    expires: new Date(0),
+                    secure: false,
+                    sameSite: "none"
+                })
+                .status(200).json({
                     success: true
-                });
+                })
             }).catch(err => console.log(err))
         }
 
