@@ -101,6 +101,12 @@ logoutUser = async (req, res) => {
 registerUser = async (req, res) => {
     console.log("REGISTERING USER IN BACKEND");
     try {
+        if(!req.body){
+            return res
+                .status(400)
+                .json({ errorMessage: "Request body not found." });
+        }
+
         const { firstName, lastName, userName, email, password, passwordVerify } = req.body;
         console.log("create user: " + firstName + " " + lastName + " " + email + " " + password + " " + passwordVerify);
         if (!firstName || !lastName || !userName || !email || !password || !passwordVerify) {
