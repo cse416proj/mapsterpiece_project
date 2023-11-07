@@ -188,9 +188,41 @@ registerUser = async (req, res) => {
     }
 }
 
+deleteUser = async (req, res) => {
+    console.log("REGISTERING USER IN BACKEND");
+    try{
+        if(!req.body){
+            return res
+                .status(400)
+                .json({ errorMessage: "Request body not found." });
+        }
+
+        const { userName } = req.body;
+        
+        // call async function to remove user by tttt
+        async function asyncDeleteUser(userName) {
+            User.findOneAndDelete({ userName: userName }, () => {
+                return res.status(200).json({
+                    success: true
+                });
+            }).catch(err => console.log(err))
+        }
+
+        asyncDeleteUser(userName);
+    }
+    catch(err){
+        console.error(err);
+        res.status(400).json({
+            success: false,
+            errorMessage: err
+        });
+    }
+}
+
 module.exports = {
     getLoggedIn,
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    deleteUser
 }
