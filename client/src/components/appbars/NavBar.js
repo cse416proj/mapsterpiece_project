@@ -34,38 +34,15 @@ function NavBar(){
         navigate('/register');
     }
 
+    function handleViewProfile(event){
+        closeMenu();
+        navigate('/profile');
+    }
+
     function handleLogout(event){
         closeMenu();
         auth.logoutUser();
     }
-
-    // var menu = null;
-    
-    // if(auth?.loggedIn && auth?.user !== null){
-    //     menu = <Menu
-    //                 anchorEl={anchorEl}
-    //                 open={open}
-    //                 onClose={closeMenu}
-    //                 MenuListProps={{
-    //                     'aria-labelledby': 'basic-button',
-    //                 }}
-    //             >
-    //                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
-    //             </Menu>
-    // }
-    // else{
-    //     menu = <Menu
-    //         anchorEl={anchorEl}
-    //         open={open}
-    //         onClose={closeMenu}
-    //         MenuListProps={{
-    //             'aria-labelledby': 'basic-button',
-    //         }}
-    //     >
-    //         <MenuItem onClick={handleRegister}>Register</MenuItem>
-    //         <MenuItem onClick={handleSignin}>Login</MenuItem>
-    //     </Menu>
-    // }
 
     function getDropDownMenu(loggedIn, user){
         if(loggedIn && user){
@@ -78,6 +55,7 @@ function NavBar(){
                         'aria-labelledby': 'basic-button',
                     }}
                 >
+                    <MenuItem onClick={handleViewProfile}>Profile</MenuItem>
                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
             );

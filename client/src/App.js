@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 
 import { AuthContextProvider } from './auth';
 // import { GlobalStoreContextProvider } from './store'
-import { NavBar, HomeScreen, AuthScreen } from './components';
+import { NavBar, HomeScreen, AuthScreen, Profile } from './components';
 
 function App() {
   return (
@@ -20,6 +20,7 @@ function App() {
               <Route path='/' element={<HomeScreen/>}></Route>
               <Route path='/register' element={<AuthScreen/>}></Route>
               <Route path='/login' element={<AuthScreen/>}></Route>
+              <Route path='/profile' element={<Profile/>}></Route>
             </Routes>
         </Box>
       </AuthContextProvider>

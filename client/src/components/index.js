@@ -10,6 +10,8 @@ import Register from './screens/auth/Register';
 import AuthScreen from './screens/auth/AuthScreen';
 import AuthErrorModal from './modals/AuthErrorModal';
 
+import Profile from './screens/user/Profile';
+
 /*
     This is a module of import/export components
 */
@@ -17,6 +19,7 @@ export {
     Hero,
     Login,
     NavBar,
+    Profile,
     Register, 
     Copyright,
     HomeScreen,
