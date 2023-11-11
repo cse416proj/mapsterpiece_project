@@ -4,9 +4,12 @@ import { AppBar, Toolbar, Box, Avatar, Menu, MenuItem } from '@mui/material';
 
 import PersonIcon from '@mui/icons-material/Person';
 import AuthContext from '../../contexts/auth';
+import UserContext from '../../contexts/user';
 
 function NavBar(){
     const { auth } = useContext(AuthContext);
+    const { userInfo } = useContext(UserContext);
+
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -36,6 +39,7 @@ function NavBar(){
 
     function handleViewProfile(event){
         closeMenu();
+        userInfo.setCurrentUser(auth.user);
         navigate('/profile');
     }
 

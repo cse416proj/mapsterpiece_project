@@ -42,7 +42,7 @@ export default function DynamicCard(payload) {
     cardElement = (
       <Card className="individualDynamicCard">
         <CardContent
-          style={{ height: `100%`, background: `#acd8ca` }}
+          style={{ height: `100%`, background: `#86C9B5` }}
           className="cardContent"
         >
           <Box className="flex-row">
@@ -63,7 +63,7 @@ export default function DynamicCard(payload) {
           </Box>
           <Stack direction="row" spacing={1}>
             {payload.mapData.tags.map((tag) => (
-              <Chip label={tag} size="small" />
+              <Chip label={tag} size="small" style={{ color: 'white' }}/>
             ))}
           </Stack>
           <CardActions className="cardActions">

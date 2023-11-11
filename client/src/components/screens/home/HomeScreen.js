@@ -7,18 +7,21 @@ import { Hero, UserHomeScreen, Copyright } from '../../index';
 function HomeScreen(){
     const { auth } = useContext(AuthContext);
 
+    function getClassName() {
+        if(auth && auth.loggedIn && auth.user !== null){
+            return 'content';
+        }
+        else{
+            return 'default-content';
+        }
+    }
+
     return(
-        <Box className='content'>
+        <Box className={getClassName()}>
             {
                 (auth?.loggedIn && auth?.user !== null) ?
-                    <UserHomeScreen/>
-                    : (
-                        <>
-                            <Hero/>
-                            <Copyright/>
-                        </>
-                    )
-                    
+                    <UserHomeScreen/> :
+                    (<> <Hero/> <Copyright/> </>)
             }
         </Box>
     )

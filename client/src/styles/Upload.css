@@ -1,4 +1,4 @@
-#content{
+.content, #content{
     height: 90vh;
     margin: 0 auto;
     justify-content: space-around;

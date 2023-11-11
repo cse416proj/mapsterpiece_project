@@ -12,6 +12,7 @@
   --background: #F5F5F5;
   --gray: #D9D9D9;
   --icon: #126469;
+  --icon-hover: #208D94;
   /* --warning: #FEF4E5; */
 }
 
@@ -40,7 +41,7 @@
   align-items: center;
 }
 
-.content{
+.default-content{
   height: 84.5vh;
   margin: 0 auto;
   justify-content: space-around;
