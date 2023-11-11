@@ -35,7 +35,6 @@ export default function SearchBar(props) {
               onChange={(event)=>props.setSearch(event.target.value)}
               sx={{ ml: 1, flex: 1 }}
               placeholder="Search by ..." // to be replace with what to actually search for
-              inputProps={{ "aria-label": "search google maps" }}
             />
           </Paper>
         </Box>
