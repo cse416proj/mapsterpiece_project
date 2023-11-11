@@ -6,6 +6,9 @@ router.post('/register', AuthController.registerUser)
 router.post('/login', AuthController.loginUser)
 router.get('/logout', AuthController.logoutUser)
 router.get('/loggedIn', AuthController.getLoggedIn)
-router.delete('/user', AuthController.deleteUser)
+
+// router.delete('/user', (req, res) => {
+//     console.log(req.body);
+// })
 
 module.exports = router

@@ -78,11 +78,8 @@ function Register(){
                 <Box id='signup-textfield-container'>
                     { textFields }
                 </Box>
-                <Typography
-                    id='signup-redirect-prompt'
-                    variant='p'
-                >
-                Already has an account? Login <Link id='redirect' to='/login'>here</Link>.
+                <Typography id='signup-redirect-prompt' variant='p'>
+                    Already has an account? Login <Link id='redirect' to='/login'>here</Link>.
                 </Typography>
                 
                 <Button

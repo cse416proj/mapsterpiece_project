@@ -1,18 +1,6 @@
 import { useContext } from 'react'
 import authContext from '../../auth';
-import { Box, Modal, Alert, Button } from '@mui/material';
-
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
+import { Box, Modal, Alert, AlertTitle, Button, Typography } from '@mui/material';
 
 function AuthErrorModal() {
     const { auth } = useContext(authContext);
@@ -22,18 +10,15 @@ function AuthErrorModal() {
     }
 
     return (
-        <Modal
-            open={auth.errMsg !== null}
-        >
-            <Box sx={style}>
-                <Box className="modal-dialog">
-                    <Alert severity="warning">{auth.errMsg}</Alert>
+        <Modal open={auth.errMsg !== null}>
+            <Box className='modalContainer'>
+                <Box className='modal'>
+                    <Alert severity="warning">
+                        <AlertTitle>ERROR</AlertTitle>
+                        {auth.errMsg}
+                    </Alert>
                     <Box id="confirm-cancel-container">
-                        <Button 
-                            variant="contained"
-                            className="modal-button"
-                            onClick={handleCloseModal}
-                        >
+                        <Button id='warning-btn' variant="contained" onClick={handleCloseModal}>
                             OK
                         </Button>
                     </Box>

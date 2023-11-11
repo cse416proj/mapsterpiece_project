@@ -1,0 +1,114 @@
+#content{
+    height: 90vh;
+    margin: 0 auto;
+    justify-content: space-around;
+}
+  
+#upload-form{
+    height: 90%;
+    width: 92.5vw;
+    align-items: center;
+}
+  
+#tab-section{
+    width: 100%;
+    height: 6.5vh;
+    justify-content: flex-start;
+}
+  
+#tab, #tab-selected{
+    width: 12.5vw;
+    height: 100%;
+    font-weight: 550;
+}
+  
+#tab{
+    background-color: var(--primary-color);
+    color: white;
+}
+  
+#tab-selected{
+    background-color: var(--gray);
+}
+  
+#create-container{
+    height: 100%;
+    width: 100%;
+    background-color: var(--gray);
+    padding: 3.5% 0;
+}
+
+#create-post-container{
+    height: 50vh;
+    width: 87vw;
+    justify-content: flex-start;
+}
+  
+#title-input{
+    width: 85vw;
+    background-color: white;
+}
+  
+#select-file-container{
+    width: 100%;
+    margin: 3% 0;
+    justify-content: space-around;
+    align-self: flex-start;
+}
+  
+#select-file{
+    width: 70%;
+    margin-left: 4%;
+    justify-content: flex-start;
+    align-self: flex-start;
+}
+  
+#file-create-container{
+    width: 92.5vw;
+    height: 100%;
+    align-self: flex-start;
+}
+  
+#file-upload-input{
+    width: 100%;
+}
+  
+input[type=file]::file-selector-button {
+    margin-left: 4vw;
+    width: 12.5vw;
+    height: 6.5vh;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 2.5%;
+    font-size: 15px;
+}
+  
+#button-container{
+    height: 5vh;
+    width: 19vw;
+    /* margin-top: 15%; */
+    margin-right: 4vw;
+    align-self: flex-end;
+    display: flex;
+    justify-content: space-between;
+}
+  
+#clear-button{
+    width: 8.5vw;
+    background-color: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 2.5%;
+}
+
+#upload-button{
+    width: 8.5vw;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 2.5%;
+}
+  
+#map-viewer{
+    height: 91vh;
+}

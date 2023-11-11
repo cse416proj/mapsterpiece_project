@@ -12,6 +12,8 @@ import AuthErrorModal from './modals/AuthErrorModal';
 
 import Profile from './screens/user/Profile';
 
+import CreateScreen from './screens/create/CreateScreen';
+
 /*
     This is a module of import/export components
 */
@@ -24,6 +26,7 @@ export {
     Copyright,
     HomeScreen,
     AuthScreen,
+    CreateScreen,
     UserHomeScreen,
-    AuthErrorModal
+    AuthErrorModal,
 }

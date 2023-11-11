@@ -120,12 +120,6 @@ function AuthContextProvider(props){
             return;
         }
         if(response.status === 200){
-            // authReducer({
-            //     type: AuthActionType.REGISTER_USER,
-            //     payload: {
-            //         user: response.data.user
-            //     }
-            // })
             navigate("/login");
         }
     }
