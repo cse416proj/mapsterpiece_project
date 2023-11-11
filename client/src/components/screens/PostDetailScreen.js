@@ -41,6 +41,10 @@ export default function PostDetailScreen() {
     setAddActive(false);
   }
 
+  if(!postInfo || !postInfo.currentPost){
+    return null;
+  }
+
   return (
     <div>
       <Typography

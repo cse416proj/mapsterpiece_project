@@ -15,15 +15,44 @@ export default function SideNavBar() {
   function handleAllUsers() {
     store.setCurrentView("ALL_USERS")
   }
-
-  function handleAllPosts() {
-    store.setCurrentView("ALL_POSTS")
-  }
-
+// Handle maps
   function handleAllMaps() {
     store.setCurrentView("ALL_MAPS")
   }
-
+  function handleBinMap(){
+    store.setCurrentView("BIN_MAPS")
+  }
+  function handleChoMap(){
+    store.setCurrentView("CHOROPLETH_MAPS")
+  }
+  function handleDotMap(){
+    store.setCurrentView("DOT_MAPS")
+  }
+  function handleGradMap(){
+    store.setCurrentView("GRAD_MAPS")
+  }
+  function handleHeatMap(){
+    store.setCurrentView("HEAT_MAPS")
+  }
+// Handle posts
+  function handleAllPosts() {
+    store.setCurrentView("ALL_POSTS")
+  }
+  function handleBinPosts() {
+    store.setCurrentView("BIN_POSTS")
+  }
+  function handleChoPosts() {
+    store.setCurrentView("CHOROPLETH_POSTS")
+  }
+  function handleDotPosts() {
+    store.setCurrentView("DOT_POSTS")
+  }
+  function handleGradPosts() {
+    store.setCurrentView("GRAD_POSTS")
+  }
+  function handleHeatPosts() {
+    store.setCurrentView("HEAT_POSTS")
+  }
   return (
     <Sidebar
       className="sideNavBar"
@@ -39,18 +68,18 @@ export default function SideNavBar() {
       <Menu>
         <MenuItem onClick={handleAllUsers}> All Users </MenuItem>
         <SubMenu onClick={handleAllMaps} label="All Maps">
-          <MenuItem> Bin Map </MenuItem>
-          <MenuItem> Choropleth Map </MenuItem>
-          <MenuItem> Dot Distribution Map </MenuItem>
-          <MenuItem> Graduated Symbol Map </MenuItem>
-          <MenuItem> Heat Map </MenuItem>
+          <MenuItem onClick={handleBinMap}> Bin Map </MenuItem>
+          <MenuItem onClick={handleChoMap}> Choropleth Map </MenuItem>
+          <MenuItem onClick={handleDotMap}> Dot Distribution Map </MenuItem>
+          <MenuItem onClick={handleGradMap}> Graduated Symbol Map </MenuItem>
+          <MenuItem onClick={handleHeatMap}> Heat Map </MenuItem>
         </SubMenu>
         <SubMenu onClick={handleAllPosts} label="All Posts">
-          <MenuItem> Bin Map </MenuItem>
-          <MenuItem> Choropleth Map </MenuItem>
-          <MenuItem> Dot Distribution Map </MenuItem>
-          <MenuItem> Graduated Symbol Map </MenuItem>
-          <MenuItem> Heat Map </MenuItem>
+          <MenuItem onClick={handleBinPosts}> Bin Map </MenuItem>
+          <MenuItem onClick={handleChoPosts}> Choropleth Map </MenuItem>
+          <MenuItem onClick={handleDotPosts}> Dot Distribution Map </MenuItem>
+          <MenuItem onClick={handleGradPosts}> Graduated Symbol Map </MenuItem>
+          <MenuItem onClick={handleHeatPosts}> Heat Map </MenuItem>
         </SubMenu>
       </Menu>
     </Sidebar>

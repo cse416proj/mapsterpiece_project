@@ -11,14 +11,19 @@ import Login from './screens/auth/Login';
 import Register from './screens/auth/Register';
 import AuthScreen from './screens/auth/AuthScreen';
 import AuthErrorModal from './modals/AuthErrorModal';
-import CommunityScreen from './screens/CommunityScreen';
-import PostDetailScreen from './screens/PostDetailScreen';
-import PostComment from './screens/PostComment';
-
-import DynamicCard from './cards/DynamicCard'
 
 import Profile from './screens/user/Profile';
 import CreateScreen from './screens/create/CreateScreen';
+
+import CommunityScreen from './screens/CommunityScreen';
+
+import DynamicCard from './cards/DynamicCard'
+
+import MapsCardSection from './screens/listFilter/MapsCardSection';
+import PostsCardSection from './screens/listFilter/PostsCardSelection';
+
+import PostDetailScreen from './screens/PostDetailScreen';
+import PostComment from './screens/PostComment';
 
 /*
     This is a module of import/export components
@@ -27,18 +32,20 @@ export {
     Hero,
     Login,
     NavBar,
-    Profile,
     Register, 
     Copyright,
     HomeScreen,
     AuthScreen,
-    CreateScreen,
     UserHomeScreen,
     AuthErrorModal,
-    CommunityScreen,
     SideNavBar,
     SearchBar,
+    Profile,
+    CreateScreen,
     DynamicCard,
+    CommunityScreen,
+    MapsCardSection,
+    PostsCardSection,
     PostDetailScreen,
     PostComment
 }
