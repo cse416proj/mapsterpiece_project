@@ -13,6 +13,7 @@ import AuthScreen from './screens/auth/AuthScreen';
 import AuthErrorModal from './modals/AuthErrorModal';
 import CommunityScreen from './screens/CommunityScreen';
 import PostDetailScreen from './screens/PostDetailScreen';
+import PostComment from './screens/PostComment';
 
 import DynamicCard from './cards/DynamicCard'
 
@@ -33,5 +34,6 @@ export {
     SideNavBar,
     SearchBar,
     DynamicCard,
-    PostDetailScreen
+    PostDetailScreen,
+    PostComment
 }

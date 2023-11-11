@@ -1,24 +1,44 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { PostContext } from "../../post";
 import { GlobalStoreContext } from "../../store";
-import Box from "@mui/material/Box";
-import { Container, Typography } from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
+import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Button,
+  SpeedDial,
+  SpeedDialIcon,
+  Paper,
+  InputBase,
+  Accordion,
+} from "@mui/material";
+import { Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
-import { useNavigate } from "react-router-dom";
+import {PostComment} from "../index"
 
 export default function PostDetailScreen() {
   const navigate = useNavigate();
   const { postInfo } = useContext(PostContext);
   const { store } = useContext(GlobalStoreContext);
+  const [addActive, setAddActive] = useState(false);
+  const [commentInput, setInput] = useState("");
 
   function handleAllMaps() {
     store.setCurrentView("ALL_POSTS");
     navigate("/community");
+  }
+
+  function handleSpeeddialClick() {
+    setAddActive(true);
+  }
+
+  function handleInputChange(event) {
+    setInput(event.target.value);
+  }
+
+  function handleSubmitComment() {
+    postInfo.addCommentToCurrentPost(commentInput);
+    setAddActive(false);
   }
 
   return (
@@ -61,7 +81,10 @@ export default function PostDetailScreen() {
             {postInfo.currentPost.postBody}
           </Typography>
         </Box>
-        {postInfo.currentPost.comments.map((pair) => (
+        {postInfo.currentPost.comments.map((pair, index) => (
+            <PostComment payload={pair} index={index} />
+        ))}
+        {addActive ? (
           <Accordion
             sx={{
               bgcolor: "#ddebe4",
@@ -69,66 +92,33 @@ export default function PostDetailScreen() {
               marginTop: "2vh",
             }}
           >
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <div className="accordionSummary">
-                <div className="flex-column">
-                  <div className="commentUserInfo">
-                    <AccountCircleIcon />
-                    <Typography
-                      style={{
-                        textAlign: `start`,
-                        padding: `10px`,
-                        fontWeight: `bold`,
-                      }}
-                    >
-                      {pair.commentUserName}
-                    </Typography>
-                  </div>
-                  <Typography
-                    style={{
-                      textAlign: `start`,
-                      padding: `10px`,
-                    }}
-                  >
-                    {pair.text}
-                  </Typography>
-                </div>
-                <AddIcon />
-              </div>
-            </AccordionSummary>
-            <AccordionDetails
+            <Paper
+              component="form"
               sx={{
-                bgcolor: "#b1d7c4",
+                display: "flex",
+                alignItems: "center",
+                width: 400,
+                marginLeft: "10px",
               }}
             >
-              {pair.subComments.map((subcomment) => (
-                <div className="commentCard">
-                  <div className="commentUserInfo">
-                    <AccountCircleIcon />
-                    <Typography
-                      style={{
-                        textAlign: `start`,
-                        padding: `10px`,
-                        fontWeight: `bold`,
-                      }}
-                    >
-                      {subcomment.commentUserName}
-                    </Typography>
-                  </div>
-                  <Typography
-                    style={{
-                      textAlign: `start`,
-                      padding: `10px`,
-                    }}
-                  >
-                    {subcomment.text}
-                  </Typography>
-                </div>
-              ))}
-            </AccordionDetails>
+              <InputBase
+                sx={{ ml: 1, flex: 1 }}
+                placeholder="Enter your comments here..."
+                onChange={handleInputChange}
+              />
+              <Button variant="contained" onClick={handleSubmitComment}>
+                Submit
+              </Button>
+            </Paper>
           </Accordion>
-        ))}
+        ) : null}
       </div>
+      <SpeedDial
+        ariaLabel="SpeedDial basic example"
+        sx={{ position: "absolute", bottom: 16, right: 16 }}
+        icon={<SpeedDialIcon />}
+        onClick={handleSpeeddialClick}
+      ></SpeedDial>
     </div>
   );
 }
