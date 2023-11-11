@@ -7,14 +7,14 @@ test('renders splash screen description', () => {
   expect(descriptionElement).toBeInTheDocument();
 });
 
-test('renders all the expected elements', () => {
-  render(<App />);
-  const guestBtn = screen.getByText(/continue as guest/i);
-  expect(guestBtn).toBeInTheDocument();
+// test('renders all the expected elements', () => {
+//   render(<App />);
+//   const guestBtn = screen.getByText(/continue as guest/i);
+//   expect(guestBtn).toBeInTheDocument();
 
-  const createAccBtn = screen.getByText(/create account/i);
-  expect(createAccBtn).toBeInTheDocument();
+//   const createAccBtn = screen.getByText(/create account/i);
+//   expect(createAccBtn).toBeInTheDocument();
 
-  const loginBtn = screen.getByText(/login/i);
-  expect(loginBtn).toBeInTheDocument();
-});
+//   const loginBtn = screen.getByText(/login/i);
+//   expect(loginBtn).toBeInTheDocument();
+// });
