@@ -1,0 +1,80 @@
+.sideNavBar{
+    height: 89vh;
+}
+
+.searchBar{
+    border-radius: 5px;
+    background-color: #86cab5;
+}
+
+.searchInputBox{
+    margin-left: 50px;
+}
+
+.toolbarFlex {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.communityScreenWrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.communityScreenRight{
+    margin-top: 1vh;
+    margin-left: 1vw;
+    width: 80vw;
+    height: 89vh;
+}
+
+.listsDisplay{
+    margin-top: 1vh;
+    margin-left: 2.5%;
+    width: 100%;
+}
+
+.individualDynamicCard{
+    margin-top: 2%;
+    border: 1px solid #acd8ca;
+    height: 20vh;
+}
+
+.cardContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.cardActions{
+    margin-bottom: 2%;
+}
+.postScreenContent {
+    left: 0;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.commentUserInfo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.accordionSummary {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.commentCard {
+    display: flex;
+  flex-direction: column;
+  align-items: start;
+}
