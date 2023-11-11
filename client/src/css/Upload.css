@@ -102,11 +102,21 @@ input[type=file]::file-selector-button {
     border-radius: 2.5%;
 }
 
+#clear-button:hover{
+    background-color: #b1ddd0;
+    color: white;
+}
+
 #upload-button{
     width: 8.5vw;
     background-color: var(--primary-color);
     color: white;
     border-radius: 2.5%;
+}
+
+#upload-button:hover{
+    background-color: var(--primary-color-hover);
+    color: white;
 }
   
 #map-viewer{
