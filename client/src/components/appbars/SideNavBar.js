@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { GlobalStoreContext } from "../../store";
+import { GlobalStoreContext } from "../../contexts/store";
 
 import {
   Sidebar,

@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Box } from '@mui/material';
 
-import AuthContext from '../../../auth';
+import AuthContext from '../../../contexts/auth';
 import { Hero, UserHomeScreen, Copyright } from '../../index';
 
 function HomeScreen(){

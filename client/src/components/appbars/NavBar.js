@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Box, Avatar, Menu, MenuItem } from '@mui/material';
 
 import PersonIcon from '@mui/icons-material/Person';
-import AuthContext from '../../auth';
+import AuthContext from '../../contexts/auth';
 
 function NavBar(){
     const { auth } = useContext(AuthContext);

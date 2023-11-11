@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { GlobalStoreContext } from "../../store";
+import { GlobalStoreContext } from "../../contexts/store";
 import { Box } from "@mui/material";
 import { SideNavBar, SearchBar, DynamicCard, MapsCardSection,PostsCardSection } from "../index";
 

@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import { Box, Typography, TextField, Button } from "@mui/material";
 import { Link, useNavigate } from 'react-router-dom'
 
-import AuthContext from '../../../auth';
+import AuthContext from '../../../contexts/auth';
 import { AuthErrorModal } from '../../index';
 
 function Login(){

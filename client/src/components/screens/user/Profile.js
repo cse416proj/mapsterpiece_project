@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Box, Button } from '@mui/material';
 
-import AuthContext from '../../../auth';
+import AuthContext from '../../../contexts/auth';
 
 function Profile(){
     const { auth } = useContext(AuthContext);

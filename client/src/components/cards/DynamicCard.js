@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { PostContext } from "../../post";
+import { PostContext } from "../../contexts/post";
 import {
   Box,
   Card,
