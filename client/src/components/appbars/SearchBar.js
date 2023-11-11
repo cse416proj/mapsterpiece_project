@@ -6,10 +6,13 @@ import {
   Paper,
   InputBase,
 } from "@mui/material";
+
+import { useState } from "react";
+
 import SearchIcon from "@mui/icons-material/Search";
 import MenuIcon from "@mui/icons-material/Menu";
 
-export default function SearchBar() {
+export default function SearchBar(props) {
   return (
     <AppBar
       position="static"
@@ -28,7 +31,8 @@ export default function SearchBar() {
               marginLeft: "10px",
             }}
           >
-            <InputBase
+            <InputBase 
+              onChange={(event)=>props.setSearch(event.target.value)}
               sx={{ ml: 1, flex: 1 }}
               placeholder="Search by ..." // to be replace with what to actually search for
               inputProps={{ "aria-label": "search google maps" }}

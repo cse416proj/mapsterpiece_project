@@ -68,13 +68,73 @@ const fakeAllUsers = [
 const fakeAllPosts = [
   {
     _id: {
-      $oid: "6547ea560946232834874dd4",
+      $oid: "6579ea560946232834874dd4",
     },
     ownerUserName: "urmomUser",
-    title: "dummy title",
-    tags: ["tag1", "tag2"],
+    title: "blablabla",
+    tags: ["Dot Distribution Map", "tag2"],
     postBody:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+      "Good morning SWEETIE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+    likedUsers: [],
+    dislikedUsers: [],
+    comments: [
+      {
+        commentUserName: "dummyCommentUser",
+        text: "dummy comment body",
+        dateCommented: "2023-11-05T19:17:42.514Z",
+        subComments: [
+          {
+            commentUserName: "subcomment user",
+            text: "dummy subcomment body",
+            dateCommented: "2023-11-05T19:17:42.514Z",
+          },
+        ],
+      },
+    ],
+    datePosted: {
+      $date: "2023-11-05T19:17:42.514Z",
+    },
+    __v: 0,
+  },
+  {
+    _id: {
+      $oid: "6550ea560946232834874dd4",
+    },
+    ownerUserName: "NOTurmomUser",
+    title: "this is a post",
+    tags: ["Choropleth Map", "tag2"],
+    postBody:
+      "hello there Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+    likedUsers: [],
+    dislikedUsers: [],
+    comments: [
+      {
+        commentUserName: "dummyCommentUser",
+        text: "dummy comment body",
+        dateCommented: "2023-11-05T19:17:42.514Z",
+        subComments: [
+          {
+            commentUserName: "subcomment user",
+            text: "dummy subcomment body",
+            dateCommented: "2023-11-05T19:17:42.514Z",
+          },
+        ],
+      },
+    ],
+    datePosted: {
+      $date: "2023-11-05T19:17:42.514Z",
+    },
+    __v: 0,
+  },
+  {
+    _id: {
+      $oid: "6580ea560946232834874dd4",
+    },
+    ownerUserName: "SFkkk",
+    title: "MAAAAAp",
+    tags: ["Graduated Symbol Map", "tag2"],
+    postBody:
+      "BYE BRO Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
     likedUsers: [],
     dislikedUsers: [],
     comments: [
@@ -105,11 +165,14 @@ const fakeAllMaps = [
     },
     ownerUserName: "AmaPuser",
     title: "some map title",
-    tags: ["tag1", "tag2"],
+    fileFormat:"GeoJSON",
+    // mapType: schema.types.mixed,
+    // map: map object
+    tags: ["Bin Map", "Europe", "Population"],  // 1st tag should be the string of map type
     comments: [
       {
         commentUserName: "dummy comment user",
-        text: "dummy comment body",
+        text: "dummy comment body 1",
         dateCommented: "2023-11-05T19:17:42.514Z",
         subComments: [
           {
@@ -119,9 +182,67 @@ const fakeAllMaps = [
           },
         ],
       },
+      {
+        commentUserName: "dummy comment user",
+        text: "dummy comment body 2",
+        dateCommented: "2023-12-05T19:17:42.514Z",
+        subComments: [
+          {
+            commentUserName: "subcomment user",
+            text: "dummy subcomment body",
+            dateCommented: "2023-12-06T19:17:42.514Z",
+          },
+          {
+            commentUserName: "subcomment user",
+            text: "dummy subcomment body",
+            dateCommented: "2023-12-07T19:17:42.514Z",
+          },
+        ],
+      },
     ],
     datePublished: {
       $date: "2023-11-05T19:17:42.514Z",
+    },
+    __v: 0,
+  },
+  {
+    _id: {
+      $oid: "65482b5e0946232834874e6c",
+    },
+    ownerUserName: "GabbyDu",
+    title: "some map title 2",
+    fileFormat:"Shapefile",
+    mapType: "Heat Map",    // schema.types.mixed?
+    // map: map object
+    tags: ["Heat Map", "Asia", "Population"],
+    comments: [
+      {
+        commentUserName: "dummy comment user",
+        text: "dummy comment body 1",
+        dateCommented: "2023-11-05T19:17:42.514Z",
+        subComments: [
+          {
+            commentUserName: "subcomment user",
+            text: "dummy subcomment body",
+            dateCommented: "2023-11-05T19:17:42.514Z",
+          },
+        ],
+      },
+      {
+        commentUserName: "dummy comment user",
+        text: "dummy comment body 2",
+        dateCommented: "2023-12-05T19:17:42.514Z",
+        subComments: [
+          {
+            commentUserName: "subcomment user",
+            text: "dummy subcomment body",
+            dateCommented: "2023-12-06T19:17:42.514Z",
+          },
+        ],
+      },
+    ],
+    datePublished: {
+      $date: "2023-12-05T19:17:42.514Z",
     },
     __v: 0,
   },
