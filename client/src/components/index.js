@@ -22,8 +22,8 @@ import DynamicCard from './cards/DynamicCard'
 import MapsCardSection from './screens/listFilter/MapsCardSection';
 import PostsCardSection from './screens/listFilter/PostsCardSelection';
 
-import PostDetailScreen from './screens/PostDetailScreen';
-import PostComment from './screens/PostComment';
+import PostDetailScreen from './screens/post/PostDetailScreen';
+import PostComment from './screens/post/PostComment';
 
 /*
     This is a module of import/export components
