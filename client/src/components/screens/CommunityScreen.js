@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { GlobalStoreContext } from "../../store";
-import { Box, useScrollTrigger } from "@mui/material";
+import { Box } from "@mui/material";
 import { SideNavBar, SearchBar, DynamicCard, MapsCardSection,PostsCardSection } from "../index";
 
 export default function CommunityScreen() {
