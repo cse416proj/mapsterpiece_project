@@ -106,9 +106,12 @@ export default function DynamicCard(payload) {
           </Box>
           <Typography
             sx={{ fontSize: 12, marginLeft: 3, textAlign: `start` }}
-            color="black"
+            color="grey"
           >
-            {payload.postData.postBody}
+            {payload.postData.postBody.length>200 
+            ? `${payload.postData.postBody.substring(0,200)}...`
+            : payload.postData.postBody
+            }
           </Typography>
           <CardActions className="cardActions">
             <ChatBubbleOutlineIcon style={{ color: `#393c40` }} />

@@ -23,6 +23,18 @@ const CurrentView = {
   ALL_MAP_POSTS: "ALL_MAP_POSTS",
   USER_OWNED_MAPS: "USER_OWNED_MAPS",
   USER_OWNED_POSTS: "USER_OWNED_POSTS",
+
+  BIN_MAPS:"BIN_MAPS",
+  CHOROPLETH_MAPS: "CHOROPLETH_MAPS",
+  DOT_MAPS: "DOT_MAPS",
+  GRAD_MAPS: "GRAD_MAPS", 
+  HEAT_MAPS: "HEAT_MAPS",
+  
+  BIN_POSTS:"BIN_POSTS",
+  CHOROPLETH_POSTS: "CHOROPLETH_POSTS",
+  DOT_POSTS: "DOT_POSTS",
+  GRAD_POSTS: "GRAD_POSTS", 
+  HEAT_POSTS: "HEAT_POSTS",
 };
 
 // hardcoded data to be replaced later on with actual data
@@ -74,7 +86,7 @@ const fakeAllPosts = [
     title: "blablabla",
     tags: ["Dot Distribution Map", "tag2"],
     postBody:
-      "Good morning SWEETIE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+      "Good morning SWEETIE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat Good morning SWEETIE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat Good morning SWEETIE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
     likedUsers: [],
     dislikedUsers: [],
     comments: [
@@ -104,7 +116,7 @@ const fakeAllPosts = [
     title: "this is a post",
     tags: ["Choropleth Map", "tag2"],
     postBody:
-      "hello there Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+      "hello there Lorem ipsum dolor sit amet, coem ipsum dolor sit amet, consedolor sit amet, consectetu nsedolor sit amet, consectetur adipiscing elit, sctetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nost exercitation ullamcem ipsum dolor sit amet, rud exercitation ullamcem ipsum dolor sit amet, consedolor sit amet, consectetu o laboris nisi ut aliquip ex ea commodo consequat",
     likedUsers: [],
     dislikedUsers: [],
     comments: [
@@ -248,12 +260,36 @@ const fakeAllMaps = [
   },
 ];
 
+const binMaps = fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Bin Map"});
+const choroplethMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Choropleth Map"});
+const dotMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"});
+const gradMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"});
+const heatMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Heat Map"});
+
+const binPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Bin Map"});
+const choroplethPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Choropleth Map"});
+const dotPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"});
+const gradPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"});
+const heatPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Heat Map"});
+
 function GlobalStoreContextProvider(props) {
   const [store, setStore] = useState({
     currentView: CurrentView.USER_HOME,
     allUsers: fakeAllUsers,
     allPosts: fakeAllPosts,
     allMaps: fakeAllMaps,
+
+    binMaps: binMaps,
+    choroplethMaps: choroplethMaps, 
+    dotMaps: dotMaps,
+    gradMaps: gradMaps,
+    heatMaps: heatMaps, 
+
+    binPosts: binPosts,
+    choroplethPosts: choroplethPosts, 
+    dotPosts: dotPosts,
+    gradPosts: gradPosts,
+    heatPosts: heatPosts, 
   });
 
   const storeReducer = (action) => {
@@ -266,6 +302,18 @@ function GlobalStoreContextProvider(props) {
           allUsers: [],
           allPosts: [],
           allMaps: [],
+
+          binMaps: [],
+          choroplethMaps: [], 
+          dotMaps: [],
+          gradMaps: [],
+          heatMaps: [], 
+
+          binPosts: [],
+          choroplethPosts: [], 
+          dotPosts: [],
+          gradPosts: [],
+          heatPosts: [], 
         });
       }
       case GlobalStoreActionType.MARK_CURRENT_SCREEN: {
@@ -274,6 +322,18 @@ function GlobalStoreContextProvider(props) {
           allUsers: store.allUsers,
           allPosts: store.allPosts,
           allMaps: store.allMaps,
+
+          binMaps: store.binMaps,
+          choroplethMaps: store.choroplethMaps, 
+          dotMaps: store.dotMaps,
+          gradMaps: store.gradMaps,
+          heatMaps: store.heatMaps, 
+
+          binPosts: store.binPosts,
+          choroplethPosts: store.choroplethPosts, 
+          dotPosts: store.dotPosts,
+          gradPosts: store.gradPosts,
+          heatPosts: store.heatPosts, 
         });
       }
       default:

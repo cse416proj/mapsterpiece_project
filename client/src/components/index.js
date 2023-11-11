@@ -14,8 +14,10 @@ import AuthErrorModal from './modals/AuthErrorModal';
 import CommunityScreen from './screens/CommunityScreen';
 import PostDetailScreen from './screens/PostDetailScreen';
 
-import DynamicCard from './cards/DynamicCard'
+import DynamicCard from './cards/DynamicCard';
 
+import MapsCardSection from './screens/listFilter/MapsCardSection';
+import PostsCardSection from './screens/listFilter/PostsCardSelection';
 /*
     This is a module of import/export components
 */
@@ -33,5 +35,7 @@ export {
     SideNavBar,
     SearchBar,
     DynamicCard,
-    PostDetailScreen
+    PostDetailScreen, 
+    MapsCardSection,
+    PostsCardSection,
 }

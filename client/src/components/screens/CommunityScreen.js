@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { GlobalStoreContext } from "../../store";
 import { Box, useScrollTrigger } from "@mui/material";
-import { SideNavBar, SearchBar, DynamicCard } from "../index";
+import { SideNavBar, SearchBar, DynamicCard, MapsCardSection,PostsCardSection } from "../index";
 
 export default function CommunityScreen() {
   const { store } = useContext(GlobalStoreContext);
@@ -26,36 +26,35 @@ export default function CommunityScreen() {
         ))}
       </Box>
     );
-  } else if (store && curScreen === "ALL_MAPS") {
-    listCard = (
-        <Box sx={{ width: "95%" }}>
-          {store.allMaps.filter((pair)=>{
-            const searchAllMap = search.toLowerCase();
-            return (searchAllMap===''||
-                    pair.title.toLowerCase().includes(searchAllMap) ||
-                    pair.tags.some(tag => tag.toLowerCase().includes(searchAllMap))
-            );
-          }).map((pair) => (
-            <DynamicCard userData={null} mapData={pair} postData={null} />
-          ))}
-        </Box>
-      );
-  } else if (store && curScreen === "ALL_POSTS") {
-    listCard = (
-        <Box sx={{ width: "95%" }}>
-          {store.allPosts.filter((pair)=>{
-            const searchAllPost = search.toLowerCase();
-            return(searchAllPost === ''||
-                   pair.title.toLowerCase().includes(searchAllPost) ||
-                   pair.tags.some(tag => tag.toLowerCase().includes(searchAllPost)) ||
-                   pair.postBody.toLowerCase().includes(searchAllPost)
-            );
-          }).map((pair) => (
-            <DynamicCard userData={null} mapData={null} postData={pair} />
-          ))}
-        </Box>
-      );
-
+  } 
+  
+  else if (store && curScreen === "ALL_MAPS") {
+    listCard = <MapsCardSection data={store.allMaps} search={search} />;
+  } else if (store && curScreen === "BIN_MAPS") {
+    listCard = <MapsCardSection data={store.binMaps} search={search} />;
+  } else if (store && curScreen === "CHOROPLETH_MAPS") {
+    listCard = <MapsCardSection data={store.choroplethMaps} search={search} />;
+  } else if (store && curScreen === "DOT_MAPS") {
+    listCard = <MapsCardSection data={store.dotMaps} search={search} />;
+  } else if (store && curScreen === "GRAD_MAPS") {
+    listCard = <MapsCardSection data={store.gradMaps} search={search} />;
+  } else if (store && curScreen === "HEAT_MAPS") {
+    listCard = <MapsCardSection data={store.heatMaps} search={search} />;
+  }
+    
+  else if (store && curScreen === "ALL_POSTS") {
+    listCard = <PostsCardSection data={store.allPosts} search={search} />;
+  } else if (store && curScreen === "BIN_POSTS") {
+    listCard = <PostsCardSection data={store.binPosts} search={search} />;
+  } else if (store && curScreen === "CHOROPLETH_POSTS") {
+    listCard = <PostsCardSection data={store.choroplethPosts} search={search} />;
+  } else if (store && curScreen === "DOT_POSTS") {
+    console.log(store.dotPosts);
+    listCard = <PostsCardSection data={store.dotPosts} search={search} />;
+  } else if (store && curScreen === "GRAD_POSTS") {
+    listCard = <PostsCardSection data={store.gradPosts} search={search} />;
+  } else if (store && curScreen === "HEAT_POSTS") {
+    listCard = <PostsCardSection data={store.heatPosts} search={search} />;
   }
 
   return (
