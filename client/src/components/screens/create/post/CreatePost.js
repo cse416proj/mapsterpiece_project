@@ -33,15 +33,19 @@ function CreatePost(){
         setTitle('');
         setContent('');
         setTags([]);
+        setMissingTitle(false);
+        setMissingContent(false);
     };
 
     // handler to upload the post
     const handlePost = () => {
-        if(title.length === 0){
-            setMissingTitle(true);
-        }
-        else if(content.length === 0){
-            setMissingContent(true);
+        if(title.length === 0 || content.length === 0){
+            if(title.length === 0){
+                setMissingTitle(true);
+            }
+            if(content.length === 0){
+                setMissingContent(true);
+            }
         }
         else{
             setMissingTitle(false);

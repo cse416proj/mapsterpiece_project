@@ -8,13 +8,8 @@ import SearchIcon from '@mui/icons-material/Search';
 function ActionButton(){
     const navigate = useNavigate();
 
-    function handleCreateMap(event){
+    function handleCreate(event){
         console.log('handleCreateMap');
-        navigate('/create');
-    }
-
-    function handleCreatePost(event){
-        console.log('handleCreatePost');
         navigate('/create');
     }
 
@@ -24,8 +19,7 @@ function ActionButton(){
 
     const actions = [
         { icon: <SearchIcon/>, name: 'Search', handler: handleSearch },
-        { icon: <CreateIcon/>, name: 'Create Post', handler: handleCreatePost },
-        { icon: <MapIcon/>, name: 'Create Map', handler: handleCreateMap },
+        { icon: <CreateIcon/>, name: 'Create Map/Post', handler: handleCreate },
     ];
 
     const fabStyle = {

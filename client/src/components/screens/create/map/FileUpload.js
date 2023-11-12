@@ -6,9 +6,8 @@ import { useNavigate } from 'react-router-dom';
 // import * as shapefile from 'shapefile';
 // import MapContext from './MapContext';
 
-function FileUpload(){
+function FileUpload({ inputFile, handleSelectFile, handleUpload, handleClear }){
     const navigate = useNavigate();
-    const inputFile = useRef(null);
     // const { mapInfo } = useContext(MapContext);
 
     // const [fileFormat, setFileFormat] = useState('');
@@ -102,85 +101,51 @@ function FileUpload(){
     //     reader.readAsArrayBuffer(file);
     // }
 
-    // // for clearing input file
-    // function clearInputFile() {
-    //     if (inputFile.current) {
-    //         inputFile.current.value = '';
-    //         inputFile.current.type = 'file';
-    //         inputFile.current.accept = '.zip, .json, .shp, .kml, .dbf';
-    //     }
-    // }
+    // handle selected file input
+    const selectFile = (event) => {
+        console.log('selectFile');
+        console.log(event.target.files);
+        console.log('now call handleSelectFile');
+        handleSelectFile(event.target.files);
 
-    // // handle selected file input
-    // const handleSelectFile = (event) => {
-    //     const fileCount = event.target.files.length;
+        // const fileCount = event.target.files.length;
 
-    //     // only process non-empty file that matches selected file extension
-    //     if (event.target.files[0] && fileFormat) {
-    //         const fileType = event.target.files[0].name.split('.').pop();
-    //         const fileType2 = (fileCount === 2) ? event.target.files[1].name.split('.').pop() : '';
-    //         const fileTypeSet = new Set([fileType, fileType2]);
+        // // only process non-empty file that matches selected file extension
+        // if (event.target.files[0] && fileFormat) {
+        //     const fileType = event.target.files[0].name.split('.').pop();
+        //     const fileType2 = (fileCount === 2) ? event.target.files[1].name.split('.').pop() : '';
+        //     const fileTypeSet = new Set([fileType, fileType2]);
 
-    //         if(
-    //             (fileFormat === "Shapefiles" &&
-    //               ((fileCount !== 2 && fileType !== "zip") ||
-    //                 !fileExtension[fileFormat].includes(fileType2))) ||
-    //             !fileExtension[fileFormat].includes(fileType) ||
-    //             fileTypeSet.size !== 2
-    //           ) {
-    //             alert('Unmatch upload file format.');
-    //             clearInputFile();
-    //         } 
-    //         else {
-    //             if(fileFormat === 'GeoJSON'){
-    //                 readDataAsText(event.target.files[0]);
-    //             }
-    //             else if(fileFormat === 'Shapefiles'){
-    //                 if(fileType === 'shp' || fileType === 'dbf'){
-    //                     var shpFile = (fileType === 'shp') ? event.target.files[0] : event.target.files[1];
-    //                     var dbfFile = (fileType === 'dbf') ? event.target.files[0] : event.target.files[1];
-    //                     readDataFromShapeFiles(shpFile, dbfFile);
-    //                 }
-    //                 else if(fileType === 'zip'){
-    //                     readDataFromZipFile(event.target.files[0]);
-    //                 }
-    //             }
-    //             else if (fileFormat === 'Keyhole(KML)') {
-    //                 readDataAsText(event.target.files[0]);
-    //             }
-    //         }
-    //     }
-    // };
-
-    // // handle map rendering after upload file & choose format
-    // const handleUpload = () => {
-    //     if (!fileFormat) {
-    //         alert('Please select file format with at least one file.');
-    //         return;
-    //     }
-
-    //     if (fileContent) {
-    //         if(fileFormat === 'GeoJSON'){
-    //             mapInfo.setMap(JSON.parse(fileContent));
-    //         }
-    //         else if(fileFormat === 'Shapefiles'){
-    //             mapInfo.setMap(fileContent);
-    //         }
-    //         else if(fileFormat === 'Keyhole(KML)'){
-    //             const kmlText = new DOMParser().parseFromString(fileContent, 'text/xml');
-    //             mapInfo.setMap(kmlText);
-    //         }
-    //         navigate('/map');
-    //     }
-    // };
-
-    // // handle clearing all inputs
-    // const handleClear = () => {
-    //     setFileContent('');
-    //     setDbfBuffer(null);
-    //     setShpBuffer(null);
-    //     clearInputFile();
-    // };
+        //     if(
+        //         (fileFormat === "Shapefiles" &&
+        //           ((fileCount !== 2 && fileType !== "zip") ||
+        //             !fileExtension[fileFormat].includes(fileType2))) ||
+        //         !fileExtension[fileFormat].includes(fileType) ||
+        //         fileTypeSet.size !== 2
+        //       ) {
+        //         alert('Unmatch upload file format.');
+        //         clearInputFile();
+        //     } 
+        //     else {
+        //         if(fileFormat === 'GeoJSON'){
+        //             readDataAsText(event.target.files[0]);
+        //         }
+        //         else if(fileFormat === 'Shapefiles'){
+        //             if(fileType === 'shp' || fileType === 'dbf'){
+        //                 var shpFile = (fileType === 'shp') ? event.target.files[0] : event.target.files[1];
+        //                 var dbfFile = (fileType === 'dbf') ? event.target.files[0] : event.target.files[1];
+        //                 readDataFromShapeFiles(shpFile, dbfFile);
+        //             }
+        //             else if(fileType === 'zip'){
+        //                 readDataFromZipFile(event.target.files[0]);
+        //             }
+        //         }
+        //         else if (fileFormat === 'Keyhole(KML)') {
+        //             readDataAsText(event.target.files[0]);
+        //         }
+        //     }
+        // }
+    };
 
     return(
         <Box className='flex-row' id='file-create-container'>
@@ -191,14 +156,14 @@ function FileUpload(){
                     multiple
                     ref={inputFile}
                     id='file-upload-input'
-                    // onChange={handleSelectFile}
+                    onChange={selectFile}
                 />
                 <Box className='flex-row' id='button-container'>
                     <Button
                         variant='outlined'
                         id='clear-button'
                         style={{ borderRadius: 50 }}
-                        // onClick={handleClear}
+                        onClick={handleClear}
                     >
                         Clear
                     </Button>
@@ -206,7 +171,7 @@ function FileUpload(){
                         variant='contained'
                         id='upload-button'
                         style={{ borderRadius: 50 }}
-                        // onClick={handleUpload}
+                        onClick={handleUpload}
                     >
                         Upload
                     </Button>
