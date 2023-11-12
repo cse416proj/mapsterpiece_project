@@ -1,5 +1,4 @@
 import axios from 'axios';
-// const {axios} = require("axios");
 axios.defaults.withCredentials = true;
 
 const api = axios.create({
@@ -30,11 +29,20 @@ export const registerUser = (firstName, lastName, userName, email, password, pas
     })
 }
 
+export const deleteUser = (userName) => {
+    console.log('******deleteUser*******');
+    console.log(userName);
+    return api.delete(`/user/`,{
+        userName: userName
+    })
+};
+
 const apis = {
     getLoggedIn, 
     registerUser, 
     loginUser, 
-    logoutUser
+    logoutUser,
+    deleteUser
 }
 
 export default apis

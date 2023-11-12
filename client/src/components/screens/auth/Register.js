@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Typography, TextField, Button } from '@mui/material';
 
-import AuthContext from '../../../auth';
+import AuthContext from '../../../contexts/auth';
 import { AuthErrorModal } from '../../index';
 
 function Register(){
@@ -78,11 +78,8 @@ function Register(){
                 <Box id='signup-textfield-container'>
                     { textFields }
                 </Box>
-                <Typography
-                    id='signup-redirect-prompt'
-                    variant='p'
-                >
-                Already has an account? Login <Link id='redirect' to='/login'>here</Link>.
+                <Typography id='signup-redirect-prompt' variant='p'>
+                    Already has an account? Login <Link id='redirect' to='/login'>here</Link>.
                 </Typography>
                 
                 <Button

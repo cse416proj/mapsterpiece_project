@@ -1,0 +1,112 @@
+#user-info-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center
+}
+
+#user-info{
+    height: 80vh;
+    width: 95vw;
+    justify-content: space-around;
+}
+
+#profile-tab, #profile-tab-selected{
+    width: 12.5vw;
+    height: 100%;
+    font-weight: 550;
+}
+
+#profile-tab{
+    background-color: var(--gray);
+}
+  
+#profile-tab-selected{
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#all-maps-posts{
+    height: 76vh;
+    width: 67.5%
+}
+
+#user-info-card{
+    height: 87.5%;
+    width: 27.5%;
+    background-color: white;
+}
+
+#user-info-box{
+    height: 100%;
+    width: 100%;
+}
+
+#cover{
+    height: 30%;
+    width: 100%;
+    background-color: var(--primary-color);
+    align-items: center;
+    z-index: 1;
+}
+
+#user-initials-icon{
+    height: 30vh;
+    width: 30vh;
+    color: black;
+    background-color: var(--gray);
+    border: 2px solid var(--gray);
+    padding-bottom: 3px;
+    font-size: 6em;
+    font-weight: 700;
+    z-index: 2;
+    margin-top: -15vh;
+}
+
+#cover-container{
+    height: 10vh;
+    width: 100%;
+}
+
+#user-info-container{
+    height: 50%;
+    width: 100%;
+    justify-content: space-around;
+}
+
+#user-full-name{
+    text-transform: capitalize;
+    margin-top: 2vh;
+    font-size: 2em;
+    font-weight: 700;
+}
+
+#user-name{
+    font-weight: 700;
+    font-size: 0.9em;
+    color: var(--primary-color);
+}
+
+#user-stats{
+    width: 12.5vw;
+    height: 7.5vh;
+    border: 3px solid var(--primary-color);
+    border-radius: 10px;
+    justify-content: space-around;
+    padding: 0 1vw;
+}
+
+.stats{
+    font-weight: 700;
+}
+
+#action-button{
+    position: absolute;
+    bottom: 1.5%;
+    right: 1.5%;
+    color: var(--icon);
+}
+
+#action-button:hover{
+    color: var(--icon-hover);
+}

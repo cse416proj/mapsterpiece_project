@@ -28,10 +28,12 @@
 }
 
 #signup-title{
+    font-size: 4rem;
     color: var(--tertiary-color);
 }
 
 #signin-title{
+    font-size: 5rem;
     color: var(--logo-color);
 }
 
@@ -63,6 +65,11 @@
 
 #signin-redirect-prompt{
     margin-bottom: 4vh;
+}
+
+#btn-container{
+    width: 35vw;
+    justify-content: space-between;
 }
 
 #redirect{

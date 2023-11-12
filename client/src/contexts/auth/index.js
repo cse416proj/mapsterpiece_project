@@ -8,8 +8,9 @@ const AuthContext = createContext();
 export const AuthActionType = {
     GET_LOGGED_IN: "GET_LOGGED_IN",
     LOGIN_USER: "LOGIN_USER", 
-    LOGOUT_USER: "LOGOUT_USER", 
+    LOGOUT_USER: "LOGOUT_USER",
     REGISTER_USER: "REGISTER_USER", 
+    DELETE_USER: "DELETE_USER",
     OPEN_MODAL: "OPEN_MODAL", 
     CLOSE_MODAL: "CLOSE_MODAL",
 }
@@ -57,6 +58,13 @@ function AuthContextProvider(props){
                 return setAuth({
                     user: payload.user, 
                     loggedIn: true, 
+                    errMsg: null
+                });
+            }
+            case AuthActionType.DELETE_USER: {
+                return setAuth({
+                    user: null, 
+                    loggedIn: false, 
                     errMsg: null
                 });
             }
@@ -111,12 +119,6 @@ function AuthContextProvider(props){
             return;
         }
         if(response.status === 200){
-            authReducer({
-                type: AuthActionType.REGISTER_USER,
-                payload: {
-                    user: response.data.user
-                }
-            })
             navigate("/login");
         }
     }
@@ -178,6 +180,21 @@ function AuthContextProvider(props){
         }
         console.log("userName: "+ userName);
         return userName;
+    }
+
+    auth.deleteUser = async function(user){
+        console.log(user);
+        const userName = user.userName;
+        console.log(`userName: ${userName}, callling api to remove now`);
+        const response = await api.deleteUser(userName);
+        
+        if(response.status === 200){
+            authReducer({
+                type: AuthActionType.DELETE_USER,
+                payload: null
+            })
+            navigate("/");
+        }
     }
 
     auth.closeModal = function(){
