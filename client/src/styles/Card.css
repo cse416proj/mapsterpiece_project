@@ -1,0 +1,45 @@
+.individualDynamicCard{
+    margin-top: 2%;
+    border: 1px solid var(--primary-color);
+    height: 20vh;
+}
+
+.cardContent{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.cardActions{
+    margin-bottom: 2%;
+}
+
+#action-button-container{
+    height: 2.5vh;
+    width: 7.5vw;
+    align-items: center;
+    justify-content: flex-start;
+    margin-right: 1.5vw;
+}
+
+#map-action-button-text, #post-action-button-text{
+    font-size: 0.8em;
+}
+
+#map-action-icon, #post-action-icon{
+    height: 1.25vw;
+    width: 1.25vw;
+    margin-right: 7.5%;
+}
+
+#map-action-icon, #map-action-button-text{
+    color: white;
+}
+
+#post-action-icon{
+    color: #393c40;
+}
+
+#post-action-button-text{
+    color: var(--primary-color-hover);
+}

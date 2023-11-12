@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { Box, Tabs, Tab } from '@mui/material';
 
-import UserCard from './UserCard';
+import ProfileCard from './ProfileCard';
 import { DynamicCard } from '../../index';
 import ActionButton from './ActionButton';
 import UserContext from '../../../contexts/user';
@@ -56,7 +56,7 @@ function Profile(){
                     </Tabs>
                     <Box> { fetchContent() } </Box>
                 </Box>
-                <UserCard
+                <ProfileCard
                     initials={auth.getUserInitials().toUpperCase()}
                     name={userInfo.getUserFullName()}
                     userName={userInfo.getUserName()}

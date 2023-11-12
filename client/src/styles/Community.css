@@ -1,8 +1,16 @@
+.communityScreenWrapper{
+    height: 90vh;
+    display: flex;
+    justify-content: space-between;
+}
+
 .sideNavBar{
-    height: 89vh;
+    margin-top: 1vh;
+    margin-right: 3vw;
 }
 
 .searchBar{
+    height: 10vh;
     border-radius: 5px;
     background-color: #86cab5;
 }
@@ -12,45 +20,28 @@
 }
 
 .toolbarFlex {
+    width: 95%;
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
 }
 
-.communityScreenWrapper{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.communityScreenRight{
+.communityScreenContent{
     margin-top: 1vh;
-    margin-left: 1vw;
     width: 80vw;
     height: 89vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .listsDisplay{
-    margin-top: 1vh;
-    margin-left: 2.5%;
+    height: 79vh;
     width: 100%;
-}
-
-.individualDynamicCard{
-    margin-top: 2%;
-    border: 1px solid #86C9B5;
-    height: 20vh;
-}
-
-.cardContent {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
-.cardActions{
-    margin-bottom: 2%;
-}
 .postScreenContent {
     left: 0;
     width: 100vw;

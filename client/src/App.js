@@ -2,6 +2,7 @@ import './styles/App.css';
 import './styles/Auth.css';
 import './styles/Upload.css';
 import "./styles/Profile.css";
+import "./styles/Card.css";
 import "./styles/Community.css";
 
 import { React } from "react";

@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { Box, Button, Avatar, Typography } from '@mui/material';
 import AuthContext from '../../../contexts/auth';
 
-function UserCard({ initials, name, userName, numMaps, numPosts, isLoggedInUser }){
+function ProfileCard({ initials, name, userName, numMaps, numPosts, isLoggedInUser }){
     const { auth } = useContext(AuthContext);
     
     function handleDeleteAccount(event){
@@ -36,4 +36,4 @@ function UserCard({ initials, name, userName, numMaps, numPosts, isLoggedInUser 
     );
 }
 
-export default UserCard;
+export default ProfileCard;
