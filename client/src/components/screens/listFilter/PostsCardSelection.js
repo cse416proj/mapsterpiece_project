@@ -5,7 +5,7 @@ import { DynamicCard } from '../../index';
 function PostsCardSection({ data, search }) {
     console.log(data);
   return (
-    <Box sx={{ width: '95%' }}>
+    <Box sx={{ width: '97.5%' }}>
       {data
         .filter((pair) => {
           const searchTerm = search.toLowerCase();

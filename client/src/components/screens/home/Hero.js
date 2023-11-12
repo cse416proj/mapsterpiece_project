@@ -17,7 +17,7 @@ function Hero() {
   }
 
   return (
-    <Box className="content">
+    <Box className="default-content">
       <Box className="flex-row" id="hero">
         <Box className="flex-column">
           <Box

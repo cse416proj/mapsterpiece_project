@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Box, Typography } from '@mui/material';
 
-import AuthContext from '../../../auth';
+import AuthContext from '../../../contexts/auth';
 
 function UserHomeScreen(){
     const { auth } = useContext(AuthContext);

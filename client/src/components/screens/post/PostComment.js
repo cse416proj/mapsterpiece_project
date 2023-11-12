@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
-import { PostContext } from "../../post";
-import { GlobalStoreContext } from "../../store";
+import { PostContext } from "../../../contexts/post";
+import { GlobalStoreContext } from "../../../contexts/store";
 import { useNavigate } from "react-router-dom";
 import {
   Box,

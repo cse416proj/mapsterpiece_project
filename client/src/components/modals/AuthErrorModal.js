@@ -1,6 +1,6 @@
 import { useContext } from 'react'
-import authContext from '../../auth';
-import { Box, Modal, Alert, Button } from '@mui/material';
+import authContext from '../../contexts/auth';
+import { Box, Modal, Alert, AlertTitle, Button } from '@mui/material';
 
 function AuthErrorModal() {
 
@@ -17,14 +17,13 @@ function AuthErrorModal() {
     }
 
     return (
-        <Modal className='modal'
-            open={auth.errMsg !== null}
-        >
-            <Box className="modal-box">
-                <Box className="modal-dialog">
-                    <Box className="modal-context">
-                        <Alert severity="warning">{auth.errMsg}</Alert>
-                    </Box>
+        <Modal open={auth.errMsg !== null}>
+            <Box className='modalContainer'>
+                <Box className='modal'>
+                    <Alert severity="warning">
+                        <AlertTitle>ERROR</AlertTitle>
+                        {auth.errMsg}
+                    </Alert>
                     <Box id="confirm-cancel-container">
                         <Button 
                             variant="contained"

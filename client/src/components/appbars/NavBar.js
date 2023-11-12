@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Box, Avatar, Menu, MenuItem } from '@mui/material';
 
 import PersonIcon from '@mui/icons-material/Person';
-import AuthContext from '../../auth';
+import AuthContext from '../../contexts/auth';
+import UserContext from '../../contexts/user';
 
 function NavBar(){
     const { auth } = useContext(AuthContext);
+    const { userInfo } = useContext(UserContext);
+
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -34,38 +37,16 @@ function NavBar(){
         navigate('/register');
     }
 
+    function handleViewProfile(event){
+        closeMenu();
+        userInfo.setCurrentUser(auth.user);
+        navigate('/profile');
+    }
+
     function handleLogout(event){
         closeMenu();
         auth.logoutUser();
     }
-
-    // var menu = null;
-    
-    // if(auth?.loggedIn && auth?.user !== null){
-    //     menu = <Menu
-    //                 anchorEl={anchorEl}
-    //                 open={open}
-    //                 onClose={closeMenu}
-    //                 MenuListProps={{
-    //                     'aria-labelledby': 'basic-button',
-    //                 }}
-    //             >
-    //                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
-    //             </Menu>
-    // }
-    // else{
-    //     menu = <Menu
-    //         anchorEl={anchorEl}
-    //         open={open}
-    //         onClose={closeMenu}
-    //         MenuListProps={{
-    //             'aria-labelledby': 'basic-button',
-    //         }}
-    //     >
-    //         <MenuItem onClick={handleRegister}>Register</MenuItem>
-    //         <MenuItem onClick={handleSignin}>Login</MenuItem>
-    //     </Menu>
-    // }
 
     function getDropDownMenu(loggedIn, user){
         if(loggedIn && user){
@@ -78,6 +59,7 @@ function NavBar(){
                         'aria-labelledby': 'basic-button',
                     }}
                 >
+                    <MenuItem onClick={handleViewProfile}>Profile</MenuItem>
                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
             );

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
-import { PostContext } from "../../post";
-import { GlobalStoreContext } from "../../store";
+import { PostContext } from "../../../contexts/post";
+import { GlobalStoreContext } from "../../../contexts/store";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -14,7 +14,7 @@ import {
 import { Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
-import {PostComment} from "../index"
+import {PostComment} from "../../index"
 
 export default function PostDetailScreen() {
   const navigate = useNavigate();
@@ -39,6 +39,10 @@ export default function PostDetailScreen() {
   function handleSubmitComment() {
     postInfo.addCommentToCurrentPost(commentInput);
     setAddActive(false);
+  }
+
+  if(!postInfo || !postInfo.currentPost){
+    return null;
   }
 
   return (

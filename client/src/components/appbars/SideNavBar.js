@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { GlobalStoreContext } from "../../store";
+import { GlobalStoreContext } from "../../contexts/store";
 
 import {
   Sidebar,
@@ -59,7 +59,6 @@ export default function SideNavBar() {
       rootStyles={{
         [`.${sidebarClasses.container}`]: {
           backgroundColor: "#dee9eb",
-          marginTop: "1vh",
           borderRadius: "5px",
           width: "20vw",
         },

@@ -413,6 +413,7 @@ function GlobalStoreContextProvider(props) {
     });
   };
 
+<<<<<<< HEAD:client/src/store/index.js
   store.closeModal = function(){
     storeReducer({
         type: GlobalStoreActionType.HIDE_MODALS,
@@ -431,6 +432,27 @@ function GlobalStoreContextProvider(props) {
 
   // store.deleteMarkedPost = function(){}
 
+=======
+  store.getData = function(currScreen){
+    const screenDataDict = {
+      "ALL_USERS": store.allUsers,
+      "ALL_MAPS": store.allMaps,
+      "BIN_MAPS": store.binMaps,
+      "CHOROPLETH_MAPS": store.choroplethMaps,
+      "DOT_MAPS": store.dotMaps,
+      "GRAD_MAPS": store.gradMaps,
+      "HEAT_MAPS": store.heatMaps,
+      "ALL_POSTS": store.allPosts,
+      "BIN_POSTS": store.binPosts,
+      "CHOROPLETH_POSTS": store.choroplethPosts,
+      "DOT_POSTS": store.dotPosts,
+      "GRAD_POSTS": store.gradPosts,
+      "HEAT_POSTS": store.heatPosts,
+    }
+    return (currScreen in screenDataDict) ? screenDataDict[currScreen] : null;
+  }
+
+>>>>>>> main:client/src/contexts/store/index.js
   return (
     <GlobalStoreContext.Provider
       value={{

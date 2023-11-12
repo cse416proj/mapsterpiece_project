@@ -3,6 +3,7 @@
 */
 :root {
   --primary-color: #86C9B5;
+  --primary-color-hover: #5bab93;
   --secondary-color: #0A4D68;
   --secondary-color-hover: #0c6f96;
   --tertiary-color: #088395;
@@ -11,6 +12,8 @@
   --background: #F5F5F5;
   --gray: #D9D9D9;
   --icon: #126469;
+  --icon-hover: #208D94;
+  /* --warning: #FEF4E5; */
 }
 
 /*
@@ -38,7 +41,7 @@
   align-items: center;
 }
 
-.content{
+.default-content{
   height: 84.5vh;
   margin: 0 auto;
   justify-content: space-around;
@@ -98,7 +101,7 @@
 
 #avatar{
   height: 6vh;
-  width:6vh;
+  width: 6vh;
   background-color: white;
   border: 1.5px solid var(--icon);
 }
@@ -110,6 +113,8 @@
 }
 
 #initialsIcon{
+  height: 6vh;
+  width: 6vh;
   color: white;
   background-color: var(--icon);
   border: 2px solid var(--icon);
@@ -152,4 +157,36 @@
 
 #highlight:hover{
   color: var(--icon);
+}
+
+/*
+  For modal
+*/
+.modalContainer{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+}
+
+.modal{
+  height: 62.5vh;
+  width: 55vw;
+  background-color: white;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
+}
+
+#warning-btn{
+  height: 6.5vh;
+  width: 15vw;
+  background-color: var(--secondary-color);
+}
+
+#warning-btn:hover{
+  background-color: var(--secondary-color-hover);
 }

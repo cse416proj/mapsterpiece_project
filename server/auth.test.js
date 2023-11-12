@@ -1,34 +1,5 @@
 const request = require('supertest')
-const express = require('express')
-
-// set up server port
-const dotenv = require('dotenv')
-dotenv.config()
-const PORT = process.env.PORT || 4000;
-
-// set up backend framework & allow read body as json
-const app = express()
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-
-// connect to router
-const authRouter = require('../routes/auth-router')
-app.use('/auth', authRouter)
-
-// connect to database
-const db = require('../db')
-db.on('error', console.error.bind(console, 'MongoDB connection error:'))
-
-// set up server @ port
-let server;
-beforeAll(() => {
-  server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-  app.on('error', (e) => log.error(`Error opening listener on port ${port}`, e));
-})
-
-afterAll((done) => {
-  server.close(done);
-})
+const app = require('./app')
 
 describe('POST /register success', () => {
   it('responds with 200 and success message on successful register', async () => {

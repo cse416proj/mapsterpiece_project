@@ -1,7 +1,7 @@
 import NavBar from './appbars/NavBar';
 import SideNavBar from './appbars/SideNavBar';
 import SearchBar from './appbars/SearchBar';
-import Copyright from './Copyright';
+import Copyright from './footer/Copyright';
 
 import Hero from './screens/home/Hero';
 import UserHomeScreen from './screens/home/UserHomeScreen';
@@ -12,14 +12,21 @@ import Register from './screens/auth/Register';
 import AuthScreen from './screens/auth/AuthScreen';
 import AuthErrorModal from './modals/AuthErrorModal';
 import DeletePostModal from './modals/DeletePostModal';
-import CommunityScreen from './screens/CommunityScreen';
-import PostDetailScreen from './screens/PostDetailScreen';
-import PostComment from './screens/PostComment';
 
-import DynamicCard from './cards/DynamicCard';
+import Profile from './screens/profile/Profile';
+import SearchScreen from './screens/search/SearchScreen';
+import CreateScreen from './screens/create/CreateScreen';
+
+import DynamicCard from './cards/DynamicCard'
+import CommunityScreen from './screens/community/CommunityScreen';
 
 import MapsCardSection from './screens/listFilter/MapsCardSection';
 import PostsCardSection from './screens/listFilter/PostsCardSelection';
+import UsersCardSection from './screens/listFilter/UsersCardSelection';
+
+import PostDetailScreen from './screens/post/PostDetailScreen';
+import PostComment from './screens/post/PostComment';
+
 /*
     This is a module of import/export components
 */
@@ -34,12 +41,16 @@ export {
     UserHomeScreen,
     AuthErrorModal,
     DeletePostModal,
-    CommunityScreen,
     SideNavBar,
+    SearchScreen,
     SearchBar,
+    Profile,
+    CreateScreen,
     DynamicCard,
-    PostDetailScreen, 
+    CommunityScreen,
     MapsCardSection,
     PostsCardSection,
+    UsersCardSection,
+    PostDetailScreen,
     PostComment
 }

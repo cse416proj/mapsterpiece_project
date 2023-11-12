@@ -8,7 +8,7 @@ function AuthScreen(){
     const location = useLocation();
 
     return(
-        <Box className='content'>
+        <Box className='default-content'>
             {
                 (location.pathname === '/login')
                     ? <Login/>

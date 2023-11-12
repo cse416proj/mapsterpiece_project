@@ -1,12 +1,14 @@
 import { useState, useContext } from 'react';
 import { Box, Typography, TextField, Button } from "@mui/material";
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
-import AuthContext from '../../../auth';
+import AuthContext from '../../../contexts/auth';
 import { AuthErrorModal } from '../../index';
 
 function Login(){
     const { auth } = useContext(AuthContext);
+    const navigate = useNavigate();
+
     // Form contains 2 following fields
     const [form, setForm] = useState({
         email: '',
@@ -40,6 +42,11 @@ function Login(){
         });
     }
 
+    function handleForgotPw(event){
+        event.preventDefault();
+        // navigate('/register');
+    }
+
     // Handle event when user submit for login
     function handleSubmit(event){
         // prevent default submit form action
@@ -67,20 +74,17 @@ function Login(){
                 <Box id='signin-textfield-container'>
                     { textFields }
                 </Box>
-                <Typography
-                    id='signin-redirect-prompt'
-                    variant='p'
-                >
+                <Typography id='signin-redirect-prompt' variant='p'>
                     Haven't registered for an account? Sign up <Link id='redirect' to='/register'>here</Link>.
                 </Typography>
+                {/* <Typography id='signin-redirect-prompt' variant='p'>
+                    Forgot password? Click <Link id='redirect'>here</Link>.
+                </Typography> */}
 
-                <Button
-                    id='filled-btn'
-                    type='submit'
-                    variant='contained'
-                >
-                    Login
-                </Button>
+                <Box id='btn-container' className='flex-row'>
+                    <Button id='outline-btn' variant='outlined' onClick={handleForgotPw}>Forgot Password</Button>
+                    <Button id='filled-btn' variant='contained' type='submit'>Login</Button>
+                </Box>
             </form>
             <AuthErrorModal/>
         </Box>
