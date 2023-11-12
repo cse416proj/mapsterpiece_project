@@ -13,6 +13,7 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ShareIcon from "@mui/icons-material/Share";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useNavigate } from "react-router-dom";
+import { GlobalStoreContext } from "../../store";
 
 export default function DynamicCard(payload) {
   const navigate = useNavigate();
@@ -22,6 +23,13 @@ export default function DynamicCard(payload) {
     postInfo.setCurrentPost(payload.postData);
     navigate("/post-detail");
   }
+
+  const { store } = useContext(GlobalStoreContext);
+  function handleDeletePost(event){
+    event.stopPropagation();
+    store.markPostForDeletion();
+  }
+
   let cardElement = "";
 
   if (payload.userData) {
@@ -122,7 +130,9 @@ export default function DynamicCard(payload) {
             <Typography sx={{ fontSize: 12 }} color="#86cab5" gutterBottom>
               share map
             </Typography>
-            <MoreHorizIcon style={{ color: `#393c40`, marginLeft: `2%` }} />
+            <MoreHorizIcon 
+            style={{ color: `#393c40`, marginLeft: `2%` }} 
+            onClick={handleDeletePost}/>
           </CardActions>
         </CardContent>
       </Card>

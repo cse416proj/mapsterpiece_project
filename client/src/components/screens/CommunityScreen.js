@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { GlobalStoreContext } from "../../store";
 import { Box } from "@mui/material";
-import { SideNavBar, SearchBar, DynamicCard, MapsCardSection,PostsCardSection } from "../index";
+import { SideNavBar, SearchBar, DynamicCard, MapsCardSection,PostsCardSection, DeletePostModal } from "../index";
 
 export default function CommunityScreen() {
   const { store } = useContext(GlobalStoreContext);
@@ -63,6 +63,7 @@ export default function CommunityScreen() {
       <Box className="communityScreenRight">
         <SearchBar setSearch = {setSearch}/>
         <Box className="listsDisplay">{listCard}</Box>
+        <DeletePostModal/>
       </Box>
     </div>
   );

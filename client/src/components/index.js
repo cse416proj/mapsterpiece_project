@@ -11,6 +11,7 @@ import Login from './screens/auth/Login';
 import Register from './screens/auth/Register';
 import AuthScreen from './screens/auth/AuthScreen';
 import AuthErrorModal from './modals/AuthErrorModal';
+import DeletePostModal from './modals/DeletePostModal';
 import CommunityScreen from './screens/CommunityScreen';
 import PostDetailScreen from './screens/PostDetailScreen';
 import PostComment from './screens/PostComment';
@@ -32,6 +33,7 @@ export {
     AuthScreen,
     UserHomeScreen,
     AuthErrorModal,
+    DeletePostModal,
     CommunityScreen,
     SideNavBar,
     SearchBar,

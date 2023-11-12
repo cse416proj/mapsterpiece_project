@@ -9,6 +9,8 @@ export const GlobalStoreActionType = {
   LOAD_ALL_USERS: "LOAD_ALL_USERS",
   SET_CURRENT_POST: "SET_CURRENT_POST",
   SET_CURRENT_MAP: "SET_CURRENT_MAP",
+  HIDE_MODALS: "HIDE_MODALS",
+  MARK_POST_FOR_DELETION:"MARK_POST_FOR_DELETION",
 };
 
 const CurrentView = {
@@ -36,6 +38,11 @@ const CurrentView = {
   GRAD_POSTS: "GRAD_POSTS", 
   HEAT_POSTS: "HEAT_POSTS",
 };
+
+const CurrentModal = {
+  NONE: "NONE",
+  DELETE_POST_MODAL: "DELETE_POST_MODAL",
+}
 
 // hardcoded data to be replaced later on with actual data
 const fakeAllUsers = [
@@ -274,6 +281,7 @@ const heatPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Heat Map"})
 
 function GlobalStoreContextProvider(props) {
   const [store, setStore] = useState({
+    currentModal : CurrentModal.NONE,
     currentView: CurrentView.USER_HOME,
     allUsers: fakeAllUsers,
     allPosts: fakeAllPosts,
@@ -290,14 +298,18 @@ function GlobalStoreContextProvider(props) {
     dotPosts: dotPosts,
     gradPosts: gradPosts,
     heatPosts: heatPosts, 
+
+    postMarkedForDeletion: null,
   });
 
   const storeReducer = (action) => {
     const { type, payload } = action;
+    console.log(type);
     switch (type) {
       // placeholder to be replace later on
       case GlobalStoreActionType.LOAD_ALL_MAPS: {
         return setStore({
+          currentModal : CurrentModal.NONE,
           currentView: CurrentView.USER_HOME,
           allUsers: [],
           allPosts: [],
@@ -314,10 +326,13 @@ function GlobalStoreContextProvider(props) {
           dotPosts: [],
           gradPosts: [],
           heatPosts: [], 
+
+          postMarkedForDeletion: null,
         });
       }
       case GlobalStoreActionType.MARK_CURRENT_SCREEN: {
         return setStore({
+          currentModal : CurrentModal.NONE,
           currentView: payload,
           allUsers: store.allUsers,
           allPosts: store.allPosts,
@@ -334,8 +349,58 @@ function GlobalStoreContextProvider(props) {
           dotPosts: store.dotPosts,
           gradPosts: store.gradPosts,
           heatPosts: store.heatPosts, 
+
+          postMarkedForDeletion: null,
         });
       }
+      case GlobalStoreActionType.MARK_POST_FOR_DELETION: {
+        return setStore({
+          currentModal : CurrentModal.DELETE_POST_MODAL,
+          currentView: store.currentView,
+          allUsers: store.allUsers,
+          allPosts: store.allPosts,
+          allMaps: store.allMaps,
+
+          binMaps: store.binMaps,
+          choroplethMaps: store.choroplethMaps, 
+          dotMaps: store.dotMaps,
+          gradMaps: store.gradMaps,
+          heatMaps: store.heatMaps, 
+
+          binPosts: store.binPosts,
+          choroplethPosts: store.choroplethPosts, 
+          dotPosts: store.dotPosts,
+          gradPosts: store.gradPosts,
+          heatPosts: store.heatPosts, 
+
+          postMarkedForDeletion: payload[0],   // temp setup 
+        })
+      }
+
+      case GlobalStoreActionType.HIDE_MODALS: {
+        return setStore({
+          currentModal : CurrentModal.NONE,
+          currentView: store.currentView,
+          allUsers: store.allUsers,
+          allPosts: store.allPosts,
+          allMaps: store.allMaps,
+
+          binMaps: store.binMaps,
+          choroplethMaps: store.choroplethMaps, 
+          dotMaps: store.dotMaps,
+          gradMaps: store.gradMaps,
+          heatMaps: store.heatMaps, 
+
+          binPosts: store.binPosts,
+          choroplethPosts: store.choroplethPosts, 
+          dotPosts: store.dotPosts,
+          gradPosts: store.gradPosts,
+          heatPosts: store.heatPosts, 
+
+          postMarkedForDeletion: null,
+        })
+      }
+      
       default:
         return store;
     }
@@ -347,6 +412,24 @@ function GlobalStoreContextProvider(props) {
       payload: screenSelected,
     });
   };
+
+  store.closeModal = function(){
+    storeReducer({
+        type: GlobalStoreActionType.HIDE_MODALS,
+        payload: {}
+    });    
+  }
+
+  // need modification
+  store.markPostForDeletion = function(){
+    console.log(fakeAllPosts);
+    storeReducer({
+      type: GlobalStoreActionType.MARK_POST_FOR_DELETION,
+      payload: {fakeAllPosts},    // tmp setup to reveal post delete modal
+  }); 
+  }
+
+  // store.deleteMarkedPost = function(){}
 
   return (
     <GlobalStoreContext.Provider

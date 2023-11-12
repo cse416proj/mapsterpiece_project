@@ -2,19 +2,14 @@ import { useContext } from 'react'
 import authContext from '../../auth';
 import { Box, Modal, Alert, Button } from '@mui/material';
 
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
-
 function AuthErrorModal() {
+
+    // style buttons here since this doesn't work in css
+    const buttonStyle = {
+        backgroundColor: '#649a92', 
+        color: 'white' 
+    };
+
     const { auth } = useContext(authContext);
 
     function handleCloseModal(event){
@@ -22,16 +17,19 @@ function AuthErrorModal() {
     }
 
     return (
-        <Modal
+        <Modal className='modal'
             open={auth.errMsg !== null}
         >
-            <Box sx={style}>
+            <Box className="modal-box">
                 <Box className="modal-dialog">
-                    <Alert severity="warning">{auth.errMsg}</Alert>
+                    <Box className="modal-context">
+                        <Alert severity="warning">{auth.errMsg}</Alert>
+                    </Box>
                     <Box id="confirm-cancel-container">
                         <Button 
                             variant="contained"
                             className="modal-button"
+                            style={buttonStyle}
                             onClick={handleCloseModal}
                         >
                             OK

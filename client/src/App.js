@@ -1,6 +1,7 @@
 import "./css/App.css";
 import "./css/Auth.css";
 import "./css/Community.css";
+import "./css/Modal.css";
 
 import { React } from "react";
 import { Box } from "@mui/material";
