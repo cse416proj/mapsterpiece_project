@@ -413,7 +413,6 @@ function GlobalStoreContextProvider(props) {
     });
   };
 
-<<<<<<< HEAD:client/src/store/index.js
   store.closeModal = function(){
     storeReducer({
         type: GlobalStoreActionType.HIDE_MODALS,
@@ -432,7 +431,6 @@ function GlobalStoreContextProvider(props) {
 
   // store.deleteMarkedPost = function(){}
 
-=======
   store.getData = function(currScreen){
     const screenDataDict = {
       "ALL_USERS": store.allUsers,
@@ -452,7 +450,6 @@ function GlobalStoreContextProvider(props) {
     return (currScreen in screenDataDict) ? screenDataDict[currScreen] : null;
   }
 
->>>>>>> main:client/src/contexts/store/index.js
   return (
     <GlobalStoreContext.Provider
       value={{

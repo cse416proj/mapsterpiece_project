@@ -17,13 +17,14 @@ function AuthErrorModal() {
     }
 
     return (
-        <Modal open={auth.errMsg !== null}>
-            <Box className='modalContainer'>
-                <Box className='modal'>
-                    <Alert severity="warning">
-                        <AlertTitle>ERROR</AlertTitle>
-                        {auth.errMsg}
-                    </Alert>
+        <Modal className='modal'
+            open={auth.errMsg !== null}
+        >
+            <Box className="modal-box">
+                <Box className="modal-dialog">
+                    <Box className="modal-context">
+                        <Alert severity="warning">{auth.errMsg}</Alert>
+                    </Box>
                     <Box id="confirm-cancel-container">
                         <Button 
                             variant="contained"

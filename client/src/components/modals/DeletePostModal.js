@@ -1,12 +1,12 @@
 import { useContext } from 'react';
 import * as React from 'react';
 import { Box, Modal, Button, Typography } from '@mui/material';
-import GlobalStoreContext from '../../store';
+import { GlobalStoreContext } from '../../contexts/store';
 
 export default function DeletePostModal(){
     const { store } = useContext(GlobalStoreContext);
-    const curScreen = store.currentView;
-    console.log("post modal position",curScreen);
+    // const curScreen = store.currentView;
+    // console.log("post modal position",curScreen);
 
     const buttonStyle = {
         backgroundColor: '#649a92', 
