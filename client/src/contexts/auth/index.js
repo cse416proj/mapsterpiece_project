@@ -109,7 +109,6 @@ function AuthContextProvider(props){
         try{
             response = await api.registerUser(userName, firstName, lastName, email, password, passwordVerify);
         }catch(error){
-            console.log("error 401");
             let errMsg = error.response.data.errorMessage;
             authReducer({
                 type: AuthActionType.OPEN_MODAL, 

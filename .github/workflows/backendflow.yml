@@ -6,7 +6,6 @@ name: server CI
 on:
   push:
     branches: [ "main" ]
-    paths: ["server/**"]
 
 jobs:
   build:
