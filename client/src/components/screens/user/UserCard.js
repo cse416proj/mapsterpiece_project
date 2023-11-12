@@ -11,9 +11,7 @@ function UserCard({ initials, name, userName, numMaps, numPosts, isLoggedInUser 
     
     function renderDeleteAccountButton(){
         return(
-            (isLoggedInUser) ?
-                <Button onClick={handleDeleteAccount}>Delete Account</Button>
-                : null
+            (isLoggedInUser) ? <Button onClick={handleDeleteAccount}>Delete Account</Button> : null
         );
     }
 

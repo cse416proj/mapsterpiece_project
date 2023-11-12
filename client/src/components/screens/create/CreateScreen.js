@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Box, FormControl, Tabs, Tab, TextField } from '@mui/material';
+import { Box, FormControl, Tabs, Tab } from '@mui/material';
 
 import CreateMap from './map/CreateMap';
-import CreatePost from './CreatePost';
+import CreatePost from './post/CreatePost';
 
 function CreateScreen(){
     const [tab, setTab] = useState('map');

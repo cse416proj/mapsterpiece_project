@@ -83,14 +83,60 @@ input[type=file]::file-selector-button {
     border-radius: 2.5%;
     font-size: 15px;
 }
+
+#add-tag-button{
+    color: #B2B2B2;
+    background-color: white;
+    text-transform: none;
+}
+
+#add-tag-button:hover{
+    color: var(--primary-color)
+}
+
+#tag-display{
+    height: 5vh;
+    padding: 0 2.5vh;
+    background-color: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 25px;
+    text-transform: none;
+    justify-content: space-around;
+}
+
+#remove-tag{
+    color: var(--primary-color);
+}
+
+#remove-tag:hover{
+    color: var(--primary-color-hover);
+}
+
+#clear-button:hover{
+    background-color: #b1ddd0;
+    color: white;
+}
+
+#tags{
+    height: 5vh;
+    width: 87vw;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+#tag-input{
+    border-color: var(--primary-color);
+    background-color: white;
+}
   
 #button-container{
     height: 5vh;
     width: 19vw;
-    /* margin-top: 15%; */
+    margin-top: 2%;
     margin-right: 4vw;
-    align-self: flex-end;
     display: flex;
+    align-self: flex-end;
     justify-content: space-between;
 }
   
