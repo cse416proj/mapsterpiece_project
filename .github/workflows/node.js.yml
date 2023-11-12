@@ -25,9 +25,29 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: client/package-lock.json
+        component: false
+        working-directory: ./client
+        browser: chrome
     - run: npm i
-      working-directory: './client'
-    - run: npm run build --if-present
-      working-directory: './client'
-    - run: npm test
-      working-directory: './client'
+    - name: Cypress run
+      uses: cypress-io/github-action@v6
+      with:
+        build: npm run build
+        start: npm start
+  
+  # cypress:
+  #   runs-on: self-hosted
+
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v4
+  #     with:
+  #         component: false
+  #         working-directory: ./client
+  #         browser: chrome
+  #         headed: true
+  #   - name: Cypress run
+  #     uses: cypress-io/github-action@v6
+  #     with:
+  #       build: npm run build
+  #       start: npm start
