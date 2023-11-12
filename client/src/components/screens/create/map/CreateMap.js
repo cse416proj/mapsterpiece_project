@@ -4,6 +4,8 @@ import { Box, TextField } from '@mui/material';
 
 import FileUpload from './FileUpload';
 import FileDropdown from './FileDropdown';
+import Tags from '../tag/Tags';
+import ButtonSet from '../ButtonSet';
 // import MapContext from './MapContext';
 
 import JSZip from 'jszip';
@@ -30,6 +32,7 @@ function CreateMap(){
     const [shpBuffer, setShpBuffer] = useState(null);
     const [dbfBuffer, setDbfBuffer] = useState(null);
     const [map, setMap] = useState(null);
+    const [tags, setTags] = useState([]);
 
     // set up error flags for these input
     const [missingTitle, setMissingTitle] = useState(false);
@@ -61,6 +64,34 @@ function CreateMap(){
     useEffect(() => {
         console.log(map);
     }, [map])
+
+    // handle title change
+    const handleTitleChange = (event) => {
+        setTitle(event.target.value);
+    }
+
+    // for clearing input file
+    function clearInputFile() {
+        if (inputFile.current) {
+            inputFile.current.value = '';
+            inputFile.current.type = 'file';
+            inputFile.current.accept = '.zip, .json, .shp, .kml, .dbf';
+        }
+    }
+
+    // handle clear all input
+    const handleClear = () => {
+        setTitle('');
+        setFileFormat('');
+        setFileContent('');
+        setShpBuffer(null);
+        setDbfBuffer(null);
+        setMap(null);
+        setTags([]);
+        setMissingTitle(false);
+        setMissingFileFormat(false);
+        clearInputFile();
+    }
 
     // check if file format exists
     const checkTitleExists = () => {
@@ -97,32 +128,6 @@ function CreateMap(){
             return true;
         }
         return false;
-    }
-
-    // handle title change
-    const handleTitleChange = (event) => {
-        setTitle(event.target.value);
-    }
-
-    // handle clear all input
-    const handleClear = () => {
-        setTitle('');
-        setFileFormat('');
-        setFileContent('');
-        setShpBuffer(null);
-        setDbfBuffer(null);
-        setMap(null);
-        setMissingTitle(false);
-        setMissingFileFormat(false);
-    }
-
-    // for clearing input file
-    function clearInputFile() {
-        if (inputFile.current) {
-            inputFile.current.value = '';
-            inputFile.current.type = 'file';
-            inputFile.current.accept = '.zip, .json, .shp, .kml, .dbf';
-        }
     }
 
     // for reading .kml & .geojson file
@@ -259,13 +264,15 @@ function CreateMap(){
                 fileFormat={fileFormat}
                 setFileFormat={setFileFormat}
                 missingFileFormat={missingFileFormat}
+                tags={tags}
+                setTags={setTags}
             />
             <FileUpload
                 inputFile={inputFile}
                 handleSelectFile={handleSelectFile}
-                handleClear={handleClear}
-                handleUpload={handleUpload}
             />
+            <Tags tags={tags} setTags={setTags}/>
+            <ButtonSet prompt='upload' handleClear={handleClear} handleUpload={handleUpload}/>
         </Box>
     )
 }

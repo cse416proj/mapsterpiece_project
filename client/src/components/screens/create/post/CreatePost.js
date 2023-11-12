@@ -4,6 +4,7 @@ import { Box, Button } from '@mui/material';
 
 import Tags from '../tag/Tags';
 import PostInput from './PostInput';
+import ButtonSet from '../ButtonSet';
 // import PostContext from './PostContext';
 
 function CreatePost(){
@@ -67,24 +68,7 @@ function CreatePost(){
 
             <Tags tags={tags} setTags={setTags}/>
             
-            <Box className='flex-row' id='button-container'>
-                <Button
-                    id='clear-button'
-                    variant='outlined'
-                    style={{ borderRadius: 50 }}
-                    onClick={handleClear}
-                >
-                    Clear
-                </Button>
-                <Button
-                    id='upload-button'
-                    variant='contained'
-                    style={{ borderRadius: 50 }}
-                    onClick={handlePost}
-                >
-                    Post
-                </Button>
-            </Box>
+            <ButtonSet prompt='post' handleClear={handleClear} handleUpload={handlePost}/>
         </Box>
     )
 }

@@ -3,15 +3,21 @@ import { useState, useContext, useEffect } from 'react';
 
 import { Box, FormControl, FormLabel, InputLabel, Select, MenuItem, FormHelperText, Button } from '@mui/material';
 
-function FileDropdown({fileFormat, setFileFormat, missingFileFormat}) {    
+function FileDropdown({ fileFormat, setFileFormat, missingFileFormat, tags, setTags }) {    
     // const { mapInfo } = useContext(MapContext);
 
     useEffect(() => {
         setFileFormat(fileFormat);
     }, [fileFormat])
 
+    // save file format & add new tag based on file format
     function handleFileFormatChange(event) {
-        setFileFormat(event.target.value);
+        const fileFormat = event.target.value;
+        setFileFormat(fileFormat);
+
+        // filter out all file format & add new one
+        const newtags = tags.filter((tag) => (tag !== 'GeoJSON') && (tag !== 'Shapefiles') && (tag !== 'Keyhole(KML)'));
+        setTags([...newtags, fileFormat]);
     }
 
     return(
