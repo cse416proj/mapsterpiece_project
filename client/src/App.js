@@ -9,7 +9,7 @@ import { Box } from "@mui/material";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import { AppContextProvider } from './contexts';
-import { NavBar, HomeScreen, AuthScreen, Profile, CreateScreen, CommunityScreen, PostDetailScreen } from "./components";
+import { NavBar, HomeScreen, AuthScreen, Profile, CreateScreen, SearchScreen, CommunityScreen, PostDetailScreen } from "./components";
 
 function App() {
   return (
@@ -23,8 +23,9 @@ function App() {
             <Route path='/login' element={<AuthScreen/>}></Route>
             <Route path='/create' element={<CreateScreen/>}></Route>
             <Route path='/profile' element={<Profile/>}></Route>
-            <Route path="/community" element={<CommunityScreen />}></Route>
-            <Route path="/post-detail" element={<PostDetailScreen />}></Route>
+            <Route path="/search" element={<SearchScreen/>}></Route>
+            <Route path="/community" element={<CommunityScreen/>}></Route>
+            <Route path="/post-detail" element={<PostDetailScreen/>}></Route>
           </Routes>
         </Box>
       </AppContextProvider>

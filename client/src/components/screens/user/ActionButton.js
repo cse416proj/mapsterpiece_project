@@ -1,7 +1,6 @@
 import { SpeedDial, SpeedDialIcon, SpeedDialAction } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import MapIcon from '@mui/icons-material/Map';
 import CreateIcon from '@mui/icons-material/Create';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -15,11 +14,12 @@ function ActionButton(){
 
     function handleSearch(event){
         console.log('handleSearch');
+        navigate('/search');
     }
 
     const actions = [
-        { icon: <SearchIcon/>, name: 'Search', handler: handleSearch },
-        { icon: <CreateIcon/>, name: 'Create Map/Post', handler: handleCreate },
+        { icon: <SearchIcon/>, name: 'Search Map/ Post', handler: handleSearch },
+        { icon: <CreateIcon/>, name: 'Create Map/ Post', handler: handleCreate },
     ];
 
     const fabStyle = {

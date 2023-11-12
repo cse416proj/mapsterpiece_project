@@ -13,6 +13,7 @@ import AuthScreen from './screens/auth/AuthScreen';
 import AuthErrorModal from './modals/AuthErrorModal';
 
 import Profile from './screens/user/Profile';
+import SearchScreen from './screens/SearchScreen';
 import CreateScreen from './screens/create/CreateScreen';
 
 import CommunityScreen from './screens/CommunityScreen';
@@ -39,6 +40,7 @@ export {
     UserHomeScreen,
     AuthErrorModal,
     SideNavBar,
+    SearchScreen,
     SearchBar,
     Profile,
     CreateScreen,
