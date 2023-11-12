@@ -6,10 +6,10 @@ name: Node.js CI
 on:
   push:
     branches: [ "choiying" ]
-    paths: ["client/**"]
 
 jobs:
   build:
+
     runs-on: self-hosted
 
     strategy:
@@ -24,30 +24,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: client/package-lock.json
-        component: false
-        working-directory: ./client
-        browser: chrome
+    - run: cd client
     - run: npm i
-    - name: Cypress run
-      uses: cypress-io/github-action@v6
-      with:
-        build: npm run build
-        start: npm start
-  
-  # cypress:
-  #   runs-on: self-hosted
-
-  #   steps:
-  #   - name: Checkout
-  #     uses: actions/checkout@v4
-  #     with:
-  #         component: false
-  #         working-directory: ./client
-  #         browser: chrome
-  #         headed: true
-  #   - name: Cypress run
-  #     uses: cypress-io/github-action@v6
-  #     with:
-  #       build: npm run build
-  #       start: npm start
+    - run: npm run build --if-present
+      working-directory: './client'
+    - run: npm test
+      working-directory: './client'
