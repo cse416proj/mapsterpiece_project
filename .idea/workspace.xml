@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="07c3f21b-ec0d-4bc4-a794-ba71584c343e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/client/src/components/screens/home/HomeCard.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/components/screens/home/HomeScreen.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/screens/home/UserHomeScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/screens/home/UserHomeScreen.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +67,7 @@
       <workItem from="1699251754440" duration="25491000" />
       <workItem from="1699326425812" duration="1270000" />
       <workItem from="1699735808414" duration="3528000" />
-      <workItem from="1699882869108" duration="9666000" />
+      <workItem from="1699882869108" duration="10439000" />
     </task>
     <servers />
   </component>

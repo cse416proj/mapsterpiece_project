@@ -16,18 +16,6 @@ function UserHomeScreen(){
         return null;
     }
 
-    let listCard = "Nothing Was Found"
-    function fetchContent(){
-        return (
-            <Box sx={{ width: "95%" }}>
-                {store.allMaps.map((pair) => (
-                    <DynamicCard userData={null} mapData={pair} postData={null} />
-                ))}
-            </Box>
-        );
-    }
-    listCard = fetchContent()
-
     let mapCard = (
         <Box sx={{ width: "95%" }}>
             {store.allMaps.map((pair) => (
