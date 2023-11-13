@@ -455,6 +455,8 @@ function GlobalStoreContextProvider(props) {
 
   const storeReducer = (action) => {
     const { type, payload } = action;
+
+    /* eslint-disable no-fallthrough */
     switch (type) {
       // placeholder to be replace later on
       case GlobalStoreActionType.LOAD_ALL_MAPS:
@@ -503,6 +505,7 @@ function GlobalStoreContextProvider(props) {
         return store;
     }
   };
+  /* eslint-enable no-fallthrough */
 
   store.setCurrentView = function (screenSelected) {
     storeReducer({

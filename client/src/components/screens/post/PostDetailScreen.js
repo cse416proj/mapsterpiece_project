@@ -2,16 +2,7 @@ import React, { useContext, useState } from "react";
 import { PostContext } from "../../../contexts/post";
 import { GlobalStoreContext } from "../../../contexts/store";
 import { useNavigate } from "react-router-dom";
-import {
-  Typography,
-  Box,
-  Button,
-  SpeedDial,
-  SpeedDialIcon,
-  Paper,
-  InputBase,
-  Accordion,
-} from "@mui/material";
+import { Typography, Box,Button, SpeedDial, SpeedDialIcon, Paper, InputBase, Accordion } from "@mui/material";
 import { PostComment } from "../../index"
 
 export default function PostDetailScreen() {

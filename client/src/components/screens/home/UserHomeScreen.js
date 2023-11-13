@@ -1,12 +1,11 @@
 import React, { useContext } from 'react';
 import { Box, Typography } from '@mui/material';
 import { DynamicCard } from '../../index';
-import { GlobalStoreContext } from "../../../store";
 import HomeCard from './HomeCard';
 import "./HomeScreen.css"
 
-
 import AuthContext from '../../../contexts/auth';
+import GlobalStoreContext from "../../../contexts/store";
 
 function UserHomeScreen(){
     const { auth } = useContext(AuthContext);
