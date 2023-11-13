@@ -77,8 +77,8 @@ export default function PostComment(payload, index) {
           bgcolor: "#b1d7c4",
         }}
       >
-        {payload.subComments.map((subcomment) => (
-          <Subcomment subcomment={subcomment} />
+        {payload.subComments.map((subcomment, index) => (
+          <Subcomment key={`subcomment-${index}`} subcomment={subcomment} />
         ))}
         {addActive ? (
           <Box className="commentCard">

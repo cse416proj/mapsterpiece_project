@@ -23,14 +23,13 @@ function Profile(){
 
     function fetchContent(){
         if(tab === 'map'){
-            console.log(userInfo.currentMaps);
-            return userInfo.currentMaps.map((map) => (
-                <DynamicCard userData={null} mapData={map} postData={null} />
+            return userInfo.currentMaps.map((map, index) => (
+                <DynamicCard key={`map-${index}`}userData={null} mapData={map} postData={null} />
             ))
         }
         else{
-            return userInfo.currentPosts.map((post) => (
-                <DynamicCard userData={null} mapData={null} postData={post} />
+            return userInfo.currentPosts.map((post, index) => (
+                <DynamicCard key={`post-${index}`} userData={null} mapData={null} postData={post} />
             ))
         }
     }
@@ -57,15 +56,17 @@ function Profile(){
                     <Box> { fetchContent() } </Box>
                 </Box>
                 <ProfileCard
-                    initials={auth.getUserInitials().toUpperCase()}
+                    initials={userInfo.getUserInitials().toUpperCase()}
                     name={userInfo.getUserFullName()}
                     userName={userInfo.getUserName()}
                     numMaps={userInfo.getNumMaps()}
                     numPosts={userInfo.getNumPosts()}
-                    isLoggedInUser={auth.user !== null && auth.user === userInfo.currentUser}
+                    isLoggedInUser={auth && auth.user !== null && auth.user === userInfo.currentUser}
                 />
             </Box>
-            <ActionButton/>
+            <ActionButton
+                isLoggedInUser={auth && auth.user !== null && auth.user === userInfo.currentUser}
+            />
         </Box>
     )
 }

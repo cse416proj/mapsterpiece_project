@@ -21,6 +21,8 @@ export default function DeletePostModal(){
         store.closeModal();
     }
 
+    console.log(store);
+
     return (
         <Modal className='modal'
             open={store.postMarkedForDeletion !== null}

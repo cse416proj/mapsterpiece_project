@@ -1,11 +1,11 @@
-import { Box, Card, CardContent, Typography, useScrollTrigger } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 
 import ActionButtons from "./ActionButtons";
 
 function PostCard({postData, clickHandler, deletePostHandler}){
 
     return(
-        <Card className="individualDynamicCard">
+        <Card className="individualDynamicCard" id='PostDynamicCard'>
             <CardContent style={{ height: `100%` }} className="cardContent">
                 <Box 
                     className="flex-row" 

@@ -22,6 +22,10 @@
     margin-right: 1.5vw;
 }
 
+.individualDynamicCard:hover, #action-button-container:hover, .action-icon:hover {
+    cursor: pointer;
+}
+
 #map-action-button-text, #post-action-button-text{
     font-size: 0.8em;
 }

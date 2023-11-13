@@ -1,13 +1,14 @@
 import { useState, useContext } from 'react';
 import { Box, Typography, TextField, Button } from "@mui/material";
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+// import { Link, useNavigate } from 'react-router-dom';
 
 import AuthContext from '../../../contexts/auth';
 import { AuthErrorModal } from '../../index';
 
 function Login(){
     const { auth } = useContext(AuthContext);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     // Form contains 2 following fields
     const [form, setForm] = useState({
@@ -24,8 +25,8 @@ function Login(){
 
     const textFields = textFieldsProps.map((field) => {
         return <TextField
-            name={field.name}
             key={field.name}
+            name={field.name}
             label={field.label}
             value={field.value}
             onChange={updateForm}

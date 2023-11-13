@@ -455,7 +455,6 @@ function GlobalStoreContextProvider(props) {
 
   const storeReducer = (action) => {
     const { type, payload } = action;
-    console.log(type);
     switch (type) {
       // placeholder to be replace later on
       case GlobalStoreActionType.LOAD_ALL_MAPS:

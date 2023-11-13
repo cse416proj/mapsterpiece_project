@@ -85,7 +85,7 @@ export default function PostDetailScreen() {
           </Typography>
         </Box>
         {postInfo.currentPost.comments.map((pair, index) => (
-            <PostComment payload={pair} index={index} />
+            <PostComment key={`comment-${index}`} payload={pair} index={index} />
         ))}
         {addActive ? (
           <Accordion

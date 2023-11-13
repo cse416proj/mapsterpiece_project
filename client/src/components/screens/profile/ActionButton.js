@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import CreateIcon from '@mui/icons-material/Create';
 import SearchIcon from '@mui/icons-material/Search';
 
-function ActionButton(){
+function ActionButton({isLoggedInUser}){
     const navigate = useNavigate();
 
     function handleCreate(event){
@@ -17,10 +17,15 @@ function ActionButton(){
         navigate('/search');
     }
 
-    const actions = [
-        { icon: <SearchIcon/>, name: 'Search Map/ Post', handler: handleSearch },
-        { icon: <CreateIcon/>, name: 'Create Map/ Post', handler: handleCreate },
-    ];
+    const actions = (isLoggedInUser) ?
+        [
+            { icon: <SearchIcon/>, name: 'Search Map/ Post', handler: handleSearch },
+            { icon: <CreateIcon/>, name: 'Create Map/ Post', handler: handleCreate },
+        ] :
+        [
+            { icon: <SearchIcon/>, name: 'Search Map/ Post', handler: handleSearch },
+        ]
+    ;
 
     const fabStyle = {
         sx: {

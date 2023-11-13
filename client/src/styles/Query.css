@@ -26,10 +26,24 @@
     margin-left: 50px;
 }
 
+#sort-text{
+    color: black;
+    margin-right: 10px;
+}
+
+#sort-icon{
+    color: black;
+}
+
+#sort-prompt:hover > #sort-text, #sort-prompt:hover > #sort-icon{
+    color: white;
+}
+
 .queryScreenContent{
     margin-top: 1vh;
     width: 79.25vw;
-    height: 89vh;
+    height: 86vh;
+    padding-bottom: 3vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -37,10 +51,12 @@
 }
 
 .listsDisplay{
-    height: 79vh;
+    margin-top: 1vh;
+    height: 78vh;
     width: 100%;
     display: flex;
     justify-content: space-around;
+    overflow: auto;
 }
 
 .postScreenContent {

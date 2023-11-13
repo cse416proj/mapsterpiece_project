@@ -16,10 +16,11 @@ export default function SideNavBar() {
   const { store } = useContext(GlobalStoreContext);
 
   const handleSelectView = (event, viewType) => {
+    event.stopPropagation();
+    event.preventDefault();
+    console.log(`handleSelectView: ${viewType}`);
     store.setCurrentView(viewType);
   }
-
-  console.log(location);
 
   return (
     <Sidebar
