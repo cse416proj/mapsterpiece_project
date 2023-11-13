@@ -24,9 +24,6 @@ function CreateMap(){
     // set up input variables
     const [title, setTitle] = useState('');
     const [fileFormat, setFileFormat] = useState('');
-    // const [fileContent, setFileContent] = useState('');
-    // const [shpBuffer, setShpBuffer] = useState(null);
-    // const [dbfBuffer, setDbfBuffer] = useState(null);
     const [map, setMap] = useState(null);
     const [tags, setTags] = useState([]);
 
@@ -41,28 +38,6 @@ function CreateMap(){
             mapInfo.setTags(tags);
         }
     }, [title, fileFormat, tags, mapInfo])
-
-    // // re-run effect when buffers change
-    // useEffect(() => {
-    //     if (shpBuffer && dbfBuffer) {
-    //         let features = [];
-    //         shapefile.open(shpBuffer, dbfBuffer).then((source) =>
-    //             source.read().then(function log(result) {
-    //                 if (result.done) {
-    //                     const geoJSON = {
-    //                         type: 'FeatureCollection',
-    //                         features: features,
-    //                     };
-    //                     setFileContent(geoJSON);
-    //                     return;
-    //                 }
-    //                 features.push(result.value);
-    //                 return source.read().then(log);
-    //             })
-    //             )
-    //             .catch((error) => console.error(error.stack));
-    //     }
-    // }, [shpBuffer, dbfBuffer]);
 
     // to be removed: print map content when it updates
     useEffect(() => {
@@ -148,7 +123,7 @@ function CreateMap(){
             else{
                 if(mapInfo.createMap()){
                     console.log(mapInfo);
-                    navigate('/');
+                    navigate('/map-edit');
                 }
             }
         }

@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 // import MapContext from './MapContext';
 
-import { Box, FormControl, FormLabel, InputLabel, Select, MenuItem, FormHelperText, Button } from '@mui/material';
+import { Box, FormControl, FormLabel, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material';
 
 function FileDropdown({ fileFormat, setFileFormat, missingFileFormat, tags, setTags }) {    
     // const { mapInfo } = useContext(MapContext);
 
     useEffect(() => {
         setFileFormat(fileFormat);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fileFormat])
 
     // save file format & add new tag based on file format

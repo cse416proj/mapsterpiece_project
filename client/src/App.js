@@ -5,6 +5,7 @@ import "./styles/Profile.css";
 import "./styles/Card.css";
 import "./styles/Query.css";
 import "./styles/Modal.css";
+import "./styles/Map.css";
 
 import { React } from "react";
 import { Box } from "@mui/material";
