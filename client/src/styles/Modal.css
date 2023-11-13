@@ -1,0 +1,68 @@
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: contents;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: var(--black);
+    color: var(--swatch-text);
+    cursor: pointer;
+    /* visibility: hidden; */
+    opacity: 0;
+    transition: all 0.35s ease-in;
+    font-family: var(--font-primary);
+    border: #111111;
+}
+
+.modal.is-visible {
+    visibility: visible;
+    opacity: 1;
+}
+  
+.modal-box{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400;
+    background-color: white;
+    border: 0.5px solid #87C8B4;
+    box-shadow: 24;
+    padding: 15px;
+    border-radius: 20px;
+}
+.modal-dialog{
+    position: relative;
+}
+
+.modal-context{
+    position: relative;
+    max-width: 800px;
+    max-height: 80vh;
+    background: var(--swatch-complement);
+    overflow: auto;
+    cursor: default;
+    border-width: 0px;
+    border-style: groove;
+    border-radius: 0px;
+    background-color: #87C8B4;
+    padding: 11px;
+}
+
+#confirm-cancel-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+    gap: 8px;
+}
+
+.dialog-header{
+    padding-bottom: 9px;
+    font-weight: bold;
+}

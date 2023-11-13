@@ -2,14 +2,14 @@ import React, { useContext, useState } from "react";
 import { Typography, Box } from "@mui/material";
 
 import { GlobalStoreContext } from "../../../contexts/store";
-import { SideNavBar, SearchBar, UsersCardSection, MapsCardSection, PostsCardSection } from "../../index";
+import { SideNavBar, SearchBar, UsersCardSection, MapsCardSection, PostsCardSection, DeletePostModal } from "../../index";
 
 export default function CommunityScreen() {
   const { store } = useContext(GlobalStoreContext);
   const currScreen = store.currentView;
 
   const  [search, setSearch] = useState('');
-  console.log(search);
+  // console.log(search);
 
   function renderComponent(currScreen){
     var data = store.getData(currScreen);
@@ -50,6 +50,7 @@ export default function CommunityScreen() {
           {listCard}
         </Box>
       </Box>
+      <DeletePostModal/>
     </div>
   );
 }
