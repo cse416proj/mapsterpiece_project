@@ -14,8 +14,6 @@ export default function MaybeShowNavBar({children}){
         }
     },[location])
 
-    
-
     return (
         <div>{showNavBar && children}</div>
     )

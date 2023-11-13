@@ -2,7 +2,7 @@ import { Box, Card, CardContent, Typography } from "@mui/material";
 
 import ActionButtons from "./ActionButtons";
 
-function PostCard({postData, clickHandler, deletePostHandler}){
+function PostCard({postData, clickHandler, deleteHandler}){
 
     return(
         <Card className="individualDynamicCard" id='PostDynamicCard'>
@@ -41,7 +41,7 @@ function PostCard({postData, clickHandler, deletePostHandler}){
                     type='post'
                     comments={postData.comments}
                     clickHandler={clickHandler}
-                    deletePostHandler = {deletePostHandler}
+                    deleteHandler = {deleteHandler}
                 />
             </CardContent>
         </Card>

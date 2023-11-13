@@ -10,6 +10,7 @@ function PostInput({ title, updateTitle, missingTitle, content, updateContent, m
             console.log('should focus')
             textareaRef.current?.focus();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [missingContent]);
     
     return(

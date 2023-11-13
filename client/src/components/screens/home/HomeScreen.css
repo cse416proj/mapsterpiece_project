@@ -1,0 +1,96 @@
+.HomeContent{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.HomeFeed{
+    padding-top: 1%;
+    padding-left: 4%;
+    display: flex;
+    flex-direction: column;
+    height: 76vh;
+    width: 200%;
+}
+
+.HomeBoth{
+    display: flex;
+}
+
+.userWelcome{
+    text-align: left;
+    justify-content: space-around;
+    padding-top: 2%;
+    padding-left: 4%;
+}
+
+#home-navigation-box{
+    padding-bottom: 5%;
+    height: 87.5%;
+    width: 60%;
+    justify-content: space-around;
+    background-color: #86C9B5;
+    border-radius: 10px;
+}
+
+#home-navigation-card{
+    height: 100%;
+    width: 100%;
+    padding-top: 2%;
+    padding-left: 1%;
+}
+
+.create-box{
+    height: 9%;
+    width: 75%;
+    background-color: #0A4D68;
+    font-size: 2em;
+    text-align: center;
+    color: white;
+    vertical-align: middle;
+    padding-top: 7.5%;
+}
+
+.search-box{
+    height: 9%;
+    width: 75%;
+    background-color: #0A4D68;
+    font-size: 2em;
+    text-align: center;
+    color: white;
+    vertical-align: middle;
+    padding-top: 7.5%;
+}
+
+.maps-box{
+    height: 9%;
+    width: 75%;
+    background-color: #0A4D68;
+    font-size: 2em;
+    text-align: center;
+    color: white;
+    vertical-align: middle;
+    padding-top: 7.5%;
+}
+
+.posts-box{
+    height: 9%;
+    width: 75%;
+    background-color: #0A4D68;
+    font-size: 2em;
+    text-align: center;
+    color: white;
+    vertical-align: middle;
+    padding-top: 7.5%;
+}
+
+.community-box{
+    height: 9%;
+    width: 75%;
+    background-color: #0A4D68;
+    font-size: 2em;
+    text-align: center;
+    color: white;
+    vertical-align: middle;
+    padding-top: 7.5%;
+}

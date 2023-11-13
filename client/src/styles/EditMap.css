@@ -1,0 +1,78 @@
+/* 
+  For map screen top bar
+*/
+
+.map-screen-topbar{
+    background-color: var(--navbar);
+    height: 5vh;
+    display:fixed;
+    bottom: 0;
+    justify-content: space-between;
+  }
+  
+.map-button-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3px;
+    gap: 8px;
+}
+
+/* 
+    For map screen edit side bar
+*/
+
+.map-screen-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    flex: 1;
+}
+
+.map-screen-sidebar{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.sidebar-block-title{
+    align-items: left;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.sidebar-block-content{
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+}
+.sidebar-block{
+    margin: 10px;
+    width: 100%;
+}
+
+.map-screen-sidebar .sidebar-block .sidebar-block-title {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.legend-title-container{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin-top: 10px;
+    align-items: center;
+}
+
+.sidebar-input {
+    border: 1px solid #ccc;
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+.data-block, .tag-block{
+    margin-top: 10px;
+}

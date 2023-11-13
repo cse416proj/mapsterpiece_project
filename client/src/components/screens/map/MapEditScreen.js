@@ -1,20 +1,25 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import React from 'react';
 import MapEditTopBar from '../../appbars/MapEditTopBar';
 import MapEditSideBar from '../../appbars/MapEditSideBar';
 
+import MapScreen from './display/MapScreen';
+
 export default function MapEditScreen() {
   return (
-    <Box style={{ height: '100%' }}>
+    <Box>
     <MapEditTopBar />
-      <Box style={{ 
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        flex: 1,
-        }}>
-        <Typography>Welcome to edit map screen</Typography>
-        <MapEditSideBar />
+      <Box
+        className="map-screen-container"
+        style={{ 
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
+          flex: 1,
+        }}
+      >
+        <MapScreen/>
+        <MapEditSideBar/>
       </Box>
      
     </Box>
