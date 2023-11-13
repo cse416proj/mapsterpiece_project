@@ -4,7 +4,7 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ShareIcon from "@mui/icons-material/Share";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
-function ActionButtons({type, comments, clickHandler}){
+function ActionButtons({type, comments, clickHandler, deletePostHandler}){
     return(
         <CardActions className="cardActions">
             <Box className='flex-row' id='action-button-container'>
@@ -19,7 +19,7 @@ function ActionButtons({type, comments, clickHandler}){
                     share {type}
                 </Typography>
             </Box>
-            <MoreHorizIcon id={`${type}-action-icon`}/>
+            <MoreHorizIcon id={`${type}-action-icon`} onClick = {deletePostHandler}/>
         </CardActions>
     );
 }
