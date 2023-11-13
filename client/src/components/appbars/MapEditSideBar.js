@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Sidebar } from 'react-pro-sidebar';
-import { Select, Typography, Box, MenuItem, Input } from '@mui/material';
+import { Select, Typography, Box, MenuItem, Input, Toolbar } from '@mui/material';
 
 import { Tags } from "../index";
 
@@ -19,28 +19,47 @@ function MapEditSideBar() {
   const [tags, setTags] = useState([]);
 
   return (
-    <Sidebar className='map-screen-sidebar' style={sideBarStyle} >
-      <Typography sx={{fontWeight:'bold', fontSize:'25px'}}>Edit Map</Typography>
-      <Box>
-        <Typography>Map Type</Typography>
-        <Select defaultValue={10}>
+    <Sidebar style={sideBarStyle} >
+      <Toolbar className='map-screen-sidebar'>
+        <Typography sx={{fontWeight:'bold', fontSize:'25px'}}>Edit Map</Typography>
+        <Box className="sidebar-block">
+          <Typography className='sidebar-block-title'>Map Type</Typography>
+          <Select defaultValue={10} className="sidebar-block-content">
           <MenuItem value={10}>Bin Map</MenuItem>
           <MenuItem value={20}>Choropleth Map</MenuItem>
-        </Select>
-      </Box>
-      <Box>
-        <Typography>Map Title/Name</Typography>
-        <Input aria-label='title input' placeholder='type new title'></Input>
-      </Box>
-      <Box style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-        <Typography>Tags</Typography>
-        <Tags tags={tags} setTags={setTags}/>
-      </Box>
-      <Box>
-        <Typography>Legend</Typography>
-        <Typography>Title: </Typography>
-        <Input aria-label='legend-title input' placeholder='Enter legend title'></Input>
-      </Box>
+          </Select>
+        </Box>
+
+        <Box className="sidebar-block">
+          <Typography className='sidebar-block-title'>Map Title/Name</Typography>
+          <Input 
+            className="sidebar-block-content sidebar-input" 
+            aria-label='title input' 
+            placeholder='type new title' 
+          />
+        </Box>
+
+        <Box className="sidebar-block">
+          <Typography className='sidebar-block-title'>Tags</Typography>
+          <Tags tags={tags} setTags={setTags}/>
+        </Box>
+        <Box className="sidebar-block">
+          <Typography className='sidebar-block-title'>Legend</Typography>
+          <Box className="legend-title-container sidebar-block-content">
+          <Typography>Title: </Typography>
+          <Input 
+            className="sidebar-input" 
+            aria-label='legend-title input' 
+            placeholder='enter legend title' 
+          />
+          </Box>
+        </Box>
+        <Box className="sidebar-block">
+          <Typography className='sidebar-block-title'>Map Data</Typography>
+          <Box className="sidebar-block-content data-block"></Box>
+          {/* map data table */}
+        </Box>
+      </Toolbar>
     </Sidebar>
   );
 }

@@ -38,7 +38,7 @@ export default function DynamicCard({userData, mapData, postData}) {
     navigate("/post-detail");
   }
 
-  function handleDeletePost(event){
+  function handleDelete(event){
     event.stopPropagation();
     event.preventDefault();
     console.log('handleDeletePost');
@@ -50,9 +50,9 @@ export default function DynamicCard({userData, mapData, postData}) {
   if (userData) {
     cardElement = <UserCard userName={userData.userName} clickHandler={handleUserCardClick}/>;
   } else if (mapData) {
-    cardElement = <MapCard mapData={mapData} clickHandler={handleMapCardClick}/>;
+    cardElement = <MapCard mapData={mapData} clickHandler={handleMapCardClick} deleteHandler={handleDelete}/>;
   } else if (postData) {
-    cardElement = <PostCard postData={postData} clickHandler={handlePostCardClick} deletePostHandler={handleDeletePost}/>;
+    cardElement = <PostCard postData={postData} clickHandler={handlePostCardClick} deleteHandler={handleDelete}/>;
   }
   else{
     cardElement = null;

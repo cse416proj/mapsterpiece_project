@@ -5,7 +5,7 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ShareIcon from "@mui/icons-material/Share";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
-function ActionButtons({type, comments, clickHandler, deletePostHandler}){
+function ActionButtons({type, comments, clickHandler, deleteHandler}){
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -23,7 +23,7 @@ function ActionButtons({type, comments, clickHandler, deletePostHandler}){
         event.stopPropagation();
         event.preventDefault();
         closeMenu();
-        deletePostHandler(event);
+        deleteHandler(event);
     }
 
     return(

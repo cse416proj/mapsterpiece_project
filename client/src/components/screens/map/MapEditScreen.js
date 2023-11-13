@@ -7,9 +7,10 @@ import MapScreen from './display/MapScreen';
 
 export default function MapEditScreen() {
   return (
-    <Box style={{ height: '100%' }}>
+    <Box>
     <MapEditTopBar />
       <Box
+        className="map-screen-container"
         style={{ 
           display: 'flex',
           flexDirection: 'row',

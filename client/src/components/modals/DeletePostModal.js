@@ -37,7 +37,7 @@ export default function DeletePostModal(){
                             Delete post
                         </header>
                         <Typography style={{color:'red'}}>
-                            This will delete this post permanently. You cannot undo this action.
+                            This will delete this map/post permanently. You cannot undo this action.
                         </Typography>
                     </Box>
 

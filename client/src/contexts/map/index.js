@@ -347,19 +347,21 @@ export function MapContextProvider({children}){
 
     // create map based on fileFormat & content
     mapInfo.createMap = () => {
-        if(mapInfo.fileFormat === 'GeoJSON'){
-            mapInfo.uploadMap(JSON.parse(mapInfo.fileContent));
-        }
-        else if(mapInfo.fileFormat === 'Shapefiles'){
-            mapInfo.uploadMap(mapInfo.fileContent);
-        }
-        else if(mapInfo.fileFormat === 'Keyhole(KML)'){
-            const kmlText = new DOMParser().parseFromString(mapInfo.fileContent, 'text/xml');
-            mapInfo.uploadMap(kmlText);
-        }
-        else{
-            return false;
-        }
+        mapInfo.uploadMap(mapInfo.fakeFileContent);
+
+        // // if(mapInfo.fileFormat === 'GeoJSON'){
+        // //     mapInfo.uploadMap(JSON.parse(mapInfo.fileContent));
+        // // }
+        // // else if(mapInfo.fileFormat === 'Shapefiles'){
+        // //     mapInfo.uploadMap(mapInfo.fileContent);
+        // // }
+        // // else if(mapInfo.fileFormat === 'Keyhole(KML)'){
+        // //     const kmlText = new DOMParser().parseFromString(mapInfo.fileContent, 'text/xml');
+        // //     mapInfo.uploadMap(kmlText);
+        // // }
+        // else{
+        //     return false;
+        // }
 
         return true;
     }

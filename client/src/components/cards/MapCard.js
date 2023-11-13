@@ -2,7 +2,7 @@ import { Box, Card, CardContent, Typography, Chip, Stack } from "@mui/material";
 
 import ActionButtons from "./ActionButtons";
 
-function MapCard({mapData, clickHandler}){
+function MapCard({mapData, clickHandler, deleteHandler}){
     return(
         <Card className="individualDynamicCard" >
             <CardContent
@@ -36,6 +36,7 @@ function MapCard({mapData, clickHandler}){
                 <ActionButtons
                     type='map'
                     comments={mapData.comments}
+                    deleteHandler = {deleteHandler}
                 />
             </CardContent>
         </Card>
