@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { Box, Tabs, Tab } from '@mui/material';
 
 import ProfileCard from './ProfileCard';
-import { DynamicCard } from '../../index';
+import { DynamicCard, DeletePostModal } from '../../index';
 import ActionButton from './ActionButton';
 import UserContext from '../../../contexts/user';
 import AuthContext from '../../../contexts/auth';
@@ -63,6 +63,7 @@ function Profile(){
                     numPosts={userInfo.getNumPosts()}
                     isLoggedInUser={auth && auth.user !== null && auth.user === userInfo.currentUser}
                 />
+                <DeletePostModal/>
             </Box>
             <ActionButton
                 isLoggedInUser={auth && auth.user !== null && auth.user === userInfo.currentUser}
