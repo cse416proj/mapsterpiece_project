@@ -60,8 +60,8 @@ export default function CommunityScreen() {
         <Box className="listsDisplay">
           {listCard}
         </Box>
+        <DeletePostModal/>
       </Box>
-      <DeletePostModal/>
     </Box>
   );
 }

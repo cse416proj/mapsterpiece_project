@@ -27,8 +27,8 @@ export default function DynamicCard({userData, mapData, postData}) {
   function handleMapCardClick(event) {
     event.stopPropagation();
     event.preventDefault();
-    // mapInfo.setCurrentPost(mapData);
-    navigate("/profile");
+    // store.setCurrentMap(payload.mapData)
+    navigate("/map-edit");      // ##temporary##
   }
 
   function handlePostCardClick(event) {

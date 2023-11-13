@@ -26,5 +26,7 @@ jobs:
         cache-dependency-path: server/package-lock.json
     - run: npm i
       working-directory: './server'
+    - run: CI=true npx jest
+      working-directory: './server'
     - run: pm2 restart server.js
       working-directory: './server'
