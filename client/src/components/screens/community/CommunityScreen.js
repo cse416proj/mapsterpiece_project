@@ -42,9 +42,9 @@ export default function CommunityScreen() {
   }
 
   return (
-    <Box className="communityScreenWrapper">
+    <Box className="queryScreenWrapper">
       <SideNavBar />
-      <Box className="communityScreenContent">
+      <Box className="queryScreenContent">
         <SearchBar setSearch={setSearch}/>
         <Box className="listsDisplay">
           {listCard}

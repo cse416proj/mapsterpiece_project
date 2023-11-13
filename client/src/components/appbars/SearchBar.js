@@ -22,6 +22,7 @@ export default function SearchBar(props) {
   };
  
   const searchPlaceholder = (currScreen) => {
+    console.log(currScreen);
     if(currScreen.includes("HOME")){
       return "Select a category first...";
     }

@@ -1,4 +1,4 @@
-.communityScreenWrapper{
+.queryScreenWrapper{
     height: 88vh;
     margin: 0 auto;
     display: flex;
@@ -26,7 +26,7 @@
     margin-left: 50px;
 }
 
-.communityScreenContent{
+.queryScreenContent{
     margin-top: 1vh;
     width: 79.25vw;
     height: 89vh;

@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { useLocation } from "react-router-dom";
 import { GlobalStoreContext } from "../../contexts/store";
 
 import {
@@ -10,11 +11,15 @@ import {
 } from "react-pro-sidebar";
 
 export default function SideNavBar() {
+  const location = useLocation();
+
   const { store } = useContext(GlobalStoreContext);
 
   const handleSelectView = (event, viewType) => {
     store.setCurrentView(viewType);
   }
+
+  console.log(location);
 
   return (
     <Sidebar
@@ -28,7 +33,11 @@ export default function SideNavBar() {
       }}
     >
       <Menu>
-        <MenuItem onClick={(e) => handleSelectView(e, "ALL_USERS")}> All Users </MenuItem>
+        {
+          (location.pathname === '/community') ?
+            <MenuItem onClick={(e) => handleSelectView(e, "ALL_USERS")}> All Users </MenuItem> :
+            <MenuItem onClick={(e) => handleSelectView(e, "ALL_MAPS_POSTS")}> All Maps & Posts </MenuItem> 
+        }
         <SubMenu onClick={(e) => handleSelectView(e, "ALL_MAPS")} label="All Maps">
           <MenuItem onClick={(e) => handleSelectView(e, "BIN_MAPS")}> Bin Map </MenuItem>
           <MenuItem onClick={(e) => handleSelectView(e, "CHOROPLETH_MAPS")}> Choropleth Map </MenuItem>
