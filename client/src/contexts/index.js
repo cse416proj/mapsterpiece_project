@@ -1,18 +1,21 @@
 import { AuthContextProvider } from './auth';
 import { PostContextProvider } from "./post";
+import { MapContextProvider } from "./map";
 import { GlobalStoreContextProvider } from "./store";
 import { UserContextProvider } from "./user";
 
 const AppContextProvider = ({ children }) => (
     <AuthContextProvider>
-        <GlobalStoreContextProvider>
+      <GlobalStoreContextProvider>
+        <MapContextProvider>
           <PostContextProvider>
             <UserContextProvider>
-                {children}
+              {children}
             </UserContextProvider>
           </PostContextProvider>
-        </GlobalStoreContextProvider>
-      </AuthContextProvider>
+        </MapContextProvider>
+      </GlobalStoreContextProvider>
+    </AuthContextProvider>
 );
   
 export { AppContextProvider };
