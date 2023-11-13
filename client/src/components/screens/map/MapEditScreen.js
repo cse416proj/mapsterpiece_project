@@ -5,11 +5,18 @@ import MapEditSideBar from '../../appbars/MapEditSideBar';
 
 export default function MapEditScreen() {
   return (
-    <Box>
-        <MapEditTopBar/>
+    <Box style={{ height: '100%' }}>
+    <MapEditTopBar />
+      <Box style={{ 
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        flex: 1,
+        }}>
         <Typography>Welcome to edit map screen</Typography>
-        <MapEditSideBar/>
-        
+        <MapEditSideBar />
+      </Box>
+     
     </Box>
   );
 }

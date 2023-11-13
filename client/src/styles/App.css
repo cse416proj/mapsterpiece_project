@@ -211,25 +211,3 @@
     margin-top: 3px;
     gap: 8px;
 }
-
-/* 
-  For map screen side bar
-*/
-
-.map-screen-sidebar{
-  margin-left: 1vw;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 500px;
-  background-color: #DEE9EB;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
-  padding: 20px;
-  z-index: 1000;
-  border-radius: 10px;
-}
-
-.map-screen-sidebar h6 {
-  margin-bottom: 20px;
-}
