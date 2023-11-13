@@ -4,10 +4,10 @@ import ActionButtons from "./ActionButtons";
 
 function MapCard({mapData, clickHandler}){
     return(
-        <Card className="individualDynamicCard">
+        <Card className="individualDynamicCard" >
             <CardContent
-                style={{ height: `100%`, background: `#86C9B5` }}
                 className="cardContent"
+                style={{ height: `100%`, background: `#86C9B5` }}
                 onClick={clickHandler}
             >
                 <Box className="flex-row">
@@ -29,7 +29,7 @@ function MapCard({mapData, clickHandler}){
                 <Stack direction="row" spacing={1}>
                     {
                         mapData.tags.map((tag) => (
-                            <Chip label={tag} size="small" style={{ color: 'white' }}/>
+                            <Chip key={tag} label={tag} size="small" style={{ color: 'white' }}/>
                         ))
                     }
                 </Stack>

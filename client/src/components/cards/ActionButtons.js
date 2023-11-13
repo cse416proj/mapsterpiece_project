@@ -7,7 +7,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 function ActionButtons({type, comments, clickHandler, deletePostHandler}){
     return(
         <CardActions className="cardActions">
-            <Box className='flex-row' id='action-button-container'>
+            <Box className='flex-row' id='action-button-container' onClick={clickHandler}>
                 <ChatBubbleOutlineIcon id={`${type}-action-icon`}/>
                 <Typography id={`${type}-action-button-text`}>
                     {comments.length} comments
@@ -19,7 +19,7 @@ function ActionButtons({type, comments, clickHandler, deletePostHandler}){
                     share {type}
                 </Typography>
             </Box>
-            <MoreHorizIcon id={`${type}-action-icon`} onClick = {deletePostHandler}/>
+            <MoreHorizIcon className='action-icon' id={`${type}-action-icon`} onClick = {deletePostHandler}/>
         </CardActions>
     );
 }

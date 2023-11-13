@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 
 import { DynamicCard } from '../../index';
 
-function PostsCardSection({ data, search }) {
+function MapsPostsCardSection({ data, search }) {
   const [filterData, setFilteredData] = useState([]);
 
   // update filteredData when data/search property changes
@@ -13,8 +13,7 @@ function PostsCardSection({ data, search }) {
       return (
         searchTerm === '' ||
         pair.title.toLowerCase().includes(searchTerm) ||
-        pair.tags.some((tag) => tag.toLowerCase().includes(searchTerm)) ||
-        pair.postBody.toLowerCase().includes(searchTerm)
+        pair.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
       );
     });
     setFilteredData(result);
@@ -24,11 +23,16 @@ function PostsCardSection({ data, search }) {
     <Box sx={{ width: '97.5%' }}>
       {
         filterData.map((pair, index) => {
-          return <DynamicCard key={`post-${index}`} userData={null} mapData={null} postData={pair}/>;
+          if(pair.hasOwnProperty('fileFormat')){
+            return <DynamicCard key={`map-${index}`} userData={null} mapData={pair} postData={null}/>
+          }
+          else{
+            return <DynamicCard key={`post-${index}`} userData={null} mapData={null} postData={pair}/>
+          }
         })
       }
     </Box>
   );
 };
 
-export default PostsCardSection;
+export default MapsPostsCardSection;

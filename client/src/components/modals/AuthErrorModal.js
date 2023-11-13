@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import authContext from '../../contexts/auth';
-import { Box, Modal, Alert, AlertTitle, Button } from '@mui/material';
+import { Box, Modal, Alert, Button } from '@mui/material';
 
 function AuthErrorModal() {
 

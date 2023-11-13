@@ -1,12 +1,9 @@
 import React, { useContext, useState } from "react";
 import { PostContext } from "../../../contexts/post";
-import { GlobalStoreContext } from "../../../contexts/store";
-import { useNavigate } from "react-router-dom";
+// import { GlobalStoreContext } from "../../../contexts/store";
 import {
   Box,
   Button,
-  SpeedDial,
-  SpeedDialIcon,
   Paper,
   InputBase,
   Accordion,
@@ -20,7 +17,7 @@ import AddIcon from "@mui/icons-material/Add";
 
 export default function PostComment(payload, index) {
   const { postInfo } = useContext(PostContext);
-  const { store } = useContext(GlobalStoreContext);
+  // const { store } = useContext(GlobalStoreContext);
   const [addActive, setAddActive] = useState(false);
   const [commentInput, setInput] = useState("");
 
@@ -49,9 +46,9 @@ export default function PostComment(payload, index) {
       }}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <div className="accordionSummary">
-          <div className="flex-column">
-            <div className="commentUserInfo">
+        <Box className="accordionSummary">
+          <Box className="flex-column">
+            <Box className="commentUserInfo">
               <AccountCircleIcon />
               <Typography
                 style={{
@@ -62,7 +59,7 @@ export default function PostComment(payload, index) {
               >
                 {payload.commentUserName}
               </Typography>
-            </div>
+            </Box>
             <Typography
               style={{
                 textAlign: `start`,
@@ -71,20 +68,20 @@ export default function PostComment(payload, index) {
             >
               {payload.text}
             </Typography>
-          </div>
+          </Box>
           <AddIcon onClick={handlePlusIconClick}/>
-        </div>
+        </Box>
       </AccordionSummary>
       <AccordionDetails
         sx={{
           bgcolor: "#b1d7c4",
         }}
       >
-        {payload.subComments.map((subcomment) => (
-          <Subcomment subcomment={subcomment} />
+        {payload.subComments.map((subcomment, index) => (
+          <Subcomment key={`subcomment-${index}`} subcomment={subcomment} />
         ))}
         {addActive ? (
-          <div className="commentCard">
+          <Box className="commentCard">
             <Paper
               component="form"
               sx={{
@@ -103,7 +100,7 @@ export default function PostComment(payload, index) {
                 Submit
               </Button>
             </Paper>
-          </div>
+          </Box>
         ) : null}
       </AccordionDetails>
     </Accordion>
@@ -113,8 +110,8 @@ export default function PostComment(payload, index) {
 function Subcomment(subcomment) {
   subcomment = subcomment.subcomment;
   return (
-    <div className="commentCard">
-      <div className="commentUserInfo">
+    <Box className="commentCard">
+      <Box className="commentUserInfo">
         <AccountCircleIcon />
         <Typography
           style={{
@@ -125,7 +122,7 @@ function Subcomment(subcomment) {
         >
           {subcomment.commentUserName}
         </Typography>
-      </div>
+      </Box>
       <Typography
         style={{
           textAlign: `start`,
@@ -134,6 +131,6 @@ function Subcomment(subcomment) {
       >
         {subcomment.text}
       </Typography>
-    </div>
+    </Box>
   );
 }

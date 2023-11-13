@@ -29,8 +29,8 @@ function Register(){
 
     const textFields = textFieldsProps.map((field) => {
         return <TextField
-            name={field.name}
             key={field.name}
+            name={field.name}
             label={field.label}
             value={field.value}
             onChange={updateForm}

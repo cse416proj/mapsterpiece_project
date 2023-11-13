@@ -22,7 +22,7 @@ const CurrentView = {
   ALL_USERS: "ALL_USERS",
   ALL_MAPS: "ALL_MAPS",
   ALL_POSTS: "ALL_POSTS",
-  ALL_MAP_POSTS: "ALL_MAP_POSTS",
+  ALL_MAPS_POSTS: "ALL_MAPS_POSTS",
   USER_OWNED_MAPS: "USER_OWNED_MAPS",
   USER_OWNED_POSTS: "USER_OWNED_POSTS",
 
@@ -267,6 +267,156 @@ const fakeAllMaps = [
   },
 ];
 
+const fakeAllMapsPosts = [
+  {
+    _id: {
+      $oid: "6550ea560946232834874dd4",
+    },
+    ownerUserName: "joeshmo",
+    title: "this is a post",
+    tags: ["Choropleth Map", "tag2"],
+    postBody:
+      "hello there Lorem ipsum dolor sit amet, coem ipsum dolor sit amet, consedolor sit amet, consectetu nsedolor sit amet, consectetur adipiscing elit, sctetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nost exercitation ullamcem ipsum dolor sit amet, rud exercitation ullamcem ipsum dolor sit amet, consedolor sit amet, consectetu o laboris nisi ut aliquip ex ea commodo consequat",
+    likedUsers: [],
+    dislikedUsers: [],
+    comments: [
+      {
+        commentUserName: "dummyCommentUser",
+        text: "dummy comment body",
+        dateCommented: "2023-11-05T19:17:42.514Z",
+        subComments: [
+          {
+            commentUserName: "subcomment user",
+            text: "dummy subcomment body",
+            dateCommented: "2023-11-05T19:17:42.514Z",
+          },
+        ],
+      },
+    ],
+    datePosted: {
+      $date: "2023-11-05T19:17:42.514Z",
+    },
+    __v: 0,
+  },
+  {
+    _id: {
+      $oid: "6547ea560946232834874dd4",
+    },
+    ownerUserName: "joeshmo",
+    title: "some map title",
+    fileFormat:"GeoJSON",
+    // mapType: schema.types.mixed,
+    // map: map object
+    tags: ["Bin Map", "Europe", "Population"],  // 1st tag should be the string of map type
+    comments: [
+      {
+        commentUserName: "dummy comment user",
+        text: "dummy comment body 1",
+        dateCommented: "2023-11-05T19:17:42.514Z",
+        subComments: [
+          {
+            commentUserName: "subcomment user",
+            text: "dummy subcomment body",
+            dateCommented: "2023-11-05T19:17:42.514Z",
+          },
+        ],
+      },
+      {
+        commentUserName: "dummy comment user",
+        text: "dummy comment body 2",
+        dateCommented: "2023-12-05T19:17:42.514Z",
+        subComments: [
+          {
+            commentUserName: "subcomment user",
+            text: "dummy subcomment body",
+            dateCommented: "2023-12-06T19:17:42.514Z",
+          },
+          {
+            commentUserName: "subcomment user",
+            text: "dummy subcomment body",
+            dateCommented: "2023-12-07T19:17:42.514Z",
+          },
+        ],
+      },
+    ],
+    datePublished: {
+      $date: "2023-11-05T19:17:42.514Z",
+    },
+    __v: 0,
+  },
+  {
+    _id: {
+      $oid: "65482b5e0946232834874e6c",
+    },
+    ownerUserName: "joeshmo",
+    title: "some map title 2",
+    fileFormat:"Shapefile",
+    mapType: "Heat Map",    // schema.types.mixed?
+    // map: map object
+    tags: ["Heat Map", "Asia", "Population"],
+    comments: [
+      {
+        commentUserName: "dummy comment user",
+        text: "dummy comment body 1",
+        dateCommented: "2023-11-05T19:17:42.514Z",
+        subComments: [
+          {
+            commentUserName: "subcomment user",
+            text: "dummy subcomment body",
+            dateCommented: "2023-11-05T19:17:42.514Z",
+          },
+        ],
+      },
+      {
+        commentUserName: "dummy comment user",
+        text: "dummy comment body 2",
+        dateCommented: "2023-12-05T19:17:42.514Z",
+        subComments: [
+          {
+            commentUserName: "subcomment user",
+            text: "dummy subcomment body",
+            dateCommented: "2023-12-06T19:17:42.514Z",
+          },
+        ],
+      },
+    ],
+    datePublished: {
+      $date: "2023-12-05T19:17:42.514Z",
+    },
+    __v: 0,
+  },
+  {
+    _id: {
+      $oid: "6580ea560946232834874dd4",
+    },
+    ownerUserName: "joeshmo",
+    title: "MAAAAAp",
+    tags: ["Graduated Symbol Map", "tag2"],
+    postBody:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+    likedUsers: [],
+    dislikedUsers: [],
+    comments: [
+      {
+        commentUserName: "dummyCommentUser",
+        text: "dummy comment body",
+        dateCommented: "2023-11-05T19:17:42.514Z",
+        subComments: [
+          {
+            commentUserName: "subcomment user",
+            text: "dummy subcomment body",
+            dateCommented: "2023-11-05T19:17:42.514Z",
+          },
+        ],
+      },
+    ],
+    datePosted: {
+      $date: "2023-11-05T19:17:42.514Z",
+    },
+    __v: 0,
+  }
+]
+
 const binMaps = fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Bin Map"});
 const choroplethMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Choropleth Map"});
 const dotMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"});
@@ -286,6 +436,7 @@ function GlobalStoreContextProvider(props) {
     allUsers: fakeAllUsers,
     allPosts: fakeAllPosts,
     allMaps: fakeAllMaps,
+    allMapsPosts: fakeAllMapsPosts,
 
     binMaps: binMaps,
     choroplethMaps: choroplethMaps, 
@@ -304,16 +455,16 @@ function GlobalStoreContextProvider(props) {
 
   const storeReducer = (action) => {
     const { type, payload } = action;
-    console.log(type);
     switch (type) {
       // placeholder to be replace later on
-      case GlobalStoreActionType.LOAD_ALL_MAPS: {
+      case GlobalStoreActionType.LOAD_ALL_MAPS:
         return setStore({
           currentModal : CurrentModal.NONE,
           currentView: CurrentView.USER_HOME,
           allUsers: [],
           allPosts: [],
           allMaps: [],
+          allMapsPosts: [],
 
           binMaps: [],
           choroplethMaps: [], 
@@ -329,78 +480,25 @@ function GlobalStoreContextProvider(props) {
 
           postMarkedForDeletion: null,
         });
-      }
-      case GlobalStoreActionType.MARK_CURRENT_SCREEN: {
-        return setStore({
-          currentModal : CurrentModal.NONE,
-          currentView: payload,
-          allUsers: store.allUsers,
-          allPosts: store.allPosts,
-          allMaps: store.allMaps,
-
-          binMaps: store.binMaps,
-          choroplethMaps: store.choroplethMaps, 
-          dotMaps: store.dotMaps,
-          gradMaps: store.gradMaps,
-          heatMaps: store.heatMaps, 
-
-          binPosts: store.binPosts,
-          choroplethPosts: store.choroplethPosts, 
-          dotPosts: store.dotPosts,
-          gradPosts: store.gradPosts,
-          heatPosts: store.heatPosts, 
-
-          postMarkedForDeletion: null,
-        });
-      }
-      case GlobalStoreActionType.MARK_POST_FOR_DELETION: {
-        return setStore({
-          currentModal : CurrentModal.DELETE_POST_MODAL,
-          currentView: store.currentView,
-          allUsers: store.allUsers,
-          allPosts: store.allPosts,
-          allMaps: store.allMaps,
-
-          binMaps: store.binMaps,
-          choroplethMaps: store.choroplethMaps, 
-          dotMaps: store.dotMaps,
-          gradMaps: store.gradMaps,
-          heatMaps: store.heatMaps, 
-
-          binPosts: store.binPosts,
-          choroplethPosts: store.choroplethPosts, 
-          dotPosts: store.dotPosts,
-          gradPosts: store.gradPosts,
-          heatPosts: store.heatPosts, 
-
-          postMarkedForDeletion: payload[0],   // temp setup 
-        })
-      }
-
-      case GlobalStoreActionType.HIDE_MODALS: {
-        return setStore({
-          currentModal : CurrentModal.NONE,
-          currentView: store.currentView,
-          allUsers: store.allUsers,
-          allPosts: store.allPosts,
-          allMaps: store.allMaps,
-
-          binMaps: store.binMaps,
-          choroplethMaps: store.choroplethMaps, 
-          dotMaps: store.dotMaps,
-          gradMaps: store.gradMaps,
-          heatMaps: store.heatMaps, 
-
-          binPosts: store.binPosts,
-          choroplethPosts: store.choroplethPosts, 
-          dotPosts: store.dotPosts,
-          gradPosts: store.gradPosts,
-          heatPosts: store.heatPosts, 
-
-          postMarkedForDeletion: null,
-        })
-      }
-      
+      case GlobalStoreActionType.MARK_CURRENT_SCREEN:
+        return setStore((prevStore) => ({
+            ...prevStore,
+            currentModal : CurrentModal.NONE,
+            currentView: payload,
+            postMarkedForDeletion: null
+        }));
+      case GlobalStoreActionType.MARK_POST_FOR_DELETION:
+        return setStore((prevStore) => ({
+          ...prevStore,
+          currentModal: CurrentModal.DELETE_POST_MODAL,
+          postMarkedForDeletion: payload[0]   // temp setup 
+        }));
+      case GlobalStoreActionType.HIDE_MODALS:
+        setStore((prevStore) => ({
+          ...prevStore,
+          currentModal: CurrentModal.NONE,
+          postMarkedForDeletion: null
+        }));
       default:
         return store;
     }
@@ -435,6 +533,7 @@ function GlobalStoreContextProvider(props) {
     const screenDataDict = {
       "ALL_USERS": store.allUsers,
       "ALL_MAPS": store.allMaps,
+      "ALL_MAPS_POSTS": store.allMapsPosts,
       "BIN_MAPS": store.binMaps,
       "CHOROPLETH_MAPS": store.choroplethMaps,
       "DOT_MAPS": store.dotMaps,
