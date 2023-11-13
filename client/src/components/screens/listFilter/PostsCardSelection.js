@@ -16,8 +16,8 @@ function PostsCardSection({ data, search }) {
             pair.postBody.toLowerCase().includes(searchTerm)
           );
         })
-        .map((pair) => (
-          <DynamicCard userData={null} mapData={null} postData={pair} />
+        .map((pair, index) => (
+          <DynamicCard key={index} userData={null} mapData={null} postData={pair} />
         ))}
     </Box>
   );

@@ -42,7 +42,7 @@ export default function CommunityScreen() {
   }
 
   return (
-    <div className="communityScreenWrapper">
+    <Box className="communityScreenWrapper">
       <SideNavBar />
       <Box className="communityScreenContent">
         <SearchBar setSearch={setSearch}/>
@@ -51,6 +51,6 @@ export default function CommunityScreen() {
         </Box>
       </Box>
       <DeletePostModal/>
-    </div>
+    </Box>
   );
 }

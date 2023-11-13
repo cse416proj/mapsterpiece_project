@@ -13,8 +13,8 @@ function UsersCardSection({ data, search }) {
                         pair.email.toLowerCase().includes(searchUser) ||
                         pair._id.$oid.toLowerCase().includes(searchUser)
                 );
-            }).map((pair) => (
-                <DynamicCard userData={pair} mapData={null} postData={null} />
+            }).map((pair, index) => (
+                <DynamicCard key={index} userData={pair} mapData={null} postData={null} />
             ))
         }
     </Box>

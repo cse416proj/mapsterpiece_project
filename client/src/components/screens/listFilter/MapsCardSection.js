@@ -14,8 +14,8 @@ function MapsCardSection({ data, search }) {
             pair.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
           );
         })
-        .map((pair) => (
-          <DynamicCard userData={null} mapData={pair} postData={null} />
+        .map((pair, index) => (
+          <DynamicCard key={index} userData={null} mapData={pair} postData={null} />
         ))}
     </Box>
   );

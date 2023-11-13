@@ -3,6 +3,7 @@ import { PostContext } from "../../../contexts/post";
 import { GlobalStoreContext } from "../../../contexts/store";
 import { useNavigate } from "react-router-dom";
 import {
+  Typography,
   Box,
   Button,
   SpeedDial,
@@ -11,19 +12,17 @@ import {
   InputBase,
   Accordion,
 } from "@mui/material";
-import { Typography } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import AddIcon from "@mui/icons-material/Add";
-import {PostComment} from "../../index"
+import { PostComment } from "../../index"
 
 export default function PostDetailScreen() {
   const navigate = useNavigate();
+
   const { postInfo } = useContext(PostContext);
   const { store } = useContext(GlobalStoreContext);
   const [addActive, setAddActive] = useState(false);
   const [commentInput, setInput] = useState("");
 
-  function handleAllMaps() {
+  function handleAllPosts() {
     store.setCurrentView("ALL_POSTS");
     navigate("/community");
   }
@@ -46,14 +45,14 @@ export default function PostDetailScreen() {
   }
 
   return (
-    <div>
+    <Box>
       <Typography
         style={{ textAlign: `start`, padding: `10px`, marginLeft: 0 }}
-        onClick={handleAllMaps}
+        onClick={handleAllPosts}
       >
         {"<< All Posts"}
       </Typography>
-      <div className="postScreenContent">
+      <Box className="postScreenContent">
         <Box
           sx={{
             bgcolor: "#ddebe4",
@@ -116,13 +115,13 @@ export default function PostDetailScreen() {
             </Paper>
           </Accordion>
         ) : null}
-      </div>
+      </Box>
       <SpeedDial
         ariaLabel="SpeedDial basic example"
         sx={{ position: "absolute", bottom: 16, right: 16 }}
         icon={<SpeedDialIcon />}
         onClick={handleSpeeddialClick}
       ></SpeedDial>
-    </div>
+    </Box>
   );
 }
