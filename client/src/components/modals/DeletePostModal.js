@@ -15,17 +15,20 @@ export default function DeletePostModal(){
 
     // only close modal at this point, temp setup 
     function handleDeleteModal(event){
-        store.closeModal();
-    }
-    function handleCloseModal(event){
+        event.stopPropagation();
+        event.preventDefault();
         store.closeModal();
     }
 
-    console.log(store);
+    function handleCloseModal(event){
+        event.stopPropagation();
+        event.preventDefault();
+        store.closeModal();
+    }
 
     return (
         <Modal className='modal'
-            open={store.postMarkedForDeletion !== null}
+            open={store.currentModal === "DELETE_POST_MODAL"}
         >
             <Box className="modal-box">
                 <Box className="modal-dialog">

@@ -1,10 +1,31 @@
-import { Box, CardActions, Typography } from "@mui/material";
+import { useState } from 'react';
+import { Box, CardActions, Typography, Menu, MenuItem } from "@mui/material";
 
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ShareIcon from "@mui/icons-material/Share";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 function ActionButtons({type, comments, clickHandler, deletePostHandler}){
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const openMenu = (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        setAnchorEl(event.currentTarget);
+    };
+
+    const closeMenu = () => {
+        setAnchorEl(null);
+    };
+
+    const handleDelete = (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        closeMenu();
+        deletePostHandler(event);
+    }
+
     return(
         <CardActions className="cardActions">
             <Box className='flex-row' id='action-button-container' onClick={clickHandler}>
@@ -19,7 +40,17 @@ function ActionButtons({type, comments, clickHandler, deletePostHandler}){
                     share {type}
                 </Typography>
             </Box>
-            <MoreHorizIcon className='action-icon' id={`${type}-action-icon`} onClick = {deletePostHandler}/>
+            <MoreHorizIcon className='action-icon' id={`${type}-action-icon`} onClick={openMenu}/>
+            <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={closeMenu}
+                MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                }}
+            >
+                <MenuItem onClick={handleDelete}>delete</MenuItem>
+            </Menu>
         </CardActions>
     );
 }

@@ -50,8 +50,8 @@ function SearchScreen(){
                 <Box className="listsDisplay">
                     { listCard }
                 </Box>
+                <DeletePostModal/>
             </Box>
-            <DeletePostModal/>
         </Box>
     )
 }

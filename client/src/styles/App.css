@@ -192,3 +192,24 @@
 #warning-btn:hover{
   background-color: var(--secondary-color-hover);
 }
+
+/* 
+  For map screen top bar
+*/
+
+.map-screen-topbar{
+  background-color: var(--navbar);
+  height: 5vh;
+  display:fixed;
+  bottom: 0;
+  justify-content: space-between;
+}
+
+.map-button-container{
+  display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3px;
+    gap: 8px;
+}
