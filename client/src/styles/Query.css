@@ -1,34 +1,49 @@
-.communityScreenWrapper{
-    height: 90vh;
+.queryScreenWrapper{
+    height: 88vh;
+    margin: 0 auto;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 .sideNavBar{
+    height: 89vh;
     margin-top: 1vh;
-    margin-right: 3vw;
+    margin-right: 0.75vh;
 }
 
 .searchBar{
     height: 10vh;
     border-radius: 5px;
-    background-color: #86cab5;
+}
+
+.toolbarFlex{
+    margin: auto 0;
+    display: flex;
+    justify-content: space-between;
 }
 
 .searchInputBox{
     margin-left: 50px;
 }
 
-.toolbarFlex {
-    width: 95%;
-    display: flex;
-    justify-content: space-between;
+#sort-text{
+    color: black;
+    margin-right: 10px;
 }
 
-.communityScreenContent{
+#sort-icon{
+    color: black;
+}
+
+#sort-prompt:hover > #sort-text, #sort-prompt:hover > #sort-icon{
+    color: white;
+}
+
+.queryScreenContent{
     margin-top: 1vh;
-    width: 80vw;
-    height: 89vh;
+    width: 79.25vw;
+    height: 86vh;
+    padding-bottom: 3vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -36,10 +51,12 @@
 }
 
 .listsDisplay{
-    height: 79vh;
+    margin-top: 1vh;
+    height: 78vh;
     width: 100%;
     display: flex;
     justify-content: space-around;
+    overflow: auto;
 }
 
 .postScreenContent {

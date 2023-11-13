@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { useLocation } from "react-router-dom";
 import { GlobalStoreContext } from "../../contexts/store";
 
 import {
@@ -10,75 +11,47 @@ import {
 } from "react-pro-sidebar";
 
 export default function SideNavBar() {
+  const location = useLocation();
+
   const { store } = useContext(GlobalStoreContext);
 
-  function handleAllUsers() {
-    store.setCurrentView("ALL_USERS")
+  const handleSelectView = (event, viewType) => {
+    event.stopPropagation();
+    event.preventDefault();
+    console.log(`handleSelectView: ${viewType}`);
+    store.setCurrentView(viewType);
   }
-// Handle maps
-  function handleAllMaps() {
-    store.setCurrentView("ALL_MAPS")
-  }
-  function handleBinMap(){
-    store.setCurrentView("BIN_MAPS")
-  }
-  function handleChoMap(){
-    store.setCurrentView("CHOROPLETH_MAPS")
-  }
-  function handleDotMap(){
-    store.setCurrentView("DOT_MAPS")
-  }
-  function handleGradMap(){
-    store.setCurrentView("GRAD_MAPS")
-  }
-  function handleHeatMap(){
-    store.setCurrentView("HEAT_MAPS")
-  }
-// Handle posts
-  function handleAllPosts() {
-    store.setCurrentView("ALL_POSTS")
-  }
-  function handleBinPosts() {
-    store.setCurrentView("BIN_POSTS")
-  }
-  function handleChoPosts() {
-    store.setCurrentView("CHOROPLETH_POSTS")
-  }
-  function handleDotPosts() {
-    store.setCurrentView("DOT_POSTS")
-  }
-  function handleGradPosts() {
-    store.setCurrentView("GRAD_POSTS")
-  }
-  function handleHeatPosts() {
-    store.setCurrentView("HEAT_POSTS")
-  }
+
   return (
     <Sidebar
       className="sideNavBar"
+      width='20vw'
+      backgroundColor="#dee9eb"
       rootStyles={{
         [`.${sidebarClasses.container}`]: {
-          backgroundColor: "#dee9eb",
           borderRadius: "5px",
-          width: "20vw",
-        },
+        }
       }}
     >
       <Menu>
-        <MenuItem onClick={handleAllUsers}> All Users </MenuItem>
-        <SubMenu onClick={handleAllMaps} label="All Maps">
-          <MenuItem onClick={handleBinMap}> Bin Map </MenuItem>
-          <MenuItem onClick={handleChoMap}> Choropleth Map </MenuItem>
-          <MenuItem onClick={handleDotMap}> Dot Distribution Map </MenuItem>
-          <MenuItem onClick={handleGradMap}> Graduated Symbol Map </MenuItem>
-          <MenuItem onClick={handleHeatMap}> Heat Map </MenuItem>
+        {
+          (location.pathname === '/community') ?
+            <MenuItem onClick={(e) => handleSelectView(e, "ALL_USERS")}> All Users </MenuItem> :
+            <MenuItem onClick={(e) => handleSelectView(e, "ALL_MAPS_POSTS")}> All Maps & Posts </MenuItem> 
+        }
+        <SubMenu onClick={(e) => handleSelectView(e, "ALL_MAPS")} label="All Maps">
+          <MenuItem onClick={(e) => handleSelectView(e, "BIN_MAPS")}> Bin Map </MenuItem>
+          <MenuItem onClick={(e) => handleSelectView(e, "CHOROPLETH_MAPS")}> Choropleth Map </MenuItem>
+          <MenuItem onClick={(e) => handleSelectView(e, "DOT_MAPS")}> Dot Distribution Map </MenuItem>
+          <MenuItem onClick={(e) => handleSelectView(e, "GRAD_MAPS")}> Graduated Symbol Map </MenuItem>
+          <MenuItem onClick={(e) => handleSelectView(e, "HEAT_MAPS")}> Heat Map </MenuItem>
         </SubMenu>
-        <SubMenu onClick={handleAllPosts} label="All Posts">
-          <MenuItem onClick={handleBinPosts}> Bin Map </MenuItem>
-          <MenuItem onClick={handleChoPosts}> Choropleth Map </MenuItem>
-          <MenuItem onClick={handleDotPosts}> Dot Distribution Map </MenuItem>
-          <MenuItem onClick={handleGradPosts}> Graduated Symbol Map </MenuItem>
-          <MenuItem onClick={handleHeatPosts}> Heat Map </MenuItem>
+        <SubMenu onClick={(e) => handleSelectView(e, "ALL_POSTS")} label="All Posts">
+          <MenuItem onClick={(e) => handleSelectView(e, "BIN_POSTS")}> Bin Map </MenuItem>
+          <MenuItem onClick={(e) => handleSelectView(e, "CHOROPLETH_POSTS")}> Choropleth Map </MenuItem>
+          <MenuItem onClick={(e) => handleSelectView(e, "DOT_POSTS")}> Dot Distribution Map </MenuItem>
+          <MenuItem onClick={(e) => handleSelectView(e, "GRAD_POSTS")}> Graduated Symbol Map </MenuItem>
+          <MenuItem onClick={(e) => handleSelectView(e, "HEAT_POSTS")}> Heat Map </MenuItem>
         </SubMenu>
       </Menu>
     </Sidebar>

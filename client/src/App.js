@@ -3,7 +3,7 @@ import './styles/Auth.css';
 import './styles/Upload.css';
 import "./styles/Profile.css";
 import "./styles/Card.css";
-import "./styles/Community.css";
+import "./styles/Query.css";
 import "./styles/Modal.css";
 
 import { React } from "react";

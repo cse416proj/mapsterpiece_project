@@ -21,12 +21,13 @@ export default function DeletePostModal(){
         store.closeModal();
     }
 
+    console.log(store);
+
     return (
         <Modal className='modal'
-        open={store.postMarkedForDeletion !== null}
+            open={store.postMarkedForDeletion !== null}
         >
-            <Box className="modal-box"
-            >
+            <Box className="modal-box">
                 <Box className="modal-dialog">
                     <Box className="modal-context">
                         <header className="dialog-header">

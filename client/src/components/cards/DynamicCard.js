@@ -11,41 +11,48 @@ import { UserContext } from "../../contexts/user";
 
 import GlobalStoreContext from "../../contexts/store/index";
 
-export default function DynamicCard(payload) {
+export default function DynamicCard({userData, mapData, postData}) {
   const navigate = useNavigate();
   const { postInfo } = useContext(PostContext);
   const { userInfo } = useContext(UserContext);
   const { store } = useContext(GlobalStoreContext);
 
-  function handleUserCardClick() {
-    userInfo.setCurrentUser(payload.userData);
+  function handleUserCardClick(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    userInfo.setCurrentUser(userData);
     navigate("/profile");
   }
 
-  function handleMapCardClick() {
+  function handleMapCardClick(event) {
+    event.stopPropagation();
+    event.preventDefault();
     // store.setCurrentMap(payload.mapData)
     navigate("/map-edit");      // ##temporary##
   }
 
-  function handlePostCardClick() {
-    postInfo.setCurrentPost(payload.postData);
+  function handlePostCardClick(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    postInfo.setCurrentPost(postData);
     navigate("/post-detail");
   }
 
   function handleDeletePost(event){
     event.stopPropagation();
-    console.log("click ...");
-    store.markPostForDeletion()
+    event.preventDefault();
+    console.log('handleDeletePost');
+    store.markPostForDeletion();
   }
 
   let cardElement = "";
 
-  if (payload.userData) {
-    cardElement = <UserCard userName={payload.userData.userName} clickHandler={handleUserCardClick}/>;
-  } else if (payload.mapData) {
-    cardElement = <MapCard mapData={payload.mapData} clickHandler={handleMapCardClick}/>;
-  } else if (payload.postData) {
-    cardElement = <PostCard postData={payload.postData} clickHandler={handlePostCardClick} deletePostHandler={handleDeletePost}/>;
+  if (userData) {
+    cardElement = <UserCard userName={userData.userName} clickHandler={handleUserCardClick}/>;
+  } else if (mapData) {
+    cardElement = <MapCard mapData={mapData} clickHandler={handleMapCardClick}/>;
+  } else if (postData) {
+    cardElement = <PostCard postData={postData} clickHandler={handlePostCardClick} deletePostHandler={handleDeletePost}/>;
   }
   else{
     cardElement = null;

@@ -23,6 +23,7 @@ import CommunityScreen from './screens/community/CommunityScreen';
 import MapsCardSection from './screens/listFilter/MapsCardSection';
 import PostsCardSection from './screens/listFilter/PostsCardSelection';
 import UsersCardSection from './screens/listFilter/UsersCardSelection';
+import MapsPostsCardSection from './screens/listFilter/MapsPostsCardSelection';
 
 import PostDetailScreen from './screens/post/PostDetailScreen';
 import PostComment from './screens/post/PostComment';
@@ -55,6 +56,7 @@ export {
     MapsCardSection,
     PostsCardSection,
     UsersCardSection,
+    MapsPostsCardSection,
     PostDetailScreen,
     PostComment, 
     MapEditScreen,

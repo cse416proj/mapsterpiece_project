@@ -227,6 +227,15 @@ function UserContextProvider(props) {
     });
   };
 
+  userInfo.getUserInitials = function(){
+    let initials = "";
+    if(userInfo.currentUser){
+      initials += userInfo.currentUser.firstName.charAt(0);
+      initials += userInfo.currentUser.lastName.charAt(0);
+    }
+    return initials;
+  }
+
   userInfo.getUserFullName = function(){
     return `${userInfo.currentUser.firstName} ${userInfo.currentUser.lastName}`;
   }
