@@ -1,11 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-// test('renders splash screen description', () => {
-//   render(<App />);
-//   const descriptionElement = screen.getByText(/A platform for map lovers/i);
-//   expect(descriptionElement).toBeInTheDocument();
-// });
+test('renders splash screen description', () => {
+  render(<App />);
+  const descriptionElement = screen.getByText(/A platform for map lovers/i);
+  expect(descriptionElement).toBeInTheDocument();
+});
 
 // test('renders all the expected elements', () => {
 //   render(<App />);
