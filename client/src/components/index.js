@@ -29,6 +29,8 @@ import PostComment from './screens/post/PostComment';
 
 import MapEditScreen from './screens/map/MapEditScreen';
 import MaybeShowNavBar from './appbars/MaybeShowNavBar';
+import MapEditTopBar from './appbars/MapEditTopBar';
+import MapEditSideBar from './appbars/MapEditSideBar';
 /*
     This is a module of import/export components
 */
@@ -57,4 +59,6 @@ export {
     PostComment, 
     MapEditScreen,
     MaybeShowNavBar,
+    MapEditTopBar,
+    MapEditSideBar,
 }

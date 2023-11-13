@@ -11,8 +11,6 @@ import { UserContext } from "../../contexts/user";
 
 import GlobalStoreContext from "../../contexts/store/index";
 
-import { DeletePostModal } from "../index";
-
 export default function DynamicCard(payload) {
   const navigate = useNavigate();
   const { postInfo } = useContext(PostContext);
@@ -25,8 +23,8 @@ export default function DynamicCard(payload) {
   }
 
   function handleMapCardClick() {
-    // postInfo.setCurrentPost(payload.postData);
-    navigate("/map-edit");
+    // store.setCurrentMap(payload.mapData)
+    navigate("/map-edit");      // ##temporary##
   }
 
   function handlePostCardClick() {

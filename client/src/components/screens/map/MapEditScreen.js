@@ -1,20 +1,15 @@
 import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import MapEditTopBar from '../../appbars/MapEditTopBar';
+import MapEditSideBar from '../../appbars/MapEditSideBar';
 
 export default function MapEditScreen() {
-    const navigate = useNavigate();
-
-    function handleMyMaps(){
-        navigate('/profile');
-    }
-
   return (
     <Box>
-        <Button onClick={handleMyMaps}>
-            &lt;&lt; My Maps
-        </Button>
+        <MapEditTopBar/>
         <Typography>Welcome to edit map screen</Typography>
+        <MapEditSideBar/>
+        
     </Box>
   );
 }
