@@ -26,5 +26,5 @@ jobs:
         cache-dependency-path: server/package-lock.json
     - run: npm i
       working-directory: './server'
-    - run: pm2 restart index.js
+    - run: pm2 restart server.js
       working-directory: './server'
