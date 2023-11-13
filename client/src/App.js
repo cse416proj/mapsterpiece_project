@@ -11,14 +11,17 @@ import { Box } from "@mui/material";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import { AppContextProvider } from './contexts';
-import { NavBar, HomeScreen, AuthScreen, Profile, CreateScreen, SearchScreen, CommunityScreen, PostDetailScreen } from "./components";
+import { NavBar, HomeScreen, AuthScreen, Profile, CreateScreen, SearchScreen, CommunityScreen, PostDetailScreen, MapEditScreen, MaybeShowNavBar } from "./components";
 
 function App() {
   return (
     <Router>
       <AppContextProvider>
         <Box className="App">
-          <NavBar />
+          <MaybeShowNavBar>
+            <NavBar />
+          </MaybeShowNavBar>
+          
           <Routes>
             <Route path='/' element={<HomeScreen/>}></Route>
             <Route path='/register' element={<AuthScreen/>}></Route>
@@ -28,6 +31,7 @@ function App() {
             <Route path="/search" element={<SearchScreen/>}></Route>
             <Route path="/community" element={<CommunityScreen/>}></Route>
             <Route path="/post-detail" element={<PostDetailScreen/>}></Route>
+            <Route path="/map-edit" element={<MapEditScreen/>}></Route>
           </Routes>
         </Box>
       </AppContextProvider>

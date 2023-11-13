@@ -26,7 +26,7 @@ export default function DynamicCard(payload) {
 
   function handleMapCardClick() {
     // postInfo.setCurrentPost(payload.postData);
-    navigate("/profile");
+    navigate("/map-edit");
   }
 
   function handlePostCardClick() {

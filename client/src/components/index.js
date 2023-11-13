@@ -27,6 +27,8 @@ import UsersCardSection from './screens/listFilter/UsersCardSelection';
 import PostDetailScreen from './screens/post/PostDetailScreen';
 import PostComment from './screens/post/PostComment';
 
+import MapEditScreen from './screens/map/MapEditScreen';
+import MaybeShowNavBar from './appbars/MaybeShowNavBar';
 /*
     This is a module of import/export components
 */
@@ -52,5 +54,7 @@ export {
     PostsCardSection,
     UsersCardSection,
     PostDetailScreen,
-    PostComment
+    PostComment, 
+    MapEditScreen,
+    MaybeShowNavBar,
 }
