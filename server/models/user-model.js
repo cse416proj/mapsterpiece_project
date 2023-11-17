@@ -9,6 +9,7 @@ const UserSchema = new Schema(
         userName: { type: String, required: true},
         email: { type: String, required: true },
         passwordHash: { type: String, required: true },
+        posts: [{ type: ObjectId, ref: 'Post' }]
     },
     { timestamps: true },
 )
