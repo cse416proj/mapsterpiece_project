@@ -23,8 +23,6 @@ export default function CommunityScreen() {
     if(store){
       var data = store.getData(store.currentView);
 
-      console.log(currScreen);
-
       switch(store.currentView){
         case "ALL_USERS":
           setListCard(<UsersCardSection data={data} search={search}/>);

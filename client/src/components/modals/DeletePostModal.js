@@ -5,8 +5,6 @@ import { GlobalStoreContext } from '../../contexts/store';
 
 export default function DeletePostModal(){
     const { store } = useContext(GlobalStoreContext);
-    // const curScreen = store.currentView;
-    // console.log("post modal position",curScreen);
 
     const buttonStyle = {
         backgroundColor: '#649a92', 

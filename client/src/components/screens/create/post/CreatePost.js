@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { Box, Modal, Alert} from '@mui/material';
 
 import Tags from '../tag/Tags';
 import PostInput from './PostInput';
 import ButtonSet from '../ButtonSet';
-// import PostContext from './PostContext';
+import {PostContext} from '../../../../contexts/post';
 
 function CreatePost(){
+    const { postInfo } = useContext(PostContext);
+
     // set up navigation to visit other link
     const navigate = useNavigate();
 
@@ -19,6 +21,9 @@ function CreatePost(){
     // set up error flags for these input
     const [missingTitle, setMissingTitle] = useState(false);
     const [missingContent, setMissingContent] = useState(false);
+
+    // success alert
+    const [openSuccess, setOpenSuccess] = useState(false);
 
     // handler when title/content changes
     const handleTitleChange = (event) => {
@@ -51,12 +56,22 @@ function CreatePost(){
         else{
             setMissingTitle(false);
             setMissingContent(false);
-            navigate('/');
+            postInfo.createPost(title, tags, content);
+
+            if (postInfo.errorMessage === null) {
+                setOpenSuccess(true);
+            }
+
+            setTimeout(() => {
+                setOpenSuccess(false);
+                navigate('/');
+            }, 1000);
         }
     }
 
     return (
         <Box className='flex-column' id='create-container'>
+            {openSuccess && <Alert severity="success">Post created! Redirecting...</Alert>}
             <PostInput
                 title={title}
                 updateTitle={handleTitleChange}
