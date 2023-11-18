@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import api from "./post-request-api";
 
 export const PostContext = createContext({});
 
@@ -11,6 +12,7 @@ function PostContextProvider(props) {
   const [postInfo, setPostInfo] = useState({
     currentPost: null,
     currentCommentIndex: null,
+    errorMessage: null,
   });
 
   const postReducer = (action) => {
@@ -80,6 +82,21 @@ function PostContextProvider(props) {
       type: PostActionType.SET_CURRENT_POST,
       payload: curPost,
     });
+  };
+
+  postInfo.createPost = async function (title, tags, content) {
+    const response = await api.createPost(title, tags, content);
+    if (response.data.error) {
+      setPostInfo({
+        ...postInfo,
+        errorMessage: response.data.error,
+      });
+    } else {
+      setPostInfo({
+        ...postInfo,
+        errorMessage: null,
+      });
+    }
   };
 
   return (

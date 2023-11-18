@@ -15,7 +15,6 @@ getLoggedIn = async (req, res) => {
         }
 
         const loggedInUser = await User.findOne({ _id: userId });
-        console.log("loggedInUser: " + loggedInUser);
 
         return res.status(200).json({
             loggedIn: true,
@@ -27,13 +26,11 @@ getLoggedIn = async (req, res) => {
             }
         })
     } catch (err) {
-        console.log("err: " + err);
         res.json(false);
     }
 }
 
 loginUser = async (req, res) => {
-    console.log("loginUser");
     try {
         const { email, password } = req.body;
         console.log(email, password);
@@ -57,7 +54,6 @@ loginUser = async (req, res) => {
         console.log("provided password: " + password);
         const passwordCorrect = await bcrypt.compare(password, existingUser.passwordHash);
         if (!passwordCorrect) {
-            console.log("Incorrect password");
             return res
                 .status(401)
                 .json({
@@ -114,7 +110,6 @@ registerUser = async (req, res) => {
                 .status(400)
                 .json({ errorMessage: "Please enter all required fields." });
         }
-        console.log("all fields provided");
 
         // Define the regular expression pattern for matching email
         const emailPattern = XRegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$');
@@ -140,11 +135,8 @@ registerUser = async (req, res) => {
                     errorMessage: "Please enter the same password twice."
                 })
         }
-        console.log("password and password verify match");
         const existingUser = await User.findOne({ email: email });
         const existingUsername = await User.findOne({ userName: userName});
-        console.log("existingUser: " + existingUser);
-        console.log("existingUsername: " + existingUsername);
         if (existingUser || existingUsername) {
             return res
                 .status(400)
@@ -186,8 +178,6 @@ deleteUser = async (req, res) => {
                 .status(400)
                 .json({ errorMessage: "Request body not found." });
         }
-
-        console.log(req);
 
         console.log(req.body);
 
