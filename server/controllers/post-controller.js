@@ -1,6 +1,7 @@
 const Post = require("../models/post-model");
 const User = require("../models/user-model");
 const Comment = require("../models/comment-model");
+const Subcomment = require("../models/subcomment-model");
 const auth = require("../auth");
 
 createPost = async (req, res) => {
@@ -129,20 +130,47 @@ createComment = async (req, res) => {
 
 getCommentsByCommentIds = async (req, res) => {
   let idList = req.params.idLists;
-  if (!idList) {
-    return [];
-  }
 
   idList = idList.split(",");
 
-  Comment.find({ _id: { $in: idList } }, (err, comments) => {
+  Comment.find({ _id: { $in: idList } })
+    .populate('subComments')
+    .exec((err, comments) => {
+      if (err) {
+        return res.status(500).json({ errorMessage: err.message });
+      } else if (!comments) {
+        return res.status(404).json({ errorMessage: "Comments not found" });
+      }
+
+      return res.status(200).json(comments);
+    });
+};
+
+createSubcomment = async (req, res) => {
+  const commentId = req.params.commentId;
+  const { commenterUserName, content } = req.body;
+
+  Comment.findById(commentId, (err, comment) => {
     if (err) {
       return res.status(500).json({ errorMessage: err.message });
-    } else if (!comments) {
-      return res.status(404).json({ errorMessage: "Comments not found" });
+    } else if (!comment) {
+      return res.status(404).json({ errorMessage: "Comment not found" });
     }
 
-    return res.status(200).json(comments);
+    const newSubcomment = new Subcomment({
+      commenterUserName: commenterUserName,
+      content: content,
+    });
+
+    comment.subComments.push(newSubcomment);
+    comment.save().then(() => {
+      newSubcomment.save().then(() => {
+        return res.status(201).json({
+          message: "Subcomment created successfully!",
+          subcomment: newSubcomment,
+        });
+      });
+    });
   });
 };
 
@@ -153,4 +181,5 @@ module.exports = {
   createComment,
   getPostById,
   getCommentsByCommentIds,
+  createSubcomment,
 };

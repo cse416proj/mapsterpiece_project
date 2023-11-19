@@ -36,13 +36,21 @@ export const getCommentsByCommentIds = (idList) => {
   return api.get(`/postComments/${idList}`);
 };
 
+export const createSubcomment = (commentId, commenterUserName, content) => {
+  return api.post(`/createSubcomment/${commentId}`, {
+    commenterUserName: commenterUserName,
+    content: content,
+  });
+};
+
 const apis = {
   createPost,
   getPostsByPostIds,
   deletePostById,
   createComment,
   getPostById,
-  getCommentsByCommentIds
+  getCommentsByCommentIds,
+  createSubcomment,
 };
 
 export default apis;
