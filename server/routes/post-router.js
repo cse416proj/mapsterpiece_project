@@ -4,9 +4,9 @@ const PostController = require('../controllers/post-controller');
 const auth = require('../auth');
 
 router.post('/createPost', auth.verify, PostController.createPost);
-router.get('/userPosts/:idLists', auth.verify, PostController.getPostsByPostIds);
-router.get('/post/:postId', auth.verify, PostController.getPostById);
-router.get('/postComments/:idLists', auth.verify, PostController.getCommentsByCommentIds);
+router.get('/userPosts/:idLists', PostController.getPostsByPostIds);
+router.get('/post/:postId', PostController.getPostById);
+router.get('/postComments/:idLists', PostController.getCommentsByCommentIds);
 router.delete('/deletePost/:postId', auth.verify, PostController.deletePostById);
 router.post('/createComment/:postId', auth.verify, PostController.createComment);
 // router.put('/updatePost', PostController.updatePost);
