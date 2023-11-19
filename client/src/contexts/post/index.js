@@ -18,7 +18,7 @@ function PostContextProvider(props) {
     currentCommentIndex: null,
     errorMessage: null,
     allPostsByUser: [],
-    allCommentsForPost: []
+    allCommentsForPost: [],
   });
 
   const postReducer = (action) => {
@@ -55,24 +55,6 @@ function PostContextProvider(props) {
     postReducer({
       type: PostActionType.SET_CURRENT_COMMENT,
       payload: commentPayload,
-    });
-  };
-
-  // hardcoded function to be replaced
-  postInfo.addCommentToCurrentComment = function (comment) {
-    const curPost = postInfo.currentPost;
-    const curComment = curPost.comments[postInfo.currentCommentIndex];
-    const newComment = {
-      commentUserName: "dummyCommentUser",
-      text: comment,
-      dateCommented: "2023-11-05T19:17:42.514Z",
-    };
-    curComment.subComments.push(newComment);
-    curPost.comments[postInfo.currentCommentIndex] = curComment;
-
-    postReducer({
-      type: PostActionType.SET_CURRENT_POST,
-      payload: curPost,
     });
   };
 
@@ -136,7 +118,7 @@ function PostContextProvider(props) {
   };
 
   postInfo.getCommentsByCommentIds = async function (idList) {
-    if (idList === undefined || idList.length === 0 ) {
+    if (idList === undefined || idList.length === 0) {
       return setPostInfo({
         ...postInfo,
         allCommentsForPost: [],
@@ -147,6 +129,20 @@ function PostContextProvider(props) {
       ...postInfo,
       allCommentsForPost: response.data,
     });
+  };
+
+  postInfo.createSubcomment = async function (
+    commentId,
+    commenterUserName,
+    content
+  ) {
+    console.log(commentId, commenterUserName, content);
+    const response = await api.createSubcomment(
+      commentId,
+      commenterUserName,
+      content
+    );
+    postInfo.getPostById(postInfo.currentPost._id);
   };
 
   return (

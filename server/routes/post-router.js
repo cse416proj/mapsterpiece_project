@@ -9,6 +9,7 @@ router.get('/post/:postId', PostController.getPostById);
 router.get('/postComments/:idLists', PostController.getCommentsByCommentIds);
 router.delete('/deletePost/:postId', auth.verify, PostController.deletePostById);
 router.post('/createComment/:postId', auth.verify, PostController.createComment);
+router.post('/createSubcomment/:commentId', auth.verify, PostController.createSubcomment);
 // router.put('/updatePost', PostController.updatePost);
 // router.delete('/deletePost', PostController.deletePost);
 
