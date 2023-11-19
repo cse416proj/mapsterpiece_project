@@ -6,7 +6,6 @@ export default function MaybeShowNavBar({children}){
     const [showNavBar, setShowNavBar] = useState(false);
 
     useEffect(()=>{
-        console.log("this is location: ", location);
         if(location.pathname==='/map-edit')
             setShowNavBar(false);
         else{

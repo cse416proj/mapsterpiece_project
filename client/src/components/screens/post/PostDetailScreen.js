@@ -1,17 +1,37 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
+import AuthContext from "../../../contexts/auth";
 import { PostContext } from "../../../contexts/post";
 import { GlobalStoreContext } from "../../../contexts/store";
-import { useNavigate } from "react-router-dom";
-import { Typography, Box,Button, SpeedDial, SpeedDialIcon, Paper, InputBase, Accordion } from "@mui/material";
-import { PostComment } from "../../index"
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  Typography,
+  Box,
+  Button,
+  SpeedDial,
+  SpeedDialIcon,
+  Paper,
+  InputBase,
+  Accordion,
+} from "@mui/material";
+import { PostComment } from "../../index";
 
 export default function PostDetailScreen() {
   const navigate = useNavigate();
+  const { postId } = useParams();
 
   const { postInfo } = useContext(PostContext);
   const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
   const [addActive, setAddActive] = useState(false);
   const [commentInput, setInput] = useState("");
+
+  useEffect(() => {
+    postInfo.getPostById(postId);
+  }, []);
+
+  useEffect(() => {
+    postInfo.getCommentsByCommentIds(postInfo.currentPost?.comments);
+  }, [postInfo.currentPost]);
 
   function handleAllPosts() {
     store.setCurrentView("ALL_POSTS");
@@ -27,11 +47,15 @@ export default function PostDetailScreen() {
   }
 
   function handleSubmitComment() {
-    postInfo.addCommentToCurrentPost(commentInput);
+    postInfo.createComment(
+      postInfo.currentPost._id,
+      auth?.user?.userName,
+      commentInput
+    );
     setAddActive(false);
   }
 
-  if(!postInfo || !postInfo.currentPost){
+  if (!postInfo || !postInfo.currentPost) {
     return null;
   }
 
@@ -72,11 +96,11 @@ export default function PostDetailScreen() {
           }}
         >
           <Typography style={{ textAlign: `start`, padding: `10px` }}>
-            {postInfo.currentPost.postBody}
+            {postInfo.currentPost.content}
           </Typography>
         </Box>
-        {postInfo.currentPost.comments.map((pair, index) => (
-            <PostComment key={`comment-${index}`} payload={pair} index={index} />
+        {postInfo.allCommentsForPost?.map((pair, index) => (
+          <PostComment key={`comment-${index}`} payload={pair} index={index} />
         ))}
         {addActive ? (
           <Accordion
@@ -107,12 +131,14 @@ export default function PostDetailScreen() {
           </Accordion>
         ) : null}
       </Box>
-      <SpeedDial
-        ariaLabel="SpeedDial basic example"
-        sx={{ position: "absolute", bottom: 16, right: 16 }}
-        icon={<SpeedDialIcon />}
-        onClick={handleSpeeddialClick}
-      ></SpeedDial>
+      {auth.loggedIn ? (
+        <SpeedDial
+          ariaLabel="SpeedDial basic example"
+          sx={{ position: "absolute", bottom: 16, right: 16 }}
+          icon={<SpeedDialIcon />}
+          onClick={handleSpeeddialClick}
+        ></SpeedDial>
+      ) : null}
     </Box>
   );
 }

@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { PostContext } from "../../../contexts/post";
-// import { GlobalStoreContext } from "../../../contexts/store";
 import {
   Box,
   Button,
@@ -17,7 +16,6 @@ import AddIcon from "@mui/icons-material/Add";
 
 export default function PostComment(payload, index) {
   const { postInfo } = useContext(PostContext);
-  // const { store } = useContext(GlobalStoreContext);
   const [addActive, setAddActive] = useState(false);
   const [commentInput, setInput] = useState("");
 
@@ -47,7 +45,7 @@ export default function PostComment(payload, index) {
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Box className="accordionSummary">
-          <Box className="flex-column">
+          <Box>
             <Box className="commentUserInfo">
               <AccountCircleIcon />
               <Typography
@@ -57,7 +55,7 @@ export default function PostComment(payload, index) {
                   fontWeight: `bold`,
                 }}
               >
-                {payload.commentUserName}
+                {payload.commenterUserName}
               </Typography>
             </Box>
             <Typography
@@ -66,7 +64,7 @@ export default function PostComment(payload, index) {
                 padding: `10px`,
               }}
             >
-              {payload.text}
+              {payload.content}
             </Typography>
           </Box>
           <AddIcon onClick={handlePlusIconClick}/>
@@ -77,7 +75,7 @@ export default function PostComment(payload, index) {
           bgcolor: "#b1d7c4",
         }}
       >
-        {payload.subComments.map((subcomment, index) => (
+        {payload?.subComments?.map((subcomment, index) => (
           <Subcomment key={`subcomment-${index}`} subcomment={subcomment} />
         ))}
         {addActive ? (

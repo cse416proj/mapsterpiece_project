@@ -13,8 +13,36 @@ export const createPost = (title, tags, content) => {
   });
 };
 
+export const getPostsByPostIds = (idList) => {
+  return api.get(`/userPosts/${idList}`)
+};
+
+export const deletePostById = (postId) => {
+  return api.delete(`/deletePost/${postId}`)
+}
+
+export const createComment = (postId, commenterUserName, content) => {
+  return api.post(`/createComment/${postId}`, {
+    commenterUserName: commenterUserName,
+    content: content,
+  });
+};
+
+export const getPostById = (postId) => {
+  return api.get(`/post/${postId}`);
+};
+
+export const getCommentsByCommentIds = (idList) => {
+  return api.get(`/postComments/${idList}`);
+};
+
 const apis = {
   createPost,
+  getPostsByPostIds,
+  deletePostById,
+  createComment,
+  getPostById,
+  getCommentsByCommentIds
 };
 
 export default apis;

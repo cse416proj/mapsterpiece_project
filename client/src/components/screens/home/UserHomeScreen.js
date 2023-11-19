@@ -1,19 +1,21 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
-import { DynamicCard } from '../../index';
+import { DynamicCard, DeletePostModal } from '../../index';
 import HomeCard from './HomeCard';
 import "./HomeScreen.css"
 
 import AuthContext from '../../../contexts/auth';
 import GlobalStoreContext from "../../../contexts/store";
+import PostContext from "../../../contexts/post";
 
 function UserHomeScreen(){
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
+    const { postInfo } = useContext(PostContext);
 
-    if(!auth || !auth.user){
-        return null;
-    }
+    useEffect(() => {
+        postInfo.getPostsByPostIds(auth.user.posts);
+    }, []);
 
     let mapCard = (
         <Box sx={{ width: "95%" }}>
@@ -25,7 +27,7 @@ function UserHomeScreen(){
 
     let postCard = (
         <Box sx={{ width: "95%" }}>
-            {store.allPosts.map((pair) => (
+            {postInfo.allPostsByUser?.map((pair) => (
                 <DynamicCard userData={null} mapData={null} postData={pair} />
             ))}
         </Box>
@@ -43,6 +45,7 @@ function UserHomeScreen(){
                 </Box>
                 <HomeCard isLoggedInUser={auth.user} />
             </Box>
+            <DeletePostModal />
         </Box>
     )
 }
