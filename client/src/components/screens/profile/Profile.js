@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { Box, Tabs, Tab } from '@mui/material';
 
 import ProfileCard from './ProfileCard';
@@ -6,12 +6,18 @@ import { DynamicCard, DeletePostModal } from '../../index';
 import ActionButton from './ActionButton';
 import UserContext from '../../../contexts/user';
 import AuthContext from '../../../contexts/auth';
+import PostContext from '../../../contexts/post';
 
 function Profile(){
     const { auth } = useContext(AuthContext);
     const { userInfo } = useContext(UserContext);
+    const { postInfo } = useContext(PostContext);
 
     const [tab, setTab] = useState('map');
+
+    useEffect(() => {
+        postInfo.getPostsByPostIds(auth.user.posts);
+    }, []);
 
     const handleChangeTab = (event, newTab) => {
         setTab(newTab);
@@ -28,7 +34,7 @@ function Profile(){
             ))
         }
         else{
-            return userInfo.currentPosts.map((post, index) => (
+            return postInfo.allPostsByUser?.map((post, index) => (
                 <DynamicCard key={`post-${index}`} userData={null} mapData={null} postData={post} />
             ))
         }

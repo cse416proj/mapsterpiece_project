@@ -37,6 +37,7 @@ function MapCard({mapData, clickHandler, deleteHandler}){
                     type='map'
                     comments={mapData.comments}
                     deleteHandler = {deleteHandler}
+                    currentUserName={mapData.ownerUserName}
                 />
             </CardContent>
         </Card>

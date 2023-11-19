@@ -1,4 +1,6 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useContext } from "react";
+import PostContext from "../post";
+import api from "./store-request-api";
 
 export const GlobalStoreContext = createContext({});
 
@@ -10,7 +12,7 @@ export const GlobalStoreActionType = {
   SET_CURRENT_POST: "SET_CURRENT_POST",
   SET_CURRENT_MAP: "SET_CURRENT_MAP",
   HIDE_MODALS: "HIDE_MODALS",
-  MARK_POST_FOR_DELETION:"MARK_POST_FOR_DELETION",
+  MARK_POST_FOR_DELETION: "MARK_POST_FOR_DELETION",
 };
 
 const CurrentView = {
@@ -26,23 +28,23 @@ const CurrentView = {
   USER_OWNED_MAPS: "USER_OWNED_MAPS",
   USER_OWNED_POSTS: "USER_OWNED_POSTS",
 
-  BIN_MAPS:"BIN_MAPS",
+  BIN_MAPS: "BIN_MAPS",
   CHOROPLETH_MAPS: "CHOROPLETH_MAPS",
   DOT_MAPS: "DOT_MAPS",
-  GRAD_MAPS: "GRAD_MAPS", 
+  GRAD_MAPS: "GRAD_MAPS",
   HEAT_MAPS: "HEAT_MAPS",
-  
-  BIN_POSTS:"BIN_POSTS",
+
+  BIN_POSTS: "BIN_POSTS",
   CHOROPLETH_POSTS: "CHOROPLETH_POSTS",
   DOT_POSTS: "DOT_POSTS",
-  GRAD_POSTS: "GRAD_POSTS", 
+  GRAD_POSTS: "GRAD_POSTS",
   HEAT_POSTS: "HEAT_POSTS",
 };
 
 const CurrentModal = {
   NONE: "NONE",
   DELETE_POST_MODAL: "DELETE_POST_MODAL",
-}
+};
 
 // hardcoded data to be replaced later on with actual data
 const fakeAllUsers = [
@@ -84,99 +86,6 @@ const fakeAllUsers = [
   },
 ];
 
-const fakeAllPosts = [
-  {
-    _id: {
-      $oid: "6579ea560946232834874dd4",
-    },
-    ownerUserName: "urmomUser",
-    title: "blablabla",
-    tags: ["Dot Distribution Map", "tag2"],
-    postBody:
-      "Good morning SWEETIE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat Good morning SWEETIE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat Good morning SWEETIE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
-    likedUsers: [],
-    dislikedUsers: [],
-    comments: [
-      {
-        commentUserName: "dummyCommentUser",
-        text: "dummy comment body",
-        dateCommented: "2023-11-05T19:17:42.514Z",
-        subComments: [
-          {
-            commentUserName: "subcomment user",
-            text: "dummy subcomment body",
-            dateCommented: "2023-11-05T19:17:42.514Z",
-          },
-        ],
-      },
-    ],
-    datePosted: {
-      $date: "2023-11-05T19:17:42.514Z",
-    },
-    __v: 0,
-  },
-  {
-    _id: {
-      $oid: "6550ea560946232834874dd4",
-    },
-    ownerUserName: "NOTurmomUser",
-    title: "this is a post",
-    tags: ["Choropleth Map", "tag2"],
-    postBody:
-      "hello there Lorem ipsum dolor sit amet, coem ipsum dolor sit amet, consedolor sit amet, consectetu nsedolor sit amet, consectetur adipiscing elit, sctetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nost exercitation ullamcem ipsum dolor sit amet, rud exercitation ullamcem ipsum dolor sit amet, consedolor sit amet, consectetu o laboris nisi ut aliquip ex ea commodo consequat",
-    likedUsers: [],
-    dislikedUsers: [],
-    comments: [
-      {
-        commentUserName: "dummyCommentUser",
-        text: "dummy comment body",
-        dateCommented: "2023-11-05T19:17:42.514Z",
-        subComments: [
-          {
-            commentUserName: "subcomment user",
-            text: "dummy subcomment body",
-            dateCommented: "2023-11-05T19:17:42.514Z",
-          },
-        ],
-      },
-    ],
-    datePosted: {
-      $date: "2023-11-05T19:17:42.514Z",
-    },
-    __v: 0,
-  },
-  {
-    _id: {
-      $oid: "6580ea560946232834874dd4",
-    },
-    ownerUserName: "SFkkk",
-    title: "MAAAAAp",
-    tags: ["Graduated Symbol Map", "tag2"],
-    postBody:
-      "BYE BRO Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
-    likedUsers: [],
-    dislikedUsers: [],
-    comments: [
-      {
-        commentUserName: "dummyCommentUser",
-        text: "dummy comment body",
-        dateCommented: "2023-11-05T19:17:42.514Z",
-        subComments: [
-          {
-            commentUserName: "subcomment user",
-            text: "dummy subcomment body",
-            dateCommented: "2023-11-05T19:17:42.514Z",
-          },
-        ],
-      },
-    ],
-    datePosted: {
-      $date: "2023-11-05T19:17:42.514Z",
-    },
-    __v: 0,
-  },
-];
-
 const fakeAllMaps = [
   {
     _id: {
@@ -184,10 +93,10 @@ const fakeAllMaps = [
     },
     ownerUserName: "AmaPuser",
     title: "some map title",
-    fileFormat:"GeoJSON",
+    fileFormat: "GeoJSON",
     // mapType: schema.types.mixed,
     // map: map object
-    tags: ["Bin Map", "Europe", "Population"],  // 1st tag should be the string of map type
+    tags: ["Bin Map", "Europe", "Population"], // 1st tag should be the string of map type
     comments: [
       {
         commentUserName: "dummy comment user",
@@ -230,8 +139,8 @@ const fakeAllMaps = [
     },
     ownerUserName: "GabbyDu",
     title: "some map title 2",
-    fileFormat:"Shapefile",
-    mapType: "Heat Map",    // schema.types.mixed?
+    fileFormat: "Shapefile",
+    mapType: "Heat Map", // schema.types.mixed?
     // map: map object
     tags: ["Heat Map", "Asia", "Population"],
     comments: [
@@ -304,10 +213,10 @@ const fakeAllMapsPosts = [
     },
     ownerUserName: "joeshmo",
     title: "some map title",
-    fileFormat:"GeoJSON",
+    fileFormat: "GeoJSON",
     // mapType: schema.types.mixed,
     // map: map object
-    tags: ["Bin Map", "Europe", "Population"],  // 1st tag should be the string of map type
+    tags: ["Bin Map", "Europe", "Population"], // 1st tag should be the string of map type
     comments: [
       {
         commentUserName: "dummy comment user",
@@ -350,8 +259,8 @@ const fakeAllMapsPosts = [
     },
     ownerUserName: "joeshmo",
     title: "some map title 2",
-    fileFormat:"Shapefile",
-    mapType: "Heat Map",    // schema.types.mixed?
+    fileFormat: "Shapefile",
+    mapType: "Heat Map", // schema.types.mixed?
     // map: map object
     tags: ["Heat Map", "Asia", "Population"],
     comments: [
@@ -414,41 +323,43 @@ const fakeAllMapsPosts = [
       $date: "2023-11-05T19:17:42.514Z",
     },
     __v: 0,
-  }
-]
+  },
+];
 
-const binMaps = fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Bin Map"});
-const choroplethMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Choropleth Map"});
-const dotMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"});
-const gradMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"});
-const heatMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Heat Map"});
+// const binMaps = fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Bin Map"});
+// const choroplethMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Choropleth Map"});
+// const dotMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"});
+// const gradMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"});
+// const heatMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Heat Map"});
 
-const binPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Bin Map"});
-const choroplethPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Choropleth Map"});
-const dotPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"});
-const gradPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"});
-const heatPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Heat Map"});
+// const binPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Bin Map"});
+// const choroplethPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Choropleth Map"});
+// const dotPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"});
+// const gradPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"});
+// const heatPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Heat Map"});
 
 function GlobalStoreContextProvider(props) {
+  const { postInfo } = useContext(PostContext);
+
   const [store, setStore] = useState({
-    currentModal : CurrentModal.NONE,
+    currentModal: CurrentModal.NONE,
     currentView: CurrentView.USER_HOME,
     allUsers: fakeAllUsers,
-    allPosts: fakeAllPosts,
+    allPosts: [],
     allMaps: fakeAllMaps,
     allMapsPosts: fakeAllMapsPosts,
 
-    binMaps: binMaps,
-    choroplethMaps: choroplethMaps, 
-    dotMaps: dotMaps,
-    gradMaps: gradMaps,
-    heatMaps: heatMaps, 
+    // binMaps: binMaps,
+    // choroplethMaps: choroplethMaps,
+    // dotMaps: dotMaps,
+    // gradMaps: gradMaps,
+    // heatMaps: heatMaps,
 
-    binPosts: binPosts,
-    choroplethPosts: choroplethPosts, 
-    dotPosts: dotPosts,
-    gradPosts: gradPosts,
-    heatPosts: heatPosts, 
+    // binPosts: binPosts,
+    // choroplethPosts: choroplethPosts,
+    // dotPosts: dotPosts,
+    // gradPosts: gradPosts,
+    // heatPosts: heatPosts,
 
     postMarkedForDeletion: null,
   });
@@ -461,7 +372,7 @@ function GlobalStoreContextProvider(props) {
       // placeholder to be replace later on
       case GlobalStoreActionType.LOAD_ALL_MAPS:
         return setStore({
-          currentModal : CurrentModal.NONE,
+          currentModal: CurrentModal.NONE,
           currentView: CurrentView.USER_HOME,
           allUsers: [],
           allPosts: [],
@@ -469,37 +380,44 @@ function GlobalStoreContextProvider(props) {
           allMapsPosts: [],
 
           binMaps: [],
-          choroplethMaps: [], 
+          choroplethMaps: [],
           dotMaps: [],
           gradMaps: [],
-          heatMaps: [], 
+          heatMaps: [],
 
           binPosts: [],
-          choroplethPosts: [], 
+          choroplethPosts: [],
           dotPosts: [],
           gradPosts: [],
-          heatPosts: [], 
+          heatPosts: [],
 
           postMarkedForDeletion: null,
         });
+      case GlobalStoreActionType.LOAD_ALL_POSTS:
+        return setStore((prevStore) => ({
+          ...store,
+          currentModal: CurrentModal.NONE,
+          currentView: CurrentView.ALL_POSTS,
+          allPosts: payload,
+        }));
       case GlobalStoreActionType.MARK_CURRENT_SCREEN:
         return setStore((prevStore) => ({
-            ...prevStore,
-            currentModal : CurrentModal.NONE,
-            currentView: payload,
-            postMarkedForDeletion: null
+          ...prevStore,
+          currentModal: CurrentModal.NONE,
+          currentView: payload,
+          postMarkedForDeletion: null,
         }));
       case GlobalStoreActionType.MARK_POST_FOR_DELETION:
         return setStore((prevStore) => ({
           ...prevStore,
           currentModal: CurrentModal.DELETE_POST_MODAL,
-          postMarkedForDeletion: payload[0]   // temp setup 
+          postMarkedForDeletion: payload,
         }));
       case GlobalStoreActionType.HIDE_MODALS:
         setStore((prevStore) => ({
           ...prevStore,
           currentModal: CurrentModal.NONE,
-          postMarkedForDeletion: null
+          postMarkedForDeletion: null,
         }));
       default:
         return store;
@@ -514,43 +432,47 @@ function GlobalStoreContextProvider(props) {
     });
   };
 
-  store.closeModal = function(){
+  store.closeModal = function () {
     storeReducer({
-        type: GlobalStoreActionType.HIDE_MODALS,
-        payload: {}
-    });    
-  }
+      type: GlobalStoreActionType.HIDE_MODALS,
+      payload: {},
+    });
+  };
 
-  // need modification
-  store.markPostForDeletion = function(){
-    console.log(fakeAllPosts);
+  store.markPostForDeletion = function (postData) {
     storeReducer({
       type: GlobalStoreActionType.MARK_POST_FOR_DELETION,
-      payload: {fakeAllPosts},    // tmp setup to reveal post delete modal
-  }); 
-  }
+      payload: postData,
+    });
+  };
 
-  // store.deleteMarkedPost = function(){}
-
-  store.getData = function(currScreen){
+  store.getData = function (currScreen) {
     const screenDataDict = {
-      "ALL_USERS": store.allUsers,
-      "ALL_MAPS": store.allMaps,
-      "ALL_MAPS_POSTS": store.allMapsPosts,
-      "BIN_MAPS": store.binMaps,
-      "CHOROPLETH_MAPS": store.choroplethMaps,
-      "DOT_MAPS": store.dotMaps,
-      "GRAD_MAPS": store.gradMaps,
-      "HEAT_MAPS": store.heatMaps,
-      "ALL_POSTS": store.allPosts,
-      "BIN_POSTS": store.binPosts,
-      "CHOROPLETH_POSTS": store.choroplethPosts,
-      "DOT_POSTS": store.dotPosts,
-      "GRAD_POSTS": store.gradPosts,
-      "HEAT_POSTS": store.heatPosts,
-    }
-    return (currScreen in screenDataDict) ? screenDataDict[currScreen] : null;
-  }
+      ALL_USERS: store.allUsers,
+      ALL_MAPS: store.allMaps,
+      ALL_MAPS_POSTS: store.allMapsPosts,
+      BIN_MAPS: store.binMaps,
+      CHOROPLETH_MAPS: store.choroplethMaps,
+      DOT_MAPS: store.dotMaps,
+      GRAD_MAPS: store.gradMaps,
+      HEAT_MAPS: store.heatMaps,
+      ALL_POSTS: store.allPosts,
+      BIN_POSTS: store.binPosts,
+      CHOROPLETH_POSTS: store.choroplethPosts,
+      DOT_POSTS: store.dotPosts,
+      GRAD_POSTS: store.gradPosts,
+      HEAT_POSTS: store.heatPosts,
+    };
+    return currScreen in screenDataDict ? screenDataDict[currScreen] : null;
+  };
+
+  store.getAllPosts = async function () {
+    const response = await api.getAllPosts();
+    storeReducer({
+      type: GlobalStoreActionType.LOAD_ALL_POSTS,
+      payload: response.data,
+    });
+  };
 
   return (
     <GlobalStoreContext.Provider

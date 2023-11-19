@@ -18,12 +18,7 @@ getLoggedIn = async (req, res) => {
 
         return res.status(200).json({
             loggedIn: true,
-            user: {
-                firstName: loggedInUser.firstName,
-                lastName: loggedInUser.lastName,
-                email: loggedInUser.email,
-                userName: loggedInUser.userName
-            }
+            user: loggedInUser
         })
     } catch (err) {
         res.json(false);
@@ -71,12 +66,7 @@ loginUser = async (req, res) => {
             sameSite: true
         }).status(200).json({
             success: true,
-            user: {
-                firstName: existingUser.firstName,
-                lastName: existingUser.lastName,  
-                userName: existingUser.userName,
-                email: existingUser.email              
-            }
+            user: existingUser
         })
 
     } catch (err) {
@@ -157,12 +147,7 @@ registerUser = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            user: {
-                firstName: savedUser.firstName,
-                lastName: savedUser.lastName,  
-                email: savedUser.email,
-                userName: savedUser.userName                    
-            }
+            user: savedUser
         })
     } catch (err) {
         console.error(err);

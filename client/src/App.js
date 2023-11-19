@@ -32,7 +32,7 @@ function App() {
             <Route path='/profile' element={<Profile/>}></Route>
             <Route path="/search" element={<SearchScreen/>}></Route>
             <Route path="/community" element={<CommunityScreen/>}></Route>
-            <Route path="/post-detail" element={<PostDetailScreen/>}></Route>
+            <Route path="/post-detail/:postId" element={<PostDetailScreen/>}></Route>
             <Route path="/map-edit" element={<MapEditScreen/>}></Route>
           </Routes>
         </Box>
