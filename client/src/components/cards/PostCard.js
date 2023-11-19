@@ -31,9 +31,9 @@ function PostCard({postData, clickHandler, deleteHandler}){
                     onClick={clickHandler}
                 >
                     {
-                        (postData.postBody.length > 200) ? 
-                            `${postData.postBody.substring(0,200)}...`
-                            : postData.postBody
+                        (postData.content.length > 200) ? 
+                            `${postData.content.substring(0,200)}...`
+                            : postData.content
                     }
                 </Typography>
 
@@ -42,6 +42,7 @@ function PostCard({postData, clickHandler, deleteHandler}){
                     comments={postData.comments}
                     clickHandler={clickHandler}
                     deleteHandler = {deleteHandler}
+                    currentUserName={postData.ownerUserName}
                 />
             </CardContent>
         </Card>

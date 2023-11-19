@@ -2,10 +2,12 @@ import React, { useContext, useState, useEffect } from "react";
 import { Typography, Box } from "@mui/material";
 
 import { GlobalStoreContext } from "../../../contexts/store";
+import {PostContext} from "../../../contexts/post";
 import { SideNavBar, SearchBar, UsersCardSection, MapsCardSection, PostsCardSection, DeletePostModal } from "../../index";
 
 export default function CommunityScreen() {
   const { store } = useContext(GlobalStoreContext);
+  const { postInfo } = useContext(PostContext);
 
   const [search, setSearch] = useState('');
   const [listCard, setListCard] = useState(null);
@@ -17,6 +19,10 @@ export default function CommunityScreen() {
       setCurrScreen(store?.currentView);
     }
   }, [store?.currentView]);
+
+  useEffect(() => {
+    store.getAllPosts();
+  }, []);
 
   // Now update list card rendering; reason: store changes in Store or search changes in SearchScreen
   useEffect(() => {

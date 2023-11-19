@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { PostContext } from "../../../contexts/post";
-// import { GlobalStoreContext } from "../../../contexts/store";
+import AuthContext from "../../../contexts/auth";
 import {
   Box,
   Button,
@@ -17,13 +17,14 @@ import AddIcon from "@mui/icons-material/Add";
 
 export default function PostComment(payload, index) {
   const { postInfo } = useContext(PostContext);
-  // const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
   const [addActive, setAddActive] = useState(false);
   const [commentInput, setInput] = useState("");
 
-  index = payload.index;
-  function handlePlusIconClick() {
-    postInfo.setCurrentComment(index);
+  payload = payload.payload;
+  function handlePlusIconClick(event) {
+    event.stopPropagation();
+    postInfo.setCurrentComment(payload);
     setAddActive(true);
   }
 
@@ -32,78 +33,90 @@ export default function PostComment(payload, index) {
   }
 
   function handleSubmitComment() {
-    postInfo.addCommentToCurrentComment(commentInput);
+    postInfo.createSubcomment(payload._id, auth.user.userName, commentInput);
     setAddActive(false);
   }
 
-  payload = payload.payload;
+  function handleSetEditFalse() {
+    setAddActive(false);
+  }
+
   return (
-    <Accordion
-      sx={{
-        bgcolor: "#ddebe4",
-        width: "80vw",
-        marginTop: "2vh",
-      }}
-    >
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Box className="accordionSummary">
-          <Box className="flex-column">
-            <Box className="commentUserInfo">
-              <AccountCircleIcon />
+    <div>
+      <Accordion
+        sx={{
+          bgcolor: "#ddebe4",
+          width: "80vw",
+          marginTop: "2vh",
+        }}
+      >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Box className="accordionSummary">
+            <Box>
+              <Box className="commentUserInfo">
+                <AccountCircleIcon />
+                <Typography
+                  style={{
+                    textAlign: `start`,
+                    padding: `10px`,
+                    fontWeight: `bold`,
+                  }}
+                >
+                  {payload.commenterUserName}
+                </Typography>
+              </Box>
               <Typography
                 style={{
                   textAlign: `start`,
                   padding: `10px`,
-                  fontWeight: `bold`,
                 }}
               >
-                {payload.commentUserName}
+                {payload.content}
               </Typography>
             </Box>
-            <Typography
-              style={{
-                textAlign: `start`,
-                padding: `10px`,
-              }}
-            >
-              {payload.text}
-            </Typography>
+            {auth.loggedIn ? <AddIcon onClick={handlePlusIconClick} /> : null}
           </Box>
-          <AddIcon onClick={handlePlusIconClick}/>
+        </AccordionSummary>
+        <AccordionDetails
+          sx={{
+            bgcolor: "#b1d7c4",
+          }}
+        >
+          {payload?.subComments?.map((subcomment, index) => (
+            <Subcomment key={`subcomment-${index}`} subcomment={subcomment} />
+          ))}
+        </AccordionDetails>
+      </Accordion>
+      {addActive ? (
+        <Box
+          className="commentCard"
+          sx={{
+            bgcolor: "#b1d7c4",
+          }}
+        >
+          <Paper
+            component="form"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              width: 400,
+              marginLeft: "10px",
+            }}
+          >
+            <InputBase
+              sx={{ ml: 1, flex: 1 }}
+              placeholder="Enter your comments here..."
+              onChange={handleInputChange}
+              autoFocus
+              onBlur={handleSetEditFalse}
+            />
+            <Button variant="contained" onMouseDown={handleSubmitComment}>
+              Submit
+            </Button>
+          </Paper>
         </Box>
-      </AccordionSummary>
-      <AccordionDetails
-        sx={{
-          bgcolor: "#b1d7c4",
-        }}
-      >
-        {payload.subComments.map((subcomment, index) => (
-          <Subcomment key={`subcomment-${index}`} subcomment={subcomment} />
-        ))}
-        {addActive ? (
-          <Box className="commentCard">
-            <Paper
-              component="form"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                width: 400,
-                marginLeft: "10px",
-              }}
-            >
-              <InputBase
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Enter your comments here..."
-                onChange={handleInputChange}
-              />
-              <Button variant="contained" onClick={handleSubmitComment}>
-                Submit
-              </Button>
-            </Paper>
-          </Box>
-        ) : null}
-      </AccordionDetails>
-    </Accordion>
+      ) : null}
+    </div>
   );
 }
 
@@ -120,7 +133,7 @@ function Subcomment(subcomment) {
             fontWeight: `bold`,
           }}
         >
-          {subcomment.commentUserName}
+          {subcomment.commenterUserName}
         </Typography>
       </Box>
       <Typography
@@ -129,7 +142,7 @@ function Subcomment(subcomment) {
           padding: `10px`,
         }}
       >
-        {subcomment.text}
+        {subcomment.content}
       </Typography>
     </Box>
   );

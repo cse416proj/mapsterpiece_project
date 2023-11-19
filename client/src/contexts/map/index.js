@@ -1,7 +1,11 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import JSZip from 'jszip';
 import * as shapefile from 'shapefile';
+
+import api from "./map-request-api";
+import AuthContext from "../auth";
 
 const MapContext = createContext();
 
@@ -37,6 +41,9 @@ export const fakeMapContent = {
 };
 
 export function MapContextProvider({children}){
+    const { auth } = useContext(AuthContext);
+    const navigate = useNavigate();
+    
     const [mapInfo, setMapInfo] = useState({
         title: '',
         fileFormat: '',
@@ -46,6 +53,7 @@ export function MapContextProvider({children}){
         shpBuffer: null,
         dbfBuffer: null,
         map: null,
+        errorMessage: ''
         // download: false,
         // downloadFormat: ''
     });
@@ -60,7 +68,7 @@ export function MapContextProvider({children}){
         const shpBuffer = mapInfo.shpBuffer;
         const dbfBuffer = mapInfo.dbfBuffer;
 
-        if(shpBuffer && dbfBuffer) {
+        if(mapInfo.fileFormat === 'Shapefiles' && shpBuffer && dbfBuffer) {
             let features = [];
             shapefile.open(shpBuffer, dbfBuffer).then((source) =>
                 source.read().then(function log(result) {
@@ -337,33 +345,48 @@ export function MapContextProvider({children}){
         return false;
     }
 
-    // set fileFormat(shp/geojson/kml) for mapInfo
-    mapInfo.uploadMap = (map) => {
-        reducer({
-            type: ActionType.UPLOAD_MAP,
-            payload: map
-        })
-    }
+    mapInfo.createMap = (title, fileFormat, tags) => {
+        // shapefile by default
+        let mapContent = mapInfo.fileContent;
 
-    // create map based on fileFormat & content
-    mapInfo.createMap = () => {
-        mapInfo.uploadMap(mapInfo.fakeFileContent);
+        if(mapInfo.fileFormat === 'GeoJSON'){
+            mapContent = JSON.parse(mapInfo.fileContent);
+        }
+        else if(mapInfo.fileFormat === 'Keyhole(KML)'){
+            mapContent = new DOMParser().parseFromString(mapInfo.fileContent, 'text/xml');
+        }
 
-        // // if(mapInfo.fileFormat === 'GeoJSON'){
-        // //     mapInfo.uploadMap(JSON.parse(mapInfo.fileContent));
-        // // }
-        // // else if(mapInfo.fileFormat === 'Shapefiles'){
-        // //     mapInfo.uploadMap(mapInfo.fileContent);
-        // // }
-        // // else if(mapInfo.fileFormat === 'Keyhole(KML)'){
-        // //     const kmlText = new DOMParser().parseFromString(mapInfo.fileContent, 'text/xml');
-        // //     mapInfo.uploadMap(kmlText);
-        // // }
-        // else{
-        //     return false;
-        // }
+        const dummyContent = {
+            "type": "FeatureCollection",
+            "features": []
+        };
 
-        return true;
+        // create map for user
+        const user = auth.user;
+        if(user){
+            async function asyncCreateMap(userName, title, fileFormat, mapContent, tags){
+                const response = await api.createMap(userName, title, fileFormat, mapContent, tags);
+                if(response.status === 201){
+                    navigate("/");
+                    reducer({
+                        type: ActionType.UPLOAD_MAP,
+                        payload: {
+                            map: mapInfo.fakeFileContent,
+                        }
+                    })
+                }
+                else{
+                    reducer({
+                        type: ActionType.UPLOAD_MAP,
+                        payload: {
+                            map: null,
+                            errorMessage: response.data.errorMessage
+                        }
+                    })
+                }
+            }
+            asyncCreateMap(user.userName, title, fileFormat, dummyContent, tags);
+        }
     }
 
     // mapInfo.cancelDownload = () => {

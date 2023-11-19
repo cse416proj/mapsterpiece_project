@@ -11,7 +11,7 @@ import { UserContext } from "../../contexts/user";
 
 import GlobalStoreContext from "../../contexts/store/index";
 
-export default function DynamicCard({userData, mapData, postData}) {
+export default function DynamicCard({ userData, mapData, postData }) {
   const navigate = useNavigate();
   const { postInfo } = useContext(PostContext);
   const { userInfo } = useContext(UserContext);
@@ -28,35 +28,54 @@ export default function DynamicCard({userData, mapData, postData}) {
     event.stopPropagation();
     event.preventDefault();
     // store.setCurrentMap(payload.mapData)
-    navigate("/map-edit");      // ##temporary##
+    navigate("/map-edit"); // ##temporary##
   }
 
   function handlePostCardClick(event) {
     event.stopPropagation();
     event.preventDefault();
     postInfo.setCurrentPost(postData);
-    navigate("/post-detail");
+    navigate(`/post-detail/${postData._id}`);
   }
 
-  function handleDelete(event){
+  function handleDelete(event) {
     event.stopPropagation();
     event.preventDefault();
-    console.log('handleDeletePost');
-    store.markPostForDeletion();
+    store.markPostForDeletion(postData);
   }
 
   let cardElement = "";
 
   if (userData) {
-    cardElement = <UserCard userName={userData.userName} clickHandler={handleUserCardClick}/>;
+    cardElement = (
+      <UserCard
+        userName={userData.userName}
+        clickHandler={handleUserCardClick}
+      />
+    );
   } else if (mapData) {
-    cardElement = <MapCard mapData={mapData} clickHandler={handleMapCardClick} deleteHandler={handleDelete}/>;
+    cardElement = (
+      <MapCard
+        mapData={mapData}
+        clickHandler={handleMapCardClick}
+        deleteHandler={handleDelete}
+      />
+    );
   } else if (postData) {
-    cardElement = <PostCard postData={postData} clickHandler={handlePostCardClick} deleteHandler={handleDelete}/>;
-  }
-  else{
+    cardElement = (
+      <PostCard
+        postData={postData}
+        clickHandler={handlePostCardClick}
+        deleteHandler={handleDelete}
+      />
+    );
+  } else {
     cardElement = null;
   }
 
-  return <Box>{cardElement}</Box>;
+  return (
+    <Box>
+      {cardElement}
+    </Box>
+  );
 }
