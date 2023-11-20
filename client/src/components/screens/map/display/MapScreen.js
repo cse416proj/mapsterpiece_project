@@ -12,31 +12,6 @@ function MapScreen(){
     const { mapInfo } = useContext(MapContext);
     const content = mapInfo.fakeFileContent;
 
-    // useEffect(() => {
-    //     // console.log('urmom');
-
-    //     // fetch('./HKG_adm.zip')
-    //     // .then(response => response.json())
-    //     // .then(fileContent => {
-    //     //     console.log('File content:', fileContent);
-    //     // })
-    //     // .catch(error => {
-    //     //     console.error('Error fetching file:', error);
-    //     // });
-
-    //     // mapInfo.setTitle('map');
-    
-    //     // // set fileFormat(shp/geojson/kml) for mapInfo
-    //     // mapInfo.setFileFormat("GeoJSON");
-    
-    //     // // set tags for mapInfo
-    //     // mapInfo.setTags(["GeoJSON"]);
-
-    //     // mapInfo.processFile(files);
-
-    //     // mapInfo.createMap();
-    // }, []);
-
     if(!mapInfo){
         return null;
     }

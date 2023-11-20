@@ -4,6 +4,7 @@ const StoreController = require('../controllers/store-controller');
 const auth = require('../auth');
 
 router.get('/allPosts', StoreController.getAllPosts);
+// router.get('/allMaps', StoreController.getAllPublishedMaps);
 router.get('/allUsers', StoreController.getAllUsers);
 
 module.exports = router;

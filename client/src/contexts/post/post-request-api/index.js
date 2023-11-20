@@ -1,8 +1,8 @@
 import axios from "axios";
 axios.defaults.withCredentials = true;
 const api = axios.create({
-  // baseURL: 'http://mapsterpiece.online:4000/api-post',
-  baseURL: "http://localhost:4000/api-post",
+  // baseURL: 'http://mapsterpiece.online:4000/post',
+  baseURL: "http://localhost:4000/post",
 });
 
 export const createPost = (title, tags, content) => {
@@ -15,6 +15,14 @@ export const createPost = (title, tags, content) => {
 
 export const getPostsByPostIds = (idList) => {
   return api.get(`/userPosts/${idList}`)
+};
+
+export const updatePostById = (postId, title, tags, content) => {
+  return api.put(`/updatePost/${postId}`, {
+    title: title,
+    tags: tags,
+    content: content,
+  });
 };
 
 export const deletePostById = (postId) => {
@@ -46,6 +54,7 @@ export const createSubcomment = (commentId, commenterUserName, content) => {
 const apis = {
   createPost,
   getPostsByPostIds,
+  updatePostById,
   deletePostById,
   createComment,
   getPostById,

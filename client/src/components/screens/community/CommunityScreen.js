@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { Typography, Box } from "@mui/material";
 
 import { GlobalStoreContext } from "../../../contexts/store";
-import {PostContext} from "../../../contexts/post";
+import { PostContext } from "../../../contexts/post";
 import { SideNavBar, SearchBar, UsersCardSection, MapsCardSection, PostsCardSection, DeletePostModal } from "../../index";
 
 export default function CommunityScreen() {
@@ -21,6 +21,7 @@ export default function CommunityScreen() {
   }, [store?.currentView]);
 
   useEffect(() => {
+    store.getAllPosts();
     store.getAllUsers();
   }, []);
 

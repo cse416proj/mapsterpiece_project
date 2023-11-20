@@ -74,6 +74,22 @@ function PostContextProvider(props) {
     }
   };
 
+  postInfo.updatePostById = async function (postId, title, tags, content) {
+    const response = await api.updatePostById(postId, title, tags, content);
+    console.log(response);
+    if (response.data.error) {
+      setPostInfo({
+        ...postInfo,
+        errorMessage: response.data.error,
+      });
+    } else {
+      setPostInfo({
+        ...postInfo,
+        errorMessage: null,
+      });
+    }
+  };
+
   postInfo.getPostsByPostIds = async function (idList) {
     const response = await api.getPostsByPostIds(idList);
     setPostInfo({

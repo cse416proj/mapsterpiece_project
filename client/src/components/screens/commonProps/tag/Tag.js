@@ -7,6 +7,14 @@ function Tag({index, tag, removeTag}){
         removeTag(index);
     }
 
+    if(removeTag === null){
+        return(
+            <Box className='flex-row' id='tag-display-view' variant='outlined'>
+                {tag}
+            </Box>
+        )
+    }
+
     return (
         <Box className='flex-row' id='tag-display' variant='outlined'>
             {tag}

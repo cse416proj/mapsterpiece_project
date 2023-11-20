@@ -208,7 +208,6 @@ function UserContextProvider(props) {
     const { type, payload } = action;
     switch (type) {
         case UserActionType.SET_CURRENT_USER: {
-          console.log(payload);
           return setUserInfo((prevUserInfo) => ({
               ...prevUserInfo,
               currentUser: payload

@@ -5,5 +5,6 @@ const auth = require('../auth');
 
 router.delete('/deleteUser/:userId', UserController.deleteUserById);
 router.get('/user/:userId', UserController.getUserById);
+router.post('/allPublicMaps', UserController.getAllPublishedMaps);
 
 module.exports = router;
