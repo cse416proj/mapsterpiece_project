@@ -108,7 +108,7 @@ export function MapContextProvider({children}){
 
     const reducer = (action) => {
         const { type, payload } = action;
-console.log(payload);
+// console.log(payload);
         switch(type){
             case ActionType.SET_MAP_TITLE:
                 return setMapInfo((prevMapInfo) => ({

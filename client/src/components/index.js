@@ -14,6 +14,7 @@ import AuthErrorModal from './modals/AuthErrorModal';
 import DeletePostModal from './modals/DeletePostModal';
 import DeleteAccountModal from './modals/DeleteAccountModal';
 import DeleteMapModal from './modals/DeleteMapModal';
+import UploadMapErrorModal from './modals/UploadMapErrorModal';
 
 import Profile from './screens/profile/Profile';
 import SearchScreen from './screens/search/SearchScreen';
@@ -54,6 +55,7 @@ export {
     DeletePostModal,
     DeleteAccountModal,
     DeleteMapModal,
+    UploadMapErrorModal,
     SideNavBar,
     SearchScreen,
     SearchBar,
