@@ -49,6 +49,7 @@ const CurrentModal = {
   DELETE_POST_MODAL: "DELETE_POST_MODAL",
   DELETE_COMMENT_MODAL: "DELETE_COMMENT_MODAL",
   DELETE_ACCOUNT_MODAL: "DELETE_ACCOUNT_MODAL",
+  UPLOAD_ERROR_MODAL: "UPLOAD_ERROR_MODAL",
 };
 
 const fakeAllMaps = [
@@ -376,6 +377,11 @@ function GlobalStoreContextProvider(props) {
           currentModal: CurrentModal.DELETE_ACCOUNT_MODAL,
           accountMarkedForDeletion: payload,
         }));
+      case GlobalStoreActionType.UPLOAD_ERROR:
+        return setStore((prevStore) => ({
+          ...prevStore,
+          currentModal: CurrentModal.UPLOAD_ERROR_MODAL,
+        }));
       case GlobalStoreActionType.HIDE_MODALS:
         setStore((prevStore) => ({
           ...prevStore,
@@ -397,6 +403,13 @@ function GlobalStoreContextProvider(props) {
       payload: screenSelected,
     });
     store.setData();
+  };
+
+  store.uploadError = function () {
+    storeReducer({
+      type: GlobalStoreActionType.UPLOAD_ERROR,
+      payload: {},
+    });
   };
 
   store.closeModal = function () {

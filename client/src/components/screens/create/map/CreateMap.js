@@ -5,6 +5,8 @@ import FileUpload from './FileUpload';
 import FileDropdown from './FileDropdown';
 import { Tags, ButtonSet } from '../../commonProps';
 import MapContext from '../../../../contexts/map';
+import {GlobalStoreContext} from "../../../../contexts/store";
+import UploadMapErrorModal from "../../../modals/UploadMapErrorModal";
 
 function CreateMap(){
     // set up file reference
@@ -12,6 +14,9 @@ function CreateMap(){
 
     // get map Info from MapContext
     const { mapInfo } = useContext(MapContext);
+
+    // get store
+    const { store } = useContext(GlobalStoreContext);
 
     // set up input variables
     const [title, setTitle] = useState('');
@@ -92,7 +97,8 @@ function CreateMap(){
     const handleSelectFile = (files) => {
         const processSuccess = mapInfo.processFile(files);
         if(!processSuccess){
-            alert('Unmatch upload file format.');
+            // alert('Unmatch upload file format.');
+            store.uploadError()
             clearInputFile();
             return;
         }
@@ -110,7 +116,8 @@ function CreateMap(){
                 return;
             }
             else if(!mapInfo.fileContent){
-                alert('Please upload a map file (geojson/shapefile/kml).');
+                store.uploadError()
+                // alert('Please upload a map file (geojson/shapefile/kml).');
             }
             else{
                 mapInfo.createMap(title, fileFormat, tags);
@@ -143,6 +150,7 @@ function CreateMap(){
             />
             <Tags tags={tags} setTags={setTags}/>
             <ButtonSet prompt='upload' handleClear={handleClear} handleUpload={handleUpload}/>
+            <UploadMapErrorModal/>
         </Box>
     )
 }
