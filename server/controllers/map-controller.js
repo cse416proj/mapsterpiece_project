@@ -172,7 +172,7 @@ deleteMapById = async (req, res) => {
     });
 };
 
-getAllMaps = async (req, res) => {
+getAllMapsFromCurrentUser = async (req, res) => {
     if (auth.verifyUser(req) === null) {
         return res.status(401).json({
             errorMessage: "Unauthorized",
@@ -286,12 +286,60 @@ unpublishMapById = async (req, res) => {
     await updateMapPublishStatusById(req, res, false);
 }
 
+getAllPublishedMapsFromGivenUser = async (req, res) => {
+    const userId = req.params.userId;
+  
+    // check user existence
+    if (!userId) {
+      return res.status(400).json({ errorMessage: "User id does not exist." });
+    }
+  
+    User.findById(userId, (err, user) => {
+      if(err){
+        return res.status(500).json({ errorMessage: err.message });
+      }
+      else if(!user){
+        return res.status(404).json({ errorMessage: "User is not found." });
+      }
+  
+      const mapIDs = user.maps;
+  
+      if(!mapIDs){
+        return res.status(404).json({ errorMessage: "Map Collection is not found." });
+      }
+  
+      // console.log(`Get maps from user ${userId}`);
+      // console.log(`user has ${mapIDs.length} maps`)
+  
+      Map.find({ _id: { $in: mapIDs } }, (err, maps) => {
+        if(err){
+          return res.status(500).json({ errorMessage: err.message });
+        }
+        else if(!maps){
+          return res.status(404).json({ errorMessage: "Maps are not found." });
+        }
+  
+        return res.status(200).json({
+          success: true,
+          maps: maps.filter((map) => map.isPublished)
+        });
+      });
+    })
+    .catch((error) => {
+      return res.status(400).json({
+        error,
+        errorMessage: "Failed to get all published maps from user, please try again."
+      });
+    });
+  }
+
 module.exports = {
     createMap,
     getMapById,
     deleteMapById,
-    getAllMaps,
+    getAllMapsFromCurrentUser,
     publishMapById,
-    unpublishMapById
+    unpublishMapById,
+    getAllPublishedMapsFromGivenUser
 };
   

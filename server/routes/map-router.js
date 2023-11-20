@@ -9,6 +9,9 @@ router.put('/publishMap/:id', auth.verify, MapController.publishMapById);
 router.put('/unpublishMap/:id', auth.verify, MapController.unpublishMapById);
 // router.put('/update/:id', auth.verify, MapController.updateMapById);
 router.delete('/delete/:id', auth.verify, MapController.deleteMapById);
-router.get('/allMaps', auth.verify, MapController.getAllMaps);
+router.get('/allMaps', auth.verify, MapController.getAllMapsFromCurrentUser);
+
+// no auth needed because it is for public profile
+router.get('/allPublicMaps/:userId', MapController.getAllPublishedMapsFromGivenUser);
 
 module.exports = router;

@@ -20,7 +20,6 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
   const open = Boolean(anchorEl);
 
   const isLoggedInUser = auth.user && auth.user.userName === currentUserName;
-  console.log(isLoggedInUser);
 
   const openMenu = (event) => {
     event.stopPropagation();
@@ -104,7 +103,7 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
       >
         <ChatBubbleOutlineIcon id={`${type}-action-icon`} />
         <Typography id={`${type}-action-button-text`}>
-          {comments.length} comments
+          {comments && comments.length} comments
         </Typography>
       </Box>
       <Box className="flex-row" id="action-button-container">

@@ -20,14 +20,39 @@ function Profile() {
   const [tab, setTab] = useState("map");
 
   useEffect(() => {
-    if(auth.user) {
-      if(auth.user.maps && auth.user.maps.length > 0){
+    async function loadUserInfo(userId){
+      console.log(`now load user info ${userId}`)
+      await userInfo.getUserById(userId);
+      console.log(userInfo.currentUser);
+    }
+
+    if(userId){
+      // call async function to load logged in users map
+      if(auth && auth.user && auth.user._id === userId){
         mapInfo.getAllUserMaps();
       }
+      else{
+        // call async function to load other user's info
+        loadUserInfo(userId);
+      }
     }
-    
-    userInfo.getUserById(userId);
-  }, []);
+  }, [userId]);
+
+  useEffect(() => {
+    // only load other user's publish map
+    async function loadUserMapInfo(userId){
+      await mapInfo.getAllPublishedMapsFromGivenUser(userId);
+      console.log(mapInfo.allMapsByUser);
+    }
+
+    if(userInfo.currentUser){
+      if(auth && auth.user && auth.user._id === userInfo.currentUser._id){
+        return;
+      }
+      console.log(`now load map info from user ${userId}`)
+      loadUserMapInfo(userInfo.currentUser._id);
+    }
+  }, [userInfo.currentUser]);
 
   const handleChangeTab = (event, newTab) => {
     setTab(newTab);
@@ -51,14 +76,16 @@ function Profile() {
       }
     } else {
       if(postInfo && postInfo.allPostsByUser){
-        return userInfo.currentUser?.posts?.map((post, index) => (
-          <DynamicCard
-            key={`post-${index}`}
-            userData={null}
-            mapData={null}
-            postData={post}
-          />
-        ));
+        if(userInfo.currentUser && userInfo.currentUser.posts){
+          return userInfo.currentUser?.posts?.map((post, index) => (
+            <DynamicCard
+              key={`post-${index}`}
+              userData={null}
+              mapData={null}
+              postData={post}
+            />
+          ));
+        }
       }
     }
   }
@@ -93,7 +120,7 @@ function Profile() {
           name={userInfo.getUserFullName()}
           userName={userInfo.getUserName()}
           numMaps={mapInfo && mapInfo.allMapsByUser && mapInfo.allMapsByUser.length}
-          numPosts={postInfo && postInfo.allPostsByUser && postInfo.allPostsByUser.length}
+          numPosts={userInfo && userInfo.currentUser && userInfo.currentUser?.posts.length}
           isLoggedInUser={isLoggedInUser}
         />
         <DeletePostModal />
