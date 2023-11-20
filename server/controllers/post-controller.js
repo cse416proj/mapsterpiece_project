@@ -89,15 +89,74 @@ deletePostById = async (req, res) => {
     return res.status(400).json({ errorMessage: "No post ID found." });
   }
 
-  Post.findByIdAndDelete(postId, (err, post) => {
+  Post.findById(postId, (err, post) => {
     if (err) {
       return res.status(500).json({ errorMessage: err.message });
-    } else if (!post) {
-      return res.status(404).json({ errorMessage: "Post not found." });
     }
 
-    return res.status(200).json(post);
+    async function findUser() {
+      await User.findOne({ userName: post.ownerUserName }, (err, user) => {
+        if (err) {
+          return res.status(500).json({ errorMessage: err.message });
+        } else if (!user) {
+          return res.status(404).json({ errorMessage: "User not found." });
+        }
+
+        user.posts.pull(postId);
+        user.save().then(() => {
+          post
+            .remove()
+            .then(() => {
+              return res.status(200).json({
+                message: "Post deleted successfully!",
+                post: post,
+              });
+            })
+            .catch((err) => {
+              return res.status(500).json({ errorMessage: err.message });
+            });
+        });
+      });
+    }
+
+    findUser();
   });
+};
+
+deleteCommentById = async (req, res) => {
+  const commentId = req.params.commentId;
+  if(!commentId){
+    return res.status(400).json({ errorMessage: "No comment ID found." });
+  }
+
+  Comment.findById(commentId, (err, comment) =>{
+    if (err) {
+      return res.status(500).json({ errorMessage: err.message });
+    }
+
+    async function findPost(){
+      try{
+        const post = await Post.findOne({comments: commentId});
+        if (!post){
+          return res.status(404).json({ errorMessage: 'Post not found.' });
+        }
+
+        post.comments.pull(commentId);
+        await post.save();
+        await comment.remove();
+
+        return res.status(200).json({
+          message: 'Comment deleted successfully!',
+          comment: comment,
+        });
+
+      } catch(err) {
+        return res.status(500).json({errorMessage: err.message});
+      }
+    }
+
+    findPost();
+  })
 };
 
 createComment = async (req, res) => {
@@ -182,4 +241,5 @@ module.exports = {
   getPostById,
   getCommentsByCommentIds,
   createSubcomment,
+  deleteCommentById,
 };

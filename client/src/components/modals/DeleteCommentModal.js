@@ -16,7 +16,8 @@ export default function DeleteCommentModal() {
   function handleDeleteModal(event) {
     event.stopPropagation();
     event.preventDefault();
-    // postInfo.deleteCommentById(store.commentMarkedForDeletion._id);
+    console.log("on click confirm delete comment");
+    postInfo.deleteCommentById(store.commentMarkedForDeletion._id);
     store.closeModal();
   }
 

@@ -51,7 +51,6 @@ export default function PostComment(payload, index) {
     event.preventDefault();
     console.log("on click trash can icon");
     console.log(payload);
-    
     postInfo.setCurrentComment(payload);
     store.markCommentForDeletion(payload);
 

@@ -96,7 +96,40 @@ function PostContextProvider(props) {
         tempIds.splice(index, 1);
       }
       store.getAllPosts();
-      postInfo.getPostsByPostIds(tempIds);
+      if (tempIds.length > 0) {
+        postInfo.getPostsByPostIds(tempIds);
+      } else {
+        setPostInfo({
+          ...postInfo,
+          allPostsByUser: [],
+        });
+      }
+    }
+  };
+
+  postInfo.deleteCommentById = async function (commentId) {
+    console.log("delete comment id: ",commentId);
+    const response = await api.deleteCommentById(commentId);
+    if (response.data.error){
+      setPostInfo({
+        ...postInfo, 
+        errorMessage: response.data.error,
+      });
+    }else{
+      let tempIds = postInfo.currentPost.comments;
+      console.log(tempIds);
+      const index = tempIds.indexOf(commentId);
+      if (index > -1){
+        tempIds.splice(index, 1);
+      }
+      if (tempIds.length > 0) {
+        postInfo.getCommentsByCommentIds(tempIds);
+      } else {
+        setPostInfo({
+          ...postInfo,
+          allCommentsForPost: [],
+        });
+      }
     }
   };
 
