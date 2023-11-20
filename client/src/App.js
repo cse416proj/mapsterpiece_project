@@ -35,9 +35,9 @@ function App() {
             <Route path='/profile/:userId' element={<Profile/>}></Route>
             <Route path="/search" element={<SearchScreen/>}></Route>
             <Route path="/community" element={<CommunityScreen/>}></Route>
+            <Route path="/map-detail/:mapId" element={<MapDetailsScreen/>}></Route>
+            <Route path="/map-edit/:mapId" element={<MapEditScreen/>}></Route>
             <Route path="/post-detail/:postId" element={<PostDetailScreen/>}></Route>
-            <Route path="/map-detail" element={<MapDetailsScreen/>}></Route>
-            <Route path="/map-edit" element={<MapEditScreen/>}></Route>
             <Route path="/post-edit/:postId" element={<PostEditScreen/>}></Route>
           </Routes>
         </Box>
