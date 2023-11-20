@@ -16,7 +16,7 @@ function Profile() {
   const [tab, setTab] = useState("map");
 
   useEffect(() => {
-    if (auth.user.posts.length > 0) {
+    if(auth.user && auth.user.posts.length > 0) {
       postInfo.getPostsByPostIds(auth.user.posts);
     }
   }, []);
@@ -63,12 +63,12 @@ function Profile() {
           >
             <Tab
               id={tab === "map" ? "profile-tab-selected" : "profile-tab"}
-              label="Create Map"
+              label="All Maps"
               value="map"
             />
             <Tab
               id={tab === "post" ? "profile-tab-selected" : "profile-tab"}
-              label="Create Post"
+              label="All Posts"
               value="post"
             />
           </Tabs>

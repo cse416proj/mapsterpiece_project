@@ -1,19 +1,21 @@
 import './styles/App.css';
 import './styles/Auth.css';
+import "./styles/HomeScreen.css";
 import './styles/Upload.css';
 import "./styles/Profile.css";
 import "./styles/Card.css";
 import "./styles/Query.css";
 import "./styles/Modal.css";
+import "./styles/Post.css";
 import "./styles/Map.css";
-import "./styles/EditMap.css";
+import "./styles/Edit.css";
 
 import { React } from "react";
 import { Box } from "@mui/material";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import { AppContextProvider } from './contexts';
-import { NavBar, HomeScreen, AuthScreen, Profile, CreateScreen, SearchScreen, CommunityScreen, PostDetailScreen, MapEditScreen, MaybeShowNavBar } from "./components";
+import { NavBar, HomeScreen, AuthScreen, Profile, CreateScreen, SearchScreen, CommunityScreen, PostDetailScreen, MapEditScreen, PostEditScreen, MaybeShowNavBar } from "./components";
 
 function App() {
   return (
@@ -34,6 +36,7 @@ function App() {
             <Route path="/community" element={<CommunityScreen/>}></Route>
             <Route path="/post-detail/:postId" element={<PostDetailScreen/>}></Route>
             <Route path="/map-edit" element={<MapEditScreen/>}></Route>
+            <Route path="/post-edit/:postId" element={<PostEditScreen/>}></Route>
           </Routes>
         </Box>
       </AppContextProvider>

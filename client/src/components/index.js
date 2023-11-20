@@ -16,7 +16,7 @@ import DeletePostModal from './modals/DeletePostModal';
 import Profile from './screens/profile/Profile';
 import SearchScreen from './screens/search/SearchScreen';
 import CreateScreen from './screens/create/CreateScreen';
-import Tags from './screens/create/tag/Tags';
+import { Tags, Tag } from './screens/commonProps';
 
 import DynamicCard from './cards/DynamicCard'
 import CommunityScreen from './screens/community/CommunityScreen';
@@ -28,9 +28,10 @@ import MapsPostsCardSection from './screens/listFilter/MapsPostsCardSelection';
 
 import PostDetailScreen from './screens/post/PostDetailScreen';
 import PostComment from './screens/post/PostComment';
+import PostEditScreen from './screens/edit/post/PostEditScreen';
 
 import MapScreen from './screens/map/display/MapScreen';
-import MapEditScreen from './screens/map/MapEditScreen';
+import MapEditScreen from './screens/edit/map/MapEditScreen';
 import MaybeShowNavBar from './appbars/MaybeShowNavBar';
 import MapEditTopBar from './appbars/MapEditTopBar';
 import MapEditSideBar from './appbars/MapEditSideBar';
@@ -53,6 +54,7 @@ export {
     SearchBar,
     Profile,
     Tags,
+    Tag,
     CreateScreen,
     DynamicCard,
     CommunityScreen,
@@ -62,6 +64,7 @@ export {
     MapsPostsCardSection,
     PostDetailScreen,
     PostComment,
+    PostEditScreen,
     MapScreen,
     MapEditScreen,
     MaybeShowNavBar,

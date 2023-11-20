@@ -1,0 +1,38 @@
+.home-content{
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#welcome-text{
+    margin: 2vh auto;
+}
+
+.home-feed{
+    width: 90vw;
+    height: 85vh;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.display-container{
+    width: 65vw;
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+}
+
+#home-navigation-card{
+    width: 20vw;
+    height: 55vh;
+    background-color: var(--primary-color);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 2.5vh 0;
+}

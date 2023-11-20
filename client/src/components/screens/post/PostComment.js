@@ -37,6 +37,12 @@ export default function PostComment(payload, index) {
     setAddActive(false);
   }
 
+  function handleOnSubmit(event){
+    event.stopPropagation();
+    event.preventDefault();
+    handleSubmitComment();
+  }
+
   function handleSetEditFalse() {
     setAddActive(false);
   }
@@ -47,7 +53,7 @@ export default function PostComment(payload, index) {
         sx={{
           bgcolor: "#ddebe4",
           width: "80vw",
-          marginTop: "2vh",
+          marginBottom: "2vh",
         }}
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -102,6 +108,7 @@ export default function PostComment(payload, index) {
               width: 400,
               marginLeft: "10px",
             }}
+            onSubmit={handleOnSubmit}
           >
             <InputBase
               sx={{ ml: 1, flex: 1 }}
@@ -110,7 +117,7 @@ export default function PostComment(payload, index) {
               autoFocus
               onBlur={handleSetEditFalse}
             />
-            <Button variant="contained" onMouseDown={handleSubmitComment}>
+            <Button id="comment-submit-btn" variant="contained" onMouseDown={handleSubmitComment}>
               Submit
             </Button>
           </Paper>

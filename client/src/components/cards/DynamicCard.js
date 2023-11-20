@@ -38,6 +38,13 @@ export default function DynamicCard({ userData, mapData, postData }) {
     navigate(`/post-detail/${postData._id}`);
   }
 
+  const handleEditPost = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    postInfo.setCurrentPost(postData);
+    navigate(`/post-edit/${postData._id}`);
+  }
+
   function handleDelete(event) {
     event.stopPropagation();
     event.preventDefault();
@@ -66,6 +73,7 @@ export default function DynamicCard({ userData, mapData, postData }) {
       <PostCard
         postData={postData}
         clickHandler={handlePostCardClick}
+        editHandler={handleEditPost}
         deleteHandler={handleDelete}
       />
     );

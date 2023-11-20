@@ -3,6 +3,7 @@ import AuthContext from "../../../contexts/auth";
 import { PostContext } from "../../../contexts/post";
 import { GlobalStoreContext } from "../../../contexts/store";
 import { useNavigate, useParams } from "react-router-dom";
+
 import {
   Typography,
   Box,
@@ -13,7 +14,10 @@ import {
   InputBase,
   Accordion,
 } from "@mui/material";
-import { PostComment } from "../../index";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+import { PostComment, Tag } from "../../index";
 
 export default function PostDetailScreen() {
   const navigate = useNavigate();
@@ -22,15 +26,21 @@ export default function PostDetailScreen() {
   const { postInfo } = useContext(PostContext);
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
+
   const [addActive, setAddActive] = useState(false);
   const [commentInput, setInput] = useState("");
+  const [tags, setTags] = useState([]);
+  const [tagsView, setTagsView] = useState(null);
 
   useEffect(() => {
     postInfo.getPostById(postId);
   }, []);
 
   useEffect(() => {
-    postInfo.getCommentsByCommentIds(postInfo.currentPost?.comments);
+    if(postInfo.currentPost){
+      postInfo.getCommentsByCommentIds(postInfo.currentPost?.comments);
+      setTags(postInfo.currentPost.tags);
+    }
   }, [postInfo.currentPost]);
 
   function handleAllPosts() {
@@ -55,81 +65,95 @@ export default function PostDetailScreen() {
     setAddActive(false);
   }
 
+  function handleOnSubmit(event){
+    event.stopPropagation();
+    event.preventDefault();
+    handleSubmitComment();
+  }
+
+  function handleEditPost(event){
+    event.stopPropagation();
+    event.preventDefault();
+    postInfo.setCurrentPost(postInfo.currentPost);
+    navigate(`/post-edit/${postInfo.currentPost._id}`);
+  }
+
+  const fabStyle = {
+    sx: {
+      bgcolor: 'var(--icon-hover)',
+      color: 'white',
+      '&:hover': {
+        bgcolor: 'var(--icon)',
+        color: 'white',
+      }
+    }
+  };
+
   if (!postInfo || !postInfo.currentPost) {
     return null;
   }
 
   return (
     <Box>
-      <Typography
-        style={{ textAlign: `start`, padding: `10px`, marginLeft: 0 }}
-        onClick={handleAllPosts}
-      >
-        {"<< All Posts"}
-      </Typography>
+      <Box className='flex-row' id='post-detail-bar'>
+        <Typography id='redirect-all-posts'onClick={handleAllPosts}>{"<< All Posts"}</Typography>
+        <Box id="post-btn-container">
+          <Button variant="outlined" id="post-outline-btn" onClick={handleEditPost}>
+            <EditIcon className="post-icon"/>
+            Edit Post
+          </Button>
+          <Button variant="contained" id="post-filled-btn">
+            <DeleteIcon className="post-icon"/>
+            Delete Post
+          </Button>
+        </Box>
+      </Box>
       <Box className="postScreenContent">
-        <Box
-          sx={{
-            bgcolor: "#ddebe4",
-            height: "10vh",
-            width: "80vw",
-            marginTop: "5vh",
-          }}
-        >
-          <Typography
-            style={{
-              textAlign: `start`,
-              padding: `10px`,
-              fontWeight: `bold`,
-              fontSize: `30px`,
-            }}
-          >
-            {postInfo.currentPost.title}
-          </Typography>
+        <Box className='flex-column' id='post-header-container'>
+          <Box className='flex-row' id="post-header">
+            <Typography id='post-title'>{postInfo.currentPost.title}</Typography>
+            <Box className='flex-row' id='tags-container'>
+              <Typography id='post-tags-text'>Tags:</Typography>
+              {
+                (tags.length === 0) ?
+                  null :
+                  tags.map((tag, index) => {
+                    return <Tag key={index} index={index} tag={tag} removeTag={null}/>;
+                  })
+              }
+            </Box>
+          </Box>
+          <Box id='post-content'>
+            <Typography style={{ textAlign: `start`, padding: `10px` }}>
+              {postInfo.currentPost.content}
+            </Typography>
+          </Box>
         </Box>
-        <Box
-          sx={{
-            bgcolor: "#ddebe4",
-            height: "20vh",
-            width: "80vw",
-            marginTop: "5vh",
-          }}
-        >
-          <Typography style={{ textAlign: `start`, padding: `10px` }}>
-            {postInfo.currentPost.content}
-          </Typography>
+        <Box id="post-comments">
+          {
+            postInfo.allCommentsForPost?.map((pair, index) => (
+              <PostComment key={`comment-${index}`} payload={pair} index={index} />
+            ))}
+            {addActive ? (
+              <Accordion id='post-accordion'>
+                <Paper
+                  component="form"
+                  id='post-form'
+                  onSubmit={handleOnSubmit}
+                >
+                  <InputBase
+                    sx={{ ml: 1, flex: 1 }}
+                    placeholder="Enter your comments here..."
+                    onChange={handleInputChange}
+                  />
+                  <Button variant="contained" id="comment-submit-btn" onClick={handleSubmitComment}>
+                    Submit
+                  </Button>
+                </Paper>
+              </Accordion>
+            ) : null
+          }
         </Box>
-        {postInfo.allCommentsForPost?.map((pair, index) => (
-          <PostComment key={`comment-${index}`} payload={pair} index={index} />
-        ))}
-        {addActive ? (
-          <Accordion
-            sx={{
-              bgcolor: "#ddebe4",
-              width: "80vw",
-              marginTop: "2vh",
-            }}
-          >
-            <Paper
-              component="form"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                width: 400,
-                marginLeft: "10px",
-              }}
-            >
-              <InputBase
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Enter your comments here..."
-                onChange={handleInputChange}
-              />
-              <Button variant="contained" onClick={handleSubmitComment}>
-                Submit
-              </Button>
-            </Paper>
-          </Accordion>
-        ) : null}
       </Box>
       {auth.loggedIn ? (
         <SpeedDial
@@ -137,7 +161,8 @@ export default function PostDetailScreen() {
           sx={{ position: "absolute", bottom: 16, right: 16 }}
           icon={<SpeedDialIcon />}
           onClick={handleSpeeddialClick}
-        ></SpeedDial>
+          FabProps={fabStyle}
+        />
       ) : null}
     </Box>
   );
