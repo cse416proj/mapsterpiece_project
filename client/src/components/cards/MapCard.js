@@ -3,15 +3,7 @@ import { Box, Card, CardContent, Typography, Chip, Stack } from "@mui/material";
 
 import ActionButtons from "./ActionButtons";
 
-function MapCard({mapData, clickHandler, deleteHandler}){
-    const navigate = useNavigate();
-
-    const handleEditMap = (event) => {
-        event.stopPropagation();
-        event.preventDefault();
-        navigate('/map-edit');
-    }
-
+function MapCard({mapData, clickHandler, editHandler, deleteHandler}){
     return(
         <Card className="individualDynamicCard" >
             <CardContent
@@ -47,7 +39,7 @@ function MapCard({mapData, clickHandler, deleteHandler}){
                     currentUserName={mapData.ownerUserName}
                     comments={mapData.comments}
                     deleteHandler = {deleteHandler}
-                    editHandler={handleEditMap}
+                    editHandler={editHandler}
                 />
             </CardContent>
         </Card>

@@ -21,7 +21,7 @@ export default function DynamicCard({ userData, mapData, postData }) {
     event.stopPropagation();
     event.preventDefault();
     userInfo.setCurrentUser(userData);
-    navigate("/profile");
+    navigate(`/profile/${userData._id}`);
   }
 
   function handleMapCardClick(event) {
@@ -45,6 +45,12 @@ export default function DynamicCard({ userData, mapData, postData }) {
     navigate(`/post-edit/${postData._id}`);
   }
 
+  const handleEditMap = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    navigate('/map-edit');
+  }
+
   function handleDelete(event) {
     event.stopPropagation();
     event.preventDefault();
@@ -65,6 +71,7 @@ export default function DynamicCard({ userData, mapData, postData }) {
       <MapCard
         mapData={mapData}
         clickHandler={handleMapCardClick}
+        editHandler={handleEditMap}
         deleteHandler={handleDelete}
       />
     );

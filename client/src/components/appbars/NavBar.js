@@ -40,7 +40,7 @@ function NavBar(){
     function handleViewProfile(event){
         closeMenu();
         userInfo.setCurrentUser(auth.user);
-        navigate('/profile');
+        navigate(`profile/${auth.user._id}`);
     }
 
     function handleLogout(event){

@@ -54,6 +54,7 @@ export default function PostComment(payload, index) {
           bgcolor: "#ddebe4",
           width: "80vw",
           marginBottom: "2vh",
+          marginTop: "2vh",
         }}
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>

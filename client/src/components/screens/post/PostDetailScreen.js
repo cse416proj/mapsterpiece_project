@@ -18,6 +18,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { PostComment, Tag } from "../../index";
+import { PostComment } from "../../index";
 
 export default function PostDetailScreen() {
   const navigate = useNavigate();
@@ -30,7 +31,6 @@ export default function PostDetailScreen() {
   const [addActive, setAddActive] = useState(false);
   const [commentInput, setInput] = useState("");
   const [tags, setTags] = useState([]);
-  const [tagsView, setTagsView] = useState(null);
 
   useEffect(() => {
     postInfo.getPostById(postId);
@@ -41,6 +41,14 @@ export default function PostDetailScreen() {
       postInfo.getCommentsByCommentIds(postInfo.currentPost?.comments);
       setTags(postInfo.currentPost.tags);
     }
+  }, [postInfo.currentPost]);
+
+  useEffect(() => {
+    postInfo.getPostById(postId);
+  }, []);
+
+  useEffect(() => {
+    postInfo.getCommentsByCommentIds(postInfo.currentPost?.comments);
   }, [postInfo.currentPost]);
 
   function handleAllPosts() {
@@ -154,16 +162,18 @@ export default function PostDetailScreen() {
             ) : null
           }
         </Box>
+        {
+          auth.loggedIn ? (
+            <SpeedDial
+              ariaLabel="SpeedDial basic example"
+              sx={{ position: "absolute", bottom: 16, right: 16 }}
+              icon={<SpeedDialIcon />}
+              onClick={handleSpeeddialClick}
+              FabProps={fabStyle}
+            />
+          ) : null
+        }
       </Box>
-      {auth.loggedIn ? (
-        <SpeedDial
-          ariaLabel="SpeedDial basic example"
-          sx={{ position: "absolute", bottom: 16, right: 16 }}
-          icon={<SpeedDialIcon />}
-          onClick={handleSpeeddialClick}
-          FabProps={fabStyle}
-        />
-      ) : null}
     </Box>
   );
 }

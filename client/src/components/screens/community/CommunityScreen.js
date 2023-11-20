@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { Typography, Box } from "@mui/material";
 
 import { GlobalStoreContext } from "../../../contexts/store";
-import {PostContext} from "../../../contexts/post";
+import { PostContext } from "../../../contexts/post";
 import { SideNavBar, SearchBar, UsersCardSection, MapsCardSection, PostsCardSection, DeletePostModal } from "../../index";
 
 export default function CommunityScreen() {
@@ -22,6 +22,7 @@ export default function CommunityScreen() {
 
   useEffect(() => {
     store.getAllPosts();
+    store.getAllUsers();
   }, []);
 
   // Now update list card rendering; reason: store changes in Store or search changes in SearchScreen

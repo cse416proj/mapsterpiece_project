@@ -22,7 +22,7 @@ export default function MapEditTopBar() {
     const open = Boolean(anchorEl);
 
     function handleMyMaps(){
-        navigate('/profile');
+        navigate(`/profile/${auth.user._id}`);
     }
     function handleExportPNG(){
         console.log("export PNG file");
