@@ -156,7 +156,7 @@ function Subcomment(subcomment) {
     postInfo.setCurrentSubcomment(subcomment);
     store.markSubcommentForDeletion(subcomment);
   }
-// console.log(postInfo.currentSubcommentIndex);
+console.log(postInfo.currentSubcommentIndex);   // success
 
   subcomment = subcomment.subcomment;
   return (

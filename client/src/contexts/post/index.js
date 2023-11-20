@@ -156,6 +156,7 @@ function PostContextProvider(props) {
       if (index > -1){
         tempIds.splice(index, 1);
       }
+      // store.getAllComments();
       if (tempIds.length > 0) {
         postInfo.getCommentsByCommentIds(tempIds);
       } else {
@@ -167,31 +168,32 @@ function PostContextProvider(props) {
     }
   };
 
-  postInfo.deleteSubCommById = async function (subId){
-    console.log("subcomment id for delete: ", subId);
-    const response = await api.deleteSubCommById(subId);
-    if (response.data.error){
-      setPostInfo({
-        ...postInfo, 
-        errorMessage: response.data.error,
-      });
-    }else{
-      let tempIds = postInfo.currentCommentIndex?.subComments;
-      console.log(postInfo.currentCommentIndex);
-      // const index = tempIds.indexOf(subId);
-      // if (index > -1){
-      //   tempIds.splice(index, 1);
-      // }
-      // if (tempIds.length > 0) {
-      //   postInfo.getSubcommsBySubcommsIds(tempIds);
-      // } else {
-      //   setPostInfo({
-      //     ...postInfo,
-      //     allSubcommentsForComments: [],
-      //   });
-      // }
-    }
-  }
+  // postInfo.deleteSubCommById = async function (subId){
+  //   console.log("subcomment id for delete: ", subId);
+  //   const response = await api.deleteSubCommById(subId);
+  //   if (response.data.error){
+  //     setPostInfo({
+  //       ...postInfo, 
+  //       errorMessage: response.data.error,
+  //     });
+  //   }else{
+  //     let tempIds = postInfo.currentSubcommentIndex?.subComments;
+  //     console.log(postInfo.currentSubcommentIndex);
+  //     const index = tempIds?.indexOf(subId);
+  //     if (index > -1){
+  //       tempIds.splice(index, 1);
+  //     }
+  //     // store.getAllPosts();
+  //     if (tempIds?.length > 0) {
+  //       postInfo.getSubcommsBySubcommsIds(tempIds);
+  //     } else {
+  //       setPostInfo({
+  //         ...postInfo,
+  //         allSubcommentsForComments: [],
+  //       });
+  //     }
+  //   }
+  // }
 
   postInfo.createComment = async function (postId, commenterUserName, content) {
     const response = await api.createComment(
