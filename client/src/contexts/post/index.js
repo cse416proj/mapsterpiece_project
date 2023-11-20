@@ -178,8 +178,8 @@ function PostContextProvider(props) {
       });
     }
     else{
-      let tempIds = postInfo.currentSubcommentIndex?.subComments;
-      console.log(postInfo.currentSubcommentIndex?.subComments);
+      let tempIds = postInfo.currentCommentIndex?.subComments;
+      console.log(postInfo.currentCommentIndex);
       const index = tempIds?.indexOf(subId);
       if (index > -1){
         tempIds.splice(index, 1);
@@ -190,48 +190,11 @@ function PostContextProvider(props) {
         setPostInfo({
           ...postInfo,
           allSubcommentsForComments: [],
+          // currentSubcommentIndex: [],
         });
       }
     }
   }
-
-  // postInfo.deleteSubCommById = async function (subId) {
-  //   try {
-  //     console.log("subcomment id for delete: ", subId);
-  
-  //     const response = await api.deleteSubCommById(subId);
-  //     // console.log(response.data.error);
-  
-  //     if (response.data.error) {
-  //       console.log("response err exists");
-  //       setPostInfo(prevPostInfo => ({
-  //         ...prevPostInfo,
-  //         errorMessage: response.data.error,
-  //       }));
-  //     } else {
-  //       console.log(postInfo.currentSubcommentIndex.subComments);
-  //       let tempIds = [...postInfo.currentSubcommentIndex.subComments];
-  //       console.log(tempIds);
-  
-  //       const index = tempIds.indexOf(subId);
-  //       if (index > -1) {
-  //         tempIds.splice(index, 1);
-  //       }
-  
-  //       if (tempIds.length > 0) {
-  //         console.log("calling get subcomments by ids", tempIds);
-  //         postInfo.getSubcommsBySubcommsIds(tempIds);
-  //       } else {
-  //         setPostInfo(prevPostInfo => ({
-  //           ...prevPostInfo,
-  //           allSubcommentsForComments: [],
-  //         }));
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error("Error deleting subcomment:", error.message);
-  //   }
-  // };
 
   postInfo.createComment = async function (postId, commenterUserName, content) {
     const response = await api.createComment(
@@ -269,12 +232,14 @@ function PostContextProvider(props) {
       return setPostInfo({
         ...postInfo, 
         allSubcommentsForComment: [],
+        // currentCommentIndex: [],
       });
     }
     const response = await api.getSubcommsBySubcommsIds(idList);
     setPostInfo({
       ...postInfo, 
-      allSubcommentsForComment: response.data
+      currentSubcommentIndex: response.data,
+      // allSubcommentsForComment: response.data
     });
   }
 

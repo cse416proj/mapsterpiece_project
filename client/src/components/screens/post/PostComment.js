@@ -60,6 +60,11 @@ export default function PostComment(payload, index) {
     store.markCommentForDeletion(payload);
   }
 
+  function handleExpand(event){
+    event.preventDefault();
+    postInfo.setCurrentComment(payload);
+  }
+
   return (
     <div>
       <Accordion
@@ -70,7 +75,7 @@ export default function PostComment(payload, index) {
           marginTop: "2vh",
         }}
       >
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon onClick={handleExpand} />}>
           <Box className="accordionSummary">
             <Box>
               <Box className="commentUserInfo">
