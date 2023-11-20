@@ -2,8 +2,6 @@ const Post = require("../models/post-model");
 const User = require("../models/user-model");
 const Comment = require("../models/comment-model");
 const Subcomment = require("../models/subcomment-model");
-const Comment = require("../models/comment-model");
-const Subcomment = require("../models/subcomment-model");
 const auth = require("../auth");
 
 createPost = async (req, res) => {
@@ -161,6 +159,9 @@ deletePostById = async (req, res) => {
     if (err) {
       return res.status(500).json({ errorMessage: err.message });
     }
+    else if(!post){
+      return res.status(404).json({ errorMessage: "Post not found." });
+    }
 
     async function findUser() {
       await User.findOne({ userName: post.ownerUserName }, (err, user) => {
@@ -168,6 +169,9 @@ deletePostById = async (req, res) => {
           return res.status(500).json({ errorMessage: err.message });
         } else if (!user) {
           return res.status(404).json({ errorMessage: "User not found." });
+        }
+        else if(user.userName !== post.ownerUserName){
+          return res.status(500).json({ errorMessage: "Username unmatched. User cannot delete other users' post." });
         }
 
         user.posts.pull(postId);

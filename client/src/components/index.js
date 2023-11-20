@@ -13,6 +13,7 @@ import AuthScreen from './screens/auth/AuthScreen';
 import AuthErrorModal from './modals/AuthErrorModal';
 import DeletePostModal from './modals/DeletePostModal';
 import DeleteAccountModal from './modals/DeleteAccountModal';
+import DeleteMapModal from './modals/DeleteMapModal';
 
 import Profile from './screens/profile/Profile';
 import SearchScreen from './screens/search/SearchScreen';
@@ -51,6 +52,7 @@ export {
     AuthErrorModal,
     DeletePostModal,
     DeleteAccountModal,
+    DeleteMapModal,
     SideNavBar,
     SearchScreen,
     SearchBar,

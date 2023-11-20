@@ -230,10 +230,6 @@ export function MapContextProvider({children}){
         })
     }
 
-    mapInfo.validateUpload = () => {
-
-    }
-
     // validate file format
     const validateFileFormat = (fileCount, fileType, fileType2, fileTypeSet) => {
         const isNotZip = fileCount !== 2 && fileType !== "zip";
@@ -356,6 +352,8 @@ export function MapContextProvider({children}){
             mapContent = new DOMParser().parseFromString(mapInfo.fileContent, 'text/xml');
         }
 
+        console.log(mapContent);
+
         const dummyContent = {
             "type": "FeatureCollection",
             "features": []
@@ -387,6 +385,23 @@ export function MapContextProvider({children}){
             }
             asyncCreateMap(user.userName, title, fileFormat, dummyContent, tags);
         }
+    }
+
+    mapInfo.deleteMapById = (mapId) => {
+        console.log(`delete map by id ${String(mapId)}`);
+
+        // create map for user
+        async function asyncDeleteMap(mapId){
+            const response = await api.deleteMapById(mapId);
+
+            if(response.status === 201){
+                navigate("/");
+            }
+            else{
+                console.log(response.data.errorMessage);
+            }
+        }
+        asyncDeleteMap(mapId);
     }
 
     // mapInfo.cancelDownload = () => {

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
-import { DynamicCard, DeletePostModal } from "../../index";
+import { DynamicCard, DeletePostModal, DeleteMapModal } from "../../index";
 import HomeNavCard from "./HomeNavCard";
 
 import AuthContext from "../../../contexts/auth";
@@ -51,6 +51,7 @@ function UserHomeScreen() {
         <HomeNavCard/>
       </Box>
       <DeletePostModal />
+      <DeleteMapModal/>
     </Box>
   );
 }

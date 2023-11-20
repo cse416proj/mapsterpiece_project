@@ -81,7 +81,7 @@ export default function PostComment(payload, index) {
                 {payload.content}
               </Typography>
             </Box>
-            {auth.loggedIn ? <AddIcon onClick={handlePlusIconClick} /> : null}
+            {(auth.loggedIn) ? <AddIcon onClick={handlePlusIconClick} /> : null}
           </Box>
         </AccordionSummary>
         <AccordionDetails

@@ -3,7 +3,7 @@ import { Typography, Box } from "@mui/material";
 
 import { GlobalStoreContext } from "../../../contexts/store";
 import { PostContext } from "../../../contexts/post";
-import { SideNavBar, SearchBar, UsersCardSection, MapsCardSection, PostsCardSection, DeletePostModal } from "../../index";
+import { SideNavBar, SearchBar, UsersCardSection, MapsCardSection, PostsCardSection, DeletePostModal, DeleteMapModal } from "../../index";
 
 export default function CommunityScreen() {
   const { store } = useContext(GlobalStoreContext);
@@ -66,6 +66,7 @@ export default function CommunityScreen() {
           {listCard}
         </Box>
         <DeletePostModal/>
+        <DeleteMapModal/>
       </Box>
     </Box>
   );

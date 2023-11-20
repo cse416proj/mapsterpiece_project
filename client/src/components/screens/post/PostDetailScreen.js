@@ -13,12 +13,13 @@ import {
   Paper,
   InputBase,
   Accordion,
+  Alert,
 } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { PostComment, Tag } from "../../index";
-import { PostComment } from "../../index";
+import { DeletePostModal } from "../../index";
 
 export default function PostDetailScreen() {
   const navigate = useNavigate();
@@ -31,6 +32,9 @@ export default function PostDetailScreen() {
   const [addActive, setAddActive] = useState(false);
   const [commentInput, setInput] = useState("");
   const [tags, setTags] = useState([]);
+
+  // success alert
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
 
   useEffect(() => {
     postInfo.getPostById(postId);
@@ -86,6 +90,42 @@ export default function PostDetailScreen() {
     navigate(`/post-edit/${postInfo.currentPost._id}`);
   }
 
+  function handleDeletePost(event){
+    event.stopPropagation();
+    event.preventDefault();
+    store.markPostForDeletion(postInfo.currentPost);
+
+    // if(store.currentModal !== "DELETE_POST_MODAL" && postInfo.errorMessage === null) {
+    //   setDeleteSuccess(true);
+    //   setTimeout(() => {
+    //     setDeleteSuccess(false);
+    //     navigate('/');
+    //   }, 1000);
+    // }
+  }
+
+  const isLoggedInUser = auth.user && auth.user.userName === postInfo.currentPost.ownerUserName;
+
+  function renderButton(){
+    if(isLoggedInUser){
+      return(
+        <Box id="post-btn-container">
+          <Button variant="outlined" id="post-outline-btn" onClick={handleEditPost}>
+            <EditIcon className="post-icon"/>
+            Edit Post
+          </Button>
+          <Button variant="contained" id="post-filled-btn" onClick={handleDeletePost}>
+            <DeleteIcon className="post-icon"/>
+            Delete Post
+          </Button>
+        </Box>
+      )
+    }
+    else{
+      return null;
+    }
+  }
+
   const fabStyle = {
     sx: {
       bgcolor: 'var(--icon-hover)',
@@ -103,31 +143,29 @@ export default function PostDetailScreen() {
 
   return (
     <Box>
+      {deleteSuccess && <Alert severity="success">Post has been deleted! Redirecting...</Alert>}
+
       <Box className='flex-row' id='post-detail-bar'>
         <Typography id='redirect-all-posts'onClick={handleAllPosts}>{"<< All Posts"}</Typography>
-        <Box id="post-btn-container">
-          <Button variant="outlined" id="post-outline-btn" onClick={handleEditPost}>
-            <EditIcon className="post-icon"/>
-            Edit Post
-          </Button>
-          <Button variant="contained" id="post-filled-btn">
-            <DeleteIcon className="post-icon"/>
-            Delete Post
-          </Button>
-        </Box>
+        {renderButton()}
       </Box>
       <Box className="postScreenContent">
         <Box className='flex-column' id='post-header-container'>
           <Box className='flex-row' id="post-header">
             <Typography id='post-title'>{postInfo.currentPost.title}</Typography>
+            <Typography>By {postInfo.currentPost.ownerUserName}</Typography>
             <Box className='flex-row' id='tags-container'>
-              <Typography id='post-tags-text'>Tags:</Typography>
               {
                 (tags.length === 0) ?
                   null :
-                  tags.map((tag, index) => {
-                    return <Tag key={index} index={index} tag={tag} removeTag={null}/>;
-                  })
+                  <>
+                    <Typography id='post-tags-text'>Tags:</Typography>
+                    {
+                      tags.map((tag, index) => {
+                        return <Tag key={index} index={index} tag={tag} removeTag={null}/>;
+                      })
+                    }
+                  </>
               }
             </Box>
           </Box>
@@ -174,6 +212,7 @@ export default function PostDetailScreen() {
           ) : null
         }
       </Box>
+      <DeletePostModal/>
     </Box>
   );
 }

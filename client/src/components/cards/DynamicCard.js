@@ -27,7 +27,7 @@ export default function DynamicCard({ userData, mapData, postData }) {
   function handleMapCardClick(event) {
     event.stopPropagation();
     event.preventDefault();
-    // store.setCurrentMap(payload.mapData)
+    // store.setCurrentMap(mapData)
     navigate("/map-edit"); // ##temporary##
   }
 
@@ -54,7 +54,15 @@ export default function DynamicCard({ userData, mapData, postData }) {
   function handleDelete(event) {
     event.stopPropagation();
     event.preventDefault();
-    store.markPostForDeletion(postData);
+
+    if(postData){
+      console.log('delete post')
+      store.markPostForDeletion(postData);
+    }
+    else if(mapData){
+      console.log('delete map')
+      store.markMapForDeletion(mapData);
+    }
   }
 
   let cardElement = "";

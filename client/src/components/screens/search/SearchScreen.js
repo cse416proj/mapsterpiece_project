@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 
 import { GlobalStoreContext } from "../../../contexts/store";
-import { SideNavBar, SearchBar, MapsCardSection, PostsCardSection, MapsPostsCardSection, DeletePostModal } from "../../index";
+import { SideNavBar, SearchBar, MapsCardSection, PostsCardSection, MapsPostsCardSection, DeletePostModal, DeleteMapModal } from "../../index";
 
 function SearchScreen(){
     const { store } = useContext(GlobalStoreContext);
@@ -51,6 +51,7 @@ function SearchScreen(){
                     { listCard }
                 </Box>
                 <DeletePostModal/>
+                <DeleteMapModal/>
             </Box>
         </Box>
     )
