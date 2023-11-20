@@ -28,11 +28,21 @@ export const getMapById = (mapId) =>{
   return api.get(`/get/${mapId}`);
 }
 
+export const publishMapById = (mapId) =>{
+  return api.put(`/publishMap/${mapId}`);
+}
+
+export const unpublishMapById = (mapId) =>{
+  return api.put(`/unpublishMap/${mapId}`);
+}
+
 const apis = {
   createMap,
   deleteMapById,
   getAllUserMaps,
-  getMapById, 
+  getMapById,
+  publishMapById,
+  unpublishMapById
 };
 
 export default apis;

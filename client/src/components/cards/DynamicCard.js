@@ -31,7 +31,7 @@ export default function DynamicCard({ userData, mapData, postData }) {
     event.preventDefault();
     mapInfo.setCurrentMap(mapData);
     if(mapData.isPublished){
-      navigate(`/map-detail/${mapData._id.$oid}`);
+      navigate(`/map-detail/${mapData._id}`);
     }
     else{
       navigate(`/map-edit/${mapData._id}`);

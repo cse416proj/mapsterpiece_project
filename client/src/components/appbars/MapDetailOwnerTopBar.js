@@ -94,9 +94,11 @@ export function MapDetailOwnerTopBar(){
         store.markMapForDeletion(mapInfo.currentMap);
     }
 
-    function handleUnpublishMap(){
-        console.log("unpublished this map")
-    }
+    function handleUnpublishMap(event){
+        event.stopPropagation();
+        event.preventDefault();
+        mapInfo.unpublishMapById(mapInfo.currentMap._id);
+    };
 
     return (
         <AppBar position='static'>
