@@ -344,7 +344,7 @@ function GlobalStoreContextProvider(props) {
   const [store, setStore] = useState({
     currentModal: CurrentModal.NONE,
     currentView: CurrentView.USER_HOME,
-    allUsers: fakeAllUsers,
+    allUsers: [],
     allPosts: [],
     allMaps: fakeAllMaps,
     allMapsPosts: fakeAllMapsPosts,
@@ -468,9 +468,18 @@ function GlobalStoreContextProvider(props) {
 
   store.getAllPosts = async function () {
     const response = await api.getAllPosts();
-    storeReducer({
-      type: GlobalStoreActionType.LOAD_ALL_POSTS,
-      payload: response.data,
+    console.log(response.data)
+    setStore({
+      ...store,
+      allPosts: response.data,
+    });
+  };
+
+  store.getAllUsers = async function () {
+    const response = await api.getAllUsers();
+    setStore({
+      ...store,
+      allUsers: response.data,
     });
   };
 

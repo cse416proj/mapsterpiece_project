@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import api from "./user-request-api";
 
 export const UserContext = createContext({});
 
@@ -14,10 +15,10 @@ const maps = [
     },
     ownerUserName: "joeshmo",
     title: "some map title",
-    fileFormat:"GeoJSON",
+    fileFormat: "GeoJSON",
     // mapType: schema.types.mixed,
     // map: map object
-    tags: ["Bin Map", "Europe", "Population"],  // 1st tag should be the string of map type
+    tags: ["Bin Map", "Europe", "Population"], // 1st tag should be the string of map type
     comments: [
       {
         commentUserName: "dummy comment user",
@@ -60,8 +61,8 @@ const maps = [
     },
     ownerUserName: "joeshmo",
     title: "some map title 2",
-    fileFormat:"Shapefile",
-    mapType: "Heat Map",    // schema.types.mixed?
+    fileFormat: "Shapefile",
+    mapType: "Heat Map", // schema.types.mixed?
     // map: map object
     tags: ["Heat Map", "Asia", "Population"],
     comments: [
@@ -195,30 +196,30 @@ function UserContextProvider(props) {
   const [userInfo, setUserInfo] = useState({
     currentUser: null,
     currentMaps: maps,
-    currentPosts: posts
+    currentPosts: posts,
   });
 
   // to be removed: print when userInfo update
   useEffect(() => {
     console.log(userInfo);
-  }, [userInfo])
+  }, [userInfo]);
 
   const userReducer = (action) => {
     const { type, payload } = action;
     switch (type) {
-        case UserActionType.SET_CURRENT_USER: {
-          console.log(payload);
-          return setUserInfo((prevUserInfo) => ({
-              ...prevUserInfo,
-              currentUser: payload
-          }));
-        }
+      case UserActionType.SET_CURRENT_USER: {
+        console.log(payload);
+        return setUserInfo((prevUserInfo) => ({
+          ...prevUserInfo,
+          currentUser: payload,
+        }));
+      }
       default:
         return userInfo;
     }
   };
 
-  userInfo.setCurrentUser = function(user){
+  userInfo.setCurrentUser = function (user) {
     console.log(user);
 
     userReducer({
@@ -227,30 +228,38 @@ function UserContextProvider(props) {
     });
   };
 
-  userInfo.getUserInitials = function(){
+  userInfo.getUserInitials = function () {
     let initials = "";
-    if(userInfo.currentUser){
+    if (userInfo.currentUser) {
       initials += userInfo.currentUser.firstName.charAt(0);
       initials += userInfo.currentUser.lastName.charAt(0);
     }
     return initials;
-  }
+  };
 
-  userInfo.getUserFullName = function(){
+  userInfo.getUserById = async function (userId) {
+    const response = await api.getUserById(userId);
+    userReducer({
+      type: UserActionType.SET_CURRENT_USER,
+      payload: response.data,
+    });
+  };
+
+  userInfo.getUserFullName = function () {
     return `${userInfo.currentUser.firstName} ${userInfo.currentUser.lastName}`;
-  }
+  };
 
-  userInfo.getUserName = function(){
+  userInfo.getUserName = function () {
     return `@${userInfo.currentUser.userName}`;
-  }
+  };
 
-  userInfo.getNumMaps = function(){
+  userInfo.getNumMaps = function () {
     return `${userInfo.currentMaps.length} maps`;
-  }
+  };
 
-  userInfo.getNumPosts = function(){
+  userInfo.getNumPosts = function () {
     return `${userInfo.currentPosts.length} posts`;
-  }
+  };
 
   return (
     <UserContext.Provider value={{ userInfo }}>

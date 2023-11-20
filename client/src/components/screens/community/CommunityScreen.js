@@ -13,21 +13,24 @@ export default function CommunityScreen() {
   const [listCard, setListCard] = useState(null);
   const [currScreen, setCurrScreen] = useState("HOME");
 
+  useEffect (() => {
+    store.getAllPosts();
+    store.getAllUsers();
+  }, []);
+  
   // Now update currScreen; reason: currentView changes in Store
   useEffect(() => {
+    console.log(store?.currentView)
     if(store?.currentView){
       setCurrScreen(store?.currentView);
     }
   }, [store?.currentView]);
 
-  useEffect(() => {
-    store.getAllPosts();
-  }, []);
-
   // Now update list card rendering; reason: store changes in Store or search changes in SearchScreen
   useEffect(() => {
     if(store){
       var data = store.getData(store.currentView);
+      console.log(data)
 
       switch(store.currentView){
         case "ALL_USERS":

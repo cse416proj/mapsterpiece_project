@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Box, Tabs, Tab } from "@mui/material";
 
 import ProfileCard from "./ProfileCard";
@@ -15,10 +16,13 @@ function Profile() {
 
   const [tab, setTab] = useState("map");
 
+  const { userId } = useParams();
+
   useEffect(() => {
-    if (auth.user.posts.length > 0) {
+    if (auth?.user?.posts?.length > 0) {
       postInfo.getPostsByPostIds(auth.user.posts);
     }
+    userInfo.getUserById(userId);
   }, []);
 
   const handleChangeTab = (event, newTab) => {

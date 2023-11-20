@@ -14,6 +14,17 @@ getAllPosts = async (req, res) => {
   });
 };
 
+getAllUsers = async (req, res) => {
+  User.find({}, (err, users) => {
+    if (err) {
+      return res.status(500).json({ errorMessage: err.message });
+    }
+
+    return res.status(200).json(users);
+  });
+};
+
 module.exports = {
   getAllPosts,
+  getAllUsers,
 };

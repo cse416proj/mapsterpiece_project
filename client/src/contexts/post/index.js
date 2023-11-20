@@ -96,7 +96,14 @@ function PostContextProvider(props) {
         tempIds.splice(index, 1);
       }
       store.getAllPosts();
-      postInfo.getPostsByPostIds(tempIds);
+      if (tempIds.length > 0) {
+        postInfo.getPostsByPostIds(tempIds);
+      } else {
+        setPostInfo({
+          ...postInfo,
+          allPostsByUser: [],
+        });
+      }
     }
   };
 
@@ -136,7 +143,6 @@ function PostContextProvider(props) {
     commenterUserName,
     content
   ) {
-    console.log(commentId, commenterUserName, content);
     const response = await api.createSubcomment(
       commentId,
       commenterUserName,
