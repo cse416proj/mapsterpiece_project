@@ -28,9 +28,7 @@ function Profile() {
   }, []);
 
   useEffect(() => {
-    if (auth.user?.maps?.length > 0){
       mapInfo.getAllUserMaps();
-    }
   }, []);
 
   const handleChangeTab = (event, newTab) => {
