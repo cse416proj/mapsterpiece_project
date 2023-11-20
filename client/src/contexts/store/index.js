@@ -13,6 +13,7 @@ export const GlobalStoreActionType = {
   SET_CURRENT_MAP: "SET_CURRENT_MAP",
   HIDE_MODALS: "HIDE_MODALS",
   MARK_POST_FOR_DELETION: "MARK_POST_FOR_DELETION",
+  MARK_COMMENT_FOR_DELETION: "MARK_COMMENT_FOR_DELETION",
 };
 
 const CurrentView = {
@@ -44,6 +45,7 @@ const CurrentView = {
 const CurrentModal = {
   NONE: "NONE",
   DELETE_POST_MODAL: "DELETE_POST_MODAL",
+  DELETE_COMMENT_MODAL: "DELETE_COMMENT_MODAL",
 };
 
 // hardcoded data to be replaced later on with actual data
@@ -362,6 +364,7 @@ function GlobalStoreContextProvider(props) {
     // heatPosts: heatPosts,
 
     postMarkedForDeletion: null,
+    commentMarkedForDeletion: null,
   });
 
   const storeReducer = (action) => {
@@ -392,6 +395,7 @@ function GlobalStoreContextProvider(props) {
           heatPosts: [],
 
           postMarkedForDeletion: null,
+          commentMarkedForDeletion: null,
         });
       case GlobalStoreActionType.LOAD_ALL_POSTS:
         return setStore((prevStore) => ({
@@ -406,18 +410,27 @@ function GlobalStoreContextProvider(props) {
           currentModal: CurrentModal.NONE,
           currentView: payload,
           postMarkedForDeletion: null,
+          commentMarkedForDeletion: null,
         }));
       case GlobalStoreActionType.MARK_POST_FOR_DELETION:
         return setStore((prevStore) => ({
           ...prevStore,
           currentModal: CurrentModal.DELETE_POST_MODAL,
           postMarkedForDeletion: payload,
+          commentMarkedForDeletion: null,
         }));
+      case GlobalStoreActionType.MARK_COMMENT_FOR_DELETION:
+        return setStore((prevStore) => ({
+          ...prevStore,
+          currentModal: CurrentModal.DELETE_COMMENT_MODAL,
+          commentMarkedForDeletion: payload,
+        })); 
       case GlobalStoreActionType.HIDE_MODALS:
         setStore((prevStore) => ({
           ...prevStore,
           currentModal: CurrentModal.NONE,
           postMarkedForDeletion: null,
+          commentMarkedForDeletion: null,
         }));
       default:
         return store;
@@ -443,6 +456,13 @@ function GlobalStoreContextProvider(props) {
     storeReducer({
       type: GlobalStoreActionType.MARK_POST_FOR_DELETION,
       payload: postData,
+    });
+  };
+
+  store.markCommentForDeletion = function (commentData){
+    storeReducer({
+      type: GlobalStoreActionType.MARK_COMMENT_FOR_DELETION, 
+      payload: commentData,
     });
   };
 
