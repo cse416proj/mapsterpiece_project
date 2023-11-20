@@ -16,6 +16,10 @@ export const createMap = (ownerUserName, title, fileFormat, mapContent, tags) =>
   });
 };
 
+export const deleteMapById = (mapId) => {
+  return api.delete(`/delete/${mapId}`)
+}
+
 export const getAllUserMaps = () => {
   return api.get(`/allMaps`);
 }
@@ -26,6 +30,7 @@ export const getMapById = (mapId) =>{
 
 const apis = {
   createMap,
+  deleteMapById,
   getAllUserMaps,
   getMapById, 
 };

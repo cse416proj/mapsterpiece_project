@@ -40,6 +40,7 @@ function MapCard({mapData, clickHandler, editHandler, deleteHandler}){
                     comments={mapData.comments}
                     deleteHandler = {deleteHandler}
                     editHandler={editHandler}
+                    isPublished={mapData.isPublished}
                 />
             </CardContent>
         </Card>

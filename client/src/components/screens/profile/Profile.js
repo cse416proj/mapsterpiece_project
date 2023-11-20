@@ -3,7 +3,7 @@ import { Box, Tabs, Tab } from "@mui/material";
 import { useParams } from "react-router-dom";
 
 import ProfileCard from "./ProfileCard";
-import { DynamicCard, DeletePostModal } from "../../index";
+import { DynamicCard, DeletePostModal, DeleteMapModal } from "../../index";
 import ActionButton from "./ActionButton";
 import UserContext from "../../../contexts/user";
 import AuthContext from "../../../contexts/auth";
@@ -100,6 +100,7 @@ function Profile() {
           isLoggedInUser={isLoggedInUser}
         />
         <DeletePostModal />
+        <DeleteMapModal/>
       </Box>
       <ActionButton isLoggedInUser={isLoggedInUser}/>
     </Box>

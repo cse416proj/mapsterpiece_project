@@ -45,6 +45,7 @@ const CurrentView = {
 
 const CurrentModal = {
   NONE: "NONE",
+  DELETE_MAP_MODAL: "DELETE_MAP_MODAL",
   DELETE_POST_MODAL: "DELETE_POST_MODAL",
   DELETE_COMMENT_MODAL: "DELETE_COMMENT_MODAL",
   DELETE_ACCOUNT_MODAL: "DELETE_ACCOUNT_MODAL",
@@ -53,11 +54,12 @@ const CurrentModal = {
 const fakeAllMaps = [
   {
     _id: {
-      $oid: "6547ea560946232834874dd4",
+      $oid: "655af7ba5d91a496b38f4e91",
     },
-    ownerUserName: "AmaPuser",
+    ownerUserName: "peach23333",
     title: "some map title",
     fileFormat: "GeoJSON",
+    isPublished: false,
     // mapType: schema.types.mixed,
     // map: map object
     tags: ["Bin Map", "Europe", "Population"], // 1st tag should be the string of map type
@@ -99,11 +101,12 @@ const fakeAllMaps = [
   },
   {
     _id: {
-      $oid: "65482b5e0946232834874e6c",
+      $oid: "655a752f0926b31495c2c4c4",
     },
-    ownerUserName: "GabbyDu",
+    ownerUserName: "apple",
     title: "some map title 2",
     fileFormat: "Shapefile",
+    isPublished: true,
     mapType: "Heat Map", // schema.types.mixed?
     // map: map object
     tags: ["Heat Map", "Asia", "Population"],
@@ -314,6 +317,7 @@ function GlobalStoreContextProvider(props) {
     heatPosts: null,
 
     postMarkedForDeletion: null,
+    mapMarkedForDeletion: null,
     accountMarkedForDeletion: null,
     commentMarkedForDeletion: null,
   });
@@ -325,15 +329,15 @@ function GlobalStoreContextProvider(props) {
     switch (type) {
       // placeholder to be replace later on
       case GlobalStoreActionType.LOAD_ALL_MAPS:
-        return setStore({
-          ...store,
+        return setStore((prevStore) => ({
+          ...prevStore,
           currentModal: CurrentModal.NONE,
           currentView: CurrentView.USER_HOME,
           commentMarkedForDeletion: null,
-        });
+        }));
       case GlobalStoreActionType.LOAD_ALL_POSTS:
         return setStore((prevStore) => ({
-          ...store,
+          ...prevStore,
           currentModal: CurrentModal.NONE,
           currentView: CurrentView.ALL_POSTS,
           allPosts: payload,
@@ -343,7 +347,16 @@ function GlobalStoreContextProvider(props) {
           ...prevStore,
           currentModal: CurrentModal.NONE,
           currentView: payload,
+          mapMarkedForDeletion: null,
           postMarkedForDeletion: null,
+          accountMarkedForDeletion: null,
+          commentMarkedForDeletion: null,
+        }));
+      case GlobalStoreActionType.MARK_MAP_FOR_DELETION:
+        return setStore((prevStore) => ({
+          ...prevStore,
+          currentModal: CurrentModal.DELETE_MAP_MODAL,
+          mapMarkedForDeletion: payload,
         }));
       case GlobalStoreActionType.MARK_POST_FOR_DELETION:
         return setStore((prevStore) => ({
@@ -367,6 +380,7 @@ function GlobalStoreContextProvider(props) {
         setStore((prevStore) => ({
           ...prevStore,
           currentModal: CurrentModal.NONE,
+          mapMarkedForDeletion: null,
           postMarkedForDeletion: null,
           accountMarkedForDeletion: null,
           commentMarkedForDeletion: null,
@@ -396,6 +410,14 @@ function GlobalStoreContextProvider(props) {
     storeReducer({
       type: GlobalStoreActionType.MARK_POST_FOR_DELETION,
       payload: postData,
+    });
+  };
+
+  store.markMapForDeletion = function (mapData) {
+    console.log(mapData);
+    storeReducer({
+      type: GlobalStoreActionType.MARK_MAP_FOR_DELETION,
+      payload: mapData,
     });
   };
 
