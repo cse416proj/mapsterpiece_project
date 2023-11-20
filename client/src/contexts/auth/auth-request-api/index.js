@@ -29,20 +29,11 @@ export const registerUser = (firstName, lastName, userName, email, password, pas
     })
 }
 
-export const deleteUser = (userName) => {
-    console.log('******deleteUser*******');
-    console.log(userName);
-    return api.delete(`/user/`,{
-        userName: userName
-    })
-};
-
 const apis = {
     getLoggedIn, 
     registerUser, 
     loginUser, 
-    logoutUser,
-    deleteUser
+    logoutUser
 }
 
 export default apis

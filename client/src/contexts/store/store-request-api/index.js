@@ -9,8 +9,13 @@ export const getAllPosts = () => {
   return api.get(`/allPosts`)
 }
 
+export const getAllUsers = () => {
+  return api.get(`/allUsers`)
+}
+
 const apis = {
   getAllPosts,
+  getAllUsers,
 };
 
 export default apis;

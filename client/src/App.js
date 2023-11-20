@@ -29,7 +29,7 @@ function App() {
             <Route path='/register' element={<AuthScreen/>}></Route>
             <Route path='/login' element={<AuthScreen/>}></Route>
             <Route path='/create' element={<CreateScreen/>}></Route>
-            <Route path='/profile' element={<Profile/>}></Route>
+            <Route path='/profile/:userId' element={<Profile/>}></Route>
             <Route path="/search" element={<SearchScreen/>}></Route>
             <Route path="/community" element={<CommunityScreen/>}></Route>
             <Route path="/post-detail/:postId" element={<PostDetailScreen/>}></Route>

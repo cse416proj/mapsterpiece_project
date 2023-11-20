@@ -1,17 +1,23 @@
 import { useContext } from 'react';
 import { Box, Button, Avatar, Typography } from '@mui/material';
 import AuthContext from '../../../contexts/auth';
+import UserContext from '../../../contexts/user';
+import { GlobalStoreContext } from "../../../contexts/store";
+import { DeleteAccountModal } from "../../index";
+
 
 function ProfileCard({ initials, name, userName, numMaps, numPosts, isLoggedInUser }){
     const { auth } = useContext(AuthContext);
-    
-    function handleDeleteAccount(event){
-        auth.deleteUser(auth.user);
+    const { userInfo } = useContext(UserContext);
+    const { store } = useContext(GlobalStoreContext);
+
+    function markAccountForDeletion(){
+        store.markAccountForDeletion(auth.user._id);
     }
     
     function renderDeleteAccountButton(){
         return(
-            (isLoggedInUser) ? <Button onClick={handleDeleteAccount}>Delete Account</Button> : null
+            (isLoggedInUser) ? <Button onClick={markAccountForDeletion}>Delete Account</Button> : null
         );
     }
 
@@ -32,6 +38,7 @@ function ProfileCard({ initials, name, userName, numMaps, numPosts, isLoggedInUs
                     { renderDeleteAccountButton() }
                 </Box>
             </Box>
+            <DeleteAccountModal />
         </Box>
     );
 }
