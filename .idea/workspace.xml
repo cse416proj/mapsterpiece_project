@@ -5,15 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="07c3f21b-ec0d-4bc4-a794-ba71584c343e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/client/src/components/appbars/CommentsSideBox.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/components/appbars/MapDetailUserTopBar.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/components/screens/map/MapDetailsScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/components/appbars/MapDetailOwnerTopBar.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/components/modals/DeleteMapModal.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/cards/DynamicCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/cards/DynamicCard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/styles/Map.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/styles/Map.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/server/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/server/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/appbars/MapDetailUserTopBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/appbars/MapDetailUserTopBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/screens/map/MapDetailsScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/screens/map/MapDetailsScreen.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -4,11 +4,12 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import DeleteMapModal from "../modals/DeleteMapModal";
 
 import { useState } from 'react';
 import AuthContext from '../../contexts/auth';
 import {useNavigate} from "react-router-dom";
-export function MapDetailUserTopBar(){
+export function MapDetailOwnerTopBar(){
     const BackButtonStyle = {
         color: 'black',
         fontSize: '15px',
@@ -67,6 +68,14 @@ export function MapDetailUserTopBar(){
         console.log("Dislikes = " + dislikes);
     }
 
+    function handleDeleteMap() {
+        console.log("delete this map")
+    }
+
+    function handleUnpublishMap(){
+        console.log("unpublished this map")
+    }
+
     return (
         <AppBar position='static'>
             <Toolbar className="map-screen-topbar">
@@ -84,6 +93,8 @@ export function MapDetailUserTopBar(){
                         <ThumbDownOffAltIcon style={{color:"black"}}></ThumbDownOffAltIcon>
                         <t style={{color:"black"}}>{dislikes}</t>
                     </IconButton>
+                    <Button variant="contained" style = {toolButtonStyle} onClick={handleDeleteMap}>Delete</Button>
+                    <Button variant="contained" style = {toolButtonStyle} onClick={handleUnpublishMap}>Unpublish</Button>
                     <Button variant="contained" style = {toolButtonStyle} onClick={handleShareMap}>Share Link</Button>
                     <Button variant="contained" style = {toolButtonStyle} onClick={handleForkMap}>Fork</Button>
                     <Button variant="contained" style = {toolButtonStyle} onClick={handleExportJPG}>Export/Download</Button>
