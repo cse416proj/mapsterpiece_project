@@ -21,9 +21,6 @@ function Profile() {
 
   useEffect(() => {
     if(auth.user) {
-      if(auth.user.posts && auth.user.posts.length > 0){
-        postInfo.getPostsByPostIds(auth.user.posts);
-      }
       if(auth.user.maps && auth.user.maps.length > 0){
         mapInfo.getAllUserMaps();
       }
@@ -54,7 +51,7 @@ function Profile() {
       }
     } else {
       if(postInfo && postInfo.allPostsByUser){
-        return postInfo.allPostsByUser?.map((post, index) => (
+        return userInfo.currentUser?.posts?.map((post, index) => (
           <DynamicCard
             key={`post-${index}`}
             userData={null}
