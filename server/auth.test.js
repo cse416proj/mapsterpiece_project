@@ -55,20 +55,20 @@ describe("POST /register fail", () => {
   });
 });
 
-// describe("POST /login success", () => {
-//   it("responds with 200 on valid login email and password", async () => {
-//     const validRequestBody = {
-//       email: "user4@gmail.com",
-//       password: "user1234",
-//     };
+describe("POST /login success", () => {
+  it("responds with 200 on valid login email and password", async () => {
+    const validRequestBody = {
+      email: "user4@gmail.com",
+      password: "user1234",
+    };
 
-//     const response = await request(app)
-//       .post("/auth/login")
-//       .send(validRequestBody);
+    const response = await request(app)
+      .post("/auth/login")
+      .send(validRequestBody);
 
-//     expect(response.status).toBe(200);
-//   });
-// });
+    expect(response.status).toBe(200);
+  });
+});
 
 describe("POST /login fail", () => {
   it("responds with 401 on invalid email", async () => {
