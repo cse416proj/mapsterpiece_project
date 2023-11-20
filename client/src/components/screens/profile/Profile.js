@@ -24,11 +24,10 @@ function Profile() {
     if (auth?.user?.posts?.length > 0) {
       postInfo.getPostsByPostIds(auth.user.posts);
     }
-    userInfo.getUserById(userId);
-  }, []);
-
-  useEffect(() => {
+    if(auth?.user?.maps?.length > 0){
       mapInfo.getAllUserMaps();
+    }
+    userInfo.getUserById(userId);
   }, []);
 
   const handleChangeTab = (event, newTab) => {
@@ -41,25 +40,31 @@ function Profile() {
 
   function fetchContent() {
     if (tab === "map") {
-      return mapInfo.allMapsFromUser?.map((map, index) => (
-        <DynamicCard
-          key={`map-${index}`}
-          userData={null}
-          mapData={map}
-          postData={null}
-        />
-      ));
+      if(mapInfo && mapInfo.allMapsFromUser){
+        return mapInfo.allMapsFromUser?.map((map, index) => (
+          <DynamicCard
+            key={`map-${index}`}
+            userData={null}
+            mapData={map}
+            postData={null}
+          />
+        ));
+      }
     } else {
-      return postInfo.allPostsByUser?.map((post, index) => (
-        <DynamicCard
-          key={`post-${index}`}
-          userData={null}
-          mapData={null}
-          postData={post}
-        />
-      ));
+      if(postInfo && postInfo.allPostsByUser){
+        return postInfo.allPostsByUser?.map((post, index) => (
+          <DynamicCard
+            key={`post-${index}`}
+            userData={null}
+            mapData={null}
+            postData={post}
+          />
+        ));
+      }
     }
   }
+
+  const isLoggedInUser = (auth && auth.user !== null && auth.user.userName === userInfo.currentUser.userName);
 
   return (
     <Box className="content" id="user-info-content">
@@ -88,19 +93,13 @@ function Profile() {
           initials={userInfo.getUserInitials().toUpperCase()}
           name={userInfo.getUserFullName()}
           userName={userInfo.getUserName()}
-          numMaps={userInfo.getNumMaps()}
-          numPosts={userInfo.getNumPosts()}
-          isLoggedInUser={
-            auth && auth.user !== null && auth.user === userInfo.currentUser
-          }
+          numMaps={mapInfo && mapInfo.allMapsFromUser && mapInfo.allMapsFromUser.length}
+          numPosts={postInfo && postInfo.allPostsByUser && postInfo.allPostsByUser.length}
+          isLoggedInUser={isLoggedInUser}
         />
         <DeletePostModal />
       </Box>
-      <ActionButton
-        isLoggedInUser={
-          auth && auth.user !== null && auth.user === userInfo.currentUser
-        }
-      />
+      <ActionButton isLoggedInUser={isLoggedInUser}/>
     </Box>
   );
 }
