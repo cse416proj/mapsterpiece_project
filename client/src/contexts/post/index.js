@@ -123,6 +123,32 @@ function PostContextProvider(props) {
     }
   };
 
+  postInfo.deleteCommentById = async function (commentId) {
+    console.log("delete comment id: ",commentId);
+    const response = await api.deleteCommentById(commentId);
+    if (response.data.error){
+      setPostInfo({
+        ...postInfo, 
+        errorMessage: response.data.error,
+      });
+    }else{
+      let tempIds = postInfo.currentPost.comments;
+      console.log(tempIds);
+      const index = tempIds.indexOf(commentId);
+      if (index > -1){
+        tempIds.splice(index, 1);
+      }
+      if (tempIds.length > 0) {
+        postInfo.getCommentsByCommentIds(tempIds);
+      } else {
+        setPostInfo({
+          ...postInfo,
+          allCommentsForPost: [],
+        });
+      }
+    }
+  };
+
   postInfo.createComment = async function (postId, commenterUserName, content) {
     const response = await api.createComment(
       postId,

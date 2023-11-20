@@ -32,8 +32,8 @@ function ProfileCard({ initials, name, userName, numMaps, numPosts, isLoggedInUs
                         <Typography variant='p' id='user-name'>{ userName }</Typography>
                     </Box>
                     <Box className='flex-row' id='user-stats'>
-                        <Typography variant='p' className='stats'>{ numMaps }</Typography>
-                        <Typography variant='p' className='stats'>{ numPosts }</Typography>
+                        <Typography variant='p' className='stats'>{ numMaps } Maps</Typography>
+                        <Typography variant='p' className='stats'>{ numPosts } Posts</Typography>
                     </Box>
                     { renderDeleteAccountButton() }
                 </Box>

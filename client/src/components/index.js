@@ -31,6 +31,7 @@ import MapsPostsCardSection from './screens/listFilter/MapsPostsCardSelection';
 import PostDetailScreen from './screens/post/PostDetailScreen';
 import PostComment from './screens/post/PostComment';
 import PostEditScreen from './screens/edit/post/PostEditScreen';
+import DeleteCommentModal from './modals/DeleteCommentModal';
 
 import MapScreen from './screens/map/display/MapScreen';
 import MapEditScreen from './screens/edit/map/MapEditScreen';
@@ -74,4 +75,5 @@ export {
     MaybeShowNavBar,
     MapEditTopBar,
     MapEditSideBar,
+    DeleteCommentModal,
 }

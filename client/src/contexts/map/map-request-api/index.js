@@ -20,9 +20,19 @@ export const deleteMapById = (mapId) => {
   return api.delete(`/delete/${mapId}`)
 }
 
+export const getAllUserMaps = () => {
+  return api.get(`/allMaps`);
+}
+
+export const getMapById = (mapId) =>{
+  return api.get(`/get/${mapId}`);
+}
+
 const apis = {
   createMap,
-  deleteMapById
+  deleteMapById,
+  getAllUserMaps,
+  getMapById, 
 };
 
 export default apis;

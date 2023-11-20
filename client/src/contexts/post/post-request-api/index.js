@@ -51,6 +51,10 @@ export const createSubcomment = (commentId, commenterUserName, content) => {
   });
 };
 
+export const deleteCommentById =(commentId) => {
+  return api.delete(`/deleteComment/${commentId}`);
+}
+
 const apis = {
   createPost,
   getPostsByPostIds,
@@ -60,6 +64,7 @@ const apis = {
   getPostById,
   getCommentsByCommentIds,
   createSubcomment,
+  deleteCommentById,
 };
 
 export default apis;

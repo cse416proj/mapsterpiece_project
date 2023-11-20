@@ -25,7 +25,7 @@ function PostsCardSection({ data, search }) {
   return (
     <Box sx={{ width: '97.5%' }}>
       {
-        filterData.map((pair, index) => {
+        filterData?.map((pair, index) => {
           return <DynamicCard key={`post-${index}`} userData={null} mapData={null} postData={pair}/>;
         })
       }
