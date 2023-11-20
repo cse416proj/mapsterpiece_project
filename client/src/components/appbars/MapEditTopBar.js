@@ -1,8 +1,10 @@
-import React, { useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Box, Typography, Button, Menu, MenuItem, AppBar, Toolbar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+
 import AuthContext from '../../contexts/auth';
+import MapContext from '../../contexts/map';
+import GlobalStoreContext from '../../contexts/store';
 
 export default function MapEditTopBar() {
     const BackButtonStyle = {
@@ -17,9 +19,23 @@ export default function MapEditTopBar() {
     }
 
     const { auth } = useContext(AuthContext);
+    const { mapInfo } = useContext(MapContext);
+    const { store } = useContext(GlobalStoreContext);
+    
     const navigate = useNavigate();
+
+    const [title, setTitle] = useState('');
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+
+    useEffect(() => {
+        if(mapInfo){
+            if(mapInfo.currentMap){
+                console.log(mapInfo.currentMap);
+                setTitle(mapInfo.currentMap.title);
+            }
+        }
+    }, []);
 
     function handleMyMaps(){
         navigate(`/profile/${auth.user._id}`);
@@ -31,8 +47,22 @@ export default function MapEditTopBar() {
         console.log("export JPG file.");
     }
     
-    function handlePublishMap(){
-        console.log("publish this map");
+    function handlePublishMap(event){
+        event.stopPropagation();
+        event.preventDefault();
+        mapInfo.publishMapById(mapInfo.currentMap._id);
+    };
+
+    function handleSaveMap(){
+        console.log("save this map");
+        navigate('/');
+    }
+
+    function handleDeleteMap(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        console.log('delete map')
+        store.markMapForDeletion(mapInfo.currentMap);
     }
 
     const openMenu = (event) => {
@@ -74,8 +104,10 @@ export default function MapEditTopBar() {
                 onClick={handleMyMaps}>
                 &lt;&lt; My Maps
             </Button>
-            <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>Map Title</Typography>
+            <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>{title}</Typography>
             <Box className="map-button-container">
+                <Button variant="contained" style = {toolButtonStyle} onClick={handleDeleteMap}>Delete Map</Button>
+                <Button variant="contained" style = {toolButtonStyle} onClick={handleSaveMap}>Save Edit</Button>
                 <Button variant="contained" style = {toolButtonStyle} onClick={handlePublishMap}>Publish</Button>
                 <Button variant="contained" style = {toolButtonStyle} onClick={openMenu}>Export/Download</Button>
             </Box>

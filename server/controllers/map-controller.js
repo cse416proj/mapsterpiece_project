@@ -209,10 +209,89 @@ getAllMaps = async (req, res) => {
     });
 }
 
+// helper function to update map publish status
+updateMapPublishStatusById = async (req, res, newPublishStatus) => {
+    if (auth.verifyUser(req) === null) {
+        return res.status(401).json({
+            errorMessage: "Unauthorized",
+        });
+    }
+
+    // check user & map existence
+    const userId = req.userId;
+    const mapId = req.params.id;
+
+    if(!userId){
+        return res.status(400).json({ errorMessage: "User does not exist." });
+    }
+    if (!mapId) {
+      return res.status(400).json({ errorMessage: "Map ID does not exist." });
+    }
+
+    User.findById(userId, (err, user) => {
+        if(err){
+            return res.status(500).json({ errorMessage: err.message });
+        }
+        else if(!user){
+            return res.status(404).json({ errorMessage: "User cannot be found." });
+        }
+        
+        Map.findById(mapId, (err, map) => {
+            if(err){
+                return res.status(500).json({ errorMessage: err.message });
+            }
+            else if(!map){
+                return res.status(404).json({ errorMessage: "Map is not found." });
+            }
+            else if(map.isPublished === newPublishStatus){
+                if(map.isPublished){
+                    return res.status(404).json({ errorMessage: "User cannot publish a map that has already been published." });
+                }
+                else{
+                    return res.status(404).json({ errorMessage: "User cannot unpublish a map that is not published." });
+                }
+            }
+            
+            map.isPublished = newPublishStatus;
+            map.save()
+            .then(() => {
+                return res.status(201).json({
+                    success: true,
+                    map: map,
+                    message: "Map's publish status has been updated!",
+                });
+            })
+            .catch((error) => {
+                return res.status(400).json({
+                    error,
+                    errorMessage: "Failed to publish user's map, please try again."
+                });
+            })
+        })
+        .catch((error) => {
+            return res.status(400).json({
+                error,
+                errorMessage: "Failed to publish user's map, please try again."
+            });
+        });
+    });
+};
+
+// publish/unpublish map
+publishMapById = async (req, res) => {
+    await updateMapPublishStatusById(req, res, true);
+}
+
+unpublishMapById = async (req, res) => {
+    await updateMapPublishStatusById(req, res, false);
+}
+
 module.exports = {
     createMap,
     getMapById,
     deleteMapById,
-    getAllMaps
+    getAllMaps,
+    publishMapById,
+    unpublishMapById
 };
   

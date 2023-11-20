@@ -16,6 +16,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import { AppContextProvider } from './contexts';
 import { NavBar, HomeScreen, AuthScreen, Profile, CreateScreen, SearchScreen, CommunityScreen, PostDetailScreen, MapEditScreen, PostEditScreen, MaybeShowNavBar } from "./components";
+import MapDetailsScreen from './components/screens/map/MapDetailsScreen'
 
 function App() {
   return (
@@ -34,8 +35,9 @@ function App() {
             <Route path='/profile/:userId' element={<Profile/>}></Route>
             <Route path="/search" element={<SearchScreen/>}></Route>
             <Route path="/community" element={<CommunityScreen/>}></Route>
+            <Route path="/map-detail/:mapId" element={<MapDetailsScreen/>}></Route>
+            <Route path="/map-edit/:mapId" element={<MapEditScreen/>}></Route>
             <Route path="/post-detail/:postId" element={<PostDetailScreen/>}></Route>
-            <Route path="/map-edit" element={<MapEditScreen/>}></Route>
             <Route path="/post-edit/:postId" element={<PostEditScreen/>}></Route>
           </Routes>
         </Box>

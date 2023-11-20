@@ -1,10 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Sidebar } from 'react-pro-sidebar';
 import { Select, Typography, Box, MenuItem, Input, Toolbar } from '@mui/material';
 
 import { Tags } from "../index";
+import MapContext from '../../contexts/map';
 
 function MapEditSideBar() {
+  const { mapInfo } = useContext(MapContext);
+
+  const [title, setTitle] = useState('');
+  const [tags, setTags] = useState([]);
+
+  useEffect(() => {
+    if(mapInfo){
+      if(mapInfo.currentMap){
+        console.log(mapInfo.currentMap);
+        setTitle(mapInfo.currentMap.title);
+        setTags(mapInfo.currentMap.tags);
+      }
+    }
+  }, []);
+
   const sideBarStyle = {
     height:'88vh',
     top:'5px',
@@ -15,8 +31,6 @@ function MapEditSideBar() {
     padding: '20px',
     borderRadius: '10px'
   }
-
-  const [tags, setTags] = useState([]);
 
   return (
     <Sidebar style={sideBarStyle} >
@@ -35,7 +49,8 @@ function MapEditSideBar() {
           <Input 
             className="sidebar-block-content sidebar-input" 
             aria-label='title input' 
-            placeholder='type new title' 
+            placeholder='type new title'
+            value={title}
           />
         </Box>
 

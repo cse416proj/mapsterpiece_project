@@ -12,7 +12,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import AuthContext from "../../contexts/auth";
 // import UserContext from "../../contexts/user";
 
-function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHandler, editHandler, isPublished=false }) {
+function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHandler, editHandler, isPublished=false, publishHandler=null, unpublishHandler=null }) {
   const { auth } = useContext(AuthContext);
   // const { userInfo } = useContext(UserContext);
 
@@ -46,15 +46,21 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
     editHandler(event);
   };
 
-  const handlePublish = (event) => {
+  const handlePublishMap = (event) => {
     event.stopPropagation();
     event.preventDefault();
+    if(publishHandler){
+      publishHandler(event);
+    }
     closeMenu();
   };
 
-  const handleUnpublish = (event) => {
+  const handleUnpublishMap = (event) => {
     event.stopPropagation();
     event.preventDefault();
+    if(unpublishHandler){
+      unpublishHandler(event);
+    }
     closeMenu();
   };
 
@@ -68,8 +74,8 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
       actions = [editItem, deleteItem]
     }
     else{
-      const publishItem = { icon: <VisibilityIcon id='action-icon'/>, name: `Publish map`, handler: handlePublish };
-      const unpublishItem = { icon: <VisibilityOffIcon id='action-icon'/>, name: `Unpublish map`, handler: handleUnpublish };
+      const publishItem = { icon: <VisibilityIcon id='action-icon'/>, name: `Publish map`, handler: handlePublishMap };
+      const unpublishItem = { icon: <VisibilityOffIcon id='action-icon'/>, name: `Unpublish map`, handler: handleUnpublishMap };
 
       if(!isPublished){
         actions = [editItem, publishItem, deleteItem]

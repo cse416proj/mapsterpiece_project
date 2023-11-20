@@ -48,6 +48,7 @@ export function MapContextProvider({children}){
         title: '',
         fileFormat: '',
         fileContent: '',
+        currentMap: null,
         fakeFileContent: fakeMapContent,
         tags: [],
         shpBuffer: null,
@@ -99,6 +100,7 @@ export function MapContextProvider({children}){
         SET_DBF_BUFFER: 'SET_DBF_BUFFER',
         UPLOAD_MAP: 'UPLOAD_MAP',
         CLEAR: 'CLEAR',
+        SET_CURRENT_MAP: 'SET_CURRENT_MAP',
         LOAD_ALL_MAPS_FROM_USER: 'LOAD_ALL_MAPS_FROM_USER',
         // SET_DOWNLOAD_FORMAT: 'SET_DOWNLOAD_FORMAT',
         // CANCEL_DOWNLOAD: 'CANCEL_DOWNLOAD',
@@ -158,6 +160,11 @@ console.log(payload);
                     tags: [],
                     shpBuffer: null,
                     dbfBuffer: null,
+                }));
+            case ActionType.SET_CURRENT_MAP:
+                return setMapInfo((prevMapInfo) => ({
+                    ...prevMapInfo,
+                    currentMap: payload
                 }));
             // case ActionType.SET_DOWNLOAD_FORMAT:
             //     return setMapInfo((prevMapInfo) => ({
@@ -399,35 +406,60 @@ console.log(payload);
         }
     }
 
-    mapInfo.deleteMapById = (mapId) => {
-        console.log(`delete map by id ${String(mapId)}`);
+    mapInfo.setCurrentMap = function(map){
+        console.log('setCurrentMap');
+        console.log(map);
 
-        // create map for user
-        async function asyncDeleteMap(mapId){
-            const response = await api.deleteMapById(mapId);
+        reducer({
+          type: ActionType.SET_CURRENT_MAP,
+          payload: map,
+        });
+    };
 
-            if(response.status === 200){
-                await mapInfo.getAllUserMaps();
-                navigate("/");
-            }
-            else{
-                console.log(response);
-            }
+    mapInfo.deleteMapById = async function(mapId){
+        console.log('delete map by id:');
+        console.log(mapId);
+
+        const response = await api.deleteMapById(mapId);
+
+        if(response.status === 200){
+            await mapInfo.getAllUserMaps();
+            navigate("/");
         }
-        asyncDeleteMap(mapId);
+        else{
+            console.log(response);
+        }
     }
 
-    // postInfo.deletePostById = async function (postId) {
-    //     const response = await api.deletePostById(postId);
-    //     if (response.data.error) {
-    //       setPostInfo({
-    //         ...postInfo,
-    //         errorMessage: response.data.error,
-    //       });
-    //     } else {
-          
-    //     }
-    //   };
+    mapInfo.publishMapById = async function(mapId){
+        console.log('publish map by id:');
+        console.log(mapId);
+
+        const response = await api.publishMapById(mapId);
+
+        if(response.status === 201){
+            await mapInfo.getAllUserMaps();
+            navigate("/");
+        }
+        else{
+            console.log(response);
+        }
+    }
+
+    mapInfo.unpublishMapById = async function(mapId){
+        console.log('unpublish map by id:');
+        console.log(mapId);
+
+        const response = await api.unpublishMapById(mapId);
+
+        if(response.status === 201){
+            await mapInfo.getAllUserMaps();
+            navigate("/");
+        }
+        else{
+            console.log(response);
+        }
+    }
 
     // mapInfo.cancelDownload = () => {
     //     reducer({
