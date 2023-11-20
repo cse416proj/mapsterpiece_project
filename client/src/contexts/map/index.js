@@ -416,23 +416,49 @@ console.log(payload);
         });
     };
 
-    mapInfo.deleteMapById = (mapId) => {
+    mapInfo.deleteMapById = async function(mapId){
         console.log('delete map by id:');
         console.log(mapId);
 
-        // create map for user
-        async function asyncDeleteMap(mapId){
-            const response = await api.deleteMapById(mapId);
+        const response = await api.deleteMapById(mapId);
 
-            if(response.status === 200){
-                await mapInfo.getAllUserMaps();
-                navigate("/");
-            }
-            else{
-                console.log(response);
-            }
+        if(response.status === 200){
+            await mapInfo.getAllUserMaps();
+            navigate("/");
         }
-        asyncDeleteMap(mapId);
+        else{
+            console.log(response);
+        }
+    }
+
+    mapInfo.publishMapById = async function(mapId){
+        console.log('publish map by id:');
+        console.log(mapId);
+
+        const response = await api.publishMapById(mapId);
+
+        if(response.status === 201){
+            await mapInfo.getAllUserMaps();
+            navigate("/");
+        }
+        else{
+            console.log(response);
+        }
+    }
+
+    mapInfo.unpublishMapById = async function(mapId){
+        console.log('unpublish map by id:');
+        console.log(mapId);
+
+        const response = await api.unpublishMapById(mapId);
+
+        if(response.status === 201){
+            await mapInfo.getAllUserMaps();
+            navigate("/");
+        }
+        else{
+            console.log(response);
+        }
     }
 
     // mapInfo.cancelDownload = () => {

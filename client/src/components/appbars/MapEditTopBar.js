@@ -47,9 +47,11 @@ export default function MapEditTopBar() {
         console.log("export JPG file.");
     }
     
-    function handlePublishMap(){
-        console.log("publish this map");
-    }
+    function handlePublishMap(event){
+        event.stopPropagation();
+        event.preventDefault();
+        mapInfo.publishMapById(mapInfo.currentMap._id);
+    };
 
     function handleSaveMap(){
         console.log("save this map");

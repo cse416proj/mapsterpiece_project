@@ -1,9 +1,25 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Card, CardContent, Typography, Chip, Stack } from "@mui/material";
 
 import ActionButtons from "./ActionButtons";
+import MapContext from "../../contexts/map";
 
 function MapCard({mapData, clickHandler, editHandler, deleteHandler}){
+    const { mapInfo } = useContext(MapContext);
+
+    function handlePublish(event){
+        event.stopPropagation();
+        event.preventDefault();
+        mapInfo.publishMapById(mapData._id);
+    };
+
+    function handleUnpublish(event){
+        event.stopPropagation();
+        event.preventDefault();
+        mapInfo.unpublishMapById(mapData._id);
+    };
+
     return(
         <Card className="individualDynamicCard" >
             <CardContent
@@ -24,7 +40,7 @@ function MapCard({mapData, clickHandler, editHandler, deleteHandler}){
                         color="white"
                         gutterBottom
                     >
-                        Published by @{mapData.ownerUserName}
+                        { (mapData.isPublished) ? 'Published' : 'Created' } by @{mapData.ownerUserName}
                     </Typography>
                 </Box>
                 <Stack direction="row" spacing={1}>
@@ -41,6 +57,8 @@ function MapCard({mapData, clickHandler, editHandler, deleteHandler}){
                     deleteHandler = {deleteHandler}
                     editHandler={editHandler}
                     isPublished={mapData.isPublished}
+                    publishHandler={handlePublish}
+                    unpublishHandler={handleUnpublish}
                 />
             </CardContent>
         </Card>
