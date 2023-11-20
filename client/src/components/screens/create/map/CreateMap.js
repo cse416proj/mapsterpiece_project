@@ -8,18 +8,12 @@ import Tags from '../tag/Tags';
 import ButtonSet from '../ButtonSet';
 import MapContext from '../../../../contexts/map';
 
-// import JSZip from 'jszip';
-// import * as shapefile from 'shapefile';
-
 function CreateMap(){
     // set up file reference
     const inputFile = useRef(null);
 
     // get map Info from MapContext
     const { mapInfo } = useContext(MapContext);
-
-    // set up navigate to visit other link
-    const navigate = useNavigate();
 
     // set up input variables
     const [title, setTitle] = useState('');
@@ -121,10 +115,7 @@ function CreateMap(){
                 alert('Please upload a map file (geojson/shapefile/kml).');
             }
             else{
-                if(mapInfo.createMap()){
-                    console.log(mapInfo);
-                    navigate('/map-edit');
-                }
+                mapInfo.createMap(title, fileFormat, tags);
             }
         }
     };

@@ -18,8 +18,12 @@ app.use(express.urlencoded({ extended: true }))
 // set up router as middleware
 const authRouter = require('./routes/auth-router')
 app.use('/auth', authRouter)
+const mapRouter = require('./routes/map-router')
+app.use('/map', mapRouter)
 const postRouter = require('./routes/post-router')
 app.use('/api-post', postRouter)
+// const userRouter = require('./routes/user-router')
+// app.use('/user', userRouter)
 const storeRouter = require('./routes/store-router')
 app.use('/api', storeRouter)
 
