@@ -84,6 +84,7 @@ export function MapDetailOwnerTopBar(){
                     onClick={handleMyMaps}>
                     &lt;&lt; My Maps
                 </Button>
+                <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>Map Title</Typography>
                 <Box className="map-button-container">
                     <IconButton id="like-button" onClick={handleLikeMap}>
                         <ThumbUpOffAltIcon style={{color:"black"}}></ThumbUpOffAltIcon>
