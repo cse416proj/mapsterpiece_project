@@ -40,7 +40,7 @@ export default function DeletePostModal() {
         <Box className="modal-dialog">
           <Box className="modal-context">
             <header className="dialog-header">Delete post</header>
-            <Typography style={{ color: "red" }}>This will delete this post permanently. You cannot undo thisaction.</Typography>
+            <Typography style={{ color: "red" }}>This will delete this post permanently. You cannot undo this action.</Typography>
           </Box>
 
           <Box id="confirm-cancel-container">

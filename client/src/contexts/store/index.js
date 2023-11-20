@@ -329,12 +329,12 @@ function GlobalStoreContextProvider(props) {
     switch (type) {
       // placeholder to be replace later on
       case GlobalStoreActionType.LOAD_ALL_MAPS:
-        return setStore({
+        return setStore((prevStore) => ({
           ...prevStore,
           currentModal: CurrentModal.NONE,
           currentView: CurrentView.USER_HOME,
           commentMarkedForDeletion: null,
-        });
+        }));
       case GlobalStoreActionType.LOAD_ALL_POSTS:
         return setStore((prevStore) => ({
           ...prevStore,

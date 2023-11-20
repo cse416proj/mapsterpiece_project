@@ -390,7 +390,12 @@ console.log(payload);
                     })
                 }
             }
-            asyncCreateMap(user.userName, title, fileFormat, dummyContent, tags);
+            async function reloadMaps(userName, title, fileFormat, mapContent, tags){
+                await asyncCreateMap(userName, title, fileFormat, mapContent, tags);
+                await mapInfo.getAllUserMaps();
+                navigate("/");
+            }
+            reloadMaps(user.userName, title, fileFormat, dummyContent, tags);
         }
     }
 
@@ -401,15 +406,28 @@ console.log(payload);
         async function asyncDeleteMap(mapId){
             const response = await api.deleteMapById(mapId);
 
-            if(response.status === 201){
+            if(response.status === 200){
+                await mapInfo.getAllUserMaps();
                 navigate("/");
             }
             else{
-                console.log(response.data.errorMessage);
+                console.log(response);
             }
         }
         asyncDeleteMap(mapId);
     }
+
+    // postInfo.deletePostById = async function (postId) {
+    //     const response = await api.deletePostById(postId);
+    //     if (response.data.error) {
+    //       setPostInfo({
+    //         ...postInfo,
+    //         errorMessage: response.data.error,
+    //       });
+    //     } else {
+          
+    //     }
+    //   };
 
     // mapInfo.cancelDownload = () => {
     //     reducer({
@@ -426,22 +444,24 @@ console.log(payload);
     // }
 
     mapInfo.getAllUserMaps = async function() {
-    try {
-        const response = await api.getAllUserMaps();
-        const mapIds = response.data.maps;
+        try {
+            console.log('mapInfo.getAllUserMaps');
 
-        const maps = await Promise.all(mapIds.map(mapId => mapInfo.getMapById(mapId)));
-        console.log(maps);
-        // maps = maps.map(mapObject => mapObject.map);
-        // console.log(maps);
-        reducer({
-            type: ActionType.LOAD_ALL_MAPS_FROM_USER,
-            payload: maps.filter(map => map !== null),
-        });
-    } catch (error) {
-        console.error('Error fetching user maps:', error);
-    }
-};
+            const response = await api.getAllUserMaps();
+            const mapIds = response.data.maps;
+
+            const maps = await Promise.all(mapIds.map(mapId => mapInfo.getMapById(mapId)));
+            console.log(maps);
+            // maps = maps.map(mapObject => mapObject.map);
+            // console.log(maps);
+            reducer({
+                type: ActionType.LOAD_ALL_MAPS_FROM_USER,
+                payload: maps.filter(map => map !== null),
+            });
+        } catch (error) {
+            console.error('Error fetching user maps:', error);
+        }
+    };
 
     mapInfo.getMapById = async function(mapId) {
         const response = await api.getMapById(mapId);

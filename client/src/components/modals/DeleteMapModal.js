@@ -16,8 +16,7 @@ export default function DeleteMapModal() {
   function handleDeleteModal(event) {
     event.stopPropagation();
     event.preventDefault();
-    mapInfo.deleteMapById(store.mapMarkedForDeletion._id.$oid);
-    // mapInfo.deleteMapById(store.mapMarkedForDeletion._id);
+    mapInfo.deleteMapById(store.mapMarkedForDeletion._id);
     store.closeModal();
   }
 
@@ -33,7 +32,7 @@ export default function DeleteMapModal() {
         <Box className="modal-dialog">
           <Box className="modal-context">
             <header className="dialog-header">Delete map</header>
-            <Typography style={{ color: "red" }}>This will delete this map permanently. You cannot undo thisaction.</Typography>
+            <Typography style={{ color: "red" }}>This will delete this map permanently. You cannot undo this action.</Typography>
           </Box>
 
           <Box id="confirm-cancel-container">
