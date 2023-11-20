@@ -89,14 +89,37 @@ deletePostById = async (req, res) => {
     return res.status(400).json({ errorMessage: "No post ID found." });
   }
 
-  Post.findByIdAndDelete(postId, (err, post) => {
+  Post.findById(postId, (err, post) => {
     if (err) {
       return res.status(500).json({ errorMessage: err.message });
-    } else if (!post) {
-      return res.status(404).json({ errorMessage: "Post not found." });
     }
 
-    return res.status(200).json(post);
+    async function findUser() {
+      await User.findOne({ userName: post.ownerUserName }, (err, user) => {
+        if (err) {
+          return res.status(500).json({ errorMessage: err.message });
+        } else if (!user) {
+          return res.status(404).json({ errorMessage: "User not found." });
+        }
+
+        user.posts.pull(postId);
+        user.save().then(() => {
+          post
+            .remove()
+            .then(() => {
+              return res.status(200).json({
+                message: "Post deleted successfully!",
+                post: post,
+              });
+            })
+            .catch((err) => {
+              return res.status(500).json({ errorMessage: err.message });
+            });
+        });
+      });
+    }
+
+    findUser();
   });
 };
 
@@ -134,7 +157,7 @@ getCommentsByCommentIds = async (req, res) => {
   idList = idList.split(",");
 
   Comment.find({ _id: { $in: idList } })
-    .populate('subComments')
+    .populate("subComments")
     .exec((err, comments) => {
       if (err) {
         return res.status(500).json({ errorMessage: err.message });

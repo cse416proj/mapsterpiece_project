@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import api from "./user-request-api";
 
 export const UserContext = createContext({});
 
@@ -219,8 +220,6 @@ function UserContextProvider(props) {
   };
 
   userInfo.setCurrentUser = function(user){
-    console.log(user);
-
     userReducer({
       type: UserActionType.SET_CURRENT_USER,
       payload: user,
@@ -251,6 +250,18 @@ function UserContextProvider(props) {
   userInfo.getNumPosts = function(){
     return `${userInfo.currentPosts.length} posts`;
   }
+
+  userInfo.getUserById = async function (userId) {
+    const response = await api.getUserById(userId);
+    userReducer({
+      type: UserActionType.SET_CURRENT_USER,
+      payload: response.data,
+    });
+  };
+
+  userInfo.deleteUserById = async function (userId) {
+    const response = await api.deleteUserById(userId);
+  };
 
   return (
     <UserContext.Provider value={{ userInfo }}>
