@@ -60,5 +60,5 @@ getAllUsers = async (req, res) => {
 module.exports = {
   getAllPosts,
   getAllUsers,
-  // getAllMaps,
+  // getAllMaps
 };

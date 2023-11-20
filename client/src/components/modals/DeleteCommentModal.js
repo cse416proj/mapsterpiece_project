@@ -4,14 +4,9 @@ import { Box, Modal, Button, Typography } from "@mui/material";
 import { GlobalStoreContext } from "../../contexts/store";
 import { PostContext } from "../../contexts/post";
 
-import { useNavigate, useLocation } from 'react-router-dom';
-
-export default function DeletePostModal() {
+export default function DeleteCommentModal() {
   const { store } = useContext(GlobalStoreContext);
   const { postInfo } = useContext(PostContext);
-
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const buttonStyle = {
     backgroundColor: "#649a92",
@@ -21,11 +16,9 @@ export default function DeletePostModal() {
   function handleDeleteModal(event) {
     event.stopPropagation();
     event.preventDefault();
-    postInfo.deletePostById(store.postMarkedForDeletion._id);
+    console.log("on click confirm delete comment");
+    postInfo.deleteCommentById(store.commentMarkedForDeletion._id);
     store.closeModal();
-    if(location.pathname===`/post-detail/${store.postMarkedForDeletion._id}`){
-      navigate('/');
-    }
   }
 
   function handleCloseModal(event) {
@@ -35,12 +28,15 @@ export default function DeletePostModal() {
   }
 
   return (
-    <Modal className="modal" open={store.currentModal === "DELETE_POST_MODAL"}>
+    <Modal className="modal" open={store.currentModal === "DELETE_COMMENT_MODAL"}>
       <Box className="modal-box">
         <Box className="modal-dialog">
           <Box className="modal-context">
-            <header className="dialog-header">Delete post</header>
-            <Typography style={{ color: "red" }}>This will delete this post permanently. You cannot undo this action.</Typography>
+            <header className="dialog-header">Delete comment</header>
+            <Typography style={{ color: "red" }}>
+              This will delete this comment permanently. You cannot undo this
+              action.
+            </Typography>
           </Box>
 
           <Box id="confirm-cancel-container">

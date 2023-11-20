@@ -127,9 +127,6 @@ deleteMapById = async (req, res) => {
     const userId = req.userId;
     const mapId = req.params.id;
 
-    console.log(mapId);
-
-
     if(!userId){
         return res.status(400).json({ errorMessage: "User does not exist." });
     }
@@ -144,27 +141,27 @@ deleteMapById = async (req, res) => {
         else if(!user){
             return res.status(404).json({ errorMessage: "User cannot be found." });
         }
-
         user.maps = user.maps.filter((map) => (String(map) !== String(mapId)));
     
         user.save().then(() => {
+            console.log(user)
+
             Map.findByIdAndDelete(mapId, (err, mapToDelete) => {
+                console.log(mapToDelete)
+
                 if (err) {
                     return res.status(500).json({ errorMessage: err.message });
                 } else if (!mapToDelete) {
                     return res.status(404).json({ errorMessage: "Map is not found." });
                 }
+
+                console.log(mapToDelete);
+
                 return res.status(200).json({
                     success: true,
                     map: mapToDelete
                 });
             })
-            .catch((error) => {
-                return res.status(400).json({
-                    error,
-                    errorMessage: "Failed to delete user's map, please try again."
-                });
-            });
         })
         .catch((error) => {
             return res.status(400).json({

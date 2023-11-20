@@ -13,6 +13,7 @@ import AuthScreen from './screens/auth/AuthScreen';
 import AuthErrorModal from './modals/AuthErrorModal';
 import DeletePostModal from './modals/DeletePostModal';
 import DeleteAccountModal from './modals/DeleteAccountModal';
+import DeleteMapModal from './modals/DeleteMapModal';
 
 import Profile from './screens/profile/Profile';
 import SearchScreen from './screens/search/SearchScreen';
@@ -30,6 +31,7 @@ import MapsPostsCardSection from './screens/listFilter/MapsPostsCardSelection';
 import PostDetailScreen from './screens/post/PostDetailScreen';
 import PostComment from './screens/post/PostComment';
 import PostEditScreen from './screens/edit/post/PostEditScreen';
+import DeleteCommentModal from './modals/DeleteCommentModal';
 
 import MapScreen from './screens/map/display/MapScreen';
 import MapEditScreen from './screens/edit/map/MapEditScreen';
@@ -51,6 +53,7 @@ export {
     AuthErrorModal,
     DeletePostModal,
     DeleteAccountModal,
+    DeleteMapModal,
     SideNavBar,
     SearchScreen,
     SearchBar,
@@ -72,4 +75,5 @@ export {
     MaybeShowNavBar,
     MapEditTopBar,
     MapEditSideBar,
+    DeleteCommentModal,
 }

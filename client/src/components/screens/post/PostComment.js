@@ -15,11 +15,16 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
 
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import { DeleteCommentModal } from "../../index";
+import { GlobalStoreContext } from "../../../contexts/store";
+
 export default function PostComment(payload, index) {
   const { postInfo } = useContext(PostContext);
   const { auth } = useContext(AuthContext);
   const [addActive, setAddActive] = useState(false);
   const [commentInput, setInput] = useState("");
+  const { store } = useContext(GlobalStoreContext);
 
   payload = payload.payload;
   function handlePlusIconClick(event) {
@@ -47,6 +52,18 @@ export default function PostComment(payload, index) {
     setAddActive(false);
   }
 
+  function deleteHandler(event){
+    event.stopPropagation();
+    event.preventDefault();
+    console.log("on click trash can icon");
+    console.log(payload);
+    postInfo.setCurrentComment(payload);
+    store.markCommentForDeletion(payload);
+
+    console.log(postInfo.currentComment);
+    console.log(store.commentMarkedForDeletion);
+  }
+
   return (
     <div>
       <Accordion
@@ -71,6 +88,7 @@ export default function PostComment(payload, index) {
                 >
                   {payload.commenterUserName}
                 </Typography>
+                <DeleteForeverOutlinedIcon onClick={deleteHandler}/>
               </Box>
               <Typography
                 style={{
@@ -81,7 +99,7 @@ export default function PostComment(payload, index) {
                 {payload.content}
               </Typography>
             </Box>
-            {auth.loggedIn ? <AddIcon onClick={handlePlusIconClick} /> : null}
+            {(auth.loggedIn) ? <AddIcon onClick={handlePlusIconClick} /> : null}
           </Box>
         </AccordionSummary>
         <AccordionDetails
@@ -93,6 +111,7 @@ export default function PostComment(payload, index) {
             <Subcomment key={`subcomment-${index}`} subcomment={subcomment} />
           ))}
         </AccordionDetails>
+        <DeleteCommentModal/>
       </Accordion>
       {addActive ? (
         <Box

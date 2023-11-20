@@ -159,6 +159,9 @@ deletePostById = async (req, res) => {
     if (err) {
       return res.status(500).json({ errorMessage: err.message });
     }
+    else if(!post){
+      return res.status(404).json({ errorMessage: "Post not found." });
+    }
 
     async function findUser() {
       await User.findOne({ userName: post.ownerUserName }, (err, user) => {
@@ -166,6 +169,9 @@ deletePostById = async (req, res) => {
           return res.status(500).json({ errorMessage: err.message });
         } else if (!user) {
           return res.status(404).json({ errorMessage: "User not found." });
+        }
+        else if(user.userName !== post.ownerUserName){
+          return res.status(500).json({ errorMessage: "Username unmatched. User cannot delete other users' post." });
         }
 
         user.posts.pull(postId);
@@ -187,6 +193,42 @@ deletePostById = async (req, res) => {
 
     findUser();
   });
+};
+
+deleteCommentById = async (req, res) => {
+  const commentId = req.params.commentId;
+  if(!commentId){
+    return res.status(400).json({ errorMessage: "No comment ID found." });
+  }
+
+  Comment.findById(commentId, (err, comment) =>{
+    if (err) {
+      return res.status(500).json({ errorMessage: err.message });
+    }
+
+    async function findPost(){
+      try{
+        const post = await Post.findOne({comments: commentId});
+        if (!post){
+          return res.status(404).json({ errorMessage: 'Post not found.' });
+        }
+
+        post.comments.pull(commentId);
+        await post.save();
+        await comment.remove();
+
+        return res.status(200).json({
+          message: 'Comment deleted successfully!',
+          comment: comment,
+        });
+
+      } catch(err) {
+        return res.status(500).json({errorMessage: err.message});
+      }
+    }
+
+    findPost();
+  })
 };
 
 createComment = async (req, res) => {
@@ -223,7 +265,7 @@ getCommentsByCommentIds = async (req, res) => {
   idList = idList.split(",");
 
   Comment.find({ _id: { $in: idList } })
-    .populate('subComments')
+    .populate("subComments")
     .exec((err, comments) => {
       if (err) {
         return res.status(500).json({ errorMessage: err.message });
@@ -272,4 +314,5 @@ module.exports = {
   getPostById,
   getCommentsByCommentIds,
   createSubcomment,
+  deleteCommentById,
 };

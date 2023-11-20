@@ -14,6 +14,7 @@ export const GlobalStoreActionType = {
   HIDE_MODALS: "HIDE_MODALS",
   MARK_POST_FOR_DELETION: "MARK_POST_FOR_DELETION",
   MARK_ACCOUNT_FOR_DELETION: "MARK_ACCOUNT_FOR_DELETION",
+  MARK_COMMENT_FOR_DELETION: "MARK_COMMENT_FOR_DELETION",
 };
 
 const CurrentView = {
@@ -44,18 +45,21 @@ const CurrentView = {
 
 const CurrentModal = {
   NONE: "NONE",
+  DELETE_MAP_MODAL: "DELETE_MAP_MODAL",
   DELETE_POST_MODAL: "DELETE_POST_MODAL",
+  DELETE_COMMENT_MODAL: "DELETE_COMMENT_MODAL",
   DELETE_ACCOUNT_MODAL: "DELETE_ACCOUNT_MODAL",
 };
 
 const fakeAllMaps = [
   {
     _id: {
-      $oid: "6547ea560946232834874dd4",
+      $oid: "655af7ba5d91a496b38f4e91",
     },
-    ownerUserName: "AmaPuser",
+    ownerUserName: "peach23333",
     title: "some map title",
     fileFormat: "GeoJSON",
+    isPublished: false,
     // mapType: schema.types.mixed,
     // map: map object
     tags: ["Bin Map", "Europe", "Population"], // 1st tag should be the string of map type
@@ -97,11 +101,12 @@ const fakeAllMaps = [
   },
   {
     _id: {
-      $oid: "65482b5e0946232834874e6c",
+      $oid: "655a752f0926b31495c2c4c4",
     },
-    ownerUserName: "GabbyDu",
+    ownerUserName: "apple",
     title: "some map title 2",
     fileFormat: "Shapefile",
+    isPublished: true,
     mapType: "Heat Map", // schema.types.mixed?
     // map: map object
     tags: ["Heat Map", "Asia", "Population"],
@@ -288,18 +293,6 @@ const fakeAllMapsPosts = [
   },
 ];
 
-// const binMaps = fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Bin Map"});
-// const choroplethMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Choropleth Map"});
-// const dotMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"});
-// const gradMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"});
-// const heatMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Heat Map"});
-
-// const binPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Bin Map"});
-// const choroplethPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Choropleth Map"});
-// const dotPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"});
-// const gradPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"});
-// const heatPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Heat Map"});
-
 function GlobalStoreContextProvider(props) {
   const { postInfo } = useContext(PostContext);
 
@@ -311,20 +304,22 @@ function GlobalStoreContextProvider(props) {
     allMaps: fakeAllMaps,
     allMapsPosts: fakeAllMapsPosts,
 
-    // binMaps: binMaps,
-    // choroplethMaps: choroplethMaps,
-    // dotMaps: dotMaps,
-    // gradMaps: gradMaps,
-    // heatMaps: heatMaps,
+    binMaps: null,
+    choroplethMaps: null,
+    dotMaps: null,
+    gradMaps: null,
+    heatMaps: null,
 
-    // binPosts: binPosts,
-    // choroplethPosts: choroplethPosts,
-    // dotPosts: dotPosts,
-    // gradPosts: gradPosts,
-    // heatPosts: heatPosts,
+    binPosts: null,
+    choroplethPosts: null,
+    dotPosts: null,
+    gradPosts: null,
+    heatPosts: null,
 
     postMarkedForDeletion: null,
+    mapMarkedForDeletion: null,
     accountMarkedForDeletion: null,
+    commentMarkedForDeletion: null,
   });
 
   const storeReducer = (action) => {
@@ -334,14 +329,15 @@ function GlobalStoreContextProvider(props) {
     switch (type) {
       // placeholder to be replace later on
       case GlobalStoreActionType.LOAD_ALL_MAPS:
-        return setStore({
-          ...store,
+        return setStore((prevStore) => ({
+          ...prevStore,
           currentModal: CurrentModal.NONE,
           currentView: CurrentView.USER_HOME,
-        });
+          commentMarkedForDeletion: null,
+        }));
       case GlobalStoreActionType.LOAD_ALL_POSTS:
         return setStore((prevStore) => ({
-          ...store,
+          ...prevStore,
           currentModal: CurrentModal.NONE,
           currentView: CurrentView.ALL_POSTS,
           allPosts: payload,
@@ -351,7 +347,16 @@ function GlobalStoreContextProvider(props) {
           ...prevStore,
           currentModal: CurrentModal.NONE,
           currentView: payload,
+          mapMarkedForDeletion: null,
           postMarkedForDeletion: null,
+          accountMarkedForDeletion: null,
+          commentMarkedForDeletion: null,
+        }));
+      case GlobalStoreActionType.MARK_MAP_FOR_DELETION:
+        return setStore((prevStore) => ({
+          ...prevStore,
+          currentModal: CurrentModal.DELETE_MAP_MODAL,
+          mapMarkedForDeletion: payload,
         }));
       case GlobalStoreActionType.MARK_POST_FOR_DELETION:
         return setStore((prevStore) => ({
@@ -359,6 +364,12 @@ function GlobalStoreContextProvider(props) {
           currentModal: CurrentModal.DELETE_POST_MODAL,
           postMarkedForDeletion: payload,
         }));
+      case GlobalStoreActionType.MARK_COMMENT_FOR_DELETION:
+        return setStore((prevStore) => ({
+          ...prevStore,
+          currentModal: CurrentModal.DELETE_COMMENT_MODAL,
+          commentMarkedForDeletion: payload,
+        })); 
       case GlobalStoreActionType.MARK_ACCOUNT_FOR_DELETION:
         return setStore((prevStore) => ({
           ...prevStore,
@@ -369,8 +380,10 @@ function GlobalStoreContextProvider(props) {
         setStore((prevStore) => ({
           ...prevStore,
           currentModal: CurrentModal.NONE,
+          mapMarkedForDeletion: null,
           postMarkedForDeletion: null,
           accountMarkedForDeletion: null,
+          commentMarkedForDeletion: null,
         }));
       default:
         return store;
@@ -383,6 +396,7 @@ function GlobalStoreContextProvider(props) {
       type: GlobalStoreActionType.MARK_CURRENT_SCREEN,
       payload: screenSelected,
     });
+    store.setData();
   };
 
   store.closeModal = function () {
@@ -399,12 +413,27 @@ function GlobalStoreContextProvider(props) {
     });
   };
 
+  store.markMapForDeletion = function (mapData) {
+    console.log(mapData);
+    storeReducer({
+      type: GlobalStoreActionType.MARK_MAP_FOR_DELETION,
+      payload: mapData,
+    });
+  };
+
   store.markAccountForDeletion = function (accountData) {
     storeReducer({
       type: GlobalStoreActionType.MARK_ACCOUNT_FOR_DELETION,
       payload: accountData,
     });
   }
+
+  store.markCommentForDeletion = function (commentData){
+    storeReducer({
+      type: GlobalStoreActionType.MARK_COMMENT_FOR_DELETION, 
+      payload: commentData,
+    });
+  };
 
   store.getData = function (currScreen) {
     const screenDataDict = {
@@ -425,6 +454,30 @@ function GlobalStoreContextProvider(props) {
     };
     return currScreen in screenDataDict ? screenDataDict[currScreen] : null;
   };
+
+  const updateMaps = (allMaps) => ({
+    binMaps: store.allMaps.filter((pair)=>{return pair.tags[0]==="Bin Map"}),
+    choroplethMaps: store.allMaps.filter((pair)=>{return pair.tags[0]==="Choropleth Map"}),
+    dotMaps: store.allMaps.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"}),
+    gradMaps:store.allMaps.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"}),
+    heatMaps: store.allMaps.filter((pair)=>{return pair.tags[0]==="Heat Map"}),
+  });
+  
+  const updatePosts = (allPosts) => ({
+    binPosts: store.allPosts.filter((pair)=>{return pair.tags[0]==="Bin Map"}),
+    choroplethPosts: store.allPosts.filter((pair)=>{return pair.tags[0]==="Choropleth Map"}),
+    dotPosts: store.allPosts.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"}),
+    gradPosts: store.allPosts.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"}),
+    heatPosts: store.allPosts.filter((pair)=>{return pair.tags[0]==="Heat Map"}),
+  });
+
+  store.setData = function () {
+  setStore((prevStore) => ({
+    ...prevStore,
+    ...updateMaps(prevStore.allMaps),
+    ...updatePosts(prevStore.allPosts),
+  }));
+};
 
   store.getAllPosts = async function () {
     const response = await api.getAllPosts();

@@ -1,10 +1,11 @@
 import React, { useContext, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
-import { DynamicCard, DeletePostModal } from "../../index";
+import { DynamicCard, DeletePostModal, DeleteMapModal } from "../../index";
 import HomeNavCard from "./HomeNavCard";
 
 import AuthContext from "../../../contexts/auth";
 import GlobalStoreContext from "../../../contexts/store";
+import MapContext from "../../../contexts/map";
 import PostContext from "../../../contexts/post";
 import UserContext from "../../../contexts/user";
 
@@ -13,6 +14,7 @@ function UserHomeScreen() {
   const { store } = useContext(GlobalStoreContext);
   const { userInfo } = useContext(UserContext);
   const { postInfo } = useContext(PostContext);
+  const { mapInfo } = useContext(MapContext);
 
   useEffect(() => {
     if(auth && auth.user) {
@@ -24,9 +26,15 @@ function UserHomeScreen() {
     }
   }, []);
 
+  useEffect(() => {
+    if (auth.user.maps.length > 0){
+      mapInfo.getAllUserMaps();
+    }
+  }, []);
+
   let mapCard = (
     <>
-      {store.allMaps.map((pair) => (
+      {mapInfo.allMapsByUser?.map((pair) => (
         <DynamicCard userData={null} mapData={pair} postData={null} />
       ))}
     </>
@@ -51,6 +59,7 @@ function UserHomeScreen() {
         <HomeNavCard/>
       </Box>
       <DeletePostModal />
+      <DeleteMapModal/>
     </Box>
   );
 }

@@ -6,11 +6,13 @@ import ShareIcon from "@mui/icons-material/Share";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 import AuthContext from "../../contexts/auth";
 // import UserContext from "../../contexts/user";
 
-function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHandler, editHandler, isPublic=false }) {
+function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHandler, editHandler, isPublished=false }) {
   const { auth } = useContext(AuthContext);
   // const { userInfo } = useContext(UserContext);
 
@@ -18,6 +20,7 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
   const open = Boolean(anchorEl);
 
   const isLoggedInUser = auth.user && auth.user.userName === currentUserName;
+  console.log(isLoggedInUser);
 
   const openMenu = (event) => {
     event.stopPropagation();
@@ -43,6 +46,18 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
     editHandler(event);
   };
 
+  const handlePublish = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    closeMenu();
+  };
+
+  const handleUnpublish = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    closeMenu();
+  };
+
   function renderDynamicMenuItems(){
     let actions = [];
 
@@ -53,7 +68,15 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
       actions = [editItem, deleteItem]
     }
     else{
-      actions = [editItem, deleteItem]
+      const publishItem = { icon: <VisibilityIcon id='action-icon'/>, name: `Publish map`, handler: handlePublish };
+      const unpublishItem = { icon: <VisibilityOffIcon id='action-icon'/>, name: `Unpublish map`, handler: handleUnpublish };
+
+      if(!isPublished){
+        actions = [editItem, publishItem, deleteItem]
+      }
+      else{
+        actions = [unpublishItem, deleteItem]
+      }
     }
 
     return actions.map((action) => {
@@ -82,19 +105,7 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
         <ShareIcon id={`${type}-action-icon`} />
         <Typography id={`${type}-action-button-text`}>share {type}</Typography>
       </Box>
-      <MoreHorizIcon className="action-icon" id={`${type}-action-icon`} onClick={openMenu}/>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={closeMenu}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
-      >
-        { renderDynamicMenuItems() }
-      </Menu>
-      
-      {/* {
+      {
         (!isLoggedInUser) ?
           null :
           <>
@@ -110,8 +121,7 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
               { renderDynamicMenuItems() }
             </Menu>
           </>
-      } */}
-      
+      }
     </CardActions>
   );
 }
