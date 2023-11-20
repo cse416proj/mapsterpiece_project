@@ -6,19 +6,13 @@ import MapContext from "../../contexts/map";
 
 export default function UploadMapErrorModal(){
     const { store } = useContext(GlobalStoreContext);
-    console.log(store)
 
     const buttonStyle = {
         backgroundColor: "#649a92",
         color: "white",
     };
 
-    // function handleDeleteModal(){
-    //     console.log("placeholder DELETE");
-    // }
-
     function handleCloseModal(event){
-        console.log("placeholder CLOSE");
         event.stopPropagation();
         event.preventDefault();
         store.closeModal();

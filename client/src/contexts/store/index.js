@@ -15,6 +15,7 @@ export const GlobalStoreActionType = {
   MARK_POST_FOR_DELETION: "MARK_POST_FOR_DELETION",
   MARK_ACCOUNT_FOR_DELETION: "MARK_ACCOUNT_FOR_DELETION",
   MARK_COMMENT_FOR_DELETION: "MARK_COMMENT_FOR_DELETION",
+  UPLOAD_ERROR: "UPLOAD_ERROR",
 };
 
 const CurrentView = {
@@ -378,6 +379,7 @@ function GlobalStoreContextProvider(props) {
           accountMarkedForDeletion: payload,
         }));
       case GlobalStoreActionType.UPLOAD_ERROR:
+        console.log("upload error")
         return setStore((prevStore) => ({
           ...prevStore,
           currentModal: CurrentModal.UPLOAD_ERROR_MODAL,

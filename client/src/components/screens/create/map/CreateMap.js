@@ -6,7 +6,7 @@ import FileDropdown from './FileDropdown';
 import { Tags, ButtonSet } from '../../commonProps';
 import MapContext from '../../../../contexts/map';
 import {GlobalStoreContext} from "../../../../contexts/store";
-import UploadMapErrorModal from "../../../modals/UploadMapErrorModal";
+import { UploadMapErrorModal } from "../../../index";
 
 function CreateMap(){
     // set up file reference
@@ -116,6 +116,7 @@ function CreateMap(){
                 return;
             }
             else if(!mapInfo.fileContent){
+                console.log('Please upload a map file (geojson/shapefile/kml).');
                 store.uploadError()
                 // alert('Please upload a map file (geojson/shapefile/kml).');
             }
