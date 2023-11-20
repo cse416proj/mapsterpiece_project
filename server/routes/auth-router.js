@@ -7,8 +7,4 @@ router.post('/login', AuthController.loginUser)
 router.get('/logout', AuthController.logoutUser)
 router.get('/loggedIn', AuthController.getLoggedIn)
 
-// router.delete('/user', (req, res) => {
-//     console.log(req.body);
-// })
-
 module.exports = router

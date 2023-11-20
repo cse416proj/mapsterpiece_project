@@ -193,7 +193,7 @@ getCommentsByCommentIds = async (req, res) => {
   idList = idList.split(",");
 
   Comment.find({ _id: { $in: idList } })
-    .populate('subComments')
+    .populate("subComments")
     .exec((err, comments) => {
       if (err) {
         return res.status(500).json({ errorMessage: err.message });

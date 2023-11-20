@@ -155,57 +155,9 @@ registerUser = async (req, res) => {
     }
 }
 
-deleteUser = async (req, res) => {
-    console.log("deleteUser function: req res");
-    try{
-        if(!req.body){
-            return res
-                .status(400)
-                .json({ errorMessage: "Request body not found." });
-        }
-
-        console.log(req.body);
-
-        const { userName } = req.body;
-        console.log(`userName: ${userName}`);
-
-        // if(!userName){
-        //     return res
-        //         .status(400)
-        //         .json({ errorMessage: "Empty User Name is not valid" });
-        // }
-        
-        // call async function to remove user by userName
-        async function asyncDeleteUser(userName) {
-            User.findOneAndDelete({ userName: userName }, () => {
-                console.log(`userFound: ${userName}`)
-                res.cookie("token", "", {
-                    httpOnly: true,
-                    expires: new Date(0),
-                    secure: false,
-                    sameSite: "none"
-                })
-                .status(200).json({
-                    success: true
-                })
-            }).catch(err => console.log(err))
-        }
-
-        asyncDeleteUser(userName);
-    }
-    catch(err){
-        console.error(err);
-        res.status(400).json({
-            success: false,
-            errorMessage: err
-        });
-    }
-}
-
 module.exports = {
     getLoggedIn,
     registerUser,
     loginUser,
-    logoutUser,
-    deleteUser
+    logoutUser
 }

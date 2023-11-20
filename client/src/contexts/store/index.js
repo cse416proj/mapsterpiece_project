@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 import PostContext from "../post";
 import api from "./store-request-api";
 
@@ -13,6 +13,7 @@ export const GlobalStoreActionType = {
   SET_CURRENT_MAP: "SET_CURRENT_MAP",
   HIDE_MODALS: "HIDE_MODALS",
   MARK_POST_FOR_DELETION: "MARK_POST_FOR_DELETION",
+  MARK_ACCOUNT_FOR_DELETION: "MARK_ACCOUNT_FOR_DELETION",
   MARK_COMMENT_FOR_DELETION: "MARK_COMMENT_FOR_DELETION",
 };
 
@@ -46,47 +47,8 @@ const CurrentModal = {
   NONE: "NONE",
   DELETE_POST_MODAL: "DELETE_POST_MODAL",
   DELETE_COMMENT_MODAL: "DELETE_COMMENT_MODAL",
+  DELETE_ACCOUNT_MODAL: "DELETE_ACCOUNT_MODAL",
 };
-
-// hardcoded data to be replaced later on with actual data
-const fakeAllUsers = [
-  {
-    _id: {
-      $oid: "6547ea560946232834874dd4",
-    },
-    firstName: "ur",
-    lastName: "mom",
-    userName: "urmom",
-    email: "urmom@gmail.com",
-    passwordHash:
-      "$2a$10$V2g5TgHvnxj3C9zQEgAP5OcREuflnhC/jVyGzhkMMqz0XFTTdsE/a",
-    createdAt: {
-      $date: "2023-11-05T19:17:42.514Z",
-    },
-    updatedAt: {
-      $date: "2023-11-05T19:17:42.514Z",
-    },
-    __v: 0,
-  },
-  {
-    _id: {
-      $oid: "65482b5e0946232834874e6c",
-    },
-    firstName: "hi",
-    lastName: "hi",
-    userName: "hihi",
-    email: "hi@gmail.com",
-    passwordHash:
-      "$2a$10$YRW9JZHgOzaobTx1U9kl/e3st67LEx0I0bKPHRIkgGCQKH7L.HljG",
-    createdAt: {
-      $date: "2023-11-05T23:55:10.885Z",
-    },
-    updatedAt: {
-      $date: "2023-11-05T23:55:10.885Z",
-    },
-    __v: 0,
-  },
-];
 
 const fakeAllMaps = [
   {
@@ -346,7 +308,7 @@ function GlobalStoreContextProvider(props) {
   const [store, setStore] = useState({
     currentModal: CurrentModal.NONE,
     currentView: CurrentView.USER_HOME,
-    allUsers: fakeAllUsers,
+    allUsers: [],
     allPosts: [],
     allMaps: fakeAllMaps,
     allMapsPosts: fakeAllMapsPosts,
@@ -364,6 +326,7 @@ function GlobalStoreContextProvider(props) {
     // heatPosts: heatPosts,
 
     postMarkedForDeletion: null,
+    accountMarkedForDeletion: null,
     commentMarkedForDeletion: null,
   });
 
@@ -375,26 +338,9 @@ function GlobalStoreContextProvider(props) {
       // placeholder to be replace later on
       case GlobalStoreActionType.LOAD_ALL_MAPS:
         return setStore({
+          ...store,
           currentModal: CurrentModal.NONE,
           currentView: CurrentView.USER_HOME,
-          allUsers: [],
-          allPosts: [],
-          allMaps: [],
-          allMapsPosts: [],
-
-          binMaps: [],
-          choroplethMaps: [],
-          dotMaps: [],
-          gradMaps: [],
-          heatMaps: [],
-
-          binPosts: [],
-          choroplethPosts: [],
-          dotPosts: [],
-          gradPosts: [],
-          heatPosts: [],
-
-          postMarkedForDeletion: null,
           commentMarkedForDeletion: null,
         });
       case GlobalStoreActionType.LOAD_ALL_POSTS:
@@ -425,11 +371,18 @@ function GlobalStoreContextProvider(props) {
           currentModal: CurrentModal.DELETE_COMMENT_MODAL,
           commentMarkedForDeletion: payload,
         })); 
+      case GlobalStoreActionType.MARK_ACCOUNT_FOR_DELETION:
+        return setStore((prevStore) => ({
+          ...prevStore,
+          currentModal: CurrentModal.DELETE_ACCOUNT_MODAL,
+          accountMarkedForDeletion: payload,
+        }));
       case GlobalStoreActionType.HIDE_MODALS:
         setStore((prevStore) => ({
           ...prevStore,
           currentModal: CurrentModal.NONE,
           postMarkedForDeletion: null,
+          accountMarkedForDeletion: null,
           commentMarkedForDeletion: null,
         }));
       default:
@@ -458,6 +411,13 @@ function GlobalStoreContextProvider(props) {
       payload: postData,
     });
   };
+
+  store.markAccountForDeletion = function (accountData) {
+    storeReducer({
+      type: GlobalStoreActionType.MARK_ACCOUNT_FOR_DELETION,
+      payload: accountData,
+    });
+  }
 
   store.markCommentForDeletion = function (commentData){
     storeReducer({
@@ -491,6 +451,21 @@ function GlobalStoreContextProvider(props) {
     storeReducer({
       type: GlobalStoreActionType.LOAD_ALL_POSTS,
       payload: response.data,
+    });
+  };
+
+  store.getAllUsers = async function () {
+    const response = await api.getAllUsers();
+    let tempAllPosts = [];
+    response.data.forEach((user) => {
+      user.posts.forEach((post) => {
+        tempAllPosts.push(post);
+      });
+    });
+    setStore({
+      ...store,
+      allUsers: response.data,
+      allPosts: tempAllPosts,
     });
   };
 

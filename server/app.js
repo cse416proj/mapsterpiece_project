@@ -26,6 +26,8 @@ app.use('/api-post', postRouter)
 // app.use('/user', userRouter)
 const storeRouter = require('./routes/store-router')
 app.use('/api', storeRouter)
+const userRouter = require('./routes/user-router')
+app.use('/api-user', userRouter)
 
 // initalize database
 const db = require('./db')

@@ -14,6 +14,26 @@ getAllPosts = async (req, res) => {
   });
 };
 
+getAllUsers = async (req, res) => {
+  // find all users and also populate the posts array
+
+  User.find({})
+    .populate("posts")
+    .exec((err, users) => {
+      if (err) {
+        return res.status(500).json({ errorMessage: err.message });
+      }
+
+      return res.status(200).json(users);
+    });
+  // User.find({}, (err, users) => {
+  //   if (err) {
+  //     return res.status(500).json({ errorMessage: err.message });
+  //   } 
+  //   return res.status(200).json(users);
+  // });
+};
+
 // // guest can load all users' published maps, so no auth
 // getAllMaps = async (req, res) => {
 //   Maps.find({isPublished: true}, (err, maps) => {
@@ -39,5 +59,6 @@ getAllPosts = async (req, res) => {
 
 module.exports = {
   getAllPosts,
+  getAllUsers,
   // getAllMaps
 };

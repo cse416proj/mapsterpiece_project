@@ -21,7 +21,7 @@ export default function CommunityScreen() {
   }, [store?.currentView]);
 
   useEffect(() => {
-    store.getAllPosts();
+    store.getAllUsers();
   }, []);
 
   // Now update list card rendering; reason: store changes in Store or search changes in SearchScreen
