@@ -506,6 +506,21 @@ console.log(payload);
         return response.data.map;
     }
 
+    mapInfo.getAllPublishedMapsFromGivenUser = async function(userId){
+        const response = await api.getAllPublishedMapsFromGivenUser(userId);
+        console.log(response);
+
+        if(response.status === 200){
+            reducer({
+                type: ActionType.LOAD_ALL_MAPS_FROM_USER,
+                payload: response.data.maps
+            });
+        }
+        else{
+            console.log(response);
+        }
+    }
+
     return (
         <MapContext.Provider value={{ mapInfo }}>
             {children}

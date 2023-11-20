@@ -41,6 +41,9 @@ function MapEditSideBar() {
           <Select defaultValue={10} className="sidebar-block-content">
           <MenuItem value={10}>Bin Map</MenuItem>
           <MenuItem value={20}>Choropleth Map</MenuItem>
+          <MenuItem value={30}>Dot Distribution Map</MenuItem>
+          <MenuItem value={40}>Graduated Symbol Map</MenuItem>
+          <MenuItem value={50}>Heat Map</MenuItem>
           </Select>
         </Box>
 
