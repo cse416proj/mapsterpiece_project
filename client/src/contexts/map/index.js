@@ -48,6 +48,7 @@ export function MapContextProvider({children}){
         title: '',
         fileFormat: '',
         fileContent: '',
+        currentMap: null,
         fakeFileContent: fakeMapContent,
         tags: [],
         shpBuffer: null,
@@ -99,6 +100,7 @@ export function MapContextProvider({children}){
         SET_DBF_BUFFER: 'SET_DBF_BUFFER',
         UPLOAD_MAP: 'UPLOAD_MAP',
         CLEAR: 'CLEAR',
+        SET_CURRENT_MAP: 'SET_CURRENT_MAP',
         LOAD_ALL_MAPS_FROM_USER: 'LOAD_ALL_MAPS_FROM_USER',
         // SET_DOWNLOAD_FORMAT: 'SET_DOWNLOAD_FORMAT',
         // CANCEL_DOWNLOAD: 'CANCEL_DOWNLOAD',
@@ -158,6 +160,11 @@ console.log(payload);
                     tags: [],
                     shpBuffer: null,
                     dbfBuffer: null,
+                }));
+            case ActionType.SET_CURRENT_MAP:
+                return setMapInfo((prevMapInfo) => ({
+                    ...prevMapInfo,
+                    currentMap: payload
                 }));
             // case ActionType.SET_DOWNLOAD_FORMAT:
             //     return setMapInfo((prevMapInfo) => ({
@@ -399,8 +406,19 @@ console.log(payload);
         }
     }
 
+    mapInfo.setCurrentMap = function(map){
+        console.log('setCurrentMap');
+        console.log(map);
+
+        reducer({
+          type: ActionType.SET_CURRENT_MAP,
+          payload: map,
+        });
+    };
+
     mapInfo.deleteMapById = (mapId) => {
-        console.log(`delete map by id ${String(mapId)}`);
+        console.log('delete map by id:');
+        console.log(mapId);
 
         // create map for user
         async function asyncDeleteMap(mapId){
@@ -416,18 +434,6 @@ console.log(payload);
         }
         asyncDeleteMap(mapId);
     }
-
-    // postInfo.deletePostById = async function (postId) {
-    //     const response = await api.deletePostById(postId);
-    //     if (response.data.error) {
-    //       setPostInfo({
-    //         ...postInfo,
-    //         errorMessage: response.data.error,
-    //       });
-    //     } else {
-          
-    //     }
-    //   };
 
     // mapInfo.cancelDownload = () => {
     //     reducer({

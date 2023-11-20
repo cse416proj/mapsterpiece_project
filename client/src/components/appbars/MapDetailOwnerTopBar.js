@@ -1,14 +1,18 @@
-import React, { useContext } from 'react'
-import {Box, Typography, Button, Menu, MenuItem, AppBar, Toolbar, IconButton} from '@mui/material';
+import React, { useContext, useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+
+import { Box, Typography, Button, Menu, MenuItem, AppBar, Toolbar, IconButton } from '@mui/material';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import DeleteMapModal from "../modals/DeleteMapModal";
 
-import { useState } from 'react';
+import { Tag } from "../index";
+
 import AuthContext from '../../contexts/auth';
-import {useNavigate} from "react-router-dom";
+import MapContext from '../../contexts/map';
+import GlobalStoreContext from '../../contexts/store';
+
 export function MapDetailOwnerTopBar(){
     const BackButtonStyle = {
         color: 'black',
@@ -22,9 +26,24 @@ export function MapDetailOwnerTopBar(){
     }
 
     const { auth } = useContext(AuthContext);
+    const { mapInfo } = useContext(MapContext);
+    const { store } = useContext(GlobalStoreContext);
     const navigate = useNavigate();
+
+    const [title, setTitle] = useState('');
+    const [tags, setTags] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+
+    useEffect(() => {
+        if(mapInfo){
+            if(mapInfo.currentMap){
+                console.log(mapInfo.currentMap);
+                setTitle(mapInfo.currentMap.title);
+                setTags(mapInfo.currentMap.tags);
+            }
+        }
+    }, []);
 
     let dislikes = 0
     let likes = 0
@@ -68,8 +87,11 @@ export function MapDetailOwnerTopBar(){
         console.log("Dislikes = " + dislikes);
     }
 
-    function handleDeleteMap() {
-        console.log("delete this map")
+    function handleDeleteMap(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        console.log('delete map')
+        store.markMapForDeletion(mapInfo.currentMap);
     }
 
     function handleUnpublishMap(){
@@ -84,7 +106,21 @@ export function MapDetailOwnerTopBar(){
                     onClick={handleMyMaps}>
                     &lt;&lt; My Maps
                 </Button>
-                <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>Map Title</Typography>
+                <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>{title}</Typography>
+                <Box className='flex-row' id='tags-container'>
+                    {
+                        (tags.length === 0) ?
+                            null :
+                            <>
+                                <Typography id='post-tags-text' style={{ color: 'black' }}>Tags:</Typography>
+                                {
+                                    tags.map((tag, index) => {
+                                        return <Tag key={index} index={index} tag={tag} removeTag={null}/>;
+                                    })
+                                }
+                            </>
+                    }
+                </Box>
                 <Box className="map-button-container">
                     <IconButton id="like-button" onClick={handleLikeMap}>
                         <ThumbUpOffAltIcon style={{color:"black"}}></ThumbUpOffAltIcon>

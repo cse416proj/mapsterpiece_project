@@ -4,11 +4,12 @@ import MapEditTopBar from '../../../appbars/MapEditTopBar';
 import MapEditSideBar from '../../../appbars/MapEditSideBar';
 
 import MapScreen from '../../map/display/MapScreen';
+import DeleteMapModal from '../../../modals/DeleteMapModal';
 
 export default function MapEditScreen() {
   return (
     <Box>
-      <MapEditTopBar />
+      <MapEditTopBar/>
       <Box
         className="map-screen-container"
         style={{ 
@@ -21,6 +22,7 @@ export default function MapEditScreen() {
         <MapScreen/>
         <MapEditSideBar/>
       </Box>
+      <DeleteMapModal/>
     </Box>
   );
 }

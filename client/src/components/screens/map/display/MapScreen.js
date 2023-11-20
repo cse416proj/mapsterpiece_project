@@ -1,8 +1,7 @@
-import { useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Box } from '@mui/material';
 // import html2canvas from 'html2canvas';
 
-// import MapContext from './MapContext';
 import GeojsonMap from './GeojsonMap';
 // import KmlMap from './KmlMap';
 
@@ -10,7 +9,14 @@ import MapContext from '../../../../contexts/map';
 
 function MapScreen(){
     const { mapInfo } = useContext(MapContext);
-    const content = mapInfo.fakeFileContent;
+
+    const [content, setContent] = useState('');
+
+    useEffect(() => {
+        if(mapInfo && mapInfo.fakeFileContent){
+            setContent(mapInfo.fakeFileContent);
+        }
+    }, []);
 
     if(!mapInfo){
         return null;
