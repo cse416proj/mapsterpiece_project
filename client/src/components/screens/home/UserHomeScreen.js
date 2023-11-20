@@ -7,11 +7,13 @@ import "./HomeScreen.css";
 import AuthContext from "../../../contexts/auth";
 import GlobalStoreContext from "../../../contexts/store";
 import PostContext from "../../../contexts/post";
+import MapContext from "../../../contexts/map";
 
 function UserHomeScreen() {
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
   const { postInfo } = useContext(PostContext);
+  const { mapInfo } = useContext(MapContext);
 
   useEffect(() => {
     if (auth.user.posts.length > 0) {
@@ -19,9 +21,17 @@ function UserHomeScreen() {
     }
   }, []);
 
+  useEffect(() => {
+    if (auth.user.maps.length > 0){
+      mapInfo.getAllUserMaps();
+    }
+  }, []);
+
+// console.log(mapInfo?.allMapsFromUser);
+
   let mapCard = (
     <Box sx={{ width: "95%" }}>
-      {store.allMaps.map((pair) => (
+      {mapInfo.allMapsFromUser?.map((pair) => (
         <DynamicCard userData={null} mapData={pair} postData={null} />
       ))}
     </Box>

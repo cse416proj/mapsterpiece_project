@@ -8,11 +8,13 @@ import ActionButton from "./ActionButton";
 import UserContext from "../../../contexts/user";
 import AuthContext from "../../../contexts/auth";
 import PostContext from "../../../contexts/post";
+import MapContext from "../../../contexts/map";
 
 function Profile() {
   const { auth } = useContext(AuthContext);
   const { userInfo } = useContext(UserContext);
   const { postInfo } = useContext(PostContext);
+  const { mapInfo } = useContext(MapContext);
 
   const [tab, setTab] = useState("map");
 
@@ -25,6 +27,12 @@ function Profile() {
     userInfo.getUserById(userId);
   }, []);
 
+  useEffect(() => {
+    if (auth.user?.maps?.length > 0){
+      mapInfo.getAllUserMaps();
+    }
+  }, []);
+
   const handleChangeTab = (event, newTab) => {
     setTab(newTab);
   };
@@ -35,7 +43,7 @@ function Profile() {
 
   function fetchContent() {
     if (tab === "map") {
-      return userInfo.currentMaps.map((map, index) => (
+      return mapInfo.allMapsFromUser?.map((map, index) => (
         <DynamicCard
           key={`map-${index}`}
           userData={null}

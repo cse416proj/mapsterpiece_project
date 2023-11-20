@@ -16,8 +16,18 @@ export const createMap = (ownerUserName, title, fileFormat, mapContent, tags) =>
   });
 };
 
+export const getAllUserMaps = () => {
+  return api.get(`/allMaps`);
+}
+
+export const getMapById = (mapId) =>{
+  return api.get(`/get/${mapId}`);
+}
+
 const apis = {
-  createMap
+  createMap,
+  getAllUserMaps,
+  getMapById, 
 };
 
 export default apis;
