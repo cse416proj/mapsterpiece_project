@@ -231,6 +231,42 @@ deleteCommentById = async (req, res) => {
   })
 };
 
+deleteSubCommById = async (req, res) => {
+  const subId = req.params.subId;
+  if(!subId){
+    return res.status(400).json({ errorMessage: "No comment ID found." });
+  }
+
+  Subcomment.findById(subId, (err, subcomment) =>{
+    if (err) {
+      return res.status(500).json({ errorMessage: err.message });
+    }
+
+    async function findComment(){
+      try{
+        const comment = await Comment.findOne({subComments: subId});
+        if (!comment){
+          return res.status(404).json({ errorMessage: 'Comment not found.' });
+        }
+
+        comment.subComments.pull(subId);
+        await comment.save();
+        await subcomment.remove();
+
+        return res.status(200).json({
+          message: 'subComment deleted successfully!',
+          comment: subcomment,
+        });
+
+      } catch(err) {
+        return res.status(500).json({errorMessage: err.message});
+      }
+    }
+
+    findComment();
+  })
+};
+
 createComment = async (req, res) => {
   const postId = req.params.postId;
   const { commenterUserName, content } = req.body;
@@ -277,6 +313,23 @@ getCommentsByCommentIds = async (req, res) => {
     });
 };
 
+getSubcommsBySubcommsIds = async (req, res)=>{
+  let idList = req.params.idLists;
+
+  idList = idList.split(",");
+
+  Subcomment.find({_id: {$in: idList}})
+  .exec((err, subcomments) => {
+    if (err) {
+      return res.status(500).json({ errorMessage: err.message });
+    } else if (!subcomments) {
+      return res.status(404).json({ errorMessage: "SubComments not found" });
+    }
+
+    return res.status(200).json(subcomments);
+  });
+}
+
 createSubcomment = async (req, res) => {
   const commentId = req.params.commentId;
   const { commenterUserName, content } = req.body;
@@ -315,4 +368,6 @@ module.exports = {
   getCommentsByCommentIds,
   createSubcomment,
   deleteCommentById,
+  deleteSubCommById, 
+  getSubcommsBySubcommsIds,
 };

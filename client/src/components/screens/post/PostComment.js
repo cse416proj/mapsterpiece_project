@@ -16,7 +16,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
 
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import { DeleteCommentModal } from "../../index";
+import { DeleteCommentModal, DeleteSubCommModal } from "../../index";
 import { GlobalStoreContext } from "../../../contexts/store";
 
 export default function PostComment(payload, index) {
@@ -55,13 +55,9 @@ export default function PostComment(payload, index) {
   function deleteHandler(event){
     event.stopPropagation();
     event.preventDefault();
-    console.log("on click trash can icon");
-    console.log(payload);
+    console.log("on click trash can icon", payload);
     postInfo.setCurrentComment(payload);
     store.markCommentForDeletion(payload);
-
-    console.log(postInfo.currentComment);
-    console.log(store.commentMarkedForDeletion);
   }
 
   return (
@@ -148,6 +144,20 @@ export default function PostComment(payload, index) {
 }
 
 function Subcomment(subcomment) {
+  const { store } = useContext(GlobalStoreContext);
+  const { postInfo } = useContext(PostContext);
+
+  function deleteSubHandler(event){
+    console.log("deleteSubHandler");
+    event.stopPropagation();
+    event.preventDefault();
+    console.log(subcomment);     // subcomment object
+
+    postInfo.setCurrentSubcomment(subcomment);
+    store.markSubcommentForDeletion(subcomment);
+  }
+// console.log(postInfo.currentSubcommentIndex);
+
   subcomment = subcomment.subcomment;
   return (
     <Box className="commentCard">
@@ -162,6 +172,7 @@ function Subcomment(subcomment) {
         >
           {subcomment.commenterUserName}
         </Typography>
+        <DeleteForeverOutlinedIcon onClick={deleteSubHandler}/>
       </Box>
       <Typography
         style={{
@@ -171,6 +182,7 @@ function Subcomment(subcomment) {
       >
         {subcomment.content}
       </Typography>
+      <DeleteSubCommModal/>
     </Box>
   );
 }
