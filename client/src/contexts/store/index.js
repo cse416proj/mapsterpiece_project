@@ -10,7 +10,6 @@ export const GlobalStoreActionType = {
   LOAD_ALL_MAPS: "LOAD_ALL_MAPS",
   LOAD_ALL_POSTS: "LOAD_ALL_POSTS",
   LOAD_ALL_USERS: "LOAD_ALL_USERS",
-  LOAD_ALL_COMMENTS:"LOAD_ALL_COMMENTS",
   SET_CURRENT_POST: "SET_CURRENT_POST",
   SET_CURRENT_MAP: "SET_CURRENT_MAP",
   HIDE_MODALS: "HIDE_MODALS",
@@ -307,7 +306,6 @@ function GlobalStoreContextProvider(props) {
     allPosts: [],
     allMaps: fakeAllMaps,
     allMapsPosts: fakeAllMapsPosts,
-    allComments: [],
 
     binMaps: null,
     choroplethMaps: null,
@@ -349,13 +347,6 @@ function GlobalStoreContextProvider(props) {
           currentView: CurrentView.ALL_POSTS,
           allPosts: payload,
         }));
-        case GlobalStoreActionType.LOAD_ALL_COMMENTS:
-          return setStore((prevStore) => ({
-            ...prevStore,
-            currentModal: CurrentModal.NONE,
-            currentView: CurrentView.ALL_POSTS,
-            allComments: payload,
-          }));
       case GlobalStoreActionType.MARK_CURRENT_SCREEN:
         return setStore((prevStore) => ({
           ...prevStore,
@@ -477,7 +468,6 @@ function GlobalStoreContextProvider(props) {
       GRAD_MAPS: store.gradMaps,
       HEAT_MAPS: store.heatMaps,
       ALL_POSTS: store.allPosts,
-      ALL_COMMENTS: store.allComments,
       BIN_POSTS: store.binPosts,
       CHOROPLETH_POSTS: store.choroplethPosts,
       DOT_POSTS: store.dotPosts,
@@ -519,22 +509,6 @@ function GlobalStoreContextProvider(props) {
     });
   };
 
-  store.getAllComments = async function (){
-    const response = await api.getAllComments();
-    let tempAllPosts = [];
-
-    response.data.forEach((comment) => {
-      comment.posts.forEach((post) => {
-        tempAllPosts.push(post);
-      });
-    });
-
-    setStore({
-      ...store,
-      allComments: response.data,
-      allPosts: tempAllPosts,
-    });
-  }
   store.getAllUsers = async function () {
     const response = await api.getAllUsers();
     let tempAllPosts = [];

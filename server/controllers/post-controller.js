@@ -313,22 +313,21 @@ getCommentsByCommentIds = async (req, res) => {
     });
 };
 
-getSubcommsBySubcommsIds = async (req, res)=>{
-  let idList = req.params.idLists;
+getSubcommsBySubcommsIds = async (req, res) => {
+  try {
+    let idList = req.params.idLists.split(",");
 
-  idList = idList.split(",");
+    const subcomments = await Subcomment.find({ _id: { $in: idList } });
 
-  Subcomment.find({_id: {$in: idList}})
-  .exec((err, subcomments) => {
-    if (err) {
-      return res.status(500).json({ errorMessage: err.message });
-    } else if (!subcomments) {
+    if (!subcomments || subcomments.length === 0) {
       return res.status(404).json({ errorMessage: "SubComments not found" });
     }
 
     return res.status(200).json(subcomments);
-  });
-}
+  } catch (err) {
+    return res.status(500).json({ errorMessage: err.message });
+  }
+};
 
 createSubcomment = async (req, res) => {
   const commentId = req.params.commentId;

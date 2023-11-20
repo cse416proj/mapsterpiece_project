@@ -13,14 +13,10 @@ export const getAllUsers = () => {
   return api.get(`/allUsers`)
 }
 
-export const getAllComments =()=>{
-  return api.get(`/allComments`);
-}
 
 const apis = {
   getAllPosts,
   getAllUsers,
-  getAllComments,
 };
 
 export default apis;

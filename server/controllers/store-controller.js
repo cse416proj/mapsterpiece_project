@@ -14,18 +14,6 @@ getAllPosts = async (req, res) => {
   });
 };
 
-getAllComments = async (req, res) => {
-  Comment.find({}, (err, comments) => {
-    if (err) {
-      return res.status(500).json({ errorMessage: err.message });
-    } else if (!comments) {
-      return res.status(404).json({ errorMessage: "Comments not found." });
-    }
-
-    return res.status(200).json(comments);
-  });
-};
-
 getAllUsers = async (req, res) => {
   // find all users and also populate the posts array
 
@@ -72,6 +60,5 @@ getAllUsers = async (req, res) => {
 module.exports = {
   getAllPosts,
   getAllUsers,
-  getAllComments,
   // getAllMaps
 };

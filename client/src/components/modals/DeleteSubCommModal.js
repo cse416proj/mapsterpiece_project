@@ -17,8 +17,8 @@ export default function DeleteSubCommModal() {
     event.stopPropagation();
     event.preventDefault();
     console.log("on click confirm delete SubComment");
-    console.log(store.subcommentMarkedForDeletion);
-    // postInfo.deleteSubCommById(store.subcommentMarkedForDeletion._id);
+    // console.log(store.subcommentMarkedForDeletion._id);
+    postInfo.deleteSubCommById(store.subcommentMarkedForDeletion._id);
     store.closeModal();
   }
 

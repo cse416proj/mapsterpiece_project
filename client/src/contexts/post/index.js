@@ -156,7 +156,6 @@ function PostContextProvider(props) {
       if (index > -1){
         tempIds.splice(index, 1);
       }
-      // store.getAllComments();
       if (tempIds.length > 0) {
         postInfo.getCommentsByCommentIds(tempIds);
       } else {
@@ -168,32 +167,71 @@ function PostContextProvider(props) {
     }
   };
 
-  // postInfo.deleteSubCommById = async function (subId){
-  //   console.log("subcomment id for delete: ", subId);
-  //   const response = await api.deleteSubCommById(subId);
-  //   if (response.data.error){
-  //     setPostInfo({
-  //       ...postInfo, 
-  //       errorMessage: response.data.error,
-  //     });
-  //   }else{
-  //     let tempIds = postInfo.currentSubcommentIndex?.subComments;
-  //     console.log(postInfo.currentSubcommentIndex);
-  //     const index = tempIds?.indexOf(subId);
-  //     if (index > -1){
-  //       tempIds.splice(index, 1);
-  //     }
-  //     // store.getAllPosts();
-  //     if (tempIds?.length > 0) {
-  //       postInfo.getSubcommsBySubcommsIds(tempIds);
+  postInfo.deleteSubCommById = async function (subId){
+    console.log("subcomment id for delete: ", subId);
+    const response = await api.deleteSubCommById(subId);
+    console.log(response.data);
+    if (response.data.error){
+      setPostInfo({
+        ...postInfo, 
+        errorMessage: response.data.error,
+      });
+    }
+    else{
+      let tempIds = postInfo.currentSubcommentIndex?.subComments;
+      console.log(postInfo.currentSubcommentIndex?.subComments);
+      const index = tempIds?.indexOf(subId);
+      if (index > -1){
+        tempIds.splice(index, 1);
+      }
+      if (tempIds?.length > 0) {
+        postInfo.getSubcommsBySubcommsIds(tempIds);
+      } else {
+        setPostInfo({
+          ...postInfo,
+          allSubcommentsForComments: [],
+        });
+      }
+    }
+  }
+
+  // postInfo.deleteSubCommById = async function (subId) {
+  //   try {
+  //     console.log("subcomment id for delete: ", subId);
+  
+  //     const response = await api.deleteSubCommById(subId);
+  //     // console.log(response.data.error);
+  
+  //     if (response.data.error) {
+  //       console.log("response err exists");
+  //       setPostInfo(prevPostInfo => ({
+  //         ...prevPostInfo,
+  //         errorMessage: response.data.error,
+  //       }));
   //     } else {
-  //       setPostInfo({
-  //         ...postInfo,
-  //         allSubcommentsForComments: [],
-  //       });
+  //       console.log(postInfo.currentSubcommentIndex.subComments);
+  //       let tempIds = [...postInfo.currentSubcommentIndex.subComments];
+  //       console.log(tempIds);
+  
+  //       const index = tempIds.indexOf(subId);
+  //       if (index > -1) {
+  //         tempIds.splice(index, 1);
+  //       }
+  
+  //       if (tempIds.length > 0) {
+  //         console.log("calling get subcomments by ids", tempIds);
+  //         postInfo.getSubcommsBySubcommsIds(tempIds);
+  //       } else {
+  //         setPostInfo(prevPostInfo => ({
+  //           ...prevPostInfo,
+  //           allSubcommentsForComments: [],
+  //         }));
+  //       }
   //     }
+  //   } catch (error) {
+  //     console.error("Error deleting subcomment:", error.message);
   //   }
-  // }
+  // };
 
   postInfo.createComment = async function (postId, commenterUserName, content) {
     const response = await api.createComment(
