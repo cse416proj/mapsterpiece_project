@@ -189,6 +189,42 @@ deletePostById = async (req, res) => {
   });
 };
 
+deleteCommentById = async (req, res) => {
+  const commentId = req.params.commentId;
+  if(!commentId){
+    return res.status(400).json({ errorMessage: "No comment ID found." });
+  }
+
+  Comment.findById(commentId, (err, comment) =>{
+    if (err) {
+      return res.status(500).json({ errorMessage: err.message });
+    }
+
+    async function findPost(){
+      try{
+        const post = await Post.findOne({comments: commentId});
+        if (!post){
+          return res.status(404).json({ errorMessage: 'Post not found.' });
+        }
+
+        post.comments.pull(commentId);
+        await post.save();
+        await comment.remove();
+
+        return res.status(200).json({
+          message: 'Comment deleted successfully!',
+          comment: comment,
+        });
+
+      } catch(err) {
+        return res.status(500).json({errorMessage: err.message});
+      }
+    }
+
+    findPost();
+  })
+};
+
 createComment = async (req, res) => {
   const postId = req.params.postId;
   const { commenterUserName, content } = req.body;
@@ -223,7 +259,7 @@ getCommentsByCommentIds = async (req, res) => {
   idList = idList.split(",");
 
   Comment.find({ _id: { $in: idList } })
-    .populate('subComments')
+    .populate("subComments")
     .exec((err, comments) => {
       if (err) {
         return res.status(500).json({ errorMessage: err.message });
@@ -272,4 +308,5 @@ module.exports = {
   getPostById,
   getCommentsByCommentIds,
   createSubcomment,
+  deleteCommentById,
 };

@@ -8,19 +8,27 @@ import ActionButton from "./ActionButton";
 import UserContext from "../../../contexts/user";
 import AuthContext from "../../../contexts/auth";
 import PostContext from "../../../contexts/post";
+import MapContext from "../../../contexts/map";
 
 function Profile() {
   const { auth } = useContext(AuthContext);
   const { userInfo } = useContext(UserContext);
   const { postInfo } = useContext(PostContext);
+  const { mapInfo } = useContext(MapContext);
 
   const { userId } = useParams();
   const [tab, setTab] = useState("map");
 
   useEffect(() => {
-    if(auth.user && auth.user.posts.length > 0) {
-      postInfo.getPostsByPostIds(auth.user.posts);
+    if(auth.user) {
+      if(auth.user.posts && auth.user.posts.length > 0){
+        postInfo.getPostsByPostIds(auth.user.posts);
+      }
+      if(auth.user.maps && auth.user.maps.length > 0){
+        mapInfo.getAllUserMaps();
+      }
     }
+    
     userInfo.getUserById(userId);
   }, []);
 
@@ -34,25 +42,31 @@ function Profile() {
 
   function fetchContent() {
     if (tab === "map") {
-      return userInfo.currentMaps.map((map, index) => (
-        <DynamicCard
-          key={`map-${index}`}
-          userData={null}
-          mapData={map}
-          postData={null}
-        />
-      ));
+      if(mapInfo && mapInfo.allMapsByUser){
+        return mapInfo.allMapsByUser?.map((map, index) => (
+          <DynamicCard
+            key={`map-${index}`}
+            userData={null}
+            mapData={map}
+            postData={null}
+          />
+        ));
+      }
     } else {
-      return postInfo.allPostsByUser?.map((post, index) => (
-        <DynamicCard
-          key={`post-${index}`}
-          userData={null}
-          mapData={null}
-          postData={post}
-        />
-      ));
+      if(postInfo && postInfo.allPostsByUser){
+        return postInfo.allPostsByUser?.map((post, index) => (
+          <DynamicCard
+            key={`post-${index}`}
+            userData={null}
+            mapData={null}
+            postData={post}
+          />
+        ));
+      }
     }
   }
+
+  const isLoggedInUser = (auth && auth.user !== null && auth.user.userName === userInfo.currentUser.userName);
 
   return (
     <Box className="content" id="user-info-content">
@@ -81,19 +95,13 @@ function Profile() {
           initials={userInfo.getUserInitials().toUpperCase()}
           name={userInfo.getUserFullName()}
           userName={userInfo.getUserName()}
-          numMaps={userInfo.getNumMaps()}
-          numPosts={userInfo.getNumPosts()}
-          isLoggedInUser={
-            auth && auth.user !== null && auth.user === userInfo.currentUser
-          }
+          numMaps={mapInfo && mapInfo.allMapsByUser && mapInfo.allMapsByUser.length}
+          numPosts={postInfo && postInfo.allPostsByUser && postInfo.allPostsByUser.length}
+          isLoggedInUser={isLoggedInUser}
         />
         <DeletePostModal />
       </Box>
-      <ActionButton
-        isLoggedInUser={
-          auth && auth.user !== null && auth.user === userInfo.currentUser
-        }
-      />
+      <ActionButton isLoggedInUser={isLoggedInUser}/>
     </Box>
   );
 }

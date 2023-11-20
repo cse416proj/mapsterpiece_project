@@ -8,7 +8,7 @@ function MapsPostsCardSection({ data, search }) {
 
   // update filteredData when data/search property changes
   useEffect(() => {
-    const result = data.filter((pair) => {
+    const result = data?.filter((pair) => {
       const searchTerm = search.toLowerCase();
       return (
         searchTerm === '' ||

@@ -14,6 +14,7 @@ export const GlobalStoreActionType = {
   HIDE_MODALS: "HIDE_MODALS",
   MARK_POST_FOR_DELETION: "MARK_POST_FOR_DELETION",
   MARK_ACCOUNT_FOR_DELETION: "MARK_ACCOUNT_FOR_DELETION",
+  MARK_COMMENT_FOR_DELETION: "MARK_COMMENT_FOR_DELETION",
 };
 
 const CurrentView = {
@@ -45,6 +46,7 @@ const CurrentView = {
 const CurrentModal = {
   NONE: "NONE",
   DELETE_POST_MODAL: "DELETE_POST_MODAL",
+  DELETE_COMMENT_MODAL: "DELETE_COMMENT_MODAL",
   DELETE_ACCOUNT_MODAL: "DELETE_ACCOUNT_MODAL",
 };
 
@@ -288,18 +290,6 @@ const fakeAllMapsPosts = [
   },
 ];
 
-// const binMaps = fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Bin Map"});
-// const choroplethMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Choropleth Map"});
-// const dotMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"});
-// const gradMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"});
-// const heatMaps= fakeAllMaps.filter((pair)=>{return pair.tags[0]==="Heat Map"});
-
-// const binPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Bin Map"});
-// const choroplethPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Choropleth Map"});
-// const dotPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"});
-// const gradPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"});
-// const heatPosts= fakeAllPosts.filter((pair)=>{return pair.tags[0]==="Heat Map"});
-
 function GlobalStoreContextProvider(props) {
   const { postInfo } = useContext(PostContext);
 
@@ -311,20 +301,21 @@ function GlobalStoreContextProvider(props) {
     allMaps: fakeAllMaps,
     allMapsPosts: fakeAllMapsPosts,
 
-    // binMaps: binMaps,
-    // choroplethMaps: choroplethMaps,
-    // dotMaps: dotMaps,
-    // gradMaps: gradMaps,
-    // heatMaps: heatMaps,
+    binMaps: null,
+    choroplethMaps: null,
+    dotMaps: null,
+    gradMaps: null,
+    heatMaps: null,
 
-    // binPosts: binPosts,
-    // choroplethPosts: choroplethPosts,
-    // dotPosts: dotPosts,
-    // gradPosts: gradPosts,
-    // heatPosts: heatPosts,
+    binPosts: null,
+    choroplethPosts: null,
+    dotPosts: null,
+    gradPosts: null,
+    heatPosts: null,
 
     postMarkedForDeletion: null,
     accountMarkedForDeletion: null,
+    commentMarkedForDeletion: null,
   });
 
   const storeReducer = (action) => {
@@ -338,6 +329,7 @@ function GlobalStoreContextProvider(props) {
           ...store,
           currentModal: CurrentModal.NONE,
           currentView: CurrentView.USER_HOME,
+          commentMarkedForDeletion: null,
         });
       case GlobalStoreActionType.LOAD_ALL_POSTS:
         return setStore((prevStore) => ({
@@ -359,6 +351,12 @@ function GlobalStoreContextProvider(props) {
           currentModal: CurrentModal.DELETE_POST_MODAL,
           postMarkedForDeletion: payload,
         }));
+      case GlobalStoreActionType.MARK_COMMENT_FOR_DELETION:
+        return setStore((prevStore) => ({
+          ...prevStore,
+          currentModal: CurrentModal.DELETE_COMMENT_MODAL,
+          commentMarkedForDeletion: payload,
+        })); 
       case GlobalStoreActionType.MARK_ACCOUNT_FOR_DELETION:
         return setStore((prevStore) => ({
           ...prevStore,
@@ -371,6 +369,7 @@ function GlobalStoreContextProvider(props) {
           currentModal: CurrentModal.NONE,
           postMarkedForDeletion: null,
           accountMarkedForDeletion: null,
+          commentMarkedForDeletion: null,
         }));
       default:
         return store;
@@ -383,6 +382,7 @@ function GlobalStoreContextProvider(props) {
       type: GlobalStoreActionType.MARK_CURRENT_SCREEN,
       payload: screenSelected,
     });
+    store.setData();
   };
 
   store.closeModal = function () {
@@ -406,6 +406,13 @@ function GlobalStoreContextProvider(props) {
     });
   }
 
+  store.markCommentForDeletion = function (commentData){
+    storeReducer({
+      type: GlobalStoreActionType.MARK_COMMENT_FOR_DELETION, 
+      payload: commentData,
+    });
+  };
+
   store.getData = function (currScreen) {
     const screenDataDict = {
       ALL_USERS: store.allUsers,
@@ -425,6 +432,30 @@ function GlobalStoreContextProvider(props) {
     };
     return currScreen in screenDataDict ? screenDataDict[currScreen] : null;
   };
+
+  const updateMaps = (allMaps) => ({
+    binMaps: store.allMaps.filter((pair)=>{return pair.tags[0]==="Bin Map"}),
+    choroplethMaps: store.allMaps.filter((pair)=>{return pair.tags[0]==="Choropleth Map"}),
+    dotMaps: store.allMaps.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"}),
+    gradMaps:store.allMaps.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"}),
+    heatMaps: store.allMaps.filter((pair)=>{return pair.tags[0]==="Heat Map"}),
+  });
+  
+  const updatePosts = (allPosts) => ({
+    binPosts: store.allPosts.filter((pair)=>{return pair.tags[0]==="Bin Map"}),
+    choroplethPosts: store.allPosts.filter((pair)=>{return pair.tags[0]==="Choropleth Map"}),
+    dotPosts: store.allPosts.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"}),
+    gradPosts: store.allPosts.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"}),
+    heatPosts: store.allPosts.filter((pair)=>{return pair.tags[0]==="Heat Map"}),
+  });
+
+  store.setData = function () {
+  setStore((prevStore) => ({
+    ...prevStore,
+    ...updateMaps(prevStore.allMaps),
+    ...updatePosts(prevStore.allPosts),
+  }));
+};
 
   store.getAllPosts = async function () {
     const response = await api.getAllPosts();

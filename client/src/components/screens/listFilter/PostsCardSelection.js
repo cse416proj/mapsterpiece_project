@@ -8,7 +8,7 @@ function PostsCardSection({ data, search }) {
 
   // update filteredData when data/search property changes
   useEffect(() => {
-    const result = data.filter((pair) => {
+    const result = data?.filter((pair) => {
       const searchTerm = search.toLowerCase();
       return (
         searchTerm === '' ||
@@ -23,7 +23,7 @@ function PostsCardSection({ data, search }) {
   return (
     <Box sx={{ width: '97.5%' }}>
       {
-        filterData.map((pair, index) => {
+        filterData?.map((pair, index) => {
           return <DynamicCard key={`post-${index}`} userData={null} mapData={null} postData={pair}/>;
         })
       }

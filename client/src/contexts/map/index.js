@@ -53,7 +53,8 @@ export function MapContextProvider({children}){
         shpBuffer: null,
         dbfBuffer: null,
         map: null,
-        errorMessage: ''
+        errorMessage: '',
+        allMapsByUser: null,
         // download: false,
         // downloadFormat: ''
     });
@@ -98,13 +99,14 @@ export function MapContextProvider({children}){
         SET_DBF_BUFFER: 'SET_DBF_BUFFER',
         UPLOAD_MAP: 'UPLOAD_MAP',
         CLEAR: 'CLEAR',
+        LOAD_ALL_MAPS_FROM_USER: 'LOAD_ALL_MAPS_FROM_USER',
         // SET_DOWNLOAD_FORMAT: 'SET_DOWNLOAD_FORMAT',
         // CANCEL_DOWNLOAD: 'CANCEL_DOWNLOAD',
     }
 
     const reducer = (action) => {
         const { type, payload } = action;
-
+console.log(payload);
         switch(type){
             case ActionType.SET_MAP_TITLE:
                 return setMapInfo((prevMapInfo) => ({
@@ -169,6 +171,11 @@ export function MapContextProvider({children}){
             //         download: false,
             //         downloadFormat: ''
             //     }));
+            case ActionType.LOAD_ALL_MAPS_FROM_USER:
+                return setMapInfo((prevMapInfo) => ({
+                    ...prevMapInfo, 
+                    allMapsByUser: payload,
+            }));
             default:
                 return mapInfo;
         }
@@ -402,6 +409,35 @@ export function MapContextProvider({children}){
     //         payload: downloadFormat
     //     })
     // }
+
+    mapInfo.getAllUserMaps = async function() {
+    try {
+        const response = await api.getAllUserMaps();
+        const mapIds = response.data.maps;
+
+        const maps = await Promise.all(mapIds.map(mapId => mapInfo.getMapById(mapId)));
+        console.log(maps);
+        // maps = maps.map(mapObject => mapObject.map);
+        // console.log(maps);
+        reducer({
+            type: ActionType.LOAD_ALL_MAPS_FROM_USER,
+            payload: maps.filter(map => map !== null),
+        });
+    } catch (error) {
+        console.error('Error fetching user maps:', error);
+    }
+};
+
+    mapInfo.getMapById = async function(mapId) {
+        const response = await api.getMapById(mapId);
+        console.log("real map object: ", response.data.map);
+        setMapInfo( (prevMapInfo) => ({
+            ...prevMapInfo,
+            map: response.data,
+            })
+        );
+        return response.data.map;
+    }
 
     return (
         <MapContext.Provider value={{ mapInfo }}>
