@@ -54,7 +54,7 @@ export function MapContextProvider({children}){
         dbfBuffer: null,
         map: null,
         errorMessage: '',
-        allMapsFromUser: null,
+        allMapsByUser: null,
         // download: false,
         // downloadFormat: ''
     });
@@ -174,7 +174,7 @@ console.log(payload);
             case ActionType.LOAD_ALL_MAPS_FROM_USER:
                 return setMapInfo((prevMapInfo) => ({
                     ...prevMapInfo, 
-                    allMapsFromUser: payload,
+                    allMapsByUser: payload,
             }));
             default:
                 return mapInfo;

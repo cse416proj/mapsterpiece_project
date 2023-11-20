@@ -42,8 +42,8 @@ function Profile() {
 
   function fetchContent() {
     if (tab === "map") {
-      if(mapInfo && mapInfo.allMapsFromUser){
-        return mapInfo.allMapsFromUser?.map((map, index) => (
+      if(mapInfo && mapInfo.allMapsByUser){
+        return mapInfo.allMapsByUser?.map((map, index) => (
           <DynamicCard
             key={`map-${index}`}
             userData={null}
@@ -95,7 +95,7 @@ function Profile() {
           initials={userInfo.getUserInitials().toUpperCase()}
           name={userInfo.getUserFullName()}
           userName={userInfo.getUserName()}
-          numMaps={mapInfo && mapInfo.allMapsFromUser && mapInfo.allMapsFromUser.length}
+          numMaps={mapInfo && mapInfo.allMapsByUser && mapInfo.allMapsByUser.length}
           numPosts={postInfo && postInfo.allPostsByUser && postInfo.allPostsByUser.length}
           isLoggedInUser={isLoggedInUser}
         />

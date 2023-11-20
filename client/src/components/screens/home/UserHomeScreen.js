@@ -5,7 +5,9 @@ import HomeNavCard from "./HomeNavCard";
 
 import AuthContext from "../../../contexts/auth";
 import GlobalStoreContext from "../../../contexts/store";
+import MapContext from "../../../contexts/map";
 import PostContext from "../../../contexts/post";
+import UserContext from "../../../contexts/user";
 
 function UserHomeScreen() {
   const { auth } = useContext(AuthContext);
@@ -30,14 +32,12 @@ function UserHomeScreen() {
     }
   }, []);
 
-// console.log(mapInfo?.allMapsFromUser);
-
   let mapCard = (
-    <Box sx={{ width: "95%" }}>
-      {store.allMaps.map((pair) => (
+    <>
+      {mapInfo.allMapsByUser?.map((pair) => (
         <DynamicCard userData={null} mapData={pair} postData={null} />
       ))}
-    </Box>
+    </>
   );
 
   let postCard = (
