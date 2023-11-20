@@ -52,7 +52,6 @@ deleteUserById = async (req, res) => {
 
 getUserById = async (req, res) => {
   const userId = req.params.userId;
-
   User.findById(userId, (err, user) => {
     if (err) {
       return res.status(500).json({ errorMessage: err.message });
