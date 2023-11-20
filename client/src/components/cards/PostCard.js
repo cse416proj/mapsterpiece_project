@@ -30,7 +30,7 @@ function PostCard({postData, clickHandler, editHandler, deleteHandler}){
                     onClick={clickHandler}
                 >
                     {
-                        (postData.content.length > 200) ? 
+                        (postData && postData.content && postData.content.length > 200) ? 
                             `${postData.content.substring(0,200)}...`
                             : postData.content
                     }
