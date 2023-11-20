@@ -1,11 +1,9 @@
 import { useState, useRef, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Box, TextField } from '@mui/material';
 
 import FileUpload from './FileUpload';
 import FileDropdown from './FileDropdown';
-import Tags from '../tag/Tags';
-import ButtonSet from '../ButtonSet';
+import { Tags, ButtonSet } from '../../commonProps';
 import MapContext from '../../../../contexts/map';
 
 function CreateMap(){

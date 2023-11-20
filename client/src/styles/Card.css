@@ -44,6 +44,16 @@
     color: #393c40;
 }
 
-#post-action-button-text{
+#post-action-button-text, #action-button-text{
     color: var(--primary-color-hover);
+}
+
+#action-icon{
+    color: #606060;
+}
+
+#action-button-text{
+    margin-left: 1vw;
+    font-size: 1vw;
+    font-weight: 600;
 }

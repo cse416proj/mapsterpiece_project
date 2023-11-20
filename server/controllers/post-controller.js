@@ -83,6 +83,72 @@ getPostById = async (req, res) => {
   });
 };
 
+updatePostById = async (req, res) => {
+  if (auth.verifyUser(req) === null) {
+    return res.status(401).json({
+      errorMessage: "Unauthorized",
+    });
+  }
+
+  const userId = req.userId;
+  const postId = req.params.postId;
+
+  if(!userId){
+    return res.status(400).json({ errorMessage: "No user ID found." });
+  }
+  if(!postId){
+    return res.status(400).json({ errorMessage: "No post ID found." });
+  }
+
+  const { title, content, tags } = req.body;
+
+  if(!title || !content || !tags){
+    return res
+      .status(400)
+      .json({ errorMessage: "Please enter all required fields." });
+  }
+
+  Post.findById(postId, (err, post) => {
+    if(err){
+      return res.status(500).json({ errorMessage: err.message });
+    }
+    else if(!post){
+      return res.status(404).json({ errorMessage: "Post not found." });
+    }
+
+    async function asyncUpdateUserPost(post){
+      User.findById(userId, (err, user) => {
+        if(err){
+          return res.status(500).json({ errorMessage: err.message });
+        }
+        else if(!user){
+          return res.status(404).json({ errorMessage: "User not found." });
+        }
+        else if(user.userName !== post.ownerUserName){
+          return res.status(500).json({ errorMessage: "Username unmatched. User cannot update other users' post." });
+        }
+
+        post.title = title;
+        post.content = content;
+        post.tags = tags;
+    
+        post.save()
+        .then(() => {
+          return res.status(201).json({
+            message: "Post updated successfully!",
+            post: post
+          });
+        })
+        .catch((err) => {
+          return res.status(500).json({ errorMessage: err.message });
+        });
+      });
+    }
+
+    asyncUpdateUserPost(post);
+  });
+};
+
 deletePostById = async (req, res) => {
   const postId = req.params.postId;
   if (!postId) {
@@ -237,6 +303,7 @@ module.exports = {
   createPost,
   getPostsByPostIds,
   deletePostById,
+  updatePostById,
   createComment,
   getPostById,
   getCommentsByCommentIds,

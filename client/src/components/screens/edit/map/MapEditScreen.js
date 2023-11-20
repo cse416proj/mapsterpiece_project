@@ -1,14 +1,14 @@
 import { Box } from '@mui/material';
-import React from 'react';
-import MapEditTopBar from '../../appbars/MapEditTopBar';
-import MapEditSideBar from '../../appbars/MapEditSideBar';
 
-import MapScreen from './display/MapScreen';
+import MapEditTopBar from '../../../appbars/MapEditTopBar';
+import MapEditSideBar from '../../../appbars/MapEditSideBar';
+
+import MapScreen from '../../map/display/MapScreen';
 
 export default function MapEditScreen() {
   return (
     <Box>
-    <MapEditTopBar />
+      <MapEditTopBar />
       <Box
         className="map-screen-container"
         style={{ 
@@ -21,7 +21,6 @@ export default function MapEditScreen() {
         <MapScreen/>
         <MapEditSideBar/>
       </Box>
-     
     </Box>
   );
 }

@@ -16,17 +16,19 @@ function Profile() {
   const { postInfo } = useContext(PostContext);
   const { mapInfo } = useContext(MapContext);
 
+  const { userId } = useParams();
   const [tab, setTab] = useState("map");
 
-  const { userId } = useParams();
-
   useEffect(() => {
-    if (auth?.user?.posts?.length > 0) {
-      postInfo.getPostsByPostIds(auth.user.posts);
+    if(auth.user) {
+      if(auth.user.posts && auth.user.posts.length > 0){
+        postInfo.getPostsByPostIds(auth.user.posts);
+      }
+      if(auth.user.maps && auth.user.maps.length > 0){
+        mapInfo.getAllUserMaps();
+      }
     }
-    if(auth?.user?.maps?.length > 0){
-      mapInfo.getAllUserMaps();
-    }
+    
     userInfo.getUserById(userId);
   }, []);
 
@@ -78,12 +80,12 @@ function Profile() {
           >
             <Tab
               id={tab === "map" ? "profile-tab-selected" : "profile-tab"}
-              label="Create Map"
+              label="All Maps"
               value="map"
             />
             <Tab
               id={tab === "post" ? "profile-tab-selected" : "profile-tab"}
-              label="Create Post"
+              label="All Posts"
               value="post"
             />
           </Tabs>

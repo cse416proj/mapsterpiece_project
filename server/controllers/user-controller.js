@@ -1,5 +1,5 @@
+const auth = require("../auth");
 const User = require("../models/user-model");
-// const auth = require("../auth");
 // const Map = require("../models/map-model");
 // const Post = require("../models/post-model");
 

@@ -1,11 +1,9 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Modal, Alert} from '@mui/material';
+import { Box, Alert} from '@mui/material';
 
-import Tags from '../tag/Tags';
-import PostInput from './PostInput';
-import ButtonSet from '../ButtonSet';
-import {PostContext} from '../../../../contexts/post';
+import { Tags, PostInput, ButtonSet } from '../../commonProps';
+import { PostContext } from '../../../../contexts/post';
 
 function CreatePost(){
     const { postInfo } = useContext(PostContext);

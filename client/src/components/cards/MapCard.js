@@ -1,8 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import { Box, Card, CardContent, Typography, Chip, Stack } from "@mui/material";
 
 import ActionButtons from "./ActionButtons";
 
-function MapCard({mapData, clickHandler, deleteHandler}){
+function MapCard({mapData, clickHandler, editHandler, deleteHandler}){
     return(
         <Card className="individualDynamicCard" >
             <CardContent
@@ -35,9 +36,10 @@ function MapCard({mapData, clickHandler, deleteHandler}){
                 </Stack>
                 <ActionButtons
                     type='map'
+                    currentUserName={mapData.ownerUserName}
                     comments={mapData.comments}
                     deleteHandler = {deleteHandler}
-                    currentUserName={mapData.ownerUserName}
+                    editHandler={editHandler}
                 />
             </CardContent>
         </Card>

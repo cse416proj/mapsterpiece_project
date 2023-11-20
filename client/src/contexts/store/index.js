@@ -344,14 +344,12 @@ function GlobalStoreContextProvider(props) {
           currentModal: CurrentModal.NONE,
           currentView: payload,
           postMarkedForDeletion: null,
-          commentMarkedForDeletion: null,
         }));
       case GlobalStoreActionType.MARK_POST_FOR_DELETION:
         return setStore((prevStore) => ({
           ...prevStore,
           currentModal: CurrentModal.DELETE_POST_MODAL,
           postMarkedForDeletion: payload,
-          commentMarkedForDeletion: null,
         }));
       case GlobalStoreActionType.MARK_COMMENT_FOR_DELETION:
         return setStore((prevStore) => ({
