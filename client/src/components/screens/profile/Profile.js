@@ -20,37 +20,21 @@ function Profile() {
   const [tab, setTab] = useState("map");
 
   useEffect(() => {
-    async function loadUserInfo(userId){
-      console.log(`now load user info ${userId}`)
-      await userInfo.getUserById(userId);
-      console.log(userInfo.currentUser);
-    }
-
-    if(userId){
-      // call async function to load logged in users map
-      if(auth && auth.user && auth.user._id === userId){
-        mapInfo.getAllUserMaps();
-      }
-      else{
-        // call async function to load other user's info
-        loadUserInfo(userId);
-      }
-    }
+    userInfo.getUserById(userId);
   }, [userId]);
 
   useEffect(() => {
     // only load other user's publish map
     async function loadUserMapInfo(userId){
       await mapInfo.getAllPublishedMapsFromGivenUser(userId);
-      console.log(mapInfo.allMapsByUser);
     }
-
     if(userInfo.currentUser){
       if(auth && auth.user && auth.user._id === userInfo.currentUser._id){
-        return;
+        mapInfo.getAllUserMaps();
       }
-      console.log(`now load map info from user ${userId}`)
-      loadUserMapInfo(userInfo.currentUser._id);
+      else{
+        loadUserMapInfo(userInfo.currentUser._id);
+      }
     }
   }, [userInfo.currentUser]);
 
@@ -76,16 +60,14 @@ function Profile() {
       }
     } else {
       if(postInfo && postInfo.allPostsByUser){
-        if(userInfo.currentUser && userInfo.currentUser.posts){
-          return userInfo.currentUser?.posts?.map((post, index) => (
-            <DynamicCard
-              key={`post-${index}`}
-              userData={null}
-              mapData={null}
-              postData={post}
-            />
-          ));
-        }
+        return userInfo.currentUser?.posts?.map((post, index) => (
+          <DynamicCard
+            key={`post-${index}`}
+            userData={null}
+            mapData={null}
+            postData={post}
+          />
+        ));
       }
     }
   }
