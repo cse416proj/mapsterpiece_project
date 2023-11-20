@@ -18,7 +18,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { PostComment, Tag } from "../../index";
-import { PostComment } from "../../index";
 
 export default function PostDetailScreen() {
   const navigate = useNavigate();

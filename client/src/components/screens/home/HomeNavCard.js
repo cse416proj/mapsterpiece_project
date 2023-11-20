@@ -13,7 +13,7 @@ function HomeNavCard(){
 
     function handleViewProfile(){
         userInfo.setCurrentUser(auth.user);
-        navigate('/profile');
+        navigate(`profile/${auth.user._id}`);
     }
 
     const buttonInfo = [

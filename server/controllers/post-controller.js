@@ -2,8 +2,6 @@ const Post = require("../models/post-model");
 const User = require("../models/user-model");
 const Comment = require("../models/comment-model");
 const Subcomment = require("../models/subcomment-model");
-const Comment = require("../models/comment-model");
-const Subcomment = require("../models/subcomment-model");
 const auth = require("../auth");
 
 createPost = async (req, res) => {
