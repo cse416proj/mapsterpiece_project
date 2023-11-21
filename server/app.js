@@ -8,7 +8,7 @@ const app = express()
 
 // set up middleware
 app.use(cors({
-    origin: ["http://localhost:3000", "http://mapsterpiece.online"],
+    origin: ["http://localhost:3000", "http://mapsterpiece.online", "https://mapsterpiece-project.vercel.app"],
     credentials: true
 }))
 app.use(cookieParser())
