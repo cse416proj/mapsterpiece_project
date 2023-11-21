@@ -2,7 +2,7 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 
 const api = axios.create({
-    baseURL: 'http://mapsterpiece.online:4000/auth',
+    baseURL: 'https://mapsterpiece.online/auth',
     // baseURL: 'http://localhost:4000/auth',
 })
 
