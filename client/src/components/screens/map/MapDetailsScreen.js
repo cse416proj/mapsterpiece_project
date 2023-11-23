@@ -19,13 +19,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {MapScreen, Tag} from "../../index";
 import {MapDetailOwnerTopBar} from "../../appbars/MapDetailOwnerTopBar";
 import {MapDetailUserTopBar} from "../../appbars/MapDetailUserTopBar";
-import CommentsSideBox from "../../appbars/CommentsSideBox";
-import { DeleteMapModal } from "../../index";
+import { DeleteMapModal, MapCommentSideBox } from "../../index";
 
 export default function MapDetailsScreen(){
     return (
         <Box>
-            <MapDetailOwnerTopBar />
+            {/* need to switch between owner and user */}
+            <MapDetailOwnerTopBar />   
             <Box
                 className="map-screen-container"
                 style={{
@@ -36,7 +36,7 @@ export default function MapDetailsScreen(){
                 }}
             >
                 <MapScreen/>
-                <CommentsSideBox/>
+                <MapCommentSideBox/>
                 <DeleteMapModal/>
             </Box>
         </Box>

@@ -4,6 +4,10 @@
     width: 69vw;
 }
 
-#comments-box{
-
+.map-sidebar-input{
+    border: 1px solid #ccc;
+    padding: 6px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 10px;
 }

@@ -38,7 +38,8 @@ export default function MapEditTopBar() {
     }, []);
 
     function handleMyMaps(){
-        navigate(`/profile/${auth.user._id}`);
+        // navigate(`/profile/${auth.user._id}`);
+        navigate('/');
     }
     function handleExportPNG(){
         console.log("export PNG file");

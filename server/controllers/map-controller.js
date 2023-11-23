@@ -377,6 +377,28 @@ createMapComment = async (req, res) =>{
         return res.status(500).json({ errorMessage: "Internal server error" });
     }
 }
+getAllCommentsFromPublishedMap = async (req, res) => {
+    const mapId = req.params.mapId; 
+    // console.log(mapId);
+
+    try {
+        const map = await Map.findById(mapId);
+
+        if (!map) {
+            return res.status(404).json({ errorMessage: "Map not found." });
+        }
+        if (!map.isPublished) {
+            return res.status(400).json({ errorMessage: "Map is not published." });
+        }
+
+        const comments = await Comment.find({ _id: { $in: map.comments } });
+
+        return res.status(200).json({ comments });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ errorMessage: "Internal server error" });
+    }
+}
 
 module.exports = {
     createMap,
@@ -387,5 +409,6 @@ module.exports = {
     unpublishMapById,
     getAllPublishedMapsFromGivenUser, 
     createMapComment,
+    getAllCommentsFromPublishedMap,
 };
   

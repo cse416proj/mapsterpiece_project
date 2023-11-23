@@ -15,5 +15,5 @@ router.get('/allMaps', auth.verify, MapController.getAllMapsFromCurrentUser);
 router.get('/allPublicMaps/:userId', MapController.getAllPublishedMapsFromGivenUser);
 
 router.post('/createMapComment/:mapId', auth.verify, MapController.createMapComment);
-
+router.get('/allMapComments/:mapId', auth.verify, MapController.getAllCommentsFromPublishedMap);
 module.exports = router;
