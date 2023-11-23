@@ -296,11 +296,17 @@ createComment = async (req, res) => {
 };
 
 getCommentsByCommentIds = async (req, res) => {
-  let idList = req.params.idLists;
+  let idLists = req.params.idLists;
+  if(!idLists){
+    return res.status(404).json({ errorMessage: "Comments list not found" });
+  }
 
-  idList = idList.split(",");
+  console.log(typeof idLists);
+  console.log(idLists);
 
-  Comment.find({ _id: { $in: idList } })
+  idLists = idLists.split(",");
+
+  Comment.find({ _id: { $in: idLists } })
     .populate("subComments")
     .exec((err, comments) => {
       if (err) {
@@ -313,20 +319,35 @@ getCommentsByCommentIds = async (req, res) => {
     });
 };
 
-getSubcommsBySubcommsIds = async (req, res) => {
-  try {
-    let idList = req.params.idLists.split(",");
+getSubcommsByParentCommsId = async (req, res) => {
+  let parentId = req.params.parentId;
+  if(!parentId){
+    return res.status(404).json({ errorMessage: "Comment ID not found" });
+  }
 
-    const subcomments = await Subcomment.find({ _id: { $in: idList } });
-
-    if (!subcomments || subcomments.length === 0) {
-      return res.status(404).json({ errorMessage: "SubComments not found" });
+  Comment.findById(parentId, (err, comment) => {
+    if(err){
+      return res.status(500).json({ errorMessage: err.message });
+    }
+    else if(!comment){
+      return res.status(404).json({ errorMessage: "Comment with given ID not found" });
     }
 
-    return res.status(200).json(subcomments);
-  } catch (err) {
-    return res.status(500).json({ errorMessage: err.message });
-  }
+    const subCommentList = comment.subComments;
+    if(!subCommentList){
+      return res.status(404).json({ errorMessage: "Subcomment(s) not found from given comment" });
+    }
+
+    Subcomment.find({ _id: { $in: subCommentList }} , (err, subcomments) => {
+      if(err){
+        return res.status(500).json({ errorMessage: err.message });
+      }
+      else if(!subcomments){
+        return res.status(404).json({ errorMessage: "Subcomment(s) not found" });
+      }
+      return res.status(200).json(subcomments);
+    });
+  });
 };
 
 createSubcomment = async (req, res) => {
@@ -367,6 +388,8 @@ module.exports = {
   getCommentsByCommentIds,
   createSubcomment,
   deleteCommentById,
-  deleteSubCommById, 
-  getSubcommsBySubcommsIds,
+  deleteSubCommById,
+  getSubcommsByParentCommsId
+
+  // getSubcommsBySubcommsIds,
 };

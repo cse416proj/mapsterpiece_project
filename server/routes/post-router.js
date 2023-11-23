@@ -15,5 +15,6 @@ router.post('/createSubcomment/:commentId', auth.verify, PostController.createSu
 router.delete('/deleteComment/:commentId', auth.verify, PostController.deleteCommentById);
 
 router.delete('/deleteSubcomment/:subId', auth.verify, PostController.deleteSubCommById);
-router.get('/subComments/:idList', auth.verify, PostController.getSubcommsBySubcommsIds);
+router.get('/getSubComments/:parentId', auth.verify, PostController.getSubcommsByParentCommsId);
+// router.get('/subComments/', auth.verify, PostController.getSubcommsBySubcommsIds);
 module.exports = router;
