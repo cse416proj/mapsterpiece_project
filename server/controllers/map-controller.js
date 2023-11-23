@@ -1,6 +1,7 @@
 const Map = require("../models/map-model");
 const User = require("../models/user-model");
 const auth = require("../auth");
+const Comment = require("../models/comment-model");
 
 createMap = async (req, res) => {
     if (auth.verifyUser(req) === null) {
@@ -331,7 +332,51 @@ getAllPublishedMapsFromGivenUser = async (req, res) => {
         errorMessage: "Failed to get all published maps from user, please try again."
       });
     });
-  }
+}
+
+createMapComment = async (req, res) =>{
+    try {
+        if (auth.verifyUser(req) === null) {
+            return res.status(401).json({
+                errorMessage: "Unauthorized",
+            });
+        }
+
+        const userId = req.userId;
+        const mapId = req.params.mapId;
+        const { commenterUserName, content } = req.body;
+
+        if(!userId){
+            return res.status(400).json({ errorMessage: "User does not exist." });
+        }
+        if (!commenterUserName || !content) {
+            return res.status(400).json({ errorMessage: "Please enter both commenterUserName and content." });
+        }
+
+        const map = await Map.findById(mapId);
+        if (!map || !map.isPublished) {
+            return res.status(404).json({ errorMessage: "Map not found or not published." });
+        }
+
+        const newComment = new Comment({
+            commenterUserName,
+            content,
+        });
+
+        await newComment.save();
+        map.comments.push(newComment._id);
+        await map.save();
+
+        return res.status(201).json({
+            success: true,
+            comment: newComment,
+            message: "Comment added successfully!",
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ errorMessage: "Internal server error" });
+    }
+}
 
 module.exports = {
     createMap,
@@ -340,6 +385,7 @@ module.exports = {
     getAllMapsFromCurrentUser,
     publishMapById,
     unpublishMapById,
-    getAllPublishedMapsFromGivenUser
+    getAllPublishedMapsFromGivenUser, 
+    createMapComment,
 };
   

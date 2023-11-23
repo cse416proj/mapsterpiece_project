@@ -14,4 +14,6 @@ router.get('/allMaps', auth.verify, MapController.getAllMapsFromCurrentUser);
 // no auth needed because it is for public profile
 router.get('/allPublicMaps/:userId', MapController.getAllPublishedMapsFromGivenUser);
 
+router.post('/createMapComment/:mapId', auth.verify, MapController.createMapComment);
+
 module.exports = router;

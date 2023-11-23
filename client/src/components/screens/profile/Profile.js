@@ -30,7 +30,8 @@ function Profile() {
     }
     if(userInfo.currentUser){
       if(auth && auth.user && auth.user._id === userInfo.currentUser._id){
-        mapInfo.getAllUserMaps();
+        // mapInfo.getAllUserMaps();
+        mapInfo.getAllPublishedMapsFromGivenUser(auth.user._id);
       }
       else{
         loadUserMapInfo(userInfo.currentUser._id);

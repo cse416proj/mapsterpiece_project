@@ -2,8 +2,8 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 const api = axios.create({
-  baseURL: "https://mapsterpiece.online/user",
-  // baseURL: "http://localhost:4000/user"
+  // baseURL: "https://mapsterpiece.online/user",
+  baseURL: "http://localhost:4000/user"
 });
 
 export const getUserById = (userId) => {
