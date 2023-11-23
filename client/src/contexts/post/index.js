@@ -9,6 +9,7 @@ export const PostActionType = {
   SET_CURRENT_POST: "SET_CURRENT_POST",
   SET_CURRENT_COMMENT: "SET_CURRENT_COMMENT",
   SET_CURRENT_SUBCOMMENT: "SET_CURRENT_SUBCOMMENT",
+  UPDATE_ALL_COMMENTS: "UPDATE_ALL_COMMENTS",
 };
 
 function PostContextProvider(props) {
@@ -17,11 +18,9 @@ function PostContextProvider(props) {
   const [postInfo, setPostInfo] = useState({
     currentPost: null,
     currentCommentIndex: null,
-    currentSubcommentIndex: null,
     errorMessage: null,
     allPostsByUser: [],
     allCommentsForPost: [],
-    allSubcommentsForComment: [],
   });
 
   const postReducer = (action) => {
@@ -33,7 +32,9 @@ function PostContextProvider(props) {
           ...postInfo,
           currentPost: payload,
           currentCommentIndex: null,
-          currentSubcommentIndex: null,
+          errorMessage: null,
+          allPostsByUser: [],
+          allCommentsForPost: [],
         });
       }
       case PostActionType.SET_CURRENT_COMMENT: {
@@ -47,7 +48,13 @@ function PostContextProvider(props) {
         return setPostInfo({
           ...postInfo, 
           currentPost: postInfo.currentPost, 
-          currentSubcommentIndex: payload, 
+          currentCommentIndex: payload.comment,
+        });
+      }
+      case PostActionType.UPDATE_ALL_COMMENTS: {
+        return setPostInfo({
+          ...postInfo, 
+          allCommentsForPost: payload
         });
       }
       default:
@@ -69,10 +76,20 @@ function PostContextProvider(props) {
     });
   };
 
-  postInfo.setCurrentSubcomment = function (subcommentPayload) {
+  postInfo.clearCurrentComment = function () {
+    postReducer({
+      type: PostActionType.SET_CURRENT_COMMENT,
+      payload: []
+    });
+  }
+
+  postInfo.setCurrentSubcomment = function(commentPayload, subcommentPayload) {
     postReducer({
       type: PostActionType.SET_CURRENT_SUBCOMMENT,
-      payload: subcommentPayload,
+      payload: {
+        comment: commentPayload,
+        subcomment: subcommentPayload
+      },
     });
   };
 
@@ -159,40 +176,48 @@ function PostContextProvider(props) {
       if (tempIds.length > 0) {
         postInfo.getCommentsByCommentIds(tempIds);
       } else {
-        setPostInfo({
-          ...postInfo,
-          allCommentsForPost: [],
+        postReducer({
+          type: PostActionType.UPDATE_ALL_COMMENTS,
+          payload: []
         });
       }
     }
   };
 
   postInfo.deleteSubCommById = async function (subId){
-    console.log("subcomment id for delete: ", subId);
+    // delete current subcomment
     const response = await api.deleteSubCommById(subId);
-    console.log(response.data);
+    if(response.status === 200){
+      const parentCommentId = postInfo.currentCommentIndex?._id;
+
+      // obtain new subcomment list
+      const subcommentResponse = await api.getSubcommsByParentCommsId(parentCommentId);
+      if(subcommentResponse.status === 200){
+        const newSubcomments = subcommentResponse.data;
+
+        // reflect this update to allCommentsForPost
+        var newAllCommentsForPost = postInfo.allCommentsForPost.slice().map((comment) => {
+          if(comment._id === parentCommentId){
+            comment.subComments = newSubcomments;
+          }
+          return comment;
+        });
+
+        postReducer({
+          type: PostActionType.UPDATE_ALL_COMMENTS,
+          payload: newAllCommentsForPost
+        });
+
+        return;
+      }
+    }
+    
+    // print error if exists
     if (response.data.error){
       setPostInfo({
         ...postInfo, 
         errorMessage: response.data.error,
       });
-    }
-    else{
-      let tempIds = postInfo.currentCommentIndex?.subComments;
-      console.log(postInfo.currentCommentIndex);
-      const index = tempIds?.indexOf(subId);
-      if (index > -1){
-        tempIds.splice(index, 1);
-      }
-      if (tempIds?.length > 0) {
-        postInfo.getSubcommsBySubcommsIds(tempIds);
-      } else {
-        setPostInfo({
-          ...postInfo,
-          allSubcommentsForComments: [],
-          // currentSubcommentIndex: [],
-        });
-      }
     }
   }
 
@@ -215,33 +240,19 @@ function PostContextProvider(props) {
 
   postInfo.getCommentsByCommentIds = async function (idList) {
     if (idList === undefined || idList.length === 0) {
-      return setPostInfo({
-        ...postInfo,
-        allCommentsForPost: [],
+      postReducer({
+        type: PostActionType.UPDATE_ALL_COMMENTS,
+        payload: []
       });
     }
-    const response = await api.getCommentsByCommentIds(idList);
-    setPostInfo({
-      ...postInfo,
-      allCommentsForPost: response.data,
-    });
+    else{
+      const response = await api.getCommentsByCommentIds(idList);
+      postReducer({
+        type: PostActionType.UPDATE_ALL_COMMENTS,
+        payload: response.data
+      });
+    }
   };
-
-  postInfo.getSubcommsBySubcommsIds = async function (idList){
-    if(idList === undefined || idList.length ===0){
-      return setPostInfo({
-        ...postInfo, 
-        allSubcommentsForComment: [],
-        // currentCommentIndex: [],
-      });
-    }
-    const response = await api.getSubcommsBySubcommsIds(idList);
-    setPostInfo({
-      ...postInfo, 
-      currentSubcommentIndex: response.data,
-      // allSubcommentsForComment: response.data
-    });
-  }
 
   postInfo.createSubcomment = async function (
     commentId,

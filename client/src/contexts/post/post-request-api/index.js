@@ -6,7 +6,7 @@ const api = axios.create({
 });
 
 export const createPost = (title, tags, content) => {
-  return api.post(`/createPost/`, {
+  return api.post(`/createPost`, {
     title: title,
     tags: tags,
     content: content,
@@ -55,12 +55,12 @@ export const deleteCommentById =(commentId) => {
   return api.delete(`/deleteComment/${commentId}`);
 }
 
-export const deleteSubCommById = (subId)=>{
+export const deleteSubCommById = (subId) => {
   return api.delete(`/deleteSubcomment/${subId}`);
 }
 
-export const getSubcommsBySubcommsIds = (idList)=>{
-  return api.get(`/subComments/${idList}`);
+export const getSubcommsByParentCommsId = (commentId) => {
+  return api.get(`/getSubComments/${commentId}`);
 }
 
 const apis = {
@@ -73,8 +73,8 @@ const apis = {
   getCommentsByCommentIds,
   createSubcomment,
   deleteCommentById,
-  deleteSubCommById, 
-  getSubcommsBySubcommsIds,
+  deleteSubCommById,
+  getSubcommsByParentCommsId
 };
 
 export default apis;
