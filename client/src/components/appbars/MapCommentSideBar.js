@@ -3,7 +3,7 @@ import { Input, Button, Box, Toolbar} from '@mui/material';
 
 export default function MapCommentSideBar(){
     return (
-        <Toolbar>
+        <Toolbar className='map-comment-toolbar'>
             <Box>
                 <Input className='map-sidebar-input' placeholder="Type your comment here..." rows="4" cols="25" />
                 <Button variant="contained">Submit</Button>
