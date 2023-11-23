@@ -35,7 +35,7 @@ export default function DeleteSubCommModal() {
           <Box className="modal-context">
             <header className="dialog-header">Delete comment</header>
             <Typography style={{ color: "red" }}>
-              This will delete this subComment permanently. You cannot undo this
+              This will delete this subcomment permanently. You cannot undo this
               action.
             </Typography>
           </Box>

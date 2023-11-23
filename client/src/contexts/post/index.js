@@ -26,7 +26,6 @@ function PostContextProvider(props) {
   const postReducer = (action) => {
     const { type, payload } = action;
     switch (type) {
-      // placeholder to be replace later on
       case PostActionType.SET_CURRENT_POST: {
         return setPostInfo({
           ...postInfo,

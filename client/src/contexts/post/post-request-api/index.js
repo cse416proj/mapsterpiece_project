@@ -1,9 +1,11 @@
-import axios from "axios";
+import { server_base_url } from '../../../config';
+
+import axios from 'axios';
 axios.defaults.withCredentials = true;
+
 const api = axios.create({
-  // baseURL: 'http://mapsterpiece.online:4000/post',
-  baseURL: "http://localhost:4000/post",
-});
+  baseURL: `${server_base_url}/post`,
+})
 
 export const createPost = (title, tags, content) => {
   return api.post(`/createPost`, {
