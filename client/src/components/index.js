@@ -32,6 +32,7 @@ import PostDetailScreen from './screens/post/PostDetailScreen';
 import PostComment from './screens/post/PostComment';
 import PostEditScreen from './screens/edit/post/PostEditScreen';
 import DeleteCommentModal from './modals/DeleteCommentModal';
+import DeleteSubCommModal from './modals/DeleteSubCommModal';
 
 import MapScreen from './screens/map/display/MapScreen';
 import MapEditScreen from './screens/edit/map/MapEditScreen';
@@ -76,4 +77,5 @@ export {
     MapEditTopBar,
     MapEditSideBar,
     DeleteCommentModal,
+    DeleteSubCommModal
 }

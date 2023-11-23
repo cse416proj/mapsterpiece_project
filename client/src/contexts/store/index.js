@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import PostContext from "../post";
 import api from "./store-request-api";
+import { Global } from "@emotion/react";
 
 export const GlobalStoreContext = createContext({});
 
@@ -15,6 +16,7 @@ export const GlobalStoreActionType = {
   MARK_POST_FOR_DELETION: "MARK_POST_FOR_DELETION",
   MARK_ACCOUNT_FOR_DELETION: "MARK_ACCOUNT_FOR_DELETION",
   MARK_COMMENT_FOR_DELETION: "MARK_COMMENT_FOR_DELETION",
+  MARK_SUBCOMMENT_FOR_DELETION: "MARK_SUBCOMMENT_FOR_DELETION",
 };
 
 const CurrentView = {
@@ -49,6 +51,7 @@ const CurrentModal = {
   DELETE_POST_MODAL: "DELETE_POST_MODAL",
   DELETE_COMMENT_MODAL: "DELETE_COMMENT_MODAL",
   DELETE_ACCOUNT_MODAL: "DELETE_ACCOUNT_MODAL",
+  DELETE_SUBCOMMENT_MODAL: "DELETE_SUBCOMMENT_MODAL",
 };
 
 const fakeAllMaps = [
@@ -320,6 +323,7 @@ function GlobalStoreContextProvider(props) {
     mapMarkedForDeletion: null,
     accountMarkedForDeletion: null,
     commentMarkedForDeletion: null,
+    subcommentMarkedForDeletion: null, 
   });
 
   const storeReducer = (action) => {
@@ -334,6 +338,7 @@ function GlobalStoreContextProvider(props) {
           currentModal: CurrentModal.NONE,
           currentView: CurrentView.USER_HOME,
           commentMarkedForDeletion: null,
+          subcommentMarkedForDeletion: null, 
         }));
       case GlobalStoreActionType.LOAD_ALL_POSTS:
         return setStore((prevStore) => ({
@@ -351,6 +356,7 @@ function GlobalStoreContextProvider(props) {
           postMarkedForDeletion: null,
           accountMarkedForDeletion: null,
           commentMarkedForDeletion: null,
+          subcommentMarkedForDeletion: null,
         }));
       case GlobalStoreActionType.MARK_MAP_FOR_DELETION:
         return setStore((prevStore) => ({
@@ -376,14 +382,22 @@ function GlobalStoreContextProvider(props) {
           currentModal: CurrentModal.DELETE_ACCOUNT_MODAL,
           accountMarkedForDeletion: payload,
         }));
+      case GlobalStoreActionType.MARK_SUBCOMMENT_FOR_DELETION: 
+      console.log("call global store action type");
+        return setStore((prevStore)=>({
+          ...prevStore, 
+          currentModal: CurrentModal.DELETE_SUBCOMMENT_MODAL, 
+          subcommentMarkedForDeletion: payload,
+        }));
       case GlobalStoreActionType.HIDE_MODALS:
-        setStore((prevStore) => ({
+        return setStore((prevStore) => ({
           ...prevStore,
           currentModal: CurrentModal.NONE,
           mapMarkedForDeletion: null,
           postMarkedForDeletion: null,
           accountMarkedForDeletion: null,
           commentMarkedForDeletion: null,
+          subcommentMarkedForDeletion: null,
         }));
       default:
         return store;
@@ -434,6 +448,14 @@ function GlobalStoreContextProvider(props) {
       payload: commentData,
     });
   };
+
+  store.markSubcommentForDeletion = function (subcommentData){
+    console.log(subcommentData);
+    storeReducer({
+      type: GlobalStoreActionType.MARK_SUBCOMMENT_FOR_DELETION,
+      payload: subcommentData,
+    });
+  }
 
   store.getData = function (currScreen) {
     const screenDataDict = {

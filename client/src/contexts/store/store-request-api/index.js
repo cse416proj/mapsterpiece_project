@@ -13,6 +13,7 @@ export const getAllUsers = () => {
   return api.get(`/allUsers`)
 }
 
+
 const apis = {
   getAllPosts,
   getAllUsers,
