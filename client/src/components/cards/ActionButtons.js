@@ -7,7 +7,9 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+
+import {EmailIcon, FacebookIcon, EmailShareButton, FacebookShareButton} from "react-share";
 
 import AuthContext from "../../contexts/auth";
 // import UserContext from "../../contexts/user";
@@ -89,6 +91,52 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
     });
   }
 
+  const openShareMenu = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleEmail = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    closeMenu();
+  };
+  const handleFacebook = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    closeMenu();
+  };
+
+  function renderDynamicShareMenuItems(){
+    let actions = [];
+
+    const emailShare = {icon: <EmailIcon/>, name: "E-Mail", handler: handleEmail };
+    const facebookShare = {icon: <FacebookIcon/>, name: "Facebook", handler: handleFacebook };
+
+    if(type === "post"){
+      actions = [emailShare, facebookShare]
+    }
+    else{
+
+      if(!isPublished){
+        actions = [emailShare, facebookShare]
+      }
+      else{
+        actions = [emailShare, facebookShare]
+      }
+    }
+
+    return actions.map((action) => {
+      return (
+          <MenuItem key={action.name} onClick={action.handler}>
+            {action.icon}
+            <Typography id='action-button-text'>{action.name}</Typography>
+          </MenuItem>
+      );
+    });
+  }
+
   return (
     <CardActions className="cardActions">
       <Box
@@ -101,10 +149,22 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
           {comments.length} comments
         </Typography>
       </Box>
-      <Box className="flex-row" id="action-button-container">
+      <Box className="flex-row" id="action-button-container" onClick={openShareMenu}>
         <ShareIcon id={`${type}-action-icon`} />
         <Typography id={`${type}-action-button-text`}>share {type}</Typography>
+        <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={closeMenu}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+        >
+          { renderDynamicShareMenuItems() }
+        </Menu>
       </Box>
+      {/*<EmailShareButton url={window.location.href}>Bro</EmailShareButton>*/}
+      {/*/!*<EmailShareButton url={}*!/*/}
       {
         (!isLoggedInUser) ?
           null :
