@@ -1,11 +1,18 @@
-import { SpeedDial, SpeedDialIcon, SpeedDialAction } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
+import { SpeedDial, SpeedDialIcon, SpeedDialAction } from '@mui/material';
 import CreateIcon from '@mui/icons-material/Create';
 import SearchIcon from '@mui/icons-material/Search';
 
 function ActionButton({isLoggedInUser}){
     const navigate = useNavigate();
+    const { userId } = useParams();
+
+    useEffect(() => {
+        console.log(`userId: ${userId}`)
+        // userInfo.getUserById(userId);
+    }, [userId]);
 
     function handleCreate(event){
         console.log('handleCreateMap');
@@ -14,7 +21,7 @@ function ActionButton({isLoggedInUser}){
 
     function handleSearch(event){
         console.log('handleSearch');
-        navigate('/search');
+        navigate(`/search/${userId}`);
     }
 
     const actions = (isLoggedInUser) ?

@@ -15,10 +15,14 @@ export const getAllUsers = () => {
   return api.get(`/allUsers`)
 }
 
+export const getAllMaps = () => {
+  return api.get(`/allMaps`)
+}
 
 const apis = {
   getAllPosts,
   getAllUsers,
+  getAllMaps
 };
 
 export default apis;

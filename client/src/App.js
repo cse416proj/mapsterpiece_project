@@ -33,7 +33,7 @@ function App() {
             <Route path='/login' element={<AuthScreen/>}></Route>
             <Route path='/create' element={<CreateScreen/>}></Route>
             <Route path='/profile/:userId' element={<Profile/>}></Route>
-            <Route path="/search" element={<SearchScreen/>}></Route>
+            <Route path="/search/:userId" element={<SearchScreen/>}></Route>
             <Route path="/community" element={<CommunityScreen/>}></Route>
             <Route path="/map-detail/:mapId" element={<MapDetailsScreen/>}></Route>
             <Route path="/map-edit/:mapId" element={<MapEditScreen/>}></Route>

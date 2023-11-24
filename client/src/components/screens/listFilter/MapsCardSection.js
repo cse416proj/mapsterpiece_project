@@ -4,23 +4,27 @@ import { Box } from '@mui/material';
 import { DynamicCard } from '../../index';
 
 function MapsCardSection({ data, search }) {
-  // console.log(data[0]);
   const [filterData, setFilteredData] = useState([]);
 
   // update filteredData when data/search property changes
   useEffect(() => {
-    if(data){
-      const result = data.filter((pair) => {
-        const searchTerm = search.toLowerCase();
-        return (
-          searchTerm === '' ||
-          pair.title.toLowerCase().includes(searchTerm) ||
-          pair.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
-        );
-      });
-      setFilteredData(result);
+    if(!data){
+      return;
     }
+    const result = data.filter((pair) => {
+      const searchTerm = search.toLowerCase();
+      return (
+        searchTerm === '' ||
+        pair.title.toLowerCase().includes(searchTerm) ||
+        pair.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
+      );
+    });
+    setFilteredData(result);
   }, [data, search]);
+
+  if(!data){
+    return null;
+  }
 
   return (
     <Box sx={{ width: '97.5%' }}>

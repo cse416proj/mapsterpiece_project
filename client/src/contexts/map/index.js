@@ -6,6 +6,7 @@ import * as shapefile from 'shapefile';
 
 import api from "./map-request-api";
 import AuthContext from "../auth";
+import GlobalStoreContext from "../store";
 
 const MapContext = createContext();
 
@@ -42,6 +43,8 @@ export const fakeMapContent = {
 
 export function MapContextProvider({children}){
     const { auth } = useContext(AuthContext);
+    const { store } = useContext(GlobalStoreContext);
+
     const navigate = useNavigate();
     
     const [mapInfo, setMapInfo] = useState({
@@ -416,15 +419,17 @@ console.log(payload);
         });
     };
 
-    mapInfo.deleteMapById = async function(mapId){
-        console.log('delete map by id:');
-        console.log(mapId);
+    // Update user map list & public map list
+    mapInfo.updateMapList = async function(){
+        await mapInfo.getAllUserMaps();
+        store.getAllMaps();
+    }
 
+    mapInfo.deleteMapById = async function(mapId){
         const response = await api.deleteMapById(mapId);
 
         if(response.status === 200){
-            await mapInfo.getAllUserMaps();
-            navigate("/");
+            mapInfo.updateMapList();
         }
         else{
             console.log(response);
@@ -432,14 +437,10 @@ console.log(payload);
     }
 
     mapInfo.publishMapById = async function(mapId){
-        console.log('publish map by id:');
-        console.log(mapId);
-
         const response = await api.publishMapById(mapId);
 
         if(response.status === 201){
-            await mapInfo.getAllUserMaps();
-            navigate("/");
+            mapInfo.updateMapList();
         }
         else{
             console.log(response);
@@ -447,14 +448,10 @@ console.log(payload);
     }
 
     mapInfo.unpublishMapById = async function(mapId){
-        console.log('unpublish map by id:');
-        console.log(mapId);
-
         const response = await api.unpublishMapById(mapId);
 
         if(response.status === 201){
-            await mapInfo.getAllUserMaps();
-            navigate("/");
+            mapInfo.updateMapList();
         }
         else{
             console.log(response);
@@ -483,14 +480,12 @@ console.log(payload);
             const mapIds = response.data.maps;
 
             const maps = await Promise.all(mapIds.map(mapId => mapInfo.getMapById(mapId)));
-            console.log(maps);
-            // maps = maps.map(mapObject => mapObject.map);
-            // console.log(maps);
             reducer({
                 type: ActionType.LOAD_ALL_MAPS_FROM_USER,
                 payload: maps.filter(map => map !== null),
             });
-        } catch (error) {
+        }
+        catch (error) {
             console.error('Error fetching user maps:', error);
         }
     };
@@ -508,8 +503,6 @@ console.log(payload);
 
     mapInfo.getAllPublishedMapsFromGivenUser = async function(userId){
         const response = await api.getAllPublishedMapsFromGivenUser(userId);
-        console.log(response);
-
         if(response.status === 200){
             reducer({
                 type: ActionType.LOAD_ALL_MAPS_FROM_USER,

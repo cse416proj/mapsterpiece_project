@@ -188,6 +188,9 @@ function PostContextProvider(props) {
     const response = await api.deleteSubCommById(subId);
     if(response.status === 200){
       const parentCommentId = postInfo.currentCommentIndex?._id;
+      if(!parentCommentId){
+        return;
+      }
 
       // obtain new subcomment list
       const subcommentResponse = await api.getSubcommsByParentCommsId(parentCommentId);
