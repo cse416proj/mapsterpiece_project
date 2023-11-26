@@ -145,7 +145,7 @@ deleteMapById = async (req, res) => {
         user.maps = user.maps.filter((map) => (String(map) !== String(mapId)));
     
         user.save().then(() => {
-            console.log(user)
+            // console.log(user)
 
             Map.findByIdAndDelete(mapId, (err, mapToDelete) => {
                 console.log(mapToDelete)
@@ -395,7 +395,7 @@ getAllCommentsFromPublishedMap = async (req, res) => {
 
         return res.status(200).json({ comments });
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return res.status(500).json({ errorMessage: "Internal server error" });
     }
 }

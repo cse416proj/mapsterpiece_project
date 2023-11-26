@@ -56,6 +56,7 @@ export function MapContextProvider({children}){
         map: null,
         errorMessage: '',
         allMapsByUser: null,
+        allCommentsForMap: [],
         // download: false,
         // downloadFormat: ''
     });
@@ -520,6 +521,34 @@ export function MapContextProvider({children}){
             console.log(response);
         }
     }
+
+    mapInfo.getAllCommentsFromPublishedMap = async function (mapId){
+        if (mapId === undefined) {
+            return setMapInfo({
+              ...mapInfo,
+              allCommentsForMap: [],
+            });
+        }
+        console.log("mapId", mapId);
+        const response = await api.getAllCommentsFromPublishedMap(mapId);
+
+        // console.log(response.data.comments);
+        return setMapInfo({
+            ...mapInfo, 
+            allCommentsForMap: response.data.comments,
+        });
+    }
+
+    mapInfo.createMapComment = async function (mapId, commenterUserName, content){
+        console.log("creating map comment...");
+        console.log(mapId, commenterUserName, content);
+        const response = api.createMapComment(mapId, commenterUserName, content);
+        mapInfo.getMapById(mapId);
+
+        console.log(mapInfo.map.map);
+    }
+
+
 
     return (
         <MapContext.Provider value={{ mapInfo }}>

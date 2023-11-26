@@ -46,13 +46,13 @@ export default function PostDetailScreen() {
     }
   }, [postInfo.currentPost]);
 
-  useEffect(() => {
-    postInfo.getPostById(postId);
-  }, []);
+  // useEffect(() => {
+  //   postInfo.getPostById(postId);
+  // }, []);
 
-  useEffect(() => {
-    postInfo.getCommentsByCommentIds(postInfo.currentPost?.comments);
-  }, [postInfo.currentPost]);
+  // useEffect(() => {
+  //   postInfo.getCommentsByCommentIds(postInfo.currentPost?.comments);
+  // }, [postInfo.currentPost]);
 
   function handleAllPosts() {
     store.setCurrentView("ALL_POSTS");

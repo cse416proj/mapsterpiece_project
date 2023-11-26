@@ -40,7 +40,7 @@ import MaybeShowNavBar from './appbars/MaybeShowNavBar';
 import MapEditTopBar from './appbars/MapEditTopBar';
 import MapEditSideBar from './appbars/MapEditSideBar';
 import MapCommentSideBox from './appbars/MapCommentSideBox';
-import MapCommentSideBar from './appbars/MapCommentSideBar';
+import MapComment from './appbars/MapComment';
 /*
     This is a module of import/export components
 */
@@ -81,5 +81,5 @@ export {
     MapEditSideBar,
     DeleteCommentModal,
     MapCommentSideBox, 
-    MapCommentSideBar, 
+    MapComment, 
 }

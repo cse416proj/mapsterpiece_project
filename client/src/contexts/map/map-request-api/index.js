@@ -40,6 +40,17 @@ export const getAllPublishedMapsFromGivenUser = (userId) =>{
   return api.get(`/allPublicMaps/${userId}`);
 }
 
+export const getAllCommentsFromPublishedMap = (mapId) => {
+  return api.get(`/allMapComments/${mapId}`);
+}
+
+export const createMapComment = (mapId, commenterUserName, content) => {
+  return api.post(`/createMapComment/${mapId}`, {
+    commenterUserName: commenterUserName, 
+    content: content, 
+  })
+}
+
 const apis = {
   createMap,
   deleteMapById,
@@ -47,7 +58,9 @@ const apis = {
   getMapById,
   publishMapById,
   unpublishMapById,
-  getAllPublishedMapsFromGivenUser
+  getAllPublishedMapsFromGivenUser, 
+  getAllCommentsFromPublishedMap,
+  createMapComment,
 };
 
 export default apis;
