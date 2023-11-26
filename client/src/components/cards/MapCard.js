@@ -45,7 +45,7 @@ function MapCard({mapData, clickHandler, editHandler, deleteHandler}){
                 </Box>
                 <Stack direction="row" spacing={1}>
                     {
-                        mapData.tags.map((tag) => (
+                        mapData.tags?.map((tag) => (
                             <Chip key={tag} label={tag} size="small" style={{ color: 'white' }}/>
                         ))
                     }

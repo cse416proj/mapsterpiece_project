@@ -17,6 +17,7 @@ export const GlobalStoreActionType = {
   MARK_ACCOUNT_FOR_DELETION: "MARK_ACCOUNT_FOR_DELETION",
   MARK_COMMENT_FOR_DELETION: "MARK_COMMENT_FOR_DELETION",
   MARK_SUBCOMMENT_FOR_DELETION: "MARK_SUBCOMMENT_FOR_DELETION",
+  UPLOAD_ERROR: "UPLOAD_ERROR",
 };
 
 const CurrentView = {
@@ -56,6 +57,7 @@ const CurrentModal = {
   DELETE_COMMENT_MODAL: "DELETE_COMMENT_MODAL",
   DELETE_ACCOUNT_MODAL: "DELETE_ACCOUNT_MODAL",
   DELETE_SUBCOMMENT_MODAL: "DELETE_SUBCOMMENT_MODAL",
+  UPLOAD_ERROR_MODAL: "UPLOAD_ERROR_MODAL",
 };
 
 function GlobalStoreContextProvider(props) {
@@ -154,6 +156,12 @@ function GlobalStoreContextProvider(props) {
           currentModal: CurrentModal.DELETE_SUBCOMMENT_MODAL, 
           subcommentMarkedForDeletion: payload,
         }));
+      case GlobalStoreActionType.UPLOAD_ERROR:
+        console.log("upload error")
+        return setStore((prevStore) => ({
+          ...prevStore,
+          currentModal: CurrentModal.UPLOAD_ERROR_MODAL,
+        }));
       case GlobalStoreActionType.HIDE_MODALS:
         return setStore((prevStore) => ({
           ...prevStore,
@@ -176,6 +184,13 @@ function GlobalStoreContextProvider(props) {
       payload: screenSelected,
     });
     store.setData();
+  };
+
+  store.uploadError = function () {
+    storeReducer({
+      type: GlobalStoreActionType.UPLOAD_ERROR,
+      payload: {},
+    });
   };
 
   store.closeModal = function () {

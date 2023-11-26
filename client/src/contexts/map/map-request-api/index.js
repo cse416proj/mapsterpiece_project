@@ -41,6 +41,10 @@ export const getAllPublishedMapsFromGivenUser = (userId) =>{
   return api.get(`/allPublicMaps/${userId}`);
 }
 
+export const updateMapById = (mapId, map) => {
+  return api.put(`/updateMap/${mapId}`, map);
+}
+
 const apis = {
   createMap,
   deleteMapById,
@@ -48,7 +52,8 @@ const apis = {
   getMapById,
   publishMapById,
   unpublishMapById,
-  getAllPublishedMapsFromGivenUser
+  getAllPublishedMapsFromGivenUser,
+  updateMapById
 };
 
 export default apis;

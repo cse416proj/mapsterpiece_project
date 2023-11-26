@@ -7,7 +7,7 @@ const MapSchema = new Schema(
     ownerUserName: { type: String, required: true },
     title: { type: String, required: true },
     fileFormat: { type: String, required: true },
-    mapContent: { type: Object, required: true },
+    mapContent: [{ type: Object, required: true }],
     tags: [{ type: String, required: true }],
     isPublished: { type: Boolean, default: false, required: true },
     comments: [{ type: ObjectId, ref: "Comment" }],

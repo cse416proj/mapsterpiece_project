@@ -18,7 +18,7 @@ deleteUserById = async (req, res) => {
 getUserById = async (req, res) => {
   const userId = req.params.userId;
 
-  User.findById(userId).populate("posts").exec((err, user) => {
+  User.findById(userId).populate("posts").populate("maps").exec((err, user) => {
     if (err) {
       return res.status(500).json({ errorMessage: err.message });
     } else if (!user) {
