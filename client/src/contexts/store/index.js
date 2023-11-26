@@ -89,6 +89,8 @@ function GlobalStoreContextProvider(props) {
     accountMarkedForDeletion: null,
     commentMarkedForDeletion: null,
     subcommentMarkedForDeletion: null, 
+
+    errorMsg: ''
   });
 
   const storeReducer = (action) => {
@@ -157,10 +159,10 @@ function GlobalStoreContextProvider(props) {
           subcommentMarkedForDeletion: payload,
         }));
       case GlobalStoreActionType.UPLOAD_ERROR:
-        console.log("upload error")
         return setStore((prevStore) => ({
           ...prevStore,
           currentModal: CurrentModal.UPLOAD_ERROR_MODAL,
+          errorMsg: payload
         }));
       case GlobalStoreActionType.HIDE_MODALS:
         return setStore((prevStore) => ({
@@ -171,6 +173,7 @@ function GlobalStoreContextProvider(props) {
           accountMarkedForDeletion: null,
           commentMarkedForDeletion: null,
           subcommentMarkedForDeletion: null,
+          errorMsg: ''
         }));
       default:
         return store;
@@ -186,10 +189,10 @@ function GlobalStoreContextProvider(props) {
     store.setData();
   };
 
-  store.uploadError = function () {
+  store.uploadError = function (errorMsg) {
     storeReducer({
       type: GlobalStoreActionType.UPLOAD_ERROR,
-      payload: {},
+      payload: errorMsg,
     });
   };
 

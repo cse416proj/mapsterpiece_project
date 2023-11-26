@@ -102,33 +102,26 @@ export default function MapDetailTopBar(){
             return null;
         }
 
-        let likeView = (
+        return(
             <>
-                <ThumbUpOffAltIcon style={{color:"black"}}></ThumbUpOffAltIcon>
-                <t style={{color:"black"}}> {likes} </t>
+                <IconButton id="like-button" onClick={handleLikeMap}>
+                    {
+                        (mapInfo?.currentMap?.likedUsers?.includes(auth.user._id)) ?
+                            <ThumbUpIcon style={{color:"black"}}></ThumbUpIcon> :
+                            <ThumbUpOffAltIcon style={{color:"black"}}></ThumbUpOffAltIcon>
+                    }
+                    <t style={{color:"black"}}> {likes} </t>
+                </IconButton>
+                <IconButton id="dislike-button" onClick={handleDislikeMap}>
+                    {
+                        (mapInfo?.currentMap?.dislikedUsers?.includes(auth.user._id)) ?
+                            <ThumbDownIcon style={{color:"black"}}></ThumbDownIcon> :
+                            <ThumbDownOffAltIcon style={{color:"black"}}></ThumbDownOffAltIcon>
+                    }
+                    <t style={{color:"black"}}>{dislikes}</t>
+                </IconButton>
             </>
         );
-            
-        if(mapInfo?.currentMap){
-            const likedUsers = mapInfo?.currentMap?.likedUsers;
-            const dislikedUsers = mapInfo?.currentMap?.dislikedUsers;
-            if(likedUsers.includes(auth.user._id)){
-                likeView = (
-                    <>
-                        <ThumbUpIcon style={{color:"black"}}></ThumbUpIcon>
-                        <t style={{color:"black"}}> {likes} </t>
-                    </>
-                );
-            }
-        }
-        // <IconButton id="like-button" onClick={handleLikeMap}>
-        //     <ThumbUpOffAltIcon style={{color:"black"}}></ThumbUpOffAltIcon>
-        //     <t style={{color:"black"}}> {likes} </t>
-        // </IconButton>
-        // <IconButton id="dislike-button" onClick={handleDislikeMap}>
-        //     <ThumbDownOffAltIcon style={{color:"black"}}></ThumbDownOffAltIcon>
-        //     <t style={{color:"black"}}>{dislikes}</t>
-        // </IconButton>
     }
 
     function renderActionButtons(){
