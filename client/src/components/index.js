@@ -40,6 +40,8 @@ import MapEditScreen from './screens/edit/map/MapEditScreen';
 import MaybeShowNavBar from './appbars/MaybeShowNavBar';
 import MapEditTopBar from './appbars/MapEditTopBar';
 import MapEditSideBar from './appbars/MapEditSideBar';
+import MapDetailTopBar from './appbars/MapDetailTopBar';
+
 /*
     This is a module of import/export components
 */
@@ -79,5 +81,6 @@ export {
     MapEditTopBar,
     MapEditSideBar,
     DeleteCommentModal,
-    DeleteSubCommModal
+    DeleteSubCommModal,
+    MapDetailTopBar
 }

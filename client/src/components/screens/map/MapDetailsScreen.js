@@ -1,9 +1,9 @@
+import { useContext, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Box } from "@mui/material";
-import { MapScreen, DeleteMapModal } from "../../index";
-import { MapDetailTopBar } from "../../appbars/MapDetailOwnerTopBar";
+import { MapScreen, DeleteMapModal, MapDetailTopBar } from "../../index";
 import CommentsSideBox from "../../appbars/CommentsSideBox";
 import MapContext from "../../../contexts/map";
-
 
 export default function MapDetailsScreen(){
     const { mapInfo } = useContext(MapContext);

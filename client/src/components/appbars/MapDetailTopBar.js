@@ -13,7 +13,7 @@ import AuthContext from '../../contexts/auth';
 import MapContext from '../../contexts/map';
 import GlobalStoreContext from '../../contexts/store';
 
-export function MapDetailTopBar(){
+export default function MapDetailTopBar(){
     const BackButtonStyle = {
         color: 'black',
         fontSize: '15px',
