@@ -38,7 +38,6 @@ export function MapDetailOwnerTopBar(){
     useEffect(() => {
         if(mapInfo){
             if(mapInfo.currentMap){
-                console.log(mapInfo.currentMap);
                 setTitle(mapInfo.currentMap.title);
                 setTags(mapInfo.currentMap.tags);
             }

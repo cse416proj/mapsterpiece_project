@@ -1,8 +1,8 @@
 import axios from "axios";
 axios.defaults.withCredentials = true;
 const api = axios.create({
-  baseURL: 'https://mapsterpiece.online/post',
-  // baseURL: "http://localhost:4000/post",
+  // baseURL: 'https://mapsterpiece.online/post',
+  baseURL: "http://localhost:4000/post",
 });
 
 export const createPost = (title, tags, content) => {

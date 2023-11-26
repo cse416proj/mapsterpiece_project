@@ -31,7 +31,6 @@ export default function MapEditTopBar() {
     useEffect(() => {
         if(mapInfo){
             if(mapInfo.currentMap){
-                console.log(mapInfo.currentMap);
                 setTitle(mapInfo.currentMap.title);
             }
         }
@@ -55,6 +54,7 @@ export default function MapEditTopBar() {
 
     function handleSaveMap(){
         console.log("save this map");
+        mapInfo.updateMapById(mapInfo.currentMap._id);
         navigate('/');
     }
 
