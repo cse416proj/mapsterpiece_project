@@ -16,4 +16,6 @@ router.get('/allPublicMaps/:userId', MapController.getAllPublishedMapsFromGivenU
 
 router.post('/createMapComment/:mapId', auth.verify, MapController.createMapComment);
 router.get('/allMapComments/:mapId', auth.verify, MapController.getAllCommentsFromPublishedMap);
+
+router.delete('/deleteMapComment/:commentId', auth.verify, MapController.deleteMapCommentById);
 module.exports = router;
