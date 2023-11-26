@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Typography, Box, Toolbar, Button, Accordion, Paper, InputBase } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
@@ -15,6 +15,7 @@ export default function MapCommentSideBox() {
     const [isToolbarExpanded, setIsToolbarExpanded] = useState(false);
     const [addActive, setAddActive] = useState(false);
     const [commentInput, setInput] = useState("");
+    const inputRef = useRef(null);
 
     useEffect(() => {
         mapInfo.getMapById(mapId);
@@ -26,8 +27,6 @@ export default function MapCommentSideBox() {
         }
       }, [mapInfo?.map?.map]);
 
-    //   console.log(mapInfo.allCommentsForMap);
-
     const boxStyle = {
         display: 'flex',
         flexDirection: 'column', // Change to column layout
@@ -37,10 +36,10 @@ export default function MapCommentSideBox() {
         border: isToolbarExpanded ? '1px solid #ddd' : 'none',
         borderRadius: '10px',
         height: isToolbarExpanded ? '80vh' : '40px',
-        overflow: 'hidden',
+        overflow:'hidden',
         transition: 'height 0.3s ease',
         textAlign: 'right',
-        width: isToolbarExpanded ? '25%' : 'none',
+        width: isToolbarExpanded ? '30%' : 'none',
         marginTop: '7px',
         backgroundColor: isToolbarExpanded ? '#cce4e8' : 'transparent',
     };
@@ -57,16 +56,21 @@ export default function MapCommentSideBox() {
         setAddActive(!addActive);
     };
    
-
     const handleSubmitComment = () => {
         const mapId = mapInfo.map.map._id;
-        mapInfo.createMapComment(
-            mapId,
-            auth?.user?.userName, 
-            commentInput
-        );
-    }
-
+        if (mapId && auth?.user?.userName && commentInput !== "") {
+          mapInfo.createMapComment(mapId, auth?.user?.userName, commentInput);
+          setInput("");
+    
+          // Reset the input value using the ref
+          if (inputRef.current) {
+            inputRef.current.value = "";
+          }
+        } else {
+          console.log("no map / no user / no comment");
+        }
+      };
+    
     const handleInputChange = (event) => {
         setInput(event.target.value);
     }
@@ -80,71 +84,84 @@ export default function MapCommentSideBox() {
 
     if (!mapInfo || !mapInfo.map) {
         return null;
-      }
+    }
+
+    const hasComments = mapInfo.allCommentsForMap.length===0;
+    console.log(mapInfo.allCommentsForMap.length===0);
 
     return (
         <Toolbar style={boxStyle}>
-            {/* actual toolbar */}
-            {isToolbarExpanded && (
-                <Box>
-                    <Box style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                        <CloseIcon
-                            style={{ cursor: 'pointer', marginRight: '10px' }}
-                            onClick={toggleCommentBox}
-                        />
-                        <Typography
-                            style={{ fontWeight: 'bolder' }}
-                            onClick={toggleCommentBox}
-                        >
-                            Close Comment Box
-                        </Typography>
-                    </Box>
-
-                    {/* actual comments */}
-                    <Box id="map-comments">
-                    { mapInfo.allCommentsForMap?.map((pair, index) => (
-                         <MapComment key={`comment-${index}`} payload={pair} index={index} />
-                    ))}
-                    {addActive ? (
-                        <Accordion 
-                        // id='map-accordion'
-                        >
-                            <Paper
-                            component="form"
-                            // id='map-form'
-                            onSubmit={handleOnSubmit}
-                            >
-                            <InputBase
-                            sx={{ ml: 1, flex: 1 }}
-                            placeholder="Enter your comments here..."
-                            onChange={handleInputChange}
-                                />
-                                <Button 
-                                variant="contained" 
-                                id="comment-submit-btn" 
-                                onClick={handleSubmitComment}
-                                >
-                                Submit
-                                </Button>
-                            </Paper>
-                        </Accordion>
-                        ) : null
-                    }
-        </Box>
-                </Box>
-            )}
-
-            {/* open toolbar button */}
-            {!isToolbarExpanded && (
-                <Button
-                    variant="contained"
-                    style={buttonStyle}
-                    onClick={toggleCommentBox}
-                    startIcon={<AddIcon />}
+          {/* actual toolbar */}
+          {isToolbarExpanded && (
+            <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', height: '100%' }}>
+              {/* handle close side bar */}
+              <Box style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                <CloseIcon
+                  style={{ cursor: 'pointer', marginRight: '10px' }}
+                  onClick={toggleCommentBox}
+                />
+                <Typography
+                  style={{ fontWeight: 'bolder' }}
+                  onClick={toggleCommentBox}
                 >
-                    Open Comment Box
-                </Button>
-            )}
+                  Close Comment Box
+                </Typography>
+              </Box>
+      
+              {/* actual comments */}
+                <Box sx={{ flex: 1, overflowY: 'auto' }}>
+                <Box id="map-comments" sx={{ alignContent: 'center', width: '100%' }}>
+                  {mapInfo.allCommentsForMap?.map((pair, index) => (
+                    <MapComment sx={{}} key={`comment-${index}`} payload={pair} index={index} />
+                  ))}
+                </Box>
+              </Box>
+              
+              {/* input map comment */}
+              <Box id="input-comment" sx={{ marginTop: 'auto', width: '99%' }}>
+                {addActive ? (
+                  <Accordion>
+                    <Paper component="form" onSubmit={handleOnSubmit}>
+                      <InputBase
+                        sx={{
+                            ml: 1,
+                            flex: 1,
+                            width: '80%',
+                            '& input': {
+                              padding: '0',
+                            },
+                          }}
+                        placeholder="Enter your comments here..."
+                        onChange={handleInputChange}
+                        inputRef={inputRef}
+                      />
+                      <Button
+                        variant="contained"
+                        id="comment-submit-btn"
+                        onClick={handleSubmitComment}
+                      >
+                        Submit
+                      </Button>
+                    </Paper>
+                  </Accordion>
+                ) : null}
+              </Box>
+            </Box>
+          )}
+      
+          {/* open toolbar button */}
+          {!isToolbarExpanded && (
+            <Button
+              variant="contained"
+              style={buttonStyle}
+              onClick={toggleCommentBox}
+              startIcon={<AddIcon />}
+            >
+              Open Comment Box
+            </Button>
+          )}
         </Toolbar>
     );
+      
+
 }
