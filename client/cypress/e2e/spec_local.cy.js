@@ -45,15 +45,50 @@ describe('Mapsterpiece local tests', () => {
     cy.get('#confirm-cancel-container > .MuiButtonBase-root').click();
     /* ==== End Cypress Studio ==== */
   })
-  
-  it('dropdown menu test', ()=>{
-    cy.visit('http://localhost:3000');
+
+  /* ==== Test Created with Cypress Studio ==== */
+  it('User home screen shows user owned maps and posts', function() {
     /* ==== Generated with Cypress Studio ==== */
-    cy.get('[data-testid="PersonIcon"]').click();
-    cy.get('.Mui-focusVisible').click();
-    cy.get('[data-testid="PersonIcon"]').click();
-    cy.get('.MuiList-root > [tabindex="-1"]').click();
-    cy.get('#logo').click();
+    cy.visit('http://localhost:3000');
+    cy.get('[style="margin-left: 2.5vw;"]').click();
+    cy.get('#\\:r1\\:').clear('ba');
+    cy.get('#\\:r1\\:').type('banana@gmail.com');
+    cy.get('#\\:r3\\:').clear();
+    cy.get('#\\:r3\\:').type('12345678');
+    cy.get('#filled-btn').click();
     /* ==== End Cypress Studio ==== */
-  })
+  });
+
+  /* ==== Test Created with Cypress Studio ==== */
+  it('Able to view all published maps, all users, all posts from community screen', function() {
+    /* ==== Generated with Cypress Studio ==== */
+    cy.visit('http://localhost:3000');
+    cy.get('[style="margin-left: 2.5vw;"]').click();
+    cy.get('#\\:r1\\:').clear('banana@gmail.com');
+    cy.get('#\\:r1\\:').type('banana@gmail.com');
+    cy.get('#\\:r3\\:').clear('12345678');
+    cy.get('#\\:r3\\:').type('12345678');
+    cy.get('#filled-btn').click();
+    cy.get('#home-navigation-card > :nth-child(4)').click();
+    cy.get('.css-1t8x7v1 > [data-testid="ps-menu-button-test-id"] > .ps-menu-label').click();
+    cy.get('.ps-menu-root > :nth-child(1) > :nth-child(2) > :nth-child(1) > .ps-menu-label').click();
+    cy.get('.ps-menu-root > :nth-child(1) > :nth-child(3) > :nth-child(1) > .ps-menu-label').click();
+    /* ==== End Cypress Studio ==== */
+  });
+
+  /* ==== Test Created with Cypress Studio ==== */
+  it('view other user profile', function() {
+    /* ==== Generated with Cypress Studio ==== */
+    cy.visit('http://localhost:3000');
+    cy.get('[style="margin-left: 2.5vw;"]').click();
+    cy.get('#\\:r1\\:').clear('banana@gmail.com');
+    cy.get('#\\:r1\\:').type('banana@gmail.com');
+    cy.get('#\\:r3\\:').clear('12345678');
+    cy.get('#\\:r3\\:').type('12345678');
+    cy.get('#filled-btn').click();
+    cy.get('#home-navigation-card > :nth-child(4)').click();
+    cy.get('.css-1t8x7v1 > [data-testid="ps-menu-button-test-id"] > .ps-menu-label').click();
+    cy.get(':nth-child(1) > #UserDynamicCard > .MuiCardContent-root > .MuiTypography-root').click();
+    /* ==== End Cypress Studio ==== */
+  });
 })
