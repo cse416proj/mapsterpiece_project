@@ -157,12 +157,15 @@ export default function MapDetailTopBar(){
                 {auth.user? 
                  <Button
                     style = {BackButtonStyle}
-                    onClick={handleMyMaps}>
+                    onClick={handleMyMaps}
+                    id ="back"
+                    >
                     &lt;&lt; My Maps
                 </Button>
                 : <Button
                 style = {BackButtonStyle}
-                onClick = {handleCommunity}>
+                onClick = {handleCommunity}
+                id ="back">
                     &lt;&lt; Back to Community
                 </Button>
             }

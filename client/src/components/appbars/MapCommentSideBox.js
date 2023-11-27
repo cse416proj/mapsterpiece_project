@@ -99,10 +99,12 @@ export default function MapCommentSideBox() {
                 <CloseIcon
                   style={{ cursor: 'pointer', marginRight: '10px' }}
                   onClick={toggleCommentBox}
+                  id="close-comment"
                 />
                 <Typography
                   style={{ fontWeight: 'bolder' }}
                   onClick={toggleCommentBox}
+                  id="close-comment"
                 >
                   Close Comment Box
                 </Typography>
@@ -156,6 +158,7 @@ export default function MapCommentSideBox() {
               style={buttonStyle}
               onClick={toggleCommentBox}
               startIcon={<AddIcon />}
+              id = "open-comment"
             >
               Open Comment Box
             </Button>
