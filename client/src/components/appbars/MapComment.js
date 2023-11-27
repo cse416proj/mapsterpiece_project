@@ -21,14 +21,20 @@ export default function MapComment(payload, index){
     }, []);
     // console.log("mapId 22", mapId);
 
+    console.log(mapInfo.map);
     useEffect(() => {
-      if(mapInfo?.map?.map){
+      if(mapInfo.map){
         mapInfo.getAllCommentsFromPublishedMap(mapId);
       }
-    }, [mapInfo?.map?.map]);
+    //   else{
+    //     console.log(mapInfo.map);
+    //   }
+    }
+    , [mapInfo.map]
+    );
 
     payload = payload.payload;
-    // console.log(payload);
+    console.log(payload);
 
     const deleteHandler = ()=>{
         console.log("handle delete comment");

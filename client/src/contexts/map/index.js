@@ -577,7 +577,7 @@ export function MapContextProvider({ children }) {
                 allCommentsForMap: [],
             });
         }
-        console.log("mapId 560", mapId);
+        // console.log("mapId 580", mapId);
         // console.log(mapInfo.map);
 
         const map = await api.getMapById(mapId);
@@ -590,11 +590,12 @@ export function MapContextProvider({ children }) {
         }
 
         const response = await api.getAllCommentsFromPublishedMap(mapId);
+        console.log("response 593: ", response);
 
         if (response.status === 200) {
             return setMapInfo({
                 ...mapInfo,
-                allCommentsForMap: response?.data?.comments,
+                allCommentsForMap: response.data.comments,
             });
         } else {
             console.error("Unexpected response:", response);
@@ -610,7 +611,7 @@ export function MapContextProvider({ children }) {
     const response = api.createMapComment(mapId, commenterUserName, content);
     mapInfo.getMapById(mapId);
 
-    console.log(mapInfo.map.map);
+    console.log(mapInfo.map);
 }
   return (
     <MapContext.Provider value={{ mapInfo }}>{children}</MapContext.Provider>

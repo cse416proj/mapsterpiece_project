@@ -21,11 +21,14 @@ export default function MapCommentSideBox() {
         mapInfo.getMapById(mapId);
     }, []);
 
+    // console.log(mapInfo?.map?.isPublished);
+    console.log(mapId);
+
     useEffect(() => {
-        if(mapInfo?.map?.map){
+        if(mapInfo.map){
           mapInfo.getAllCommentsFromPublishedMap(mapId);
         }
-      }, [mapInfo?.map?.map]);
+      }, [mapInfo.map]);
 
     const boxStyle = {
         display: 'flex',
@@ -35,7 +38,7 @@ export default function MapCommentSideBox() {
         padding: '7px',
         border: isToolbarExpanded ? '1px solid #ddd' : 'none',
         borderRadius: '10px',
-        height: isToolbarExpanded ? '80vh' : '40px',
+        height: isToolbarExpanded ? '89vh' : '40px',
         overflow:'hidden',
         transition: 'height 0.3s ease',
         textAlign: 'right',
@@ -57,7 +60,8 @@ export default function MapCommentSideBox() {
     };
    
     const handleSubmitComment = () => {
-        const mapId = mapInfo.map.map._id;
+        console.log(mapInfo.map._id);
+        const mapId = mapInfo.map._id;
         if (mapId && auth?.user?.userName && commentInput !== "") {
           mapInfo.createMapComment(mapId, auth?.user?.userName, commentInput);
           setInput("");
