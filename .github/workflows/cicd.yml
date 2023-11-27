@@ -66,7 +66,7 @@ jobs:
           browser: chrome
           headless: true
           # record: true
-          # start: npm start
-          # wait-on: 'http://localhost:3000'
-          # wait-on-timeout: 120
+          start: npm start
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 180
           working-directory: './client'
