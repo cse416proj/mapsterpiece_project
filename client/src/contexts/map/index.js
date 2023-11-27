@@ -338,11 +338,10 @@ export function MapContextProvider({children}){
   };
 
   mapInfo.updateMapGeneralInfo = function (title, tags) {
-    if (!mapInfo.map) {
+    if (!mapInfo.currentMap) {
       return;
     }
-    console.log(mapInfo.map);
-    let oldMap = mapInfo.map;
+    let oldMap = mapInfo.currentMap;
     if (title) {
       oldMap.title = title;
     }
@@ -360,9 +359,7 @@ export function MapContextProvider({children}){
   };
 
   mapInfo.updateMapById = async function (mapId) {
-    console.log(mapInfo.map);
     const response = await api.updateMapById(mapId, mapInfo.map);
-    console.log(response);
     if (response.status === 200) {
       await mapInfo.getAllUserMaps();
       navigate("/");
