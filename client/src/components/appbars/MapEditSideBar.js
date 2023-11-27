@@ -18,6 +18,7 @@ function MapEditSideBar() {
 
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState([]);
+  const [selectedColor, setSelectedColor] = useState('#ffffff');
   const [mapType, setMapType] = useState(10);
 
   useEffect(() => {
@@ -46,6 +47,7 @@ function MapEditSideBar() {
 
   const handleColorChange = (color) => {
     mapInfo?.setCurrentRegionColor(color.hex);
+    setSelectedColor(color.hex);
   };
 
   return (
@@ -96,7 +98,7 @@ function MapEditSideBar() {
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Map Data</Typography>
           <Box className="sidebar-block-content data-block"></Box>
-          <CompactPicker onChange={handleColorChange} />
+          <CompactPicker color={selectedColor} onChange={handleColorChange}/>
         </Box>
       </Toolbar>
     </Sidebar>

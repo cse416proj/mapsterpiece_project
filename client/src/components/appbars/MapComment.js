@@ -19,10 +19,10 @@ export default function MapComment(payload, index) {
   }, []);
 
   useEffect(() => {
-    if (mapInfo.map) {
+    if (mapInfo.currentMap) {
       mapInfo.getAllCommentsFromPublishedMap(mapId);
     }
-  }, [mapInfo.map]);
+  }, [mapInfo.currentMap]);
 
   payload = payload.payload;
 
@@ -79,55 +79,4 @@ export default function MapComment(payload, index) {
       {/* more about subcomments */}
     </div>
   );
-}
-
-{
-  /* <AccordionDetails
-          sx={{
-            bgcolor: "#b1d7c4",
-          }}
-        >
-          {payload?.subComments?.map((subcomment, index) => (
-            <Subcomment key={`subcomment-${index}`} subcomment={subcomment} />
-          ))}
-        </AccordionDetails> */
-}
-{
-  /* <DeleteCommentModal/> */
-}
-
-{
-  /* input subcomment */
-}
-{
-  /* {addActive ? (
-        <Box
-          className="commentCard"
-          sx={{
-            bgcolor: "#b1d7c4",
-          }}
-        >
-          <Paper
-            component="form"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              width: 400,
-              marginLeft: "10px",
-            }}
-            onSubmit={handleOnSubmit}
-          >
-            <InputBase
-              sx={{ ml: 1, flex: 1 }}
-              placeholder="Enter your comments here..."
-              onChange={handleInputChange}
-              autoFocus
-              onBlur={handleSetEditFalse}
-            />
-            <Button id="comment-submit-btn" variant="contained" onMouseDown={handleSubmitComment}>
-              Submit
-            </Button>
-          </Paper>
-        </Box>
-      ) : null} */
 }
