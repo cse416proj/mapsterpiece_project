@@ -20,14 +20,23 @@ function Profile() {
   const [tab, setTab] = useState("map");
 
   useEffect(() => {
-    if(auth.user) {
-      if(auth.user.maps && auth.user.maps.length > 0){
+    userInfo.getUserById(userId);
+  }, [userId]);
+
+  useEffect(() => {
+    // only load other user's publish map
+    async function loadUserMapInfo(userId){
+      await mapInfo.getAllPublishedMapsFromGivenUser(userId);
+    }
+    if(userInfo.currentUser){
+      if(auth && auth.user && auth.user._id === userInfo.currentUser._id){
         mapInfo.getAllUserMaps();
       }
+      else{
+        loadUserMapInfo(userInfo.currentUser._id);
+      }
     }
-    
-    userInfo.getUserById(userId);
-  }, []);
+  }, [userInfo.currentUser]);
 
   const handleChangeTab = (event, newTab) => {
     setTab(newTab);
@@ -93,7 +102,7 @@ function Profile() {
           name={userInfo.getUserFullName()}
           userName={userInfo.getUserName()}
           numMaps={mapInfo && mapInfo.allMapsByUser && mapInfo.allMapsByUser.length}
-          numPosts={postInfo && postInfo.allPostsByUser && postInfo.allPostsByUser.length}
+          numPosts={userInfo && userInfo.currentUser && userInfo.currentUser?.posts.length}
           isLoggedInUser={isLoggedInUser}
         />
         <DeletePostModal />

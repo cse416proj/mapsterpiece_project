@@ -147,7 +147,7 @@ export default function PostDetailScreen() {
             <Typography>By {postInfo.currentPost.ownerUserName}</Typography>
             <Box className='flex-row' id='tags-container'>
               {
-                (tags.length === 0) ?
+                (tags && tags.length === 0) ?
                   null :
                   <>
                     <Typography id='post-tags-text'>Tags:</Typography>
