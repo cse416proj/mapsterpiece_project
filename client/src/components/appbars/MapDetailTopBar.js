@@ -51,6 +51,9 @@ export default function MapDetailTopBar(){
     function handleMyMaps(){
         navigate(`/profile/${auth.user._id}`);
     }
+    function handleCommunity(){
+        navigate('/community');
+    }
     function handleExportPNG(){
         console.log("export PNG file");
     }
@@ -95,6 +98,7 @@ export default function MapDetailTopBar(){
         event.stopPropagation();
         event.preventDefault();
         mapInfo.unpublishMapById(mapId);
+        navigate(`/map-edit/${mapId}`);
     };
 
     function renderLikeButtons(){
@@ -150,11 +154,19 @@ export default function MapDetailTopBar(){
     return (
         <AppBar position='static'>
             <Toolbar className="map-screen-topbar">
-                <Button
+                {auth.user? 
+                 <Button
                     style = {BackButtonStyle}
                     onClick={handleMyMaps}>
                     &lt;&lt; My Maps
                 </Button>
+                : <Button
+                style = {BackButtonStyle}
+                onClick = {handleCommunity}>
+                    &lt;&lt; Back to Community
+                </Button>
+            }
+               
                 <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>{title}</Typography>
                 <Box className='flex-row' id='tags-container'>
                     {

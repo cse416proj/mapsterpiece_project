@@ -1,6 +1,8 @@
 const Map = require("../models/map-model");
 const User = require("../models/user-model");
 const auth = require("../auth");
+const Comment = require("../models/comment-model");
+const Subcomment = require("../models/subcomment-model")
 
 createMap = async (req, res) => {
   if (auth.verifyUser(req) === null) {
@@ -23,33 +25,41 @@ createMap = async (req, res) => {
       .json({ errorMessage: "Please enter all required fields." });
   }
 
+  const allowProperties = [
+    "NAME_0",
+    "NAME_1",
+    "NAME_2",
+    "NAME_3",
+    "name_0",
+    "name_1",
+    "name_2",
+    "name_3",
+    "ID_0",
+    "ID_1",
+    "ID_2",
+    "ID_3",
+    "name",
+  ];
+
   const features = mapContent.features;
+  let nameListUpper = ["NAME_0", "NAME_1", "NAME_2", "NAME_3"];
   let featuresFiltered = [];
 
-  // use regex to parse properties we want
-  const nameRegex = /^NAME(_[0-4])?$/i;
-
-  if(!features){
-    return res
-      .status(400)
-      .json({ errorMessage: "Feature does not exist." });
-  }
-
   for (let i = 0; i < features.length; i++) {
-    const currFeature = features[i];
-    if(currFeature.properties) {
-      let newProperties = {}
-      const propKeys = Object.keys(currFeature.properties);
-      const newPropKeys = propKeys.filter((property) => (nameRegex.test(property)))
-      
-      // keep properties we want
-      newPropKeys.forEach((property) => {
-        newProperties[property.toLowerCase()] = currFeature.properties[property];
+    if (features[i].properties) {
+      Object.keys(features[i].properties).forEach((property) => {
+        if (!allowProperties.includes(property))
+          delete features[i].properties[property];
+        else {
+          if (nameListUpper.includes(property)) {
+            features[i].properties[property.toLowerCase()] =
+              features[i].properties[property];
+            delete features[i].properties[property];
+          }
+        }
       });
-      currFeature.properties = newProperties;
     }
-
-    featuresFiltered[i] = currFeature;
+    featuresFiltered[i] = features[i];
   }
 
   // create map
@@ -401,6 +411,113 @@ updateMapById = async (req, res) => {
   });
 };
 
+createMapComment = async (req, res) =>{
+  try {
+      if (auth.verifyUser(req) === null) {
+          return res.status(401).json({
+              errorMessage: "Unauthorized",
+          });
+      }
+
+      const userId = req.userId;
+      const mapId = req.params.mapId;
+      const { commenterUserName, content } = req.body;
+
+      if(!userId){
+          return res.status(400).json({ errorMessage: "User does not exist." });
+      }
+      if (!commenterUserName || !content) {
+          return res.status(400).json({ errorMessage: "Please enter both commenterUserName and content." });
+      }
+
+      const map = await Map.findById(mapId);
+      if (!map || !map.isPublished) {
+          return res.status(404).json({ errorMessage: "Map not found or not published." });
+      }
+
+      const newComment = new Comment({
+          commenterUserName,
+          content,
+      });
+
+      await newComment.save();
+      map.comments.push(newComment._id);
+      await map.save();
+
+      return res.status(201).json({
+          success: true,
+          comment: newComment,
+          message: "Comment added successfully!",
+      });
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ errorMessage: "Internal server error" });
+  }
+}
+
+
+getAllCommentsFromPublishedMap = async (req, res) => {
+  const mapId = req.params.mapId; 
+  // console.log(mapId);
+
+  try {
+      const map = await Map.findById(mapId);
+
+      if (!map) {
+          return res.status(404).json({ errorMessage: "Map not found." });
+      }
+      if (!map.isPublished) {
+          return res.status(400).json({ errorMessage: "Map is not published." });
+      }
+
+      const comments = await Comment.find({ _id: { $in: map.comments } });
+
+      return res.status(200).json({ comments });
+  } catch (error) {
+      // console.error(error);
+      return res.status(500).json({ errorMessage: "Internal server error" });
+  }
+}
+
+
+deleteMapCommentById = async (req, res) => {
+  try {
+      if (auth.verifyUser(req) === null) {
+          return res.status(401).json({
+              errorMessage: "Unauthorized",
+          });
+      }
+
+      const commentId = req.params.commentId;
+      console.log("Map commentId for deletion: ", commentId);
+
+      const deletedComment = await Comment.findByIdAndDelete(commentId);
+
+      if (!deletedComment) {
+          return res.status(404).json({ errorMessage: "Comment not found" });
+      }
+
+      const updatedMap = await Map.findOneAndUpdate(
+          { comments: commentId },
+          { $pull: { comments: commentId } },
+          { new: true }
+      );
+
+      if (!updatedMap) {
+          return res.status(404).json({ errorMessage: "Map not found for the given comment" });
+      }
+
+      res.status(200).json({
+          message: "Comment deleted successfully",
+          deletedComment: deletedComment,
+          updatedMap: updatedMap,
+      });
+  } catch (error) {
+      console.error("Error deleting comment:", error);
+      res.status(500).json({ errorMessage: "Internal server error" });
+  }
+};
+
 module.exports = {
   createMap,
   getMapById,
@@ -410,4 +527,7 @@ module.exports = {
   unpublishMapById,
   getAllPublishedMapsFromGivenUser,
   updateMapById,
+  createMapComment,
+  getAllCommentsFromPublishedMap,
+  deleteMapCommentById,
 };

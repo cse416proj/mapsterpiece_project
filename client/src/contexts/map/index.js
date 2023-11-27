@@ -21,10 +21,10 @@ export function MapContextProvider({children}){
     tags: [],
     shpBuffer: null,
     dbfBuffer: null,
-    map: null,
     errorMessage: "",
     allMapsByUser: null,
     currentRegionColor: "#fff",
+    allCommentsForMap: [],
     // download: false,
     // downloadFormat: ''
   });
@@ -87,7 +87,7 @@ export function MapContextProvider({children}){
           // tags: [],
           // shpBuffer: null,
           // dbfBuffer: null,
-          map: payload,
+          currentMap: payload,
         }));
       case ActionType.SET_CURRENT_MAP:
         return setMapInfo((prevMapInfo) => ({
@@ -193,14 +193,14 @@ export function MapContextProvider({children}){
           reducer({
             type: ActionType.UPLOAD_MAP,
             payload: {
-              map: mapContent,
+              currentMap: mapContent,
             },
           });
         } else {
           reducer({
             type: ActionType.UPLOAD_MAP,
             payload: {
-              map: null,
+              currentMap: null,
               errorMessage: response.data.errorMessage,
             },
           });
@@ -243,24 +243,30 @@ export function MapContextProvider({children}){
   }
 
   mapInfo.publishMapById = async function(mapId){
-    const response = await api.publishMapById(mapId);
-
-    if(response.status === 201){
-      mapInfo.updateMapList();
+    try{
+      const response = await api.publishMapById(mapId);
+      if(response.status === 201){
+        mapInfo.updateMapList();
+      }
     }
-    else{
-      console.log(response);
+    catch (error) {
+      if (error.response) {
+        console.log((error.response.status === 400) ? error.response.data.errorMessage : error.response.data);
+      }
     }
   }
 
   mapInfo.unpublishMapById = async function(mapId){
-    const response = await api.unpublishMapById(mapId);
-
-    if(response.status === 201){
-      mapInfo.updateMapList();
+    try{
+      const response = await api.unpublishMapById(mapId);
+      if(response.status === 201){
+        mapInfo.updateMapList();
+      }
     }
-    else{
-      console.log(response);
+    catch (error) {
+      if (error.response) {
+        console.log((error.response.status === 400) ? error.response.data.errorMessage : error.response.data);
+      }
     }
   }
 
@@ -323,7 +329,7 @@ export function MapContextProvider({children}){
     console.log("real map object: ", response.data.map);
     setMapInfo((prevMapInfo) => ({
       ...prevMapInfo,
-      map: response.data.map,
+      currentMap: response.data.map,
     }));
     return response.data.map;
   };
@@ -333,7 +339,7 @@ export function MapContextProvider({children}){
     oldMap.mapContent[index].properties.fillColor = color;
     setMapInfo((prevMapInfo) => ({
       ...prevMapInfo,
-      map: oldMap,
+      currentMap: oldMap,
     }));
   };
 
@@ -354,12 +360,12 @@ export function MapContextProvider({children}){
     }
     setMapInfo((prevMapInfo) => ({
       ...prevMapInfo,
-      map: oldMap,
+      currentMap: oldMap,
     }));
   };
 
   mapInfo.updateMapById = async function (mapId) {
-    const response = await api.updateMapById(mapId, mapInfo.map);
+    const response = await api.updateMapById(mapId, mapInfo.currentMap);
     if (response.status === 200) {
       await mapInfo.getAllUserMaps();
       navigate("/");
@@ -382,6 +388,55 @@ export function MapContextProvider({children}){
   //       })
   //   }
 
+
+  mapInfo.getAllCommentsFromPublishedMap = async function (mapId) {
+    try {
+        if (!mapInfo.currentMap || !mapId || !auth.user) {
+            return setMapInfo({
+                ...mapInfo,
+                allCommentsForMap: [],
+            });
+        }
+        // console.log("mapId 580", mapId);
+        // console.log(mapInfo.currentMap);
+
+        const map = await api.getMapById(mapId);
+        if(!map.data.map.isPublished){
+            return setMapInfo({
+                ...mapInfo,
+                allCommentsForMap: [],
+            });
+        }
+
+        const response = await api.getAllCommentsFromPublishedMap(mapId);
+
+        if (response.status === 200) {
+            return setMapInfo({
+                ...mapInfo,
+                allCommentsForMap: response.data.comments,
+            });
+        } else {
+            console.error("Unexpected response:", response);
+        }
+    } catch (error) {
+        console.error("Error fetching comments:", error);
+    }
+  };
+
+  mapInfo.createMapComment = async function (mapId, commenterUserName, content){
+    console.log("creating map comment...");
+    console.log(mapId, commenterUserName, content);
+    if (!mapId || !commenterUserName || !content){
+      return setMapInfo({
+        ...mapInfo,
+        allCommentsForMap: [],
+    });
+    }
+    const response = api.createMapComment(mapId, commenterUserName, content);
+    mapInfo.getMapById(mapId);
+
+    console.log(mapInfo.currentMap);
+}
   return (
     <MapContext.Provider value={{ mapInfo }}>{children}</MapContext.Provider>
   );

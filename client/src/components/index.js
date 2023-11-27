@@ -47,6 +47,8 @@ import MapDetailTopBar from './appbars/MapDetailTopBar';
 
 import Warning from './screens/Warning';
 
+import MapCommentSideBox from './appbars/MapCommentSideBox';
+import MapComment from './appbars/MapComment';
 /*
     This is a module of import/export components
 */
@@ -91,5 +93,7 @@ export {
     DeleteCommentModal,
     DeleteSubCommModal,
     MapDetailTopBar,
-    Warning
+    Warning,
+    MapCommentSideBox, 
+    MapComment, 
 }
