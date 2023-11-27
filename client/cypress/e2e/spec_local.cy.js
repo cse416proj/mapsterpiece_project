@@ -100,8 +100,7 @@ describe('Mapsterpiece local tests', () => {
     cy.get('input[name = "password').clear('ThisIsAPassword');
     cy.get('input[name = "password').type('ThisIsAPassword');
     cy.get('button[type = "submit"]').click();
-    // cy.wait(1000);
-    // cy.get('#auth-alert').should('contain', 'Login success! Now redirecting...')
+    cy.get('#auth-alert').should('contain', 'Login success! Now redirecting...')
     cy.wait(1000);
 
     cy.get('.CREATE').click();

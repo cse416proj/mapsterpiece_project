@@ -76,7 +76,7 @@ getPostById = async (req, res) => {
     if (err) {
       return res.status(500).json({ errorMessage: err.message });
     } else if (!post) {
-      return res.status(404).json({ errorMessage: "Post not found" });
+      return res.status(404).json({ errorMessage: "Post not found." });
     }
 
     return res.status(200).json(post);
