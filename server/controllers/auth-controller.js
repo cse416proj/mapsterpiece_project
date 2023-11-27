@@ -155,9 +155,114 @@ registerUser = async (req, res) => {
     }
 }
 
+findUserByEmail = async (req, res) => {
+    try {
+        const { email } = req.params;
+
+        if (!email) {
+            return res
+                .status(400)
+                .json({ errorMessage: "Please enter email." });
+        }
+
+        const emailPattern = XRegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$');
+        if(!XRegExp.test(email, emailPattern)) {
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "Invalid email address. Please re-enter with a valid one."
+                });
+        }
+
+        const existingUser = await User.findOne({ email: email });
+        if (!existingUser) {
+            console.log('no such email')
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "Non-exist email. Please register with this email or re-enter correct one."
+                })
+        }
+
+        return res.status(200).json({
+            success: true,
+            user: existingUser
+        })
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
+resetPassword = async (req, res) => {
+    try {
+        const { userId, newPassword, confirmNewPassword } = req.body;
+        
+        if(!userId){
+            return res
+                .status(401)
+                .json({ errorMessage: "User ID does not exist." });
+        }
+
+        if(!newPassword || !confirmNewPassword){
+            return res
+                .status(401)
+                .json({ errorMessage: "Please enter all fields to reset password." });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res
+                .status(401)
+                .json({
+                    errorMessage: "User not found from given email."
+                })
+        }
+
+        if(newPassword !== confirmNewPassword){
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "New password should match with confirm new password."
+                })
+        }
+
+        const matchOldPw = await bcrypt.compare(newPassword, user.passwordHash);
+        if (matchOldPw) {
+            return res
+                .status(401)
+                .json({
+                    errorMessage: "New Password should not be same as your old password."
+                })
+        }
+
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+        const passwordHash = await bcrypt.hash(newPassword, salt);
+        console.log("passwordHash: " + passwordHash);
+
+        user.passwordHash = passwordHash;
+
+        user.save().then(() => {
+            return res.status(200).json({
+                message: "Password has been resetted successfully!",
+                user: user
+            });
+        })
+        .catch((err) => {
+            return res.status(500).json({ errorMessage: err.message });
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
 module.exports = {
     getLoggedIn,
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    findUserByEmail,
+    resetPassword
 }

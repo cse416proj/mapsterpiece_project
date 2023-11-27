@@ -1,13 +1,15 @@
-import { useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { useState, useContext, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Box, Typography, TextField, Button, Alert, Checkbox } from '@mui/material';
+import CheckIcon from '@mui/icons-material/Check';
 
 import AuthContext from '../../../contexts/auth';
-import { AuthErrorModal } from '../../index';
+import ValidatePassword from './password/ValidatePassword';
 
 function Register(){
     const { auth } = useContext(AuthContext); 
-    // Form contains 4 following fields
+    const navigate = useNavigate();
+
     const [form, setForm] = useState({
         firstName: '',
         lastName: '',
@@ -17,24 +19,69 @@ function Register(){
         confirmPassword: '',
     });
 
-    // Use map to render 4 text fields
+    const [showPasswordReq, setShowPasswordReq] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [alert, setAlert] = useState(null);
+
+    useEffect(() => {
+        if(auth?.errMsg){
+            setAlert(<Alert variant="filled" severity="error" id='auth-alert' style={{ margin: '2.5vh auto 0 auto'}}>
+                {auth.errMsg}
+            </Alert>);
+        }
+    }, [auth?.errMsg])
+
+    useEffect(() => {
+        if(auth?.msg){
+            setAlert(<Alert icon={<CheckIcon fontSize="inherit" />} variant="filled" severity="success" id='auth-alert'>
+                {auth.msg}
+            </Alert>);
+            setTimeout(() => {
+                navigate('/');
+            }, 1000);
+        }
+    }, [auth?.msg])
+
     const textFieldsProps = [
-        { name: 'firstName', label: 'First Name', value: form.firstName },
-        { name: 'lastName', label: 'Last Name', value: form.lastName },
         { name: 'userName', label: 'User Name', value: form.userName },
         { name: 'email', label: 'Email', value: form.email },
         { name: 'password', label: 'Password', value: form.password },
-        { name: 'confirmPassword', label: 'confirm Password', value: form.confirmPassword }
+        { name: 'confirmPassword', label: 'Confirm Password', value: form.confirmPassword }
     ]
 
+    const handleDisplayPassword = () => {
+        setShowPassword(!showPassword);
+    }
+
+    const handleShowPasswordReq = () => {
+        setShowPasswordReq(true);
+    }
+
+    const handleHidePasswordReq = () => {
+        setShowPasswordReq(false);
+    }
+
     const textFields = textFieldsProps.map((field) => {
+        if(field.name === 'password' || field.name === 'confirmPassword'){
+            return <TextField
+                required
+                key={field.name}
+                name={field.name}
+                label={field.label}
+                value={field.value}
+                type={(showPassword) ? "text" : "password"}
+                onChange={updateForm}
+                onFocus={handleShowPasswordReq}
+                onBlur={handleHidePasswordReq}
+            />
+        }
         return <TextField
+            required
             key={field.name}
             name={field.name}
             label={field.label}
             value={field.value}
             onChange={updateForm}
-            required
         />;
     });
 
@@ -65,6 +112,7 @@ function Register(){
     }
     return(
         <Box className='form-content'>
+            { alert }
             <Typography
                 id='signup-title'
                 variant='h2'
@@ -75,22 +123,33 @@ function Register(){
                 id='signup-form'
                 onSubmit={handleSubmit}
             >
-                <Box id='signup-textfield-container'>
-                    { textFields }
+                <Box>
+                    <Box id='signup-textfield-container'>
+                        <Box className='flex-row' style={{ width: '100%', justifyContent: 'space-between'}}>
+                            <TextField required name='firstName' label='First Name' value={form.firstName} onChange={updateForm} style={{ width: '55%'}}/>
+                            <TextField required name='lastName' label='Last Name' value={form.lastName} onChange={updateForm}/>
+                        </Box>
+                        { textFields }
+                    </Box>
+                    {
+                        (showPasswordReq || showPassword) ?
+                            <ValidatePassword password={form?.password} confirmPassword={form?.confirmPassword}/> :
+                            null
+                    }
                 </Box>
-                <Typography id='signup-redirect-prompt' variant='p'>
-                    Already has an account? Login <Link id='redirect' to='/login'>here</Link>.
-                </Typography>
-                
-                <Button
-                    id='filled-btn'
-                    type='submit'
-                    variant='contained'
-                >
+                <Box className='flex-column' style={{ alignSelf: 'flex-start', marginLeft: '32.5vw' }}>
+                    <Box className='flex-row' id='checkbox' style={{ marginLeft: '0', marginBottom: '1vh' }}>
+                        <Checkbox onChange={handleDisplayPassword}/>
+                        <Typography id='checkbox-prompt' variant='p'>View password</Typography>
+                    </Box>
+                    <Typography id='signup-redirect-prompt' variant='p' style={{ marginLeft: '0'}}>
+                        Already has an account? Login <Link id='redirect' to='/login'>here</Link>.
+                    </Typography>
+                </Box>
+                <Button id='filled-btn' type='submit' variant='contained'>
                     Create Account
                 </Button>
             </form>
-            <AuthErrorModal/>
         </Box>
     )
 }

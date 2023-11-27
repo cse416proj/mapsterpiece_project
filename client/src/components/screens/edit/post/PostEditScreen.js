@@ -9,8 +9,6 @@ import PostContext from '../../../../contexts/post';
 export default function PostEditScreen() {
     const { postInfo } = useContext(PostContext);
 
-    console.log(postInfo);
-
     // set up navigation to visit other link
     const navigate = useNavigate();
 

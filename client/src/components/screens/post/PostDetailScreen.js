@@ -46,14 +46,6 @@ export default function PostDetailScreen() {
     }
   }, [postInfo.currentPost]);
 
-  useEffect(() => {
-    postInfo.getPostById(postId);
-  }, []);
-
-  useEffect(() => {
-    postInfo.getCommentsByCommentIds(postInfo.currentPost?.comments);
-  }, [postInfo.currentPost]);
-
   function handleAllPosts() {
     store.setCurrentView("ALL_POSTS");
     navigate("/community");
@@ -103,7 +95,7 @@ export default function PostDetailScreen() {
     // }
   }
 
-  const isLoggedInUser = auth.user && auth.user.userName === postInfo.currentPost.ownerUserName;
+  const isLoggedInUser = auth.user && postInfo.currentPost && auth.user.userName === postInfo.currentPost.ownerUserName;
 
   function renderButton(){
     if(isLoggedInUser){
@@ -155,7 +147,7 @@ export default function PostDetailScreen() {
             <Typography>By {postInfo.currentPost.ownerUserName}</Typography>
             <Box className='flex-row' id='tags-container'>
               {
-                (tags.length === 0) ?
+                (tags && tags.length === 0) ?
                   null :
                   <>
                     <Typography id='post-tags-text'>Tags:</Typography>

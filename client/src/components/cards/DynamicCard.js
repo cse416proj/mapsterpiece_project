@@ -6,6 +6,7 @@ import UserCard from "./UserCard";
 import MapCard from "./MapCard";
 import PostCard from "./PostCard";
 
+import MapContext from "../../contexts/map";
 import { PostContext } from "../../contexts/post";
 import { UserContext } from "../../contexts/user";
 
@@ -13,6 +14,7 @@ import GlobalStoreContext from "../../contexts/store/index";
 
 export default function DynamicCard({ userData, mapData, postData }) {
   const navigate = useNavigate();
+  const { mapInfo } = useContext(MapContext);
   const { postInfo } = useContext(PostContext);
   const { userInfo } = useContext(UserContext);
   const { store } = useContext(GlobalStoreContext);
@@ -27,8 +29,13 @@ export default function DynamicCard({ userData, mapData, postData }) {
   function handleMapCardClick(event) {
     event.stopPropagation();
     event.preventDefault();
-    // store.setCurrentMap(payload.mapData)
-    navigate("/map-detail"); // ##temporary##
+    mapInfo.setCurrentMap(mapData);
+    if(mapData.isPublished){
+      navigate(`/map-detail/${mapData._id}`);
+    }
+    else{
+      navigate(`/map-edit/${mapData._id}`);
+    }
   }
 
   function handlePostCardClick(event) {
@@ -48,7 +55,8 @@ export default function DynamicCard({ userData, mapData, postData }) {
   const handleEditMap = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    navigate('/map-edit');
+    mapInfo.setCurrentMap(mapData);
+    navigate(`/map-edit/${mapData._id}`);
   }
 
   function handleDelete(event) {

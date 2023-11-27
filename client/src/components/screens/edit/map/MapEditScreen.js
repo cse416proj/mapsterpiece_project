@@ -1,14 +1,34 @@
+import React, { useContext, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+
 import { Box } from '@mui/material';
 
 import MapEditTopBar from '../../../appbars/MapEditTopBar';
 import MapEditSideBar from '../../../appbars/MapEditSideBar';
 
 import MapScreen from '../../map/display/MapScreen';
+import DeleteMapModal from '../../../modals/DeleteMapModal';
+import MapContext from "../../../../contexts/map";
+import AuthContext from "../../../../contexts/auth";
+
+import { Warning } from "../../../index";
 
 export default function MapEditScreen() {
+  const { mapInfo } = useContext(MapContext);
+  const { auth } = useContext(AuthContext);
+  const { mapId } = useParams();
+
+  useEffect(() => {
+    mapInfo?.getMapById(mapId);
+  }, [mapId]);
+
+  if(!auth.user){
+    return <Warning/>
+  }
+
   return (
     <Box>
-      <MapEditTopBar />
+      <MapEditTopBar/>
       <Box
         className="map-screen-container"
         style={{ 
@@ -21,6 +41,7 @@ export default function MapEditScreen() {
         <MapScreen/>
         <MapEditSideBar/>
       </Box>
+      <DeleteMapModal/>
     </Box>
   );
 }

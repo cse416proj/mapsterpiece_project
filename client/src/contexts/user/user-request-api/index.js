@@ -1,10 +1,11 @@
-import axios from "axios";
+import { server_base_url } from '../../../config';
+
+import axios from 'axios';
 axios.defaults.withCredentials = true;
 
 const api = axios.create({
-  baseURL: "http://mapsterpiece.online:4000/user",
-  // baseURL: "http://localhost:4000/user"
-});
+  baseURL: `${server_base_url}/user`,
+})
 
 export const getUserById = (userId) => {
   return api.get(`/user/${userId}`);

@@ -1,9 +1,10 @@
+import { server_base_url } from '../../../config';
+
 import axios from 'axios';
 axios.defaults.withCredentials = true;
 
 const api = axios.create({
-  baseURL: 'http://mapsterpiece.online:4000/map',
-    // baseURL: 'http://localhost:4000/map',
+  baseURL: `${server_base_url}/map`,
 })
 
 export const createMap = (ownerUserName, title, fileFormat, mapContent, tags) => {
@@ -28,11 +29,31 @@ export const getMapById = (mapId) =>{
   return api.get(`/get/${mapId}`);
 }
 
+export const publishMapById = (mapId) =>{
+  return api.put(`/publishMap/${mapId}`);
+}
+
+export const unpublishMapById = (mapId) =>{
+  return api.put(`/unpublishMap/${mapId}`);
+}
+
+export const getAllPublishedMapsFromGivenUser = (userId) =>{
+  return api.get(`/allPublicMaps/${userId}`);
+}
+
+export const updateMapById = (mapId, map) => {
+  return api.put(`/updateMap/${mapId}`, map);
+}
+
 const apis = {
   createMap,
   deleteMapById,
   getAllUserMaps,
-  getMapById, 
+  getMapById,
+  publishMapById,
+  unpublishMapById,
+  getAllPublishedMapsFromGivenUser,
+  updateMapById
 };
 
 export default apis;

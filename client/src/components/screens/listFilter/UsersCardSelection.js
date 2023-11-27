@@ -8,18 +8,19 @@ function UsersCardSection({ data, search }) {
 
   // update filteredData when data/search property changes
   useEffect(() => {
-    if(data){
-      const result = data.filter((pair) => {
-        const searchUser = search.toLowerCase();
-        return (
-          searchUser === '' ||
-          pair.userName.toLowerCase().includes(searchUser) ||
-          pair.email.toLowerCase().includes(searchUser) ||
-          pair._id.$oid.toLowerCase().includes(searchUser)
-        );
-      });
-      setFilteredData(result);
+    if(!data){
+      return;
     }
+    const result = data.filter((pair) => {
+      const searchUser = search.toLowerCase();
+      return (
+        searchUser === '' ||
+        pair.userName.toLowerCase().includes(searchUser) ||
+        pair.email.toLowerCase().includes(searchUser) ||
+        pair._id.$oid.toLowerCase().includes(searchUser)
+      );
+    });
+    setFilteredData(result);
   }, [data, search]);
   
   return (

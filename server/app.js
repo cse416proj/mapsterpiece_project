@@ -8,11 +8,11 @@ const app = express()
 
 // set up middleware
 app.use(cors({
-    origin: ["http://localhost:3000", "http://mapsterpiece.online"],
+    origin: ["http://localhost:3000", "http://mapsterpiece.online", "https://mapsterpiece-project.vercel.app"],
     credentials: true
 }))
 app.use(cookieParser())
-app.use(express.json())
+app.use(express.json({ limit: "100MB" }));
 app.use(express.urlencoded({ extended: true }))
 
 // set up router as middleware
