@@ -25,33 +25,41 @@ createMap = async (req, res) => {
       .json({ errorMessage: "Please enter all required fields." });
   }
 
+  const allowProperties = [
+    "NAME_0",
+    "NAME_1",
+    "NAME_2",
+    "NAME_3",
+    "name_0",
+    "name_1",
+    "name_2",
+    "name_3",
+    "ID_0",
+    "ID_1",
+    "ID_2",
+    "ID_3",
+    "name",
+  ];
+
   const features = mapContent.features;
+  let nameListUpper = ["NAME_0", "NAME_1", "NAME_2", "NAME_3"];
   let featuresFiltered = [];
 
-  // use regex to parse properties we want
-  const nameRegex = /^NAME(_[0-4])?$/i;
-
-  if(!features){
-    return res
-      .status(400)
-      .json({ errorMessage: "Feature does not exist." });
-  }
-
   for (let i = 0; i < features.length; i++) {
-    const currFeature = features[i];
-    if(currFeature.properties) {
-      let newProperties = {}
-      const propKeys = Object.keys(currFeature.properties);
-      const newPropKeys = propKeys.filter((property) => (nameRegex.test(property)))
-      
-      // keep properties we want
-      newPropKeys.forEach((property) => {
-        newProperties[property.toLowerCase()] = currFeature.properties[property];
+    if (features[i].properties) {
+      Object.keys(features[i].properties).forEach((property) => {
+        if (!allowProperties.includes(property))
+          delete features[i].properties[property];
+        else {
+          if (nameListUpper.includes(property)) {
+            features[i].properties[property.toLowerCase()] =
+              features[i].properties[property];
+            delete features[i].properties[property];
+          }
+        }
       });
-      currFeature.properties = newProperties;
     }
-
-    featuresFiltered[i] = currFeature;
+    featuresFiltered[i] = features[i];
   }
 
   // create map
