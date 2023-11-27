@@ -21,9 +21,6 @@ export default function MapCommentSideBox() {
         mapInfo.getMapById(mapId);
     }, []);
 
-    // console.log(mapInfo?.map?.isPublished);
-    // console.log(mapId);
-
     useEffect(() => {
         if(mapInfo.map){
           mapInfo.getAllCommentsFromPublishedMap(mapId);
@@ -60,7 +57,6 @@ export default function MapCommentSideBox() {
     };
    
     const handleSubmitComment = () => {
-        console.log(mapInfo.map._id);
         const mapId = mapInfo.map._id;
         if (mapId && auth?.user?.userName && commentInput !== "") {
           mapInfo.createMapComment(mapId, auth?.user?.userName, commentInput);
