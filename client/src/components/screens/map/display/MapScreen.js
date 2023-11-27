@@ -51,14 +51,27 @@ function MapScreen() {
       return;
     }
 
-    const individualProperties = mapContentRef?.current[0]?.properties;
-    let name = individualProperties.ID_3
+    let max = -1;
+
+    for (const obj of mapContentRef?.current) {
+      const idNums = Object.keys(obj.properties)
+        .filter((key) => key.includes("ID"))
+        .map((id) => parseInt(id.charAt(3)));
+
+      const currMax = Math.max(...idNums);
+
+      if (!isNaN(currMax)) {
+        max = Math.max(max, currMax);
+      }
+    }
+
+    let name = (max === 3)
       ? "name_3"
-      : individualProperties.ID_2
+      : (max === 2)
       ? "name_2"
-      : individualProperties.ID_1
+      : (max === 1)
       ? "name_1"
-      : individualProperties.ID_0
+      : (max === 0)
       ? "name_0"
       : "name";
     
@@ -112,8 +125,19 @@ function MapScreen() {
       return;
     }
 
+    console.log(layer.feature.properties);
+    console.log(layer.feature.properties[regionNameLevel]);
+
+    const name = (layer.feature.properties[regionNameLevel]) ?
+                  layer.feature.properties[regionNameLevel] :
+                  (
+                    (layer.feature.properties["name_0"]) ? 
+                      layer.feature.properties["name_0"] :
+                      layer.feature.properties["name"]
+                  );
+
     layer
-    .bindTooltip(layer.feature.properties[regionNameLevel], {
+    .bindTooltip(name, {
       permanent: true,
     })
     .openTooltip();
