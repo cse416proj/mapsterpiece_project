@@ -152,7 +152,6 @@ function GlobalStoreContextProvider(props) {
           accountMarkedForDeletion: payload,
         }));
       case GlobalStoreActionType.MARK_SUBCOMMENT_FOR_DELETION: 
-      console.log("call global store action type");
         return setStore((prevStore)=>({
           ...prevStore, 
           currentModal: CurrentModal.DELETE_SUBCOMMENT_MODAL, 
@@ -233,7 +232,6 @@ function GlobalStoreContextProvider(props) {
   };
 
   store.markSubcommentForDeletion = function (subcommentData){
-    console.log(subcommentData);
     storeReducer({
       type: GlobalStoreActionType.MARK_SUBCOMMENT_FOR_DELETION,
       payload: subcommentData,
@@ -241,7 +239,6 @@ function GlobalStoreContextProvider(props) {
   }
 
   store.getData = function (currScreen) {
-    console.log();
     const screenDataDict = {
       ALL_USERS: store.allUsers,
       ALL_MAPS: store.allMaps,

@@ -25,6 +25,7 @@ export function MapContextProvider({children}){
     errorMessage: "",
     allMapsByUser: null,
     currentRegionColor: "#fff",
+    allCommentsForMap: [],
     // download: false,
     // downloadFormat: ''
   });
@@ -388,6 +389,55 @@ export function MapContextProvider({children}){
   //       })
   //   }
 
+
+  mapInfo.getAllCommentsFromPublishedMap = async function (mapId) {
+    try {
+        if (!mapInfo.map || !mapId || !auth.user) {
+            return setMapInfo({
+                ...mapInfo,
+                allCommentsForMap: [],
+            });
+        }
+        // console.log("mapId 580", mapId);
+        // console.log(mapInfo.map);
+
+        const map = await api.getMapById(mapId);
+        if(!map.data.map.isPublished){
+            return setMapInfo({
+                ...mapInfo,
+                allCommentsForMap: [],
+            });
+        }
+
+        const response = await api.getAllCommentsFromPublishedMap(mapId);
+
+        if (response.status === 200) {
+            return setMapInfo({
+                ...mapInfo,
+                allCommentsForMap: response.data.comments,
+            });
+        } else {
+            console.error("Unexpected response:", response);
+        }
+    } catch (error) {
+        console.error("Error fetching comments:", error);
+    }
+  };
+
+  mapInfo.createMapComment = async function (mapId, commenterUserName, content){
+    console.log("creating map comment...");
+    console.log(mapId, commenterUserName, content);
+    if (!mapId || !commenterUserName || !content){
+      return setMapInfo({
+        ...mapInfo,
+        allCommentsForMap: [],
+    });
+    }
+    const response = api.createMapComment(mapId, commenterUserName, content);
+    mapInfo.getMapById(mapId);
+
+    console.log(mapInfo.map);
+}
   return (
     <MapContext.Provider value={{ mapInfo }}>{children}</MapContext.Provider>
   );
