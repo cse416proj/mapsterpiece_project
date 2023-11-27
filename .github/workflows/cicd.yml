@@ -5,7 +5,7 @@ name: CI/CD
 
 on:
   push:
-    branches: [ "cicd-new-branch" ]
+    branches: [ "main" ]
 
 jobs:
   backend:
