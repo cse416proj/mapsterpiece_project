@@ -72,7 +72,7 @@ export default function CommunityScreen() {
     if(listCard){
       return listCard;
     }
-    return <Typography variant='h5' style={{ marginTop: '1.5vh' }}>Select Maps/Posts/Users on the right.</Typography>
+    return <Typography variant='h5' style={{ marginTop: '1.5vh' }}>Select Maps/Posts/Users on the left.</Typography>
   }
 
   return (

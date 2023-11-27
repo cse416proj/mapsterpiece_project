@@ -136,3 +136,27 @@ describe("POST /login fail", () => {
     expect(response.status).toBe(400);
   });
 });
+
+describe("POST map fail", () => {
+  it("responds with 401 on unauthorized access.", async() => {
+    const validRequestBody = {
+      ownerUserName: "apple",
+      title: "map title",
+      fileFormat: "GeoJSON",
+      mapContent: {
+        "type": "FeatureCollection",
+        "features": []
+      },
+      tags: [
+        "my tag"
+      ]
+    }
+
+    const response = await request(app)
+        .post("/map/create")
+        .send(validRequestBody);
+    console.log(response)
+    expect(response.status).toBe(401);
+
+  })
+});
