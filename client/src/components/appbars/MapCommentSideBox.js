@@ -22,10 +22,10 @@ export default function MapCommentSideBox() {
     }, []);
 
     useEffect(() => {
-        if(mapInfo.map){
+        if(mapInfo.currentMap){
           mapInfo.getAllCommentsFromPublishedMap(mapId);
         }
-      }, [mapInfo.map]);
+      }, [mapInfo.currentMap]);
 
     const boxStyle = {
         display: 'flex',
@@ -57,7 +57,7 @@ export default function MapCommentSideBox() {
     };
    
     const handleSubmitComment = () => {
-        const mapId = mapInfo.map._id;
+        const mapId = mapInfo.currentMap._id;
         if (mapId && auth?.user?.userName && commentInput !== "") {
           mapInfo.createMapComment(mapId, auth?.user?.userName, commentInput);
           setInput("");
@@ -82,7 +82,7 @@ export default function MapCommentSideBox() {
         handleSubmitComment();
     }
 
-    if (!mapInfo || !mapInfo.map) {
+    if (!mapInfo || !mapInfo.currentMap) {
         return null;
     }
 

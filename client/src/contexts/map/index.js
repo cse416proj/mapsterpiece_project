@@ -391,14 +391,14 @@ export function MapContextProvider({children}){
 
   mapInfo.getAllCommentsFromPublishedMap = async function (mapId) {
     try {
-        if (!mapInfo.map || !mapId || !auth.user) {
+        if (!mapInfo.currentMap || !mapId || !auth.user) {
             return setMapInfo({
                 ...mapInfo,
                 allCommentsForMap: [],
             });
         }
         // console.log("mapId 580", mapId);
-        // console.log(mapInfo.map);
+        // console.log(mapInfo.currentMap);
 
         const map = await api.getMapById(mapId);
         if(!map.data.map.isPublished){
@@ -435,7 +435,7 @@ export function MapContextProvider({children}){
     const response = api.createMapComment(mapId, commenterUserName, content);
     mapInfo.getMapById(mapId);
 
-    console.log(mapInfo.map);
+    console.log(mapInfo.currentMap);
 }
   return (
     <MapContext.Provider value={{ mapInfo }}>{children}</MapContext.Provider>
