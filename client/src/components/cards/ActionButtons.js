@@ -9,7 +9,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
-import {EmailIcon, FacebookIcon, EmailShareButton, FacebookShareButton} from "react-share";
+import {
+  EmailIcon,
+  FacebookIcon,
+  EmailShareButton,
+  FacebookShareButton,
+  RedditShareButton,
+  RedditIcon
+} from "react-share";
 
 import AuthContext from "../../contexts/auth";
 // import UserContext from "../../contexts/user";
@@ -97,45 +104,6 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
     setAnchorEl(event.currentTarget);
   };
 
-  const handleEmail = (event) => {
-    event.stopPropagation();
-    event.preventDefault();
-    closeMenu();
-  };
-  const handleFacebook = (event) => {
-    event.stopPropagation();
-    event.preventDefault();
-    closeMenu();
-  };
-
-  function renderDynamicShareMenuItems(){
-    let actions = [];
-
-    const emailShare = {icon: <EmailIcon/>, name: "E-Mail", handler: handleEmail };
-    const facebookShare = {icon: <FacebookIcon/>, name: "Facebook", handler: handleFacebook };
-
-    if(type === "post"){
-      actions = [emailShare, facebookShare]
-    }
-    else{
-
-      if(!isPublished){
-        actions = [emailShare, facebookShare]
-      }
-      else{
-        actions = [emailShare, facebookShare]
-      }
-    }
-
-    return actions.map((action) => {
-      return (
-          <MenuItem key={action.name} onClick={action.handler}>
-            {action.icon}
-            <Typography id='action-button-text'>{action.name}</Typography>
-          </MenuItem>
-      );
-    });
-  }
 
   return (
     <CardActions className="cardActions">
@@ -153,18 +121,20 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
         <ShareIcon id={`${type}-action-icon`} />
         <Typography id={`${type}-action-button-text`}>share {type}</Typography>
         <Menu
-            anchorEl={anchorEl}
             open={open}
+            anchorEl={anchorEl}
             onClose={closeMenu}
             MenuListProps={{
               "aria-labelledby": "basic-button",
             }}
         >
-          { renderDynamicShareMenuItems() }
+          <MenuItem>
+            <EmailShareButton url={window.location.href}><EmailIcon><Typography id='action-button-text'>E-Mail</Typography></EmailIcon></EmailShareButton>
+            <FacebookShareButton url={window.location.href} hashtag={"#Mapsterpiece"}><FacebookIcon>Facebook</FacebookIcon></FacebookShareButton>
+            <RedditShareButton url={window.location.href}><RedditIcon>Reddit</RedditIcon></RedditShareButton>
+          </MenuItem>
         </Menu>
       </Box>
-      {/*<EmailShareButton url={window.location.href}>Bro</EmailShareButton>*/}
-      {/*/!*<EmailShareButton url={}*!/*/}
       {
         (!isLoggedInUser) ?
           null :
