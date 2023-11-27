@@ -95,6 +95,7 @@ export default function MapDetailTopBar(){
         event.stopPropagation();
         event.preventDefault();
         mapInfo.unpublishMapById(mapId);
+        navigate(`/map-edit/${mapId}`);
     };
 
     function renderLikeButtons(){
