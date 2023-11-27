@@ -1,93 +1,88 @@
-import React, { useContext, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Box, Typography, Accordion, AccordionSummary} from '@mui/material';
-import MapContext from '../../contexts/map';
-import AuthContext from '../../contexts/auth';
+import React, { useContext, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { Box, Typography, Accordion, AccordionSummary } from "@mui/material";
+import MapContext from "../../contexts/map";
+import AuthContext from "../../contexts/auth";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
-import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 
+export default function MapComment(payload, index) {
+  const { mapInfo } = useContext(MapContext);
+  const { auth } = useContext(AuthContext);
+  const { mapId } = useParams();
 
+  useEffect(() => {
+    mapInfo.getMapById(mapId);
+  }, []);
 
-export default function MapComment(payload, index){
-    const { mapInfo }  = useContext(MapContext);
-    const { auth } = useContext(AuthContext);
-    const { mapId } = useParams();
-
-    // useEffect(() => {
-    //   mapInfo.getMapById(mapId);
-    // }, []);
-    // console.log("mapId 22", mapId);
-
-    // console.log(mapInfo.map);
-    // useEffect(() => {
-    //   if(mapInfo.map){
-    //     mapInfo.getAllCommentsFromPublishedMap(mapId);
-    //   }
-    // //   else{
-    // //     console.log(mapInfo.map);
-    // //   }
-    // }
-    // , [mapInfo.map]
-    // );
-
-    payload = payload.payload;
-    console.log(payload);
-
-    const deleteHandler = ()=>{
-        console.log("handle delete comment");
+  useEffect(() => {
+    if (mapInfo.map) {
+      mapInfo.getAllCommentsFromPublishedMap(mapId);
     }
+  }, [mapInfo.map]);
 
-    const handlePlusIconClick =  () => {
-        console.log("handle add subcomment");
-    }
+  payload = payload.payload;
 
+  const deleteHandler = () => {
+    console.log("handle delete comment");
+  };
 
-      return (
+  const handlePlusIconClick = () => {
+    console.log("handle add subcomment");
+  };
+
+  return (
     <div>
       <Accordion
         sx={{
-        //   bgcolor: "#ddebe4",
-            bgcolor: "white",
-            width: "92%",
-            marginBottom: "2vh",
-            marginTop: "2vh",
-            border: '2px solid #ddebe4',
-            left: "4%"
+          //   bgcolor: "#ddebe4",
+          bgcolor: "white",
+          width: "92%",
+          marginBottom: "2vh",
+          marginTop: "2vh",
+          border: "2px solid #ddebe4",
+          left: "4%",
         }}
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Box className="accordionSummary" sx={{ width: '90%', margin: 'auto' }}>
+          <Box
+            className="accordionSummary"
+            sx={{ width: "90%", margin: "auto" }}
+          >
             <Box>
-
               <Box className="commentUserInfo">
                 <AccountCircleIcon />
                 <Typography
-                  style={{textAlign: `start`, padding: `10px`, fontWeight: `bold`,}}>
+                  style={{
+                    textAlign: `start`,
+                    padding: `10px`,
+                    fontWeight: `bold`,
+                  }}
+                >
                   {payload.commenterUserName}
                 </Typography>
-                <DeleteForeverOutlinedIcon onClick={deleteHandler}/>
+                <DeleteForeverOutlinedIcon onClick={deleteHandler} />
               </Box>
 
-              <Typography
-                style={{textAlign: `start`, padding: `10px`,}}>
+              <Typography style={{ textAlign: `start`, padding: `10px` }}>
                 {payload.content}
               </Typography>
-
             </Box>
-            {(auth.loggedIn) ? <AddIcon onClick={handlePlusIconClick} /> : null}
+            {auth.loggedIn ? <AddIcon onClick={handlePlusIconClick} /> : null}
           </Box>
         </AccordionSummary>
         {/* more about subcomments */}
-       </Accordion>
-        {/* more about subcomments */}
+      </Accordion>
+      {/* more about subcomments */}
     </div>
   );
 }
 
- {/* <AccordionDetails
+{
+  /* <AccordionDetails
           sx={{
             bgcolor: "#b1d7c4",
           }}
@@ -95,11 +90,17 @@ export default function MapComment(payload, index){
           {payload?.subComments?.map((subcomment, index) => (
             <Subcomment key={`subcomment-${index}`} subcomment={subcomment} />
           ))}
-        </AccordionDetails> */}
-        {/* <DeleteCommentModal/> */}
-      
-      {/* input subcomment */}
-      {/* {addActive ? (
+        </AccordionDetails> */
+}
+{
+  /* <DeleteCommentModal/> */
+}
+
+{
+  /* input subcomment */
+}
+{
+  /* {addActive ? (
         <Box
           className="commentCard"
           sx={{
@@ -128,4 +129,5 @@ export default function MapComment(payload, index){
             </Button>
           </Paper>
         </Box>
-      ) : null} */}
+      ) : null} */
+}

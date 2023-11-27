@@ -396,7 +396,6 @@ export function MapContextProvider({children}){
         // console.log(mapInfo.map);
 
         const map = await api.getMapById(mapId);
-        console.log("map by id 563",map.data.map.isPublished);
         if(!map.data.map.isPublished){
             return setMapInfo({
                 ...mapInfo,
@@ -405,7 +404,6 @@ export function MapContextProvider({children}){
         }
 
         const response = await api.getAllCommentsFromPublishedMap(mapId);
-        console.log("response 593: ", response);
 
         if (response.status === 200) {
             return setMapInfo({
