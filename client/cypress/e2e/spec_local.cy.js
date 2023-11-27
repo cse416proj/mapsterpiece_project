@@ -19,7 +19,7 @@ describe('Mapsterpiece local tests', () => {
     cy.get('input[name = "confirmPassword"]').clear('ThisIsAnotherPassword');
     cy.get('input[name = "confirmPassword"]').type('ThisIsAnotherPassword');
     cy.get('button[type = "submit"]').click();
-    cy.get('#auth-alert').should('contain', 'Please enter the same password twice.');
+    cy.get('#auth-alert').should('be.visible').should('contain', 'Please enter the same password twice.');
   })
 
   it('login user fail', function() {
@@ -31,7 +31,7 @@ describe('Mapsterpiece local tests', () => {
     cy.get('input[name = "password"]').clear('ThisIsAnotherPassword');
     cy.get('input[name = "password"]').type('ThisIsAnotherPassword');
     cy.get('button[type = "submit"]').click();
-    cy.get('#auth-alert').should('contain', 'Wrong email or password provided.');
+    cy.get('#auth-alert').should('be.visible').should('contain', 'Wrong email or password provided.');
   })
 
   it('login-logout user success', function() {
@@ -44,6 +44,7 @@ describe('Mapsterpiece local tests', () => {
     cy.get('input[name = "password').clear('ThisIsAPassword');
     cy.get('input[name = "password').type('ThisIsAPassword');
     cy.get('button[type = "submit"]').click();
+    cy.wait(1000);
     cy.get('#auth-alert').should('contain', 'Login success! Now redirecting...')
     cy.wait(1000);
     cy.get('#initialsIcon').click();
@@ -73,6 +74,7 @@ describe('Mapsterpiece local tests', () => {
     cy.get('input[name = "password').clear('ThisIsAPassword');
     cy.get('input[name = "password').type('ThisIsAPassword');
     cy.get('button[type = "submit"]').click();
+    cy.wait(1000);
     cy.get('#auth-alert').should('contain', 'Login success! Now redirecting...')
     cy.wait(1000);
 
