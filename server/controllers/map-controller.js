@@ -28,7 +28,6 @@ createMap = async (req, res) => {
 
   // use regex to parse properties we want
   const nameRegex = /^NAME(_[0-4])?$/i;
-  const idRegex = /^ID(_[0-4])?$/i;
 
   if(!features){
     return res
@@ -41,7 +40,7 @@ createMap = async (req, res) => {
     if(currFeature.properties) {
       let newProperties = {}
       const propKeys = Object.keys(currFeature.properties);
-      const newPropKeys = propKeys.filter((property) => (nameRegex.test(property) || idRegex.test(property)))
+      const newPropKeys = propKeys.filter((property) => (nameRegex.test(property)))
       
       // keep properties we want
       newPropKeys.forEach((property) => {
@@ -52,8 +51,6 @@ createMap = async (req, res) => {
 
     featuresFiltered[i] = currFeature;
   }
-
-  console.log(featuresFiltered);
 
   // create map
   const newMap = new Map({

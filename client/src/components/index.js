@@ -9,6 +9,9 @@ import HomeScreen from './screens/home/HomeScreen';
 
 import Login from './screens/auth/Login';
 import Register from './screens/auth/Register';
+import ForgotPassword from './screens/auth/password/ForgotPassword';
+import ResetPassword from './screens/auth/password/ResetPassword';
+import PasswordScreen from './screens/auth/PasswordScreen';
 import AuthScreen from './screens/auth/AuthScreen';
 import AuthErrorModal from './modals/AuthErrorModal';
 import DeletePostModal from './modals/DeletePostModal';
@@ -42,6 +45,8 @@ import MapEditTopBar from './appbars/MapEditTopBar';
 import MapEditSideBar from './appbars/MapEditSideBar';
 import MapDetailTopBar from './appbars/MapDetailTopBar';
 
+import Warning from './screens/Warning';
+
 /*
     This is a module of import/export components
 */
@@ -49,7 +54,10 @@ export {
     Hero,
     Login,
     NavBar,
-    Register, 
+    Register,
+    ForgotPassword,
+    ResetPassword,
+    PasswordScreen,
     Copyright,
     HomeScreen,
     AuthScreen,
@@ -82,5 +90,6 @@ export {
     MapEditSideBar,
     DeleteCommentModal,
     DeleteSubCommModal,
-    MapDetailTopBar
+    MapDetailTopBar,
+    Warning
 }

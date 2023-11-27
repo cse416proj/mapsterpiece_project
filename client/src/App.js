@@ -15,7 +15,7 @@ import { Box } from "@mui/material";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import { AppContextProvider } from './contexts';
-import { NavBar, HomeScreen, AuthScreen, Profile, CreateScreen, SearchScreen, CommunityScreen, PostDetailScreen, MapEditScreen, PostEditScreen, MaybeShowNavBar } from "./components";
+import { NavBar, HomeScreen, AuthScreen, PasswordScreen, Profile, CreateScreen, SearchScreen, CommunityScreen, PostDetailScreen, MapEditScreen, PostEditScreen, MaybeShowNavBar } from "./components";
 import MapDetailsScreen from './components/screens/map/MapDetailsScreen'
 
 function App() {
@@ -24,13 +24,15 @@ function App() {
       <AppContextProvider>
         <Box className="App">
           <MaybeShowNavBar>
-            <NavBar />
+            <NavBar/>
           </MaybeShowNavBar>
           
           <Routes>
             <Route path='/' element={<HomeScreen/>}></Route>
             <Route path='/register' element={<AuthScreen/>}></Route>
             <Route path='/login' element={<AuthScreen/>}></Route>
+            <Route path='/forgot-password' element={<PasswordScreen/>}></Route>
+            <Route path='/reset-password' element={<PasswordScreen/>}></Route>
             <Route path='/create' element={<CreateScreen/>}></Route>
             <Route path='/profile/:userId' element={<Profile/>}></Route>
             <Route path="/search/:userId" element={<SearchScreen/>}></Route>
