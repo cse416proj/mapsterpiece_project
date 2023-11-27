@@ -16,22 +16,22 @@ export default function MapComment(payload, index){
     const { auth } = useContext(AuthContext);
     const { mapId } = useParams();
 
-    useEffect(() => {
-      mapInfo.getMapById(mapId);
-    }, []);
+    // useEffect(() => {
+    //   mapInfo.getMapById(mapId);
+    // }, []);
     // console.log("mapId 22", mapId);
 
-    console.log(mapInfo.map);
-    useEffect(() => {
-      if(mapInfo.map){
-        mapInfo.getAllCommentsFromPublishedMap(mapId);
-      }
-    //   else{
-    //     console.log(mapInfo.map);
+    // console.log(mapInfo.map);
+    // useEffect(() => {
+    //   if(mapInfo.map){
+    //     mapInfo.getAllCommentsFromPublishedMap(mapId);
     //   }
-    }
-    , [mapInfo.map]
-    );
+    // //   else{
+    // //     console.log(mapInfo.map);
+    // //   }
+    // }
+    // , [mapInfo.map]
+    // );
 
     payload = payload.payload;
     console.log(payload);
