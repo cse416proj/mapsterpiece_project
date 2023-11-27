@@ -29,6 +29,9 @@ export default function ResetPassword({ form, setForm }){
             setAlert(<Alert icon={<CheckIcon fontSize="inherit" />} variant="filled" severity="success" id='auth-alert'>
                 {auth.msg}
             </Alert>);
+            setTimeout(() => {
+                navigate('/');
+            }, 1000);
         }
     }, [auth?.msg])
 

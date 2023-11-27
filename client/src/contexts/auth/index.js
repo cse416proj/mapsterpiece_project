@@ -296,6 +296,7 @@ function AuthContextProvider(props) {
       const response = await api.resetPassword(auth.lostPwUser?._id, newPassword, confirmNewPassword);
       console.log(response);
       if (response?.status === 200) {
+        auth.loginUser(auth.lostPwUser.email, newPassword);
         authReducer({
           type: AuthActionType.SET_MSG,
           payload: 'Password reset success! Now logging in...',
