@@ -51,29 +51,41 @@ describe('Mapsterpiece local tests', () => {
     cy.get('#logo').click();
   })
 
-  // it('dropdown menu test', ()=>{
-  //   cy.visit('http://localhost:3000');
-  //   cy.get('[data-testid="PersonIcon"]').click();
-  //   cy.get('.Mui-focusVisible').click();
-  //   cy.get('[data-testid="PersonIcon"]').click();
-  //   cy.get('.MuiList-root > [tabindex="-1"]').click();
-  //   cy.get('#logo').click();
-  // })
+  it('dropdown menu test', ()=>{
+    cy.visit('http://localhost:3000');
+    cy.get('#icon').click();
+    cy.get('li[tabindex="-1"]').click();
+    cy.url().should('include', '/login');
+    cy.get('#icon').click();
+    cy.get('li[tabindex="0"]').click();
+    cy.url().should('include', '/register');
+    cy.get('#logo').click();
+    cy.url().should('include', '/');
+  })
 
-  // it('user create map fail', ()=>{
-  //   cy.visit('http://localhost:3000');
-  //   cy.get('[style="margin-left: 2.5vw;"]').click();
-  //   cy.get('#\\:r1\\:').clear('b');
-  //   cy.get('#\\:r1\\:').type('bobDD@gmail.com');
-  //   cy.get('#\\:r3\\:').clear('T');
-  //   cy.get('#\\:r3\\:').type('ThisIsAPassword');
-  //   cy.get('#filled-btn').click();
-  //   cy.get('#home-navigation-card > :nth-child(1)').click();
-  //   cy.get('#title-input').clear('h');
-  //   cy.get('#title-input').type('hello map');
-  //   cy.get('#upload-button').click();
-  //   cy.get('#dialog-yes-button').click();
-  // })
+  it('user create map fail', ()=>{
+    cy.visit('http://localhost:3000');
+    cy.get('.login').click();
+    cy.url().should('include', '/login');
+
+    cy.get('input[name = "email"]').clear('bobDD@gmail.com');
+    cy.get('input[name = "email"]').type('bobDD@gmail.com');
+    cy.get('input[name = "password').clear('ThisIsAPassword');
+    cy.get('input[name = "password').type('ThisIsAPassword');
+    cy.get('button[type = "submit"]').click();
+    cy.get('#auth-alert').should('contain', 'Login success! Now redirecting...')
+    cy.wait(1000);
+
+    cy.get('.CREATE').click();
+    cy.url().should('include', '/create');
+    cy.wait(1000);
+
+    cy.get('#title-input').clear('hello map');
+    cy.get('#title-input').type('hello map');
+    cy.get('#upload-button').click();
+    cy.get('.modal-box')
+    cy.get('#dialog-yes-button').click();
+  })
 
 
   // it('user create post fail', ()=>{

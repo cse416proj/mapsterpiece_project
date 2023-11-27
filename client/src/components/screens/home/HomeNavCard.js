@@ -41,7 +41,7 @@ function HomeNavCard(){
         <Box id='home-navigation-card'>
             {
                 buttonInfo.map((info) =>{
-                    return <Button variant='contained' id='filled-btn' onClick={info.handler}>{info.text}</Button>
+                    return <Button variant='contained' id='filled-btn' onClick={info.handler} className={info.text}>{info.text}</Button>
                 })
             }
         </Box>
