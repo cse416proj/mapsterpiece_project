@@ -47,12 +47,13 @@ function Hero() {
           <span id="highlight">sharing & discussing map on forum?</span>
         </Typography>
         <Box className="flex-row">
-          <Button id="filled-btn" variant="contained" onClick={handleRegister}>
+          <Button id="filled-btn" variant="contained" className = "createAccount" onClick={handleRegister}>
             Create Account
           </Button>
           <Button
             id="filled-btn"
             variant="contained"
+            className = "login"
             style={{ marginLeft: "2.5vw" }}
             onClick={handleSignin}
           >
