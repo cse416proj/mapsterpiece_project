@@ -29,6 +29,10 @@ function MapScreen() {
   }, [mapInfo?.currentMap?.mapContent]);
 
   useEffect(() => {
+    if(!mapContentRef?.current){
+      return;
+    }
+
     const individualProperties = mapContentRef?.current[0]?.properties;
     let name = individualProperties.ID_3
       ? "name_3"
