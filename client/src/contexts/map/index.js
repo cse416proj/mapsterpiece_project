@@ -21,7 +21,6 @@ export function MapContextProvider({children}){
     tags: [],
     shpBuffer: null,
     dbfBuffer: null,
-    map: null,
     errorMessage: "",
     allMapsByUser: null,
     currentRegionColor: "#fff",
@@ -88,7 +87,7 @@ export function MapContextProvider({children}){
           // tags: [],
           // shpBuffer: null,
           // dbfBuffer: null,
-          map: payload,
+          currentMap: payload,
         }));
       case ActionType.SET_CURRENT_MAP:
         return setMapInfo((prevMapInfo) => ({
@@ -194,14 +193,14 @@ export function MapContextProvider({children}){
           reducer({
             type: ActionType.UPLOAD_MAP,
             payload: {
-              map: mapContent,
+              currentMap: mapContent,
             },
           });
         } else {
           reducer({
             type: ActionType.UPLOAD_MAP,
             payload: {
-              map: null,
+              currentMap: null,
               errorMessage: response.data.errorMessage,
             },
           });
@@ -330,7 +329,7 @@ export function MapContextProvider({children}){
     console.log("real map object: ", response.data.map);
     setMapInfo((prevMapInfo) => ({
       ...prevMapInfo,
-      map: response.data.map,
+      currentMap: response.data.map,
     }));
     return response.data.map;
   };
@@ -340,7 +339,7 @@ export function MapContextProvider({children}){
     oldMap.mapContent[index].properties.fillColor = color;
     setMapInfo((prevMapInfo) => ({
       ...prevMapInfo,
-      map: oldMap,
+      currentMap: oldMap,
     }));
   };
 
@@ -361,12 +360,12 @@ export function MapContextProvider({children}){
     }
     setMapInfo((prevMapInfo) => ({
       ...prevMapInfo,
-      map: oldMap,
+      currentMap: oldMap,
     }));
   };
 
   mapInfo.updateMapById = async function (mapId) {
-    const response = await api.updateMapById(mapId, mapInfo.map);
+    const response = await api.updateMapById(mapId, mapInfo.currentMap);
     if (response.status === 200) {
       await mapInfo.getAllUserMaps();
       navigate("/");
