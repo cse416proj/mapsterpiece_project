@@ -24,11 +24,6 @@ import { DeleteMapModal } from "../../index";
 import MapContext from "../../../contexts/map";
 
 export default function MapDetailsScreen() {
-  const { mapInfo } = useContext(MapContext);
-  const { mapId } = useParams();
-  useEffect(() => {
-    mapInfo?.getMapById(mapId);
-  }, [mapId]);
   return (
     <Box>
       <MapDetailOwnerTopBar />
