@@ -18,6 +18,7 @@ function MapScreen() {
   const [color, setColor] = useState("#fff");
   const colorRef = useRef();
   const [initialLoad, setInitialLoad] = useState(true);
+  const [regionNameLevel, setRegionNameLevel] = useState("");
 
   useEffect(() => {
     colorRef.current = mapInfo?.currentRegionColor;
@@ -26,6 +27,21 @@ function MapScreen() {
   useEffect(() => {
     mapContentRef.current = mapInfo?.currentMap?.mapContent;
   }, [mapInfo?.currentMap?.mapContent]);
+
+  useEffect(() => {
+    const individualProperties = mapContentRef?.current[0]?.properties;
+    let name = individualProperties.ID_3
+      ? "name_3"
+      : individualProperties.ID_2
+      ? "name_2"
+      : individualProperties.ID_1
+      ? "name_1"
+      : individualProperties.ID_0
+      ? "name_0"
+      : "name";
+    
+      setRegionNameLevel(name);
+  }, []);
 
   if (!mapInfo || !mapContentRef?.current) {
     return null;
@@ -40,22 +56,21 @@ function MapScreen() {
 
     // update mapcontent ref
     const index = mapContentRef.current.findIndex(
-      (region) => region.properties.name === layer.feature.properties.name
+      (region) => region.properties[regionNameLevel] === layer.feature.properties[regionNameLevel]
     );
     if (index !== -1) {
       mapContentRef.current[index].properties.fillColor = colorRef.current;
-    } 
+    }
 
     mapInfo.updateMapContent(index, colorRef.current);
   };
 
   const onEachFeature = (feature, layer) => {
     layer
-      .bindTooltip(layer.feature.properties.name, {
+      .bindTooltip(layer.feature.properties[regionNameLevel], {
         permanent: true,
       })
       .openTooltip();
-    layer.bindTooltip(layer.feature.properties.name).openTooltip();
     if (layer.feature.properties.fillColor) {
       layer.setStyle({
         fillColor: layer.feature.properties.fillColor,
