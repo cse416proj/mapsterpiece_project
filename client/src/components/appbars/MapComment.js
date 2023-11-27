@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Box, Typography, Accordion, AccordionSummary} from '@mui/material';
 import MapContext from '../../contexts/map';
 import AuthContext from '../../contexts/auth';
@@ -13,9 +14,21 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 export default function MapComment(payload, index){
     const { mapInfo }  = useContext(MapContext);
     const { auth } = useContext(AuthContext);
+    const { mapId } = useParams();
+
+    useEffect(() => {
+      mapInfo.getMapById(mapId);
+    }, []);
+    // console.log("mapId 22", mapId);
+
+    useEffect(() => {
+      if(mapInfo?.map?.map){
+        mapInfo.getAllCommentsFromPublishedMap(mapId);
+      }
+    }, [mapInfo?.map?.map]);
 
     payload = payload.payload;
-    console.log(payload);
+    // console.log(payload);
 
     const deleteHandler = ()=>{
         console.log("handle delete comment");

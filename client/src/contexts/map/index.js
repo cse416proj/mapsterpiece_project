@@ -432,35 +432,53 @@ export function MapContextProvider({children}){
         }
     }
 
-    mapInfo.publishMapById = async function(mapId){
+    mapInfo.publishMapById = async function (mapId) {
         console.log('publish map by id:');
         console.log(mapId);
-
-        const response = await api.publishMapById(mapId);
-
-        if(response.status === 201){
-            await mapInfo.getAllUserMaps();
-            navigate("/");
+    
+        try {
+            const response = await api.publishMapById(mapId);
+    
+            if (response.status === 201) {
+                await mapInfo.getAllUserMaps();
+                setMapInfo({
+                    ...mapInfo,
+                    allCommentsForMap: [],
+                    map: null,
+                });
+                navigate("/");
+            } else {
+                console.log(response);
+            }
+        } catch (error) {
+            console.error("Error publishing map:", error);
         }
-        else{
-            console.log(response);
-        }
-    }
+    };
 
-    mapInfo.unpublishMapById = async function(mapId){
+    mapInfo.unpublishMapById = async function (mapId) {
         console.log('unpublish map by id:');
         console.log(mapId);
-
-        const response = await api.unpublishMapById(mapId);
-
-        if(response.status === 201){
-            await mapInfo.getAllUserMaps();
-            navigate("/");
+    
+        try {
+            const response = await api.unpublishMapById(mapId);
+    
+            if (response.status === 201) {
+                await mapInfo.getAllUserMaps();
+                
+                navigate("/");
+                setMapInfo({
+                    ...mapInfo,
+                    allCommentsForMap: [],
+                    map: null,
+                });
+            } else {
+                console.log(response);
+            }
+        } catch (error) {
+            console.error("Error unpublishing map:", error);
         }
-        else{
-            console.log(response);
-        }
-    }
+    };
+    
 
     // mapInfo.cancelDownload = () => {
     //     reducer({
@@ -478,7 +496,7 @@ export function MapContextProvider({children}){
 
     mapInfo.getAllUserMaps = async function() {
         try {
-            console.log('mapInfo.getAllUserMaps');
+            // console.log('mapInfo.getAllUserMaps');
 
             const response = await api.getAllUserMaps();
             const mapIds = response.data.maps;
@@ -496,16 +514,25 @@ export function MapContextProvider({children}){
         }
     };
 
-    mapInfo.getMapById = async function(mapId) {
-        const response = await api.getMapById(mapId);
-        console.log("real map object: ", response.data.map);
-        setMapInfo( (prevMapInfo) => ({
-            ...prevMapInfo,
-            map: response.data,
-            })
-        );
-        return response.data.map;
-    }
+    mapInfo.getMapById = async function (mapId) {
+        try {
+            const response = await api.getMapById(mapId);
+    
+            if (response.status === 200) {
+                console.log("real map object: ", response.data.map);
+                setMapInfo((prevMapInfo) => ({
+                    ...prevMapInfo,
+                    map: response.data,
+                }));
+                return response.data.map;
+            } else {
+                console.log("Unexpected response:", response);
+            }
+        } catch (error) {
+            console.error("Error getting map by ID:", error);
+        }
+    };
+    
 
     mapInfo.getAllPublishedMapsFromGivenUser = async function(userId){
         const response = await api.getAllPublishedMapsFromGivenUser(userId);
@@ -522,22 +549,41 @@ export function MapContextProvider({children}){
         }
     }
 
-    mapInfo.getAllCommentsFromPublishedMap = async function (mapId){
-        if (mapId === undefined) {
-            return setMapInfo({
-              ...mapInfo,
-              allCommentsForMap: [],
-            });
-        }
-        console.log("mapId", mapId);
-        const response = await api.getAllCommentsFromPublishedMap(mapId);
+    mapInfo.getAllCommentsFromPublishedMap = async function (mapId) {
+        try {
+            if (mapId === undefined || mapInfo.map === null || mapId === null) {
+                return setMapInfo({
+                    ...mapInfo,
+                    allCommentsForMap: [],
+                });
+            }
+            console.log("mapId 560", mapId);
+            // console.log(mapInfo.map);
 
-        // console.log(response.data.comments);
-        return setMapInfo({
-            ...mapInfo, 
-            allCommentsForMap: response.data.comments,
-        });
-    }
+            const map = await api.getMapById(mapId);
+            console.log("map by id 563",map.data.map.isPublished);
+            if(!map.data.map.isPublished){
+                return setMapInfo({
+                    ...mapInfo,
+                    allCommentsForMap: [],
+                });
+            }
+
+            const response = await api.getAllCommentsFromPublishedMap(mapId);
+    
+            if (response.status === 200) {
+                return setMapInfo({
+                    ...mapInfo,
+                    allCommentsForMap: response?.data?.comments,
+                });
+            } else {
+                console.error("Unexpected response:", response);
+            }
+        } catch (error) {
+            console.error("Error fetching comments:", error);
+        }
+    };
+    
 
     mapInfo.createMapComment = async function (mapId, commenterUserName, content){
         console.log("creating map comment...");

@@ -2,6 +2,7 @@ const Map = require("../models/map-model");
 const User = require("../models/user-model");
 const auth = require("../auth");
 const Comment = require("../models/comment-model");
+const Subcomment = require("../models/subcomment-model")
 
 createMap = async (req, res) => {
     if (auth.verifyUser(req) === null) {
@@ -211,6 +212,7 @@ getAllMapsFromCurrentUser = async (req, res) => {
 }
 
 // helper function to update map publish status
+// maybe delete comments & subcomments when unpublishing a map 
 updateMapPublishStatusById = async (req, res, newPublishStatus) => {
     if (auth.verifyUser(req) === null) {
         return res.status(401).json({
@@ -400,7 +402,7 @@ getAllCommentsFromPublishedMap = async (req, res) => {
     }
 }
 
-const deleteMapCommentById = async (req, res) => {
+deleteMapCommentById = async (req, res) => {
     try {
         if (auth.verifyUser(req) === null) {
             return res.status(401).json({

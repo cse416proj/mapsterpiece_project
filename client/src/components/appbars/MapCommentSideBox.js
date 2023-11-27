@@ -23,7 +23,7 @@ export default function MapCommentSideBox() {
 
     useEffect(() => {
         if(mapInfo?.map?.map){
-          mapInfo.getAllCommentsFromPublishedMap(mapInfo.map.map._id);
+          mapInfo.getAllCommentsFromPublishedMap(mapId);
         }
       }, [mapInfo?.map?.map]);
 
@@ -87,7 +87,7 @@ export default function MapCommentSideBox() {
     }
 
     const hasComments = mapInfo.allCommentsForMap.length===0;
-    console.log(mapInfo.allCommentsForMap.length===0);
+    // console.log(mapInfo.allCommentsForMap.length===0);
 
     return (
         <Toolbar style={boxStyle}>
