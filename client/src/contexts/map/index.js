@@ -243,24 +243,30 @@ export function MapContextProvider({children}){
   }
 
   mapInfo.publishMapById = async function(mapId){
-    const response = await api.publishMapById(mapId);
-
-    if(response.status === 201){
-      mapInfo.updateMapList();
+    try{
+      const response = await api.publishMapById(mapId);
+      if(response.status === 201){
+        mapInfo.updateMapList();
+      }
     }
-    else{
-      console.log(response);
+    catch (error) {
+      if (error.response) {
+        console.log((error.response.status === 400) ? error.response.data.errorMessage : error.response.data);
+      }
     }
   }
 
   mapInfo.unpublishMapById = async function(mapId){
-    const response = await api.unpublishMapById(mapId);
-
-    if(response.status === 201){
-      mapInfo.updateMapList();
+    try{
+      const response = await api.unpublishMapById(mapId);
+      if(response.status === 201){
+        mapInfo.updateMapList();
+      }
     }
-    else{
-      console.log(response);
+    catch (error) {
+      if (error.response) {
+        console.log((error.response.status === 400) ? error.response.data.errorMessage : error.response.data);
+      }
     }
   }
 

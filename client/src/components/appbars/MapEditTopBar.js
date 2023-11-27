@@ -50,6 +50,7 @@ export default function MapEditTopBar() {
         event.stopPropagation();
         event.preventDefault();
         mapInfo.publishMapById(mapInfo.currentMap._id);
+        navigate(`/map-detail/${mapInfo.currentMap._id}`);
     };
 
     function handleSaveMap(){
