@@ -5,6 +5,6 @@ const auth = require('../auth');
 
 router.get('/allPosts', StoreController.getAllPosts);
 router.get('/allUsers', StoreController.getAllUsers);
-// router.get('/allMaps', StoreController.getAllPublishedMaps);
+router.get('/allMaps', StoreController.getAllMaps);
 
 module.exports = router;

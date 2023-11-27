@@ -26,7 +26,6 @@ function PostContextProvider(props) {
   const postReducer = (action) => {
     const { type, payload } = action;
     switch (type) {
-      // placeholder to be replace later on
       case PostActionType.SET_CURRENT_POST: {
         return setPostInfo({
           ...postInfo,
@@ -189,6 +188,9 @@ function PostContextProvider(props) {
     const response = await api.deleteSubCommById(subId);
     if(response.status === 200){
       const parentCommentId = postInfo.currentCommentIndex?._id;
+      if(!parentCommentId){
+        return;
+      }
 
       // obtain new subcomment list
       const subcommentResponse = await api.getSubcommsByParentCommsId(parentCommentId);

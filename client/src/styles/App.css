@@ -14,7 +14,10 @@
   --gray: #D9D9D9;
   --icon: #126469;
   --icon-hover: #208D94;
-  /* --warning: #FEF4E5; */
+  --error: #CF2F2F;
+  --error-hover: #A52020;
+  --warning: #EF7B25;
+  --warning-hover: #cb6a1f;
 }
 
 /*

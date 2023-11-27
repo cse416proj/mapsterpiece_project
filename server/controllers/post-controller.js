@@ -254,7 +254,7 @@ deleteSubCommById = async (req, res) => {
         await subcomment.remove();
 
         return res.status(200).json({
-          message: 'subComment deleted successfully!',
+          message: 'subcomment deleted successfully!',
           comment: subcomment,
         });
 

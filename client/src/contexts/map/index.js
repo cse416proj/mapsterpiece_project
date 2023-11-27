@@ -1,31 +1,23 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-import JSZip from "jszip";
-import * as shapefile from "shapefile";
-
 import api from "./map-request-api";
 import AuthContext from "../auth";
+import GlobalStoreContext from "../store";
 
 const MapContext = createContext();
 
-// define file extension
-const fileExtension = {
-  GeoJSON: "json",
-  Shapefiles: "shp/dbf/zip",
-  "Keyhole(KML)": "kml",
-};
-
-export function MapContextProvider({ children }) {
+export function MapContextProvider({children}){
   const { auth } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { store } = useContext(GlobalStoreContext);
 
+  const navigate = useNavigate();
+  
   const [mapInfo, setMapInfo] = useState({
     title: "",
     fileFormat: "",
     fileContent: "",
     currentMap: null,
-    // fakeFileContent: fakeMapContent,
     tags: [],
     shpBuffer: null,
     dbfBuffer: null,
@@ -38,39 +30,6 @@ export function MapContextProvider({ children }) {
     // downloadFormat: ''
   });
 
-  // // TO BE DELETED
-  // useEffect(() => {
-  //     console.log(mapInfo);
-  // }, [mapInfo]);
-
-  // re-run effect when buffers change
-  useEffect(() => {
-    const shpBuffer = mapInfo.shpBuffer;
-    const dbfBuffer = mapInfo.dbfBuffer;
-
-    if (mapInfo.fileFormat === "Shapefiles" && shpBuffer && dbfBuffer) {
-      let features = [];
-      shapefile
-        .open(shpBuffer, dbfBuffer)
-        .then((source) =>
-          source.read().then(function log(result) {
-            if (result.done) {
-              const geoJSON = {
-                type: "FeatureCollection",
-                features: features,
-              };
-              mapInfo.setFileContent(geoJSON);
-              return;
-            }
-            features.push(result.value);
-            return source.read().then(log);
-          })
-        )
-        .catch((error) => console.error(error.stack));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapInfo.shpBuffer, mapInfo.dbfBuffer]);
-
   const ActionType = {
     SET_MAP_TITLE: "SET_MAP_TITLE",
     SET_MAP_TAGS: "SET_MAP_TAGS",
@@ -79,7 +38,6 @@ export function MapContextProvider({ children }) {
     SET_SHP_BUFFER: "SET_SHP_BUFFER",
     SET_DBF_BUFFER: "SET_DBF_BUFFER",
     UPLOAD_MAP: "UPLOAD_MAP",
-    CLEAR: "CLEAR",
     SET_CURRENT_MAP: "SET_CURRENT_MAP",
     LOAD_ALL_MAPS_FROM_USER: "LOAD_ALL_MAPS_FROM_USER",
     SET_CURRENT_REGION_COLOR: "SET_CURRENT_REGION_COLOR",
@@ -131,16 +89,6 @@ export function MapContextProvider({ children }) {
           // shpBuffer: null,
           // dbfBuffer: null,
           map: payload,
-        }));
-      case ActionType.CLEAR:
-        return setMapInfo((prevMapInfo) => ({
-          ...prevMapInfo,
-          title: "",
-          fileFormat: "",
-          fileContent: "",
-          tags: [],
-          shpBuffer: null,
-          dbfBuffer: null,
         }));
       case ActionType.SET_CURRENT_MAP:
         return setMapInfo((prevMapInfo) => ({
@@ -222,14 +170,6 @@ export function MapContextProvider({ children }) {
     });
   };
 
-  // clear upload information
-  mapInfo.clearUpload = () => {
-    reducer({
-      type: ActionType.CLEAR,
-      payload: null,
-    });
-  };
-
   mapInfo.setCurrentRegionColor = (color) => {
     reducer({
       type: ActionType.SET_CURRENT_REGION_COLOR,
@@ -237,150 +177,18 @@ export function MapContextProvider({ children }) {
     });
   };
 
-  // validate file format
-  const validateFileFormat = (fileCount, fileType, fileType2, fileTypeSet) => {
-    const isNotZip = fileCount !== 2 && fileType !== "zip";
-    const missingType = !fileExtension[mapInfo.fileFormat].includes(fileType2);
-    const unmatchType = !fileExtension[mapInfo.fileFormat].includes(fileType);
-    const invalidShapeFile =
-      mapInfo.fileFormat === "Shapefiles" && (isNotZip || missingType);
-    const incorrectSize = fileTypeSet.size !== 2;
+  mapInfo.createMap = (newMap) => {
+    const { title, fileFormat, mapContent, tags } = newMap;
 
-    if (mapInfo.fileFormat) {
-      if (invalidShapeFile || unmatchType || incorrectSize) {
-        return false;
-      }
-      return true;
+    if(!title || !fileFormat || !mapContent || !tags){
+      store.uploadError('Please enter all fields: title/ fileFormat/ fileContent/ tags.')
     }
-    return false;
-  };
-
-  // for reading .kml & .geojson file
-  const readDataAsText = (file) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      mapInfo.setFileContent(reader.result);
-    };
-    reader.readAsText(file);
-  };
-
-  // for reading data in bytes (.shp & .dbf file)
-  const readDataAsArrayBuffer = (file, stateHook) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      stateHook(reader.result);
-    };
-    reader.readAsArrayBuffer(file);
-  };
-
-  // for reading shapefiles (.shp & .dbf file)
-  const readDataFromShapeFiles = (shpFile, dbfFile) => {
-    readDataAsArrayBuffer(shpFile, mapInfo.setShpBuffer);
-    readDataAsArrayBuffer(dbfFile, mapInfo.setDbfBuffer);
-  };
-
-  // for reading .zip file containing diff file format (we only want .shp & .dbf)
-  const readDataFromZipFile = (file) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const zipData = reader.result;
-      const jszip = new JSZip();
-
-      jszip.loadAsync(zipData).then((zip) => {
-        zip.forEach((fileName, file) => {
-          // ignore file that is not .shp/.dbf
-          const fileType = fileName.split(".").pop();
-          if (fileType !== "shp" && fileType !== "dbf") {
-            return;
-          }
-
-          // Read file content by arraybuffer type
-          file.async("arraybuffer").then((content) => {
-            if (fileType === "shp") {
-              mapInfo.setShpBuffer(content);
-            } else {
-              mapInfo.setDbfBuffer(content);
-            }
-          });
-        });
-      });
-    };
-    reader.readAsArrayBuffer(file);
-  };
-
-  // for processing input file
-  mapInfo.processFile = (files) => {
-    console.log(files);
-
-    const fileCount = files.length;
-
-    // only process non-empty file that matches selected file extension
-    if (files[0] && mapInfo.fileFormat) {
-      const fileType = files[0].name.split(".").pop();
-      const fileType2 = fileCount === 2 ? files[1].name.split(".").pop() : "";
-      const fileTypeSet = new Set([fileType, fileType2]);
-
-      // if invalidate file format, display error
-      if (!validateFileFormat(fileCount, fileType, fileType2, fileTypeSet)) {
-        return false;
-      }
-
-      if (mapInfo.fileFormat === "GeoJSON") {
-        console.log(files[0]);
-        readDataAsText(files[0]);
-      } else if (mapInfo.fileFormat === "Shapefiles") {
-        if (fileType === "shp" || fileType === "dbf") {
-          var shpFile = fileType === "shp" ? files[0] : files[1];
-          var dbfFile = fileType === "dbf" ? files[0] : files[1];
-          readDataFromShapeFiles(shpFile, dbfFile);
-        } else if (fileType === "zip") {
-          readDataFromZipFile(files[0]);
-        }
-      } else if (mapInfo.fileFormat === "Keyhole(KML)") {
-        readDataAsText(files[0]);
-      }
-      return true;
-    }
-    return false;
-  };
-
-  mapInfo.createMap = (title, fileFormat, tags) => {
-    // shapefile by default
-    let mapContent = mapInfo.fileContent;
-
-    if (mapInfo.fileFormat === "GeoJSON") {
-      mapContent = JSON.parse(mapInfo.fileContent);
-    } else if (mapInfo.fileFormat === "Keyhole(KML)") {
-      mapContent = new DOMParser().parseFromString(
-        mapInfo.fileContent,
-        "text/xml"
-      );
-    }
-
-    const dummyContent = {
-      type: "FeatureCollection",
-      features: [],
-    };
 
     // create map for user
     const user = auth.user;
     if (user) {
-      async function asyncCreateMap(
-        userName,
-        title,
-        fileFormat,
-        mapContent,
-        tags
-      ) {
-        const response = await api.createMap(
-          userName,
-          title,
-          fileFormat,
-          mapContent,
-          tags
-        );
-        console.log(response);
+      async function asyncCreateMap(userName, title, fileFormat, mapContent, tags) {
+        const response = await api.createMap(userName, title, fileFormat, mapContent, tags);
         if (response.status === 201) {
           navigate("/");
           reducer({
@@ -418,80 +226,86 @@ export function MapContextProvider({ children }) {
     });
   };
 
-  mapInfo.deleteMapById = async function (mapId) {
-    console.log("delete map by id:");
-    console.log(mapId);
+  // Update user map list & public map list
+  mapInfo.updateMapList = async function(){
+    await mapInfo.getAllUserMaps();
+    store.getAllMaps();
+  }
 
+  mapInfo.deleteMapById = async function(mapId){
     const response = await api.deleteMapById(mapId);
 
-    if (response.status === 200) {
-      await mapInfo.getAllUserMaps();
-      navigate("/");
-    } else {
+    if(response.status === 200){
+      mapInfo.updateMapList();
+    }
+    else{
       console.log(response);
     }
-  };
+  }
 
-  mapInfo.publishMapById = async function (mapId) {
-    console.log("publish map by id:");
-    console.log(mapId);
+  mapInfo.publishMapById = async function(mapId){
+    const response = await api.publishMapById(mapId);
 
+    if(response.status === 201){
+      mapInfo.updateMapList();
+    }
+    else{
+      console.log(response);
+    }
+  }
+
+  mapInfo.unpublishMapById = async function(mapId){
+    const response = await api.unpublishMapById(mapId);
+
+    if(response.status === 201){
+      mapInfo.updateMapList();
+    }
+    else{
+      console.log(response);
+    }
+  }
+
+  mapInfo.getAllUserMaps = async function() {
     try {
-      const response = await api.publishMapById(mapId);
+      console.log('mapInfo.getAllUserMaps');
 
-      if (response.status === 201) {
-          await mapInfo.getAllUserMaps();
-          setMapInfo({
-              ...mapInfo,
-              allCommentsForMap: [],
-              map: null,
-          });
-          navigate("/");
-      } else {
-          console.log(response);
-      }
-    } catch (error) {
-      console.error("Error publishing map:", error);
+      const response = await api.getAllUserMaps();
+      const mapIds = response.data.maps;
+
+      const maps = await Promise.all(mapIds.map(mapId => mapInfo.getMapById(mapId)));
+      reducer({
+        type: ActionType.LOAD_ALL_MAPS_FROM_USER,
+        payload: maps.filter(map => map !== null),
+      });
+    }
+    catch (error) {
+      console.error('Error fetching user maps:', error);
     }
   };
 
-  mapInfo.unpublishMapById = async function (mapId) {
-    console.log("unpublish map by id:");
-    console.log(mapId);
+  mapInfo.getMapById = async function(mapId) {
+    const response = await api.getMapById(mapId);
+    console.log("real map object: ", response.data.map);
+    setMapInfo( (prevMapInfo) => ({
+      ...prevMapInfo,
+      map: response.data,
+      })
+    );
+    return response.data.map;
+  }
 
-    try {
-      const response = await api.unpublishMapById(mapId);
-
-      if (response.status === 201) {
-          await mapInfo.getAllUserMaps();
-
-          navigate("/");
-          setMapInfo({
-              ...mapInfo,
-              allCommentsForMap: [],
-              map: null,
-          });
-      } else {
-          console.log(response);
-      }
-    } catch (error) {
-      console.error("Error unpublishing map:", error);
+  mapInfo.getAllPublishedMapsFromGivenUser = async function(userId){
+    const response = await api.getAllPublishedMapsFromGivenUser(userId);
+    if(response.status === 200){
+      reducer({
+        type: ActionType.LOAD_ALL_MAPS_FROM_USER,
+        payload: response.data.maps
+      });
     }
-  };
-
-  // mapInfo.cancelDownload = () => {
-  //     reducer({
-  //         type: ActionType.CANCEL_DOWNLOAD,
-  //         payload: null
-  //     })
-  // }
-
-  // mapInfo.setDownloadFormat = (downloadFormat) => {
-  //     reducer({
-  //         type: ActionType.SET_DOWNLOAD_FORMAT,
-  //         payload: downloadFormat
-  //     })
-  // }
+    else{
+      console.log(response);
+    }
+  }
 
   mapInfo.getAllUserMaps = async function () {
     try {
@@ -555,19 +369,20 @@ export function MapContextProvider({ children }) {
     }
   };
 
-  mapInfo.getAllPublishedMapsFromGivenUser = async function (userId) {
-    const response = await api.getAllPublishedMapsFromGivenUser(userId);
-    console.log(response);
+  // mapInfo.cancelDownload = () => {
+  //       reducer({
+  //           type: ActionType.CANCEL_DOWNLOAD,
+  //           payload: null
+  //       })
+  //   }
 
-    if (response.status === 200) {
-      reducer({
-        type: ActionType.LOAD_ALL_MAPS_FROM_USER,
-        payload: response.data.maps,
-      });
-    } else {
-      console.log(response);
-    }
-  };
+  //   mapInfo.setDownloadFormat = (downloadFormat) => {
+  //       reducer({
+  //           type: ActionType.SET_DOWNLOAD_FORMAT,
+  //           payload: downloadFormat
+  //       })
+  //   }
+
 
   mapInfo.getAllCommentsFromPublishedMap = async function (mapId) {
     try {

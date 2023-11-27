@@ -19,12 +19,12 @@ export default function UploadMapErrorModal(){
     }
 
     return(
-        <Modal className="modal" open={store.currentModal === "UPLOAD_ERROR_MODAL"}>
+        <Modal className="modal" open={store?.currentModal === "UPLOAD_ERROR_MODAL" && store?.errorMsg}>
             <Box className="modal-box">
                 <Box className="modal-dialog">
                     <Box className="modal-context">
                         <header className="dialog-header">Upload Error</header>
-                        <Typography style={{ color: "red" }}>Invalid File Format.</Typography>
+                        <Typography style={{ color: "red" }}>{store?.errorMsg}</Typography>
                     </Box>
 
                     <Box id="confirm-cancel-container">

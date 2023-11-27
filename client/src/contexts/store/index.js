@@ -16,8 +16,8 @@ export const GlobalStoreActionType = {
   MARK_POST_FOR_DELETION: "MARK_POST_FOR_DELETION",
   MARK_ACCOUNT_FOR_DELETION: "MARK_ACCOUNT_FOR_DELETION",
   MARK_COMMENT_FOR_DELETION: "MARK_COMMENT_FOR_DELETION",
-  UPLOAD_ERROR: "UPLOAD_ERROR",
   MARK_SUBCOMMENT_FOR_DELETION: "MARK_SUBCOMMENT_FOR_DELETION",
+  UPLOAD_ERROR: "UPLOAD_ERROR",
 };
 
 const CurrentView = {
@@ -26,9 +26,13 @@ const CurrentView = {
   CREATE_POST: "CREATE_POST",
   MAP_VIEW: "MAP_VIEW",
   POST_VIEW: "POST_VIEW",
+
+  COMMUNITY: "COMMUNITY",
+
   ALL_USERS: "ALL_USERS",
   ALL_MAPS: "ALL_MAPS",
   ALL_POSTS: "ALL_POSTS",
+
   ALL_MAPS_POSTS: "ALL_MAPS_POSTS",
   USER_OWNED_MAPS: "USER_OWNED_MAPS",
   USER_OWNED_POSTS: "USER_OWNED_POSTS",
@@ -52,251 +56,9 @@ const CurrentModal = {
   DELETE_POST_MODAL: "DELETE_POST_MODAL",
   DELETE_COMMENT_MODAL: "DELETE_COMMENT_MODAL",
   DELETE_ACCOUNT_MODAL: "DELETE_ACCOUNT_MODAL",
-  UPLOAD_ERROR_MODAL: "UPLOAD_ERROR_MODAL",
   DELETE_SUBCOMMENT_MODAL: "DELETE_SUBCOMMENT_MODAL",
+  UPLOAD_ERROR_MODAL: "UPLOAD_ERROR_MODAL",
 };
-
-const fakeAllMaps = [
-  {
-    _id: {
-      $oid: "655af7ba5d91a496b38f4e91",
-    },
-    ownerUserName: "peach23333",
-    title: "some map title",
-    fileFormat: "GeoJSON",
-    isPublished: false,
-    // mapType: schema.types.mixed,
-    // map: map object
-    tags: ["Bin Map", "Europe", "Population"], // 1st tag should be the string of map type
-    comments: [
-      {
-        commentUserName: "dummy comment user",
-        text: "dummy comment body 1",
-        dateCommented: "2023-11-05T19:17:42.514Z",
-        subComments: [
-          {
-            commentUserName: "subcomment user",
-            text: "dummy subcomment body",
-            dateCommented: "2023-11-05T19:17:42.514Z",
-          },
-        ],
-      },
-      {
-        commentUserName: "dummy comment user",
-        text: "dummy comment body 2",
-        dateCommented: "2023-12-05T19:17:42.514Z",
-        subComments: [
-          {
-            commentUserName: "subcomment user",
-            text: "dummy subcomment body",
-            dateCommented: "2023-12-06T19:17:42.514Z",
-          },
-          {
-            commentUserName: "subcomment user",
-            text: "dummy subcomment body",
-            dateCommented: "2023-12-07T19:17:42.514Z",
-          },
-        ],
-      },
-    ],
-    datePublished: {
-      $date: "2023-11-05T19:17:42.514Z",
-    },
-    __v: 0,
-  },
-  {
-    _id: {
-      $oid: "655a752f0926b31495c2c4c4",
-    },
-    ownerUserName: "apple",
-    title: "some map title 2",
-    fileFormat: "Shapefile",
-    isPublished: true,
-    mapType: "Heat Map", // schema.types.mixed?
-    // map: map object
-    tags: ["Heat Map", "Asia", "Population"],
-    comments: [
-      {
-        commentUserName: "dummy comment user",
-        text: "dummy comment body 1",
-        dateCommented: "2023-11-05T19:17:42.514Z",
-        subComments: [
-          {
-            commentUserName: "subcomment user",
-            text: "dummy subcomment body",
-            dateCommented: "2023-11-05T19:17:42.514Z",
-          },
-        ],
-      },
-      {
-        commentUserName: "dummy comment user",
-        text: "dummy comment body 2",
-        dateCommented: "2023-12-05T19:17:42.514Z",
-        subComments: [
-          {
-            commentUserName: "subcomment user",
-            text: "dummy subcomment body",
-            dateCommented: "2023-12-06T19:17:42.514Z",
-          },
-        ],
-      },
-    ],
-    datePublished: {
-      $date: "2023-12-05T19:17:42.514Z",
-    },
-    __v: 0,
-  },
-];
-
-const fakeAllMapsPosts = [
-  {
-    _id: {
-      $oid: "6550ea560946232834874dd4",
-    },
-    ownerUserName: "joeshmo",
-    title: "this is a post",
-    tags: ["Choropleth Map", "tag2"],
-    postBody:
-      "hello there Lorem ipsum dolor sit amet, coem ipsum dolor sit amet, consedolor sit amet, consectetu nsedolor sit amet, consectetur adipiscing elit, sctetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nost exercitation ullamcem ipsum dolor sit amet, rud exercitation ullamcem ipsum dolor sit amet, consedolor sit amet, consectetu o laboris nisi ut aliquip ex ea commodo consequat",
-    likedUsers: [],
-    dislikedUsers: [],
-    comments: [
-      {
-        commentUserName: "dummyCommentUser",
-        text: "dummy comment body",
-        dateCommented: "2023-11-05T19:17:42.514Z",
-        subComments: [
-          {
-            commentUserName: "subcomment user",
-            text: "dummy subcomment body",
-            dateCommented: "2023-11-05T19:17:42.514Z",
-          },
-        ],
-      },
-    ],
-    datePosted: {
-      $date: "2023-11-05T19:17:42.514Z",
-    },
-    __v: 0,
-  },
-  {
-    _id: {
-      $oid: "6547ea560946232834874dd4",
-    },
-    ownerUserName: "joeshmo",
-    title: "some map title",
-    fileFormat: "GeoJSON",
-    // mapType: schema.types.mixed,
-    // map: map object
-    tags: ["Bin Map", "Europe", "Population"], // 1st tag should be the string of map type
-    comments: [
-      {
-        commentUserName: "dummy comment user",
-        text: "dummy comment body 1",
-        dateCommented: "2023-11-05T19:17:42.514Z",
-        subComments: [
-          {
-            commentUserName: "subcomment user",
-            text: "dummy subcomment body",
-            dateCommented: "2023-11-05T19:17:42.514Z",
-          },
-        ],
-      },
-      {
-        commentUserName: "dummy comment user",
-        text: "dummy comment body 2",
-        dateCommented: "2023-12-05T19:17:42.514Z",
-        subComments: [
-          {
-            commentUserName: "subcomment user",
-            text: "dummy subcomment body",
-            dateCommented: "2023-12-06T19:17:42.514Z",
-          },
-          {
-            commentUserName: "subcomment user",
-            text: "dummy subcomment body",
-            dateCommented: "2023-12-07T19:17:42.514Z",
-          },
-        ],
-      },
-    ],
-    datePublished: {
-      $date: "2023-11-05T19:17:42.514Z",
-    },
-    __v: 0,
-  },
-  {
-    _id: {
-      $oid: "65482b5e0946232834874e6c",
-    },
-    ownerUserName: "joeshmo",
-    title: "some map title 2",
-    fileFormat: "Shapefile",
-    mapType: "Heat Map", // schema.types.mixed?
-    // map: map object
-    tags: ["Heat Map", "Asia", "Population"],
-    comments: [
-      {
-        commentUserName: "dummy comment user",
-        text: "dummy comment body 1",
-        dateCommented: "2023-11-05T19:17:42.514Z",
-        subComments: [
-          {
-            commentUserName: "subcomment user",
-            text: "dummy subcomment body",
-            dateCommented: "2023-11-05T19:17:42.514Z",
-          },
-        ],
-      },
-      {
-        commentUserName: "dummy comment user",
-        text: "dummy comment body 2",
-        dateCommented: "2023-12-05T19:17:42.514Z",
-        subComments: [
-          {
-            commentUserName: "subcomment user",
-            text: "dummy subcomment body",
-            dateCommented: "2023-12-06T19:17:42.514Z",
-          },
-        ],
-      },
-    ],
-    datePublished: {
-      $date: "2023-12-05T19:17:42.514Z",
-    },
-    __v: 0,
-  },
-  {
-    _id: {
-      $oid: "6580ea560946232834874dd4",
-    },
-    ownerUserName: "joeshmo",
-    title: "MAAAAAp",
-    tags: ["Graduated Symbol Map", "tag2"],
-    postBody:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
-    likedUsers: [],
-    dislikedUsers: [],
-    comments: [
-      {
-        commentUserName: "dummyCommentUser",
-        text: "dummy comment body",
-        dateCommented: "2023-11-05T19:17:42.514Z",
-        subComments: [
-          {
-            commentUserName: "subcomment user",
-            text: "dummy subcomment body",
-            dateCommented: "2023-11-05T19:17:42.514Z",
-          },
-        ],
-      },
-    ],
-    datePosted: {
-      $date: "2023-11-05T19:17:42.514Z",
-    },
-    __v: 0,
-  },
-];
 
 function GlobalStoreContextProvider(props) {
   const { postInfo } = useContext(PostContext);
@@ -306,8 +68,9 @@ function GlobalStoreContextProvider(props) {
     currentView: CurrentView.USER_HOME,
     allUsers: [],
     allPosts: [],
-    allMaps: fakeAllMaps,
-    allMapsPosts: fakeAllMapsPosts,
+    allMaps: [],
+    allMapsPosts: [],
+    // allMapsPosts: fakeAllMapsPosts,
 
     binMaps: null,
     choroplethMaps: null,
@@ -326,6 +89,8 @@ function GlobalStoreContextProvider(props) {
     accountMarkedForDeletion: null,
     commentMarkedForDeletion: null,
     subcommentMarkedForDeletion: null, 
+
+    errorMsg: ''
   });
 
   const storeReducer = (action) => {
@@ -337,17 +102,19 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.LOAD_ALL_MAPS:
         return setStore((prevStore) => ({
           ...prevStore,
-          currentModal: CurrentModal.NONE,
-          currentView: CurrentView.USER_HOME,
-          commentMarkedForDeletion: null,
-          subcommentMarkedForDeletion: null, 
+          allMaps: payload,
         }));
       case GlobalStoreActionType.LOAD_ALL_POSTS:
         return setStore((prevStore) => ({
           ...prevStore,
-          currentModal: CurrentModal.NONE,
-          currentView: CurrentView.ALL_POSTS,
           allPosts: payload,
+        }));
+      case GlobalStoreActionType.LOAD_ALL_USERS:
+        return setStore((prevStore) => ({
+          ...prevStore,
+          allUsers: payload.users,
+          allMaps: payload.maps.filter((map) => map.isPublished),
+          allPosts: payload.posts
         }));
       case GlobalStoreActionType.MARK_CURRENT_SCREEN:
         return setStore((prevStore) => ({
@@ -384,18 +151,18 @@ function GlobalStoreContextProvider(props) {
           currentModal: CurrentModal.DELETE_ACCOUNT_MODAL,
           accountMarkedForDeletion: payload,
         }));
-      case GlobalStoreActionType.UPLOAD_ERROR:
-        console.log("upload error")
-        return setStore((prevStore) => ({
-          ...prevStore,
-          currentModal: CurrentModal.UPLOAD_ERROR_MODAL,
-        }));
       case GlobalStoreActionType.MARK_SUBCOMMENT_FOR_DELETION: 
       console.log("call global store action type");
         return setStore((prevStore)=>({
           ...prevStore, 
           currentModal: CurrentModal.DELETE_SUBCOMMENT_MODAL, 
           subcommentMarkedForDeletion: payload,
+        }));
+      case GlobalStoreActionType.UPLOAD_ERROR:
+        return setStore((prevStore) => ({
+          ...prevStore,
+          currentModal: CurrentModal.UPLOAD_ERROR_MODAL,
+          errorMsg: payload
         }));
       case GlobalStoreActionType.HIDE_MODALS:
         return setStore((prevStore) => ({
@@ -406,6 +173,7 @@ function GlobalStoreContextProvider(props) {
           accountMarkedForDeletion: null,
           commentMarkedForDeletion: null,
           subcommentMarkedForDeletion: null,
+          errorMsg: ''
         }));
       default:
         return store;
@@ -421,10 +189,10 @@ function GlobalStoreContextProvider(props) {
     store.setData();
   };
 
-  store.uploadError = function () {
+  store.uploadError = function (errorMsg) {
     storeReducer({
       type: GlobalStoreActionType.UPLOAD_ERROR,
-      payload: {},
+      payload: errorMsg,
     });
   };
 
@@ -473,9 +241,11 @@ function GlobalStoreContextProvider(props) {
   }
 
   store.getData = function (currScreen) {
+    console.log();
     const screenDataDict = {
       ALL_USERS: store.allUsers,
       ALL_MAPS: store.allMaps,
+      // USER_OWNED_MAPS: store.allMaps,
       ALL_MAPS_POSTS: store.allMapsPosts,
       BIN_MAPS: store.binMaps,
       CHOROPLETH_MAPS: store.choroplethMaps,
@@ -483,38 +253,42 @@ function GlobalStoreContextProvider(props) {
       GRAD_MAPS: store.gradMaps,
       HEAT_MAPS: store.heatMaps,
       ALL_POSTS: store.allPosts,
+      // USER_OWNED_POSTS: store.allPosts,
       BIN_POSTS: store.binPosts,
       CHOROPLETH_POSTS: store.choroplethPosts,
       DOT_POSTS: store.dotPosts,
       GRAD_POSTS: store.gradPosts,
       HEAT_POSTS: store.heatPosts,
     };
-    return currScreen in screenDataDict ? screenDataDict[currScreen] : null;
+
+    console.log(screenDataDict[currScreen]);
+
+    return (currScreen in screenDataDict) ? screenDataDict[currScreen] : null;
   };
 
   const updateMaps = (allMaps) => ({
-    binMaps: store.allMaps.filter((pair)=>{return pair.tags[0]==="Bin Map"}),
-    choroplethMaps: store.allMaps.filter((pair)=>{return pair.tags[0]==="Choropleth Map"}),
-    dotMaps: store.allMaps.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"}),
-    gradMaps:store.allMaps.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"}),
-    heatMaps: store.allMaps.filter((pair)=>{return pair.tags[0]==="Heat Map"}),
+    binMaps: allMaps.filter((pair)=>{return pair.tags[0]==="Bin Map"}),
+    choroplethMaps: allMaps.filter((pair)=>{return pair.tags[0]==="Choropleth Map"}),
+    dotMaps: allMaps.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"}),
+    gradMaps:allMaps.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"}),
+    heatMaps: allMaps.filter((pair)=>{return pair.tags[0]==="Heat Map"}),
   });
   
   const updatePosts = (allPosts) => ({
-    binPosts: store.allPosts.filter((pair)=>{return pair.tags[0]==="Bin Map"}),
-    choroplethPosts: store.allPosts.filter((pair)=>{return pair.tags[0]==="Choropleth Map"}),
-    dotPosts: store.allPosts.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"}),
-    gradPosts: store.allPosts.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"}),
-    heatPosts: store.allPosts.filter((pair)=>{return pair.tags[0]==="Heat Map"}),
+    binPosts: allPosts.filter((pair)=>{return pair.tags[0]==="Bin Map"}),
+    choroplethPosts: allPosts.filter((pair)=>{return pair.tags[0]==="Choropleth Map"}),
+    dotPosts: allPosts.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"}),
+    gradPosts: allPosts.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"}),
+    heatPosts: allPosts.filter((pair)=>{return pair.tags[0]==="Heat Map"}),
   });
 
   store.setData = function () {
-  setStore((prevStore) => ({
-    ...prevStore,
-    ...updateMaps(prevStore.allMaps),
-    ...updatePosts(prevStore.allPosts),
-  }));
-};
+    setStore((prevStore) => ({
+      ...prevStore,
+      ...updateMaps(prevStore.allMaps),
+      ...updatePosts(prevStore.allPosts),
+    }));
+  };
 
   store.getAllPosts = async function () {
     const response = await api.getAllPosts();
@@ -526,17 +300,43 @@ function GlobalStoreContextProvider(props) {
 
   store.getAllUsers = async function () {
     const response = await api.getAllUsers();
+
+    const userData = response.data;
+    if(!userData){
+      return;
+    }
+
+    let tempAllMaps = [];
     let tempAllPosts = [];
-    response.data.forEach((user) => {
+
+    userData.forEach((user) => {
+      user.maps.forEach((map) => {
+        tempAllMaps.push(map);
+      });
+
       user.posts.forEach((post) => {
         tempAllPosts.push(post);
       });
     });
-    setStore({
-      ...store,
-      allUsers: response.data,
-      allPosts: tempAllPosts,
+
+    storeReducer({
+      type: GlobalStoreActionType.LOAD_ALL_USERS,
+      payload: {
+        users: userData,
+        maps: tempAllMaps,
+        posts: tempAllPosts,
+      }
     });
+  };
+
+  store.getAllMaps = async function () {
+    const response = await api.getAllMaps();
+    if(response.status === 200){
+      storeReducer({
+        type: GlobalStoreActionType.LOAD_ALL_MAPS,
+        payload: response.data.maps
+      });
+    }
   };
 
   return (

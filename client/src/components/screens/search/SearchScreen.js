@@ -1,18 +1,38 @@
 import { useState, useContext, useEffect } from "react";
+import { useParams } from 'react-router-dom';
 import { Box, Typography } from "@mui/material";
 
 import { GlobalStoreContext } from "../../../contexts/store";
+import MapContext from "../../../contexts/map";
+import UserContext from "../../../contexts/user";
 import { SideNavBar, SearchBar, MapsCardSection, PostsCardSection, MapsPostsCardSection, DeletePostModal, DeleteMapModal } from "../../index";
 
 function SearchScreen(){
     const { store } = useContext(GlobalStoreContext);
+    const { userInfo } = useContext(UserContext);
+    const { mapInfo } = useContext(MapContext);
+    const { userId } = useParams();
 
     const [search, setSearch] = useState('');
     const [listCard, setListCard] = useState(null);
 
+    useEffect(() => {
+        if(userId){
+            userInfo.getUserById(userId);
+            // mapInfo.getAllPublishedMapsFromGivenUser(userId);
+        }
+    }, [userId])
+
+    useEffect(() => {
+        if(userInfo && userInfo.currentUser){
+            mapInfo.getAllPublishedMapsFromGivenUser(userInfo.currentUser._id);
+        }
+    }, [userInfo?.currentUser])
+
     // Now update list card rendering; reason: store changes in Store or search changes in SearchScreen
     useEffect(() => {
         if(store){
+            console.log(store.currentView)
             var data = store.getData(store.currentView);
     
             switch(store.currentView){
@@ -40,7 +60,7 @@ function SearchScreen(){
                     break;
             }
         }
-    }, [search, store]);
+    }, [search, store?.currentView]);
 
     return (
         <Box className='queryScreenWrapper'>

@@ -1,14 +1,16 @@
-import { useState, useContext } from 'react';
-import { Box, Typography, TextField, Button } from "@mui/material";
-import { Link } from 'react-router-dom';
-// import { Link, useNavigate } from 'react-router-dom';
+import { useState, useContext, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
+import { Box, Typography, TextField, Button, InputAdornment, IconButton, Alert } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import CheckIcon from '@mui/icons-material/Check';
 
 import AuthContext from '../../../contexts/auth';
-import { AuthErrorModal } from '../../index';
 
 function Login(){
     const { auth } = useContext(AuthContext);
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     // Form contains 2 following fields
     const [form, setForm] = useState({
@@ -16,14 +18,62 @@ function Login(){
         password: '',
     });
 
-    // Use map to render 2 text fields
-    // Temporarily accept email only, might add userName
+    const [showPassword, setShowPassword] = useState(false);
+    const [alert, setAlert] = useState(null);
+
+    useEffect(() => {
+        if(auth?.errMsg){
+            setAlert(<Alert variant="filled" severity="error" id='auth-alert'>
+                {auth.errMsg}
+            </Alert>);
+        }
+    }, [auth?.errMsg])
+
+    useEffect(() => {
+        if(auth?.msg){
+            setAlert(<Alert icon={<CheckIcon fontSize="inherit" />} variant="filled" severity="success" id='auth-alert'>
+                {auth.msg}
+            </Alert>);
+            setTimeout(() => {
+                navigate('/');
+            }, 1000);
+        }
+    }, [auth?.msg])
+
+    const handleShowPassword = () => {
+        setShowPassword(!showPassword);
+    }
+
     const textFieldsProps = [
         { name: 'email', label: 'Email', value: form.email },
         { name: 'password', label: 'Password', value: form.password },
     ]
 
     const textFields = textFieldsProps.map((field) => {
+        if(field.name === 'password'){
+            return <TextField
+                required
+                key={field.name}
+                name={field.name}
+                label={field.label}
+                value={field.value}
+                type={(showPassword) ? "text" : "password"}
+                onChange={updateForm}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label='toggle password visibility'
+                                onClick={handleShowPassword}
+                                onMouseDown={handleShowPassword}
+                            >
+                                { (showPassword) ? <Visibility/> : <VisibilityOff/>}
+                            </IconButton>
+                        </InputAdornment>
+                    )
+                }}
+            />
+        }
         return <TextField
             key={field.name}
             name={field.name}
@@ -45,7 +95,7 @@ function Login(){
 
     function handleForgotPw(event){
         event.preventDefault();
-        // navigate('/register');
+        navigate('/forgot-password');
     }
 
     // Handle event when user submit for login
@@ -60,6 +110,7 @@ function Login(){
     
     return(
         <Box className='form-content'>
+            { alert }
             <Typography
                 id='signin-title'
                 variant='h2'
@@ -76,16 +127,11 @@ function Login(){
                 <Typography id='signin-redirect-prompt' variant='p'>
                     Haven't registered for an account? Sign up <Link id='redirect' to='/register'>here</Link>.
                 </Typography>
-                {/* <Typography id='signin-redirect-prompt' variant='p'>
-                    Forgot password? Click <Link id='redirect'>here</Link>.
-                </Typography> */}
-
                 <Box id='btn-container' className='flex-row'>
                     <Button id='outline-btn' variant='outlined' onClick={handleForgotPw}>Forgot Password</Button>
                     <Button id='filled-btn' variant='contained' type='submit'>Login</Button>
                 </Box>
             </form>
-            <AuthErrorModal/>
         </Box>
     )
 }

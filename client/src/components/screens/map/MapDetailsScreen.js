@@ -17,9 +17,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import { MapScreen, Tag } from "../../index";
-import { MapDetailOwnerTopBar } from "../../appbars/MapDetailOwnerTopBar";
-import { MapDetailUserTopBar } from "../../appbars/MapDetailUserTopBar";
-import { DeleteMapModal, MapCommentSideBox } from "../../index";
+import { DeleteMapModal, MapCommentSideBox, MapDetailTopBar } from "../../index";
 import MapContext from "../../../contexts/map";
 
 export default function MapDetailsScreen() {
@@ -30,7 +28,7 @@ export default function MapDetailsScreen() {
   }, [mapId]);
   return (
     <Box>
-      <MapDetailOwnerTopBar />
+      <MapDetailTopBar/>
       <Box
         className="map-screen-container"
         style={{

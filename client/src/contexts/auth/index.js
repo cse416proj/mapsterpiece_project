@@ -13,13 +13,18 @@ export const AuthActionType = {
   DELETE_USER: "DELETE_USER",
   OPEN_MODAL: "OPEN_MODAL",
   CLOSE_MODAL: "CLOSE_MODAL",
+  SET_MSG: "SET_MSG",
+  SET_ERROR: "SET_ERROR",
+  SET_LOST_PW_USER: "SET_LOST_PW_USER"
 };
 
 function AuthContextProvider(props) {
   const [auth, setAuth] = useState({
     user: null,
     loggedIn: false,
-    errMsg: null,
+    lostPwUser: null,
+    msg: null,
+    errMsg: null
   });
   const navigate = useNavigate();
 
@@ -34,53 +39,87 @@ function AuthContextProvider(props) {
     const { type, payload } = action;
     switch (type) {
       case AuthActionType.GET_LOGGED_IN: {
-        return setAuth({
+        return setAuth((prevAuth) => ({
+          ...prevAuth,
           user: payload.user,
           loggedIn: payload.loggedIn,
-          errMsg: null,
-        });
+          lostPwUser: null,
+          msg: null,
+          errMsg: null
+        }));
       }
       case AuthActionType.LOGIN_USER: {
-        return setAuth({
+        return setAuth((prevAuth) => ({
+          ...prevAuth,
           user: payload.user,
           loggedIn: true,
-          errMsg: null,
-        });
+          lostPwUser: null,
+          msg: payload.msg,
+          errMsg: null
+        }));
       }
       case AuthActionType.LOGOUT_USER: {
-        return setAuth({
+        return setAuth((prevAuth) => ({
+          ...prevAuth,
           user: null,
           loggedIn: false,
-          errMsg: null,
-        });
+          lostPwUser: null,
+          msg: null,
+          errMsg: null
+        }));
       }
       case AuthActionType.REGISTER_USER: {
-        return setAuth({
+        return setAuth((prevAuth) => ({
+          ...prevAuth,
           user: payload.user,
           loggedIn: true,
-          errMsg: null,
-        });
+          lostPwUser: null,
+          msg: null,
+          errMsg: null
+        }));
       }
       case AuthActionType.DELETE_USER: {
-        return setAuth({
-          user: null,
+        return setAuth((prevAuth) => ({
+          ...prevAuth,
+          user:  null,
           loggedIn: false,
-          errMsg: null,
-        });
+          lostPwUser: null,
+          msg: null,
+          errMsg: null
+        }));
       }
       case AuthActionType.OPEN_MODAL: {
-        return setAuth({
-          user: null,
-          loggedIn: false,
-          errMsg: payload.errMsg,
-        });
+        return setAuth((prevAuth) => ({
+          ...prevAuth,
+          errMsg: payload.errMsg
+        }));
       }
       case AuthActionType.CLOSE_MODAL: {
-        return setAuth({
-          user: null,
-          loggedIn: false,
+        return setAuth((prevAuth) => ({
+          ...prevAuth,
+          errMsg: null
+        }));
+      }
+      case AuthActionType.SET_MSG: {
+        return setAuth((prevAuth) => ({
+          ...prevAuth,
+          msg: payload,
           errMsg: null,
-        });
+        }));
+      }
+      case AuthActionType.SET_ERROR: {
+        return setAuth((prevAuth) => ({
+          ...prevAuth,
+          errMsg: payload
+        }));
+      }
+      case AuthActionType.SET_LOST_PW_USER: {
+        return setAuth((prevAuth) => ({
+          ...prevAuth,
+          msg: null,
+          errMsg: null,
+          lostPwUser: payload
+        }));
       }
       default:
         return auth;
@@ -100,14 +139,7 @@ function AuthContextProvider(props) {
     }
   };
 
-  auth.registerUser = async function (
-    userName,
-    firstName,
-    lastName,
-    email,
-    password,
-    passwordVerify
-  ) {
+  auth.registerUser = async function(userName, firstName, lastName, email, password, passwordVerify){
     console.log(userName, firstName, lastName, email, password, passwordVerify);
     let response;
     try {
@@ -119,18 +151,16 @@ function AuthContextProvider(props) {
         password,
         passwordVerify
       );
+      if (response.status === 200) {
+        auth.loginUser(email, password);
+      }
     } catch (error) {
       let errMsg = error.response.data.errorMessage;
       authReducer({
-        type: AuthActionType.OPEN_MODAL,
-        payload: {
-          errMsg: errMsg,
-        },
+        type: AuthActionType.SET_ERROR,
+        payload: errMsg
       });
       return;
-    }
-    if (response.status === 200) {
-      navigate("/login");
     }
   };
 
@@ -140,25 +170,22 @@ function AuthContextProvider(props) {
     try {
       response = await api.loginUser(email, password);
       console.log(response.status);
+      if (response.status === 200) {
+        authReducer({
+          type: AuthActionType.LOGIN_USER,
+          payload: {
+            user: response.data.user,
+            msg: 'Login success! Now redirecting...'
+          },
+        });
+      }
     } catch (error) {
       let errMsg = error.response.data.errorMessage;
-      console.log("error 400", errMsg);
       authReducer({
-        type: AuthActionType.OPEN_MODAL,
-        payload: {
-          errMsg: errMsg,
-        },
+        type: AuthActionType.SET_ERROR,
+        payload: errMsg
       });
       return;
-    }
-    if (response.status === 200) {
-      authReducer({
-        type: AuthActionType.LOGIN_USER,
-        payload: {
-          user: response.data.user,
-        },
-      });
-      navigate("/");
     }
   };
 
@@ -212,6 +239,79 @@ function AuthContextProvider(props) {
       payload: null,
     });
   };
+
+  auth.findUser = async function (email) {
+    if(!email){
+      authReducer({
+        type: AuthActionType.SET_ERROR,
+        payload: 'Email must be provided',
+      });
+      return;
+    }
+
+    try{
+      const response = await api.findUser(email);
+      if (response?.status === 200) {
+        const user = response.data.user;
+        if(user){
+          authReducer({
+            type: AuthActionType.SET_LOST_PW_USER,
+            payload: user
+          });
+          navigate("/reset-password");
+        }
+      }
+    }
+    catch (error) {
+      if (error.response) {
+        authReducer({
+          type: AuthActionType.SET_ERROR,
+          payload: (error.response.status === 400) ? error.response.data.errorMessage : error.response.data
+        })
+      }
+    }
+  };
+
+  auth.resetPassword = async function(newPassword, confirmNewPassword){
+    if(!newPassword || !confirmNewPassword){
+      authReducer({
+        type: AuthActionType.SET_ERROR,
+        payload: 'All fields must be provided to reset password.',
+      });
+      return;
+    }
+
+    if(!auth.lostPwUser){
+      authReducer({
+        type: AuthActionType.SET_ERROR,
+        payload: 'Email info not found. Now redirecting user back to enter email...',
+      });
+      setTimeout(() => {
+        navigate('/forgot-password');
+      }, 1000);
+      return;
+    }
+
+    try{
+      const response = await api.resetPassword(auth.lostPwUser?._id, newPassword, confirmNewPassword);
+      console.log(response);
+      if (response?.status === 200) {
+        auth.loginUser(auth.lostPwUser.email, newPassword);
+        authReducer({
+          type: AuthActionType.SET_MSG,
+          payload: 'Password reset success! Now logging in...',
+        });
+      }
+    }
+    catch (error) {
+      if (error.response) {
+        authReducer({
+          type: AuthActionType.SET_ERROR,
+          payload: (error.response.status === 400 || error.response.status === 401) ? error.response.data.errorMessage : error.response.data
+        })
+      }
+    }
+  }
 
   return (
     <AuthContext.Provider value={{ auth }}>
