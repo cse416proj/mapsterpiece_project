@@ -15,7 +15,7 @@ import {
   EmailShareButton,
   FacebookShareButton,
   RedditShareButton,
-  RedditIcon
+  RedditIcon, InstapaperIcon, InstapaperShareButton
 } from "react-share";
 
 import AuthContext from "../../contexts/auth";
@@ -109,6 +109,7 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
     setAnchorEl(event.currentTarget);
   };
 
+  document.addEventListener('mousedown',closeMenu)
 
   return (
     <CardActions className="cardActions">
@@ -123,20 +124,21 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
         </Typography>
       </Box>
       <Box className="flex-row" id="action-button-container" onClick={openShareMenu}>
-        <ShareIcon id={`${type}-action-icon`} />
+        <ShareIcon id={`${type}-action-icon`}/>
         <Typography id={`${type}-action-button-text`}>share {type}</Typography>
         <Menu
-            open={open}
             anchorEl={anchorEl}
+            open={open}
             onClose={closeMenu}
             MenuListProps={{
               "aria-labelledby": "basic-button",
             }}
         >
           <MenuItem>
-            <EmailShareButton url={window.location.href}><EmailIcon><Typography id='action-button-text'>E-Mail</Typography></EmailIcon></EmailShareButton>
-            <FacebookShareButton url={window.location.href} hashtag={"#Mapsterpiece"}><FacebookIcon>Facebook</FacebookIcon></FacebookShareButton>
-            <RedditShareButton url={window.location.href}><RedditIcon>Reddit</RedditIcon></RedditShareButton>
+            <EmailShareButton url={window.location.href} onShareWindowClose={closeMenu}><EmailIcon><Typography id='action-button-text'>E-Mail</Typography></EmailIcon></EmailShareButton>
+            <FacebookShareButton url={window.location.href} hashtag={"#Mapsterpiece"} onShareWindowClose={closeMenu}><FacebookIcon>Facebook</FacebookIcon></FacebookShareButton>
+            <RedditShareButton url={window.location.href} onShareWindowClose={closeMenu}><RedditIcon>Reddit</RedditIcon></RedditShareButton>
+            <InstapaperShareButton url={window.location.href} onShareWindowClose={closeMenu}><InstapaperIcon>Instapaper</InstapaperIcon></InstapaperShareButton>
           </MenuItem>
         </Menu>
       </Box>
