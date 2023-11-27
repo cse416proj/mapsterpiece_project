@@ -22,7 +22,7 @@ export default function MapCommentSideBox() {
     }, []);
 
     // console.log(mapInfo?.map?.isPublished);
-    console.log(mapId);
+    // console.log(mapId);
 
     useEffect(() => {
         if(mapInfo.map){

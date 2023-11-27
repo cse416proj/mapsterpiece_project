@@ -386,7 +386,7 @@ export function MapContextProvider({children}){
 
   mapInfo.getAllCommentsFromPublishedMap = async function (mapId) {
     try {
-        if (mapId === undefined || mapInfo.map === null || mapId === null) {
+        if (!mapInfo.map || !mapId || !auth.user) {
             return setMapInfo({
                 ...mapInfo,
                 allCommentsForMap: [],
@@ -423,6 +423,12 @@ export function MapContextProvider({children}){
   mapInfo.createMapComment = async function (mapId, commenterUserName, content){
     console.log("creating map comment...");
     console.log(mapId, commenterUserName, content);
+    if (!mapId || !commenterUserName || !content){
+      return setMapInfo({
+        ...mapInfo,
+        allCommentsForMap: [],
+    });
+    }
     const response = api.createMapComment(mapId, commenterUserName, content);
     mapInfo.getMapById(mapId);
 
