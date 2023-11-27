@@ -15,4 +15,9 @@ router.put('/updateMap/:id', auth.verify, MapController.updateMapById);
 // no auth needed because it is for public profile
 router.get('/allPublicMaps/:userId', MapController.getAllPublishedMapsFromGivenUser);
 
+router.post('/createMapComment/:mapId', auth.verify, MapController.createMapComment);
+router.get('/allMapComments/:mapId', auth.verify, MapController.getAllCommentsFromPublishedMap);
+
+router.delete('/deleteMapComment/:commentId', auth.verify, MapController.deleteMapCommentById);
+
 module.exports = router;

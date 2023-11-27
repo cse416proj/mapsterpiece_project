@@ -44,6 +44,17 @@ export const updateMapById = (mapId, map) => {
   return api.put(`/updateMap/${mapId}`, map);
 }
 
+export const getAllCommentsFromPublishedMap = (mapId) => {
+  return api.get(`/allMapComments/${mapId}`);
+}
+
+export const createMapComment = (mapId, commenterUserName, content) => {
+  return api.post(`/createMapComment/${mapId}`, {
+    commenterUserName: commenterUserName, 
+    content: content, 
+  })
+}
+
 const apis = {
   createMap,
   deleteMapById,
@@ -52,7 +63,9 @@ const apis = {
   publishMapById,
   unpublishMapById,
   getAllPublishedMapsFromGivenUser,
-  updateMapById
+  updateMapById, 
+  getAllCommentsFromPublishedMap,
+  createMapComment,
 };
 
 export default apis;
