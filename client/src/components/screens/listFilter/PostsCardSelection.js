@@ -8,19 +8,24 @@ function PostsCardSection({ data, search }) {
 
   // update filteredData when data/search property changes
   useEffect(() => {
-    if(data){
-      const result = data.filter((pair) => {
-        const searchTerm = search.toLowerCase();
-        return (
-          searchTerm === '' ||
-          pair.title.toLowerCase().includes(searchTerm) ||
-          pair.tags.some((tag) => tag.toLowerCase().includes(searchTerm)) ||
-          pair.postBody.toLowerCase().includes(searchTerm)
-        );
-      });
-      setFilteredData(result);
+    if(!data){
+      return;
     }
+    const result = data.filter((pair) => {
+      const searchTerm = search.toLowerCase();
+      return (
+        searchTerm === '' ||
+        pair.title.toLowerCase().includes(searchTerm) ||
+        pair.tags.some((tag) => tag.toLowerCase().includes(searchTerm)) ||
+        pair.postBody.toLowerCase().includes(searchTerm)
+      );
+    });
+    setFilteredData(result);
   }, [data, search]);
+
+  if(!data){
+    return null;
+  }
 
   return (
     <Box sx={{ width: '97.5%' }}>

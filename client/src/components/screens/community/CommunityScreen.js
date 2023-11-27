@@ -11,7 +11,13 @@ export default function CommunityScreen() {
 
   const [search, setSearch] = useState('');
   const [listCard, setListCard] = useState(null);
-  const [currScreen, setCurrScreen] = useState("HOME");
+  const [currScreen, setCurrScreen] = useState('');
+
+  useEffect(() => {
+    store.getAllMaps();
+    store.getAllPosts();
+    store.getAllUsers();
+  }, []);
 
   // Now update currScreen; reason: currentView changes in Store
   useEffect(() => {
@@ -20,17 +26,22 @@ export default function CommunityScreen() {
     }
   }, [store?.currentView]);
 
-  useEffect(() => {
-    store.getAllPosts();
-    store.getAllUsers();
-  }, []);
-
   // Now update list card rendering; reason: store changes in Store or search changes in SearchScreen
   useEffect(() => {
     if(store){
-      var data = store.getData(store.currentView);
+      console.log(`currScreen: ${currScreen}`);
 
-      switch(store.currentView){
+      var data = store.getData(currScreen);
+
+      console.log(currScreen);
+      console.log(data);
+
+      if(!data){
+        setListCard(null);
+        return;
+      }
+
+      switch(currScreen){
         case "ALL_USERS":
           setListCard(<UsersCardSection data={data} search={search}/>);
           break;
@@ -51,11 +62,18 @@ export default function CommunityScreen() {
           setListCard(<PostsCardSection data={data} search={search}/>);
           break;
         default:
-          setListCard(<Typography variant='h5' style={{ marginTop: '1.5vh' }}>Select Maps and/or Posts on the right.</Typography>);
+          setListCard(null);
           break;
       }
     }
   }, [currScreen, search, store]);
+
+  function renderCard(){
+    if(listCard){
+      return listCard;
+    }
+    return <Typography variant='h5' style={{ marginTop: '1.5vh' }}>Select Maps/Posts/Users on the right.</Typography>
+  }
 
   return (
     <Box className="queryScreenWrapper">
@@ -63,7 +81,9 @@ export default function CommunityScreen() {
       <Box className="queryScreenContent">
         <SearchBar setSearch={setSearch}/>
         <Box className="listsDisplay">
-          {listCard}
+          {
+            renderCard()
+          }
         </Box>
         <DeletePostModal/>
         <DeleteMapModal/>

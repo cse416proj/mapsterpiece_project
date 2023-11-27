@@ -1,9 +1,10 @@
+import { server_base_url } from '../../../config';
+
 import axios from 'axios';
 axios.defaults.withCredentials = true;
 
 const api = axios.create({
-  // baseURL: 'https://mapsterpiece.online/map',
-    baseURL: 'http://localhost:4000/map',
+  baseURL: `${server_base_url}/map`,
 })
 
 export const createMap = (ownerUserName, title, fileFormat, mapContent, tags) => {

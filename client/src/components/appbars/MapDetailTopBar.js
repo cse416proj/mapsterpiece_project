@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { Box, Typography, Button, Menu, MenuItem, AppBar, Toolbar, IconButton } from '@mui/material';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
@@ -13,7 +13,7 @@ import AuthContext from '../../contexts/auth';
 import MapContext from '../../contexts/map';
 import GlobalStoreContext from '../../contexts/store';
 
-export function MapDetailOwnerTopBar(){
+export default function MapDetailTopBar(){
     const BackButtonStyle = {
         color: 'black',
         fontSize: '15px',
@@ -28,6 +28,7 @@ export function MapDetailOwnerTopBar(){
     const { auth } = useContext(AuthContext);
     const { mapInfo } = useContext(MapContext);
     const { store } = useContext(GlobalStoreContext);
+    const { mapId } = useParams();
     const navigate = useNavigate();
 
     const [title, setTitle] = useState('');
@@ -55,9 +56,6 @@ export function MapDetailOwnerTopBar(){
     }
     function handleExportJPG(){
         console.log("export JPG file.");
-    }
-    function handlePublishMap(){
-        console.log("publish this map");
     }
 
     function handleForkMap(){
@@ -96,8 +94,58 @@ export function MapDetailOwnerTopBar(){
     function handleUnpublishMap(event){
         event.stopPropagation();
         event.preventDefault();
-        mapInfo.unpublishMapById(mapInfo.currentMap._id);
+        mapInfo.unpublishMapById(mapId);
     };
+
+    function renderLikeButtons(){
+        if(!auth?.user){
+            return null;
+        }
+
+        return(
+            <>
+                <IconButton id="like-button" onClick={handleLikeMap}>
+                    {
+                        (mapInfo?.currentMap?.likedUsers?.includes(auth.user._id)) ?
+                            <ThumbUpIcon style={{color:"black"}}></ThumbUpIcon> :
+                            <ThumbUpOffAltIcon style={{color:"black"}}></ThumbUpOffAltIcon>
+                    }
+                    <t style={{color:"black"}}> {likes} </t>
+                </IconButton>
+                <IconButton id="dislike-button" onClick={handleDislikeMap}>
+                    {
+                        (mapInfo?.currentMap?.dislikedUsers?.includes(auth.user._id)) ?
+                            <ThumbDownIcon style={{color:"black"}}></ThumbDownIcon> :
+                            <ThumbDownOffAltIcon style={{color:"black"}}></ThumbDownOffAltIcon>
+                    }
+                    <t style={{color:"black"}}>{dislikes}</t>
+                </IconButton>
+            </>
+        );
+    }
+
+    function renderActionButtons(){
+        let buttonSet = [
+            { text: 'Delete', handler: handleDeleteMap },
+            { text: 'Unpublish', handler: handleUnpublishMap },
+            { text: 'Fork', handler: handleForkMap },
+            { text: 'Share Link', handler:handleShareMap },
+            { text: 'Export/Download', handler: handleExportJPG}
+        ]
+        
+        if(mapId && auth?.user){
+            // logged in but non-owner
+            if(!auth.user.maps?.includes(mapId)){
+                buttonSet = buttonSet.slice(2);
+            }
+        }
+        else{
+            // not logged in -> guest
+            buttonSet = buttonSet.slice(3);
+        }
+
+        return buttonSet.map((btn) => (<Button variant="contained" style={toolButtonStyle} onClick={btn.handler}>{btn.text}</Button>))
+    }
 
     return (
         <AppBar position='static'>
@@ -123,19 +171,16 @@ export function MapDetailOwnerTopBar(){
                     }
                 </Box>
                 <Box className="map-button-container">
-                    <IconButton id="like-button" onClick={handleLikeMap}>
+                    {/* <IconButton id="like-button" onClick={handleLikeMap}>
                         <ThumbUpOffAltIcon style={{color:"black"}}></ThumbUpOffAltIcon>
                         <t style={{color:"black"}}> {likes} </t>
                     </IconButton>
                     <IconButton id="dislike-button" onClick={handleDislikeMap}>
                         <ThumbDownOffAltIcon style={{color:"black"}}></ThumbDownOffAltIcon>
                         <t style={{color:"black"}}>{dislikes}</t>
-                    </IconButton>
-                    <Button variant="contained" style = {toolButtonStyle} onClick={handleDeleteMap}>Delete</Button>
-                    <Button variant="contained" style = {toolButtonStyle} onClick={handleUnpublishMap}>Unpublish</Button>
-                    <Button variant="contained" style = {toolButtonStyle} onClick={handleShareMap}>Share Link</Button>
-                    <Button variant="contained" style = {toolButtonStyle} onClick={handleForkMap}>Fork</Button>
-                    <Button variant="contained" style = {toolButtonStyle} onClick={handleExportJPG}>Export/Download</Button>
+                    </IconButton> */}
+                    { renderLikeButtons() }
+                    { renderActionButtons() }
                 </Box>
             </Toolbar>
         </AppBar>

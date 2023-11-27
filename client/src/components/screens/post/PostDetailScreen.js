@@ -46,14 +46,6 @@ export default function PostDetailScreen() {
     }
   }, [postInfo.currentPost]);
 
-  useEffect(() => {
-    postInfo.getPostById(postId);
-  }, []);
-
-  useEffect(() => {
-    postInfo.getCommentsByCommentIds(postInfo.currentPost?.comments);
-  }, [postInfo.currentPost]);
-
   function handleAllPosts() {
     store.setCurrentView("ALL_POSTS");
     navigate("/community");
@@ -103,7 +95,7 @@ export default function PostDetailScreen() {
     // }
   }
 
-  const isLoggedInUser = auth.user && auth.user.userName === postInfo.currentPost.ownerUserName;
+  const isLoggedInUser = auth.user && postInfo.currentPost && auth.user.userName === postInfo.currentPost.ownerUserName;
 
   function renderButton(){
     if(isLoggedInUser){

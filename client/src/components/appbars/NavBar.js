@@ -5,9 +5,11 @@ import { AppBar, Toolbar, Box, Avatar, Menu, MenuItem } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import AuthContext from '../../contexts/auth';
 import UserContext from '../../contexts/user';
+import GlobalStoreContext from '../../contexts/store';
 
 function NavBar(){
     const { auth } = useContext(AuthContext);
+    const { store } = useContext(GlobalStoreContext);
     const { userInfo } = useContext(UserContext);
 
     const [anchorEl, setAnchorEl] = useState(null);
@@ -24,6 +26,7 @@ function NavBar(){
     };
     
     function handleGoHome(event){
+        store.setCurrentView("USER_HOME");
         navigate('/');
     }
 
