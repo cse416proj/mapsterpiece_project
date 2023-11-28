@@ -1,11 +1,10 @@
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { Box, Card, CardContent, Typography, Chip, Stack } from "@mui/material";
 
 import ActionButtons from "./ActionButtons";
-import MapContext from "../../contexts/map";
+import MapContext from "../../../contexts/map";
 
-function MapCard({mapData, clickHandler, editHandler, deleteHandler}){
+export default function MapCard({mapData, clickHandler, editHandler, deleteHandler}){
     const { mapInfo } = useContext(MapContext);
 
     function handlePublish(event){
@@ -64,5 +63,3 @@ function MapCard({mapData, clickHandler, editHandler, deleteHandler}){
         </Card>
     )
 }
-
-export default MapCard;

@@ -2,9 +2,9 @@ import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button } from '@mui/material';
 
-import AuthContext from '../../../contexts/auth';
-import UserContext from '../../../contexts/user';
-import GlobalStoreContext from '../../../contexts/store';
+import AuthContext from '../../../../contexts/auth';
+import UserContext from '../../../../contexts/user';
+import GlobalStoreContext from '../../../../contexts/store';
 
 function HomeNavCard(){
     const { auth } = useContext(AuthContext);

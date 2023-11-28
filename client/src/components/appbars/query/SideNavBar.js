@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useLocation } from "react-router-dom";
-import { GlobalStoreContext } from "../../contexts/store";
+import { GlobalStoreContext } from "../../../contexts/store";
 
 import {
   Sidebar,

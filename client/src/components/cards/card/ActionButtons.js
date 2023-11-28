@@ -9,10 +9,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
-import AuthContext from "../../contexts/auth";
+import AuthContext from "../../../contexts/auth";
 // import UserContext from "../../contexts/user";
 
-function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHandler, editHandler, isPublished=false, publishHandler=null, unpublishHandler=null }) {
+export default function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHandler, editHandler, isPublished=false, publishHandler=null, unpublishHandler=null }) {
   const { auth } = useContext(AuthContext);
   // const { userInfo } = useContext(UserContext);
 
@@ -130,5 +130,3 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
     </CardActions>
   );
 }
-
-export default ActionButtons;

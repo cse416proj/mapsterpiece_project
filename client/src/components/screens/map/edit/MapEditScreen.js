@@ -3,15 +3,15 @@ import { useParams } from "react-router-dom";
 
 import { Box } from '@mui/material';
 
-import MapEditTopBar from '../../../appbars/MapEditTopBar';
-import MapEditSideBar from '../../../appbars/MapEditSideBar';
+import MapEditTopBar from '../../../appbars/mapEdit/MapEditTopBar';
+import MapEditSideBar from '../../../appbars/mapEdit/MapEditSideBar';
 
-import MapScreen from '../../map/display/MapScreen';
+import MapScreen from '../detail/MapScreen';
 import DeleteMapModal from '../../../modals/DeleteMapModal';
 import MapContext from "../../../../contexts/map";
 import AuthContext from "../../../../contexts/auth";
 
-import { Warning } from "../../../index";
+import { NoAccessWarning } from "../../../index";
 
 export default function MapEditScreen() {
   const { mapInfo } = useContext(MapContext);
@@ -23,7 +23,7 @@ export default function MapEditScreen() {
   }, [mapId]);
 
   if(!auth.user){
-    return <Warning/>
+    return <NoAccessWarning/>
   }
 
   return (

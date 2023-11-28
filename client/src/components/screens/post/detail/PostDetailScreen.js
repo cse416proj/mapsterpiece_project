@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
-import AuthContext from "../../../contexts/auth";
-import { PostContext } from "../../../contexts/post";
-import { GlobalStoreContext } from "../../../contexts/store";
+import AuthContext from "../../../../contexts/auth";
+import { PostContext } from "../../../../contexts/post";
+import { GlobalStoreContext } from "../../../../contexts/store";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -18,7 +18,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { PostComment, Tag, DeletePostModal } from "../../index";
+import { PostComment, Tag, DeletePostModal } from "../../../index";
 
 export default function PostDetailScreen() {
   const navigate = useNavigate();

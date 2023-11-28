@@ -1,13 +1,14 @@
 import React, { useContext, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
-import { DynamicCard, DeletePostModal, DeleteMapModal } from "../../index";
-import HomeNavCard from "./HomeNavCard";
 
-import AuthContext from "../../../contexts/auth";
-import GlobalStoreContext from "../../../contexts/store";
-import MapContext from "../../../contexts/map";
-import PostContext from "../../../contexts/post";
-import UserContext from "../../../contexts/user";
+import { DynamicCard, DeletePostModal, DeleteMapModal } from "../../../index";
+import { HomeNavCard } from "../index";
+
+import AuthContext from "../../../../contexts/auth";
+import GlobalStoreContext from "../../../../contexts/store";
+import MapContext from "../../../../contexts/map";
+import PostContext from "../../../../contexts/post";
+import UserContext from "../../../../contexts/user";
 
 function UserHomeScreen() {
   const { auth } = useContext(AuthContext);

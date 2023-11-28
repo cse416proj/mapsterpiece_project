@@ -6,11 +6,11 @@ import UserCard from "./UserCard";
 import MapCard from "./MapCard";
 import PostCard from "./PostCard";
 
-import MapContext from "../../contexts/map";
-import { PostContext } from "../../contexts/post";
-import { UserContext } from "../../contexts/user";
+import MapContext from "../../../contexts/map";
+import { PostContext } from "../../../contexts/post";
+import { UserContext } from "../../../contexts/user";
 
-import GlobalStoreContext from "../../contexts/store/index";
+import GlobalStoreContext from "../../../contexts/store/index";
 
 export default function DynamicCard({ userData, mapData, postData }) {
   const navigate = useNavigate();

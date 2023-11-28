@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Typography, Accordion, AccordionSummary } from "@mui/material";
-import MapContext from "../../contexts/map";
-import AuthContext from "../../contexts/auth";
+import MapContext from "../../../../contexts/map";
+import AuthContext from "../../../../contexts/auth";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";

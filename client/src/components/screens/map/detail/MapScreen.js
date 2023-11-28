@@ -2,14 +2,12 @@ import { useState, useContext, useEffect, useRef } from "react";
 import { useParams, useLocation } from "react-router-dom";
 
 // import html2canvas from 'html2canvas';
-
-import GeojsonMap from "./GeojsonMap";
-// import KmlMap from './KmlMap';
-
-import MapContext from "../../../../contexts/map";
-import { MapContainer, GeoJSON, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
+
+import MapContext from "../../../../contexts/map";
+import { MapContainer, GeoJSON } from "react-leaflet";
+
 
 function MapScreen() {
   const location = useLocation();
@@ -53,29 +51,26 @@ function MapScreen() {
 
     let max = -1;
 
-    for (const obj of mapContentRef?.current) {
+    for(const obj of mapContentRef?.current){
       const idNums = Object.keys(obj.properties)
         .filter((key) => key.includes("ID"))
         .map((id) => parseInt(id.charAt(3)));
 
       const currMax = Math.max(...idNums);
 
-      if (!isNaN(currMax)) {
+      if(!isNaN(currMax)){
         max = Math.max(max, currMax);
       }
     }
 
-    let name = (max === 3)
-      ? "name_3"
-      : (max === 2)
-      ? "name_2"
-      : (max === 1)
-      ? "name_1"
-      : (max === 0)
-      ? "name_0"
-      : "name";
-    
-      setRegionNameLevel(name);
+    let name = (
+      (max === 3) ? "name_3"
+        : (max === 2) ? "name_2"
+          : (max === 1) ? "name_1"
+            : (max === 0) ? "name_0"
+              : "name"
+    );
+    setRegionNameLevel(name);
   }, [map]);
 
   useEffect(() => {
