@@ -9,8 +9,8 @@ import {
   Toolbar,
 } from "@mui/material";
 
-import { Tags } from "../index";
-import MapContext from "../../contexts/map";
+import { Tags } from "../../index";
+import MapContext from "../../../contexts/map";
 import { CompactPicker } from "react-color";
 
 function MapEditSideBar() {

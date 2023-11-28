@@ -7,11 +7,11 @@ import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 
-import { Tag } from "../index";
+import { Tag } from "../../index";
 
-import AuthContext from '../../contexts/auth';
-import MapContext from '../../contexts/map';
-import GlobalStoreContext from '../../contexts/store';
+import AuthContext from '../../../contexts/auth';
+import MapContext from '../../../contexts/map';
+import GlobalStoreContext from '../../../contexts/store';
 
 export default function MapDetailTopBar(){
     const BackButtonStyle = {

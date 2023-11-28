@@ -2,9 +2,9 @@ import React, { useState, useContext, useEffect } from 'react'
 import { Box, Typography, Button, Menu, MenuItem, AppBar, Toolbar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import AuthContext from '../../contexts/auth';
-import MapContext from '../../contexts/map';
-import GlobalStoreContext from '../../contexts/store';
+import AuthContext from '../../../contexts/auth';
+import MapContext from '../../../contexts/map';
+import GlobalStoreContext from '../../../contexts/store';
 
 export default function MapEditTopBar() {
     const BackButtonStyle = {

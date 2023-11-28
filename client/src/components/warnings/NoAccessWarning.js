@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
 import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
 
-export default function Warning(){
+export default function NoAccessWarning(){
     const navigate = useNavigate();
 
     const handleReturn = () => {

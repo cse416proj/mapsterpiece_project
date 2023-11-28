@@ -6,13 +6,13 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
-import { GlobalStoreContext } from "../../../contexts/store";
-import { PostContext } from "../../../contexts/post";
-import AuthContext from "../../../contexts/auth";
+import { GlobalStoreContext } from "../../../../contexts/store";
+import { PostContext } from "../../../../contexts/post";
+import AuthContext from "../../../../contexts/auth";
 
 import PostSubComment from './PostSubComment';
 import PostCommentInput from "./PostCommentInput";
-import { DeleteCommentModal } from "../../index";
+import { DeleteCommentModal } from "../../../index";
 
 export default function PostComment({payload, index}) {
   const { postInfo } = useContext(PostContext);

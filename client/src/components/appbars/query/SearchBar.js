@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { AppBar, Toolbar, Box, Typography, Paper, InputBase, Menu, MenuItem } from "@mui/material";
-import { GlobalStoreContext } from "../../contexts/store";
+import { GlobalStoreContext } from "../../../contexts/store";
 
 import SearchIcon from "@mui/icons-material/Search";
 import SortIcon from '@mui/icons-material/Sort';
