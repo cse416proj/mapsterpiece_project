@@ -1,3 +1,4 @@
+import Warning from "./Warning";
 import NoAccessWarning from "./NoAccessWarning";
 
-export { NoAccessWarning }
+export { Warning, NoAccessWarning }

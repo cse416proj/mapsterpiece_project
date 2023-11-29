@@ -4,7 +4,6 @@ import SearchScreen from './screens/search/SearchScreen';
 import CreateScreen from './screens/create/CreateScreen';
 import CommunityScreen from './screens/community/CommunityScreen';
 
-export { Tag, Tags } from './screens/commonProps';
 export { Hero, UserHomeScreen, HomeScreen } from './screens/home';
 
 export {
@@ -35,8 +34,16 @@ export {
 } from './modals';
 
 export {
+    Warning,
     NoAccessWarning
 } from './warnings';
+
+export {
+    Tag,
+    Tags,
+    CommentInput,
+    CommentCard
+} from './screens/commonProps';
 
 export {
     Login,

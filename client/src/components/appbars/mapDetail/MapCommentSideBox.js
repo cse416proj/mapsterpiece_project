@@ -11,7 +11,7 @@ export default function MapCommentSideBox() {
     const { mapInfo } = useContext(MapContext);
     const { mapId } = useParams();
 
-    const [isToolbarExpanded, setIsToolbarExpanded] = useState(false);
+    const [isCommentBoxExpanded, setIsCommentBoxExpanded] = useState(false);
 
     useEffect(() => {
       mapInfo.getMapById(mapId);
@@ -24,8 +24,8 @@ export default function MapCommentSideBox() {
     }, [mapInfo?.currentMap]);
 
     const boxStyle = {
-      border: (isToolbarExpanded) ? '1px solid #ddd' : 'none',
-      backgroundColor: (isToolbarExpanded) ? '#ebf9f5' : 'transparent',
+      border: (isCommentBoxExpanded) ? '1px solid #ddd' : 'none',
+      backgroundColor: (isCommentBoxExpanded) ? '#ebf9f5' : 'transparent',
       '& .MuiToolbarGutters': {
         paddingLeft: 0,
         paddingRight: 0,
@@ -33,18 +33,18 @@ export default function MapCommentSideBox() {
     };
 
     const toggleCommentBox = () => {
-      setIsToolbarExpanded(!isToolbarExpanded);
+      setIsCommentBoxExpanded(!isCommentBoxExpanded);
     };
 
     function renderToolBar(){
-      if(isToolbarExpanded){
+      if(isCommentBoxExpanded){
         return <MapCommentSideBar toggleCommentBox={toggleCommentBox}/>
       }
       return null;
     }
 
     function renderToolBtn(){
-      if(!isToolbarExpanded){
+      if(!isCommentBoxExpanded){
         return(
           <Button
             id='expand-comment-btn'

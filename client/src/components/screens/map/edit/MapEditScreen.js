@@ -11,7 +11,7 @@ import DeleteMapModal from '../../../modals/DeleteMapModal';
 import MapContext from "../../../../contexts/map";
 import AuthContext from "../../../../contexts/auth";
 
-import { NoAccessWarning } from "../../../index";
+import { Warning } from "../../../index";
 
 export default function MapEditScreen() {
   const { mapInfo } = useContext(MapContext);
@@ -23,7 +23,7 @@ export default function MapEditScreen() {
   }, [mapId]);
 
   if(!auth.user){
-    return <NoAccessWarning/>
+    return <Warning message='You have no permission to access this page.'/>
   }
 
   return (

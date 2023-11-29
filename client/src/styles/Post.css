@@ -127,7 +127,7 @@
 #post-comments{
     margin-top: 2vw;
     height: 30vh;
-    overflow: scroll;
+    overflow-Y: auto;
 }
 
 .commentUserInfo {

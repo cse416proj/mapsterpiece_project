@@ -14,164 +14,72 @@ export function MapContextProvider({children}){
   const navigate = useNavigate();
   
   const [mapInfo, setMapInfo] = useState({
-    title: "",
-    fileFormat: "",
-    fileContent: "",
     currentMap: null,
-    tags: [],
-    shpBuffer: null,
-    dbfBuffer: null,
-    errorMessage: "",
     allMapsByUser: null,
     currentRegionColor: "#fff",
     allCommentsForMap: [],
+    currentComment: null,
+    errorMessage: "",
     // download: false,
     // downloadFormat: ''
   });
 
-  const ActionType = {
-    SET_MAP_TITLE: "SET_MAP_TITLE",
-    SET_MAP_TAGS: "SET_MAP_TAGS",
-    SET_FILE_FORMAT: "SET_FILE_FORMAT",
-    SET_FILE_CONTENT: "SET_FILE_CONTENT",
-    SET_SHP_BUFFER: "SET_SHP_BUFFER",
-    SET_DBF_BUFFER: "SET_DBF_BUFFER",
+  const MapActionType = {
     UPLOAD_MAP: "UPLOAD_MAP",
     SET_CURRENT_MAP: "SET_CURRENT_MAP",
     LOAD_ALL_MAPS_FROM_USER: "LOAD_ALL_MAPS_FROM_USER",
     SET_CURRENT_REGION_COLOR: "SET_CURRENT_REGION_COLOR",
+    SET_CURRENT_COMMENT: "SET_CURRENT_COMMENT",
+    SET_ERROR_MSG: "SET_ERROR_MSG"
     // SET_DOWNLOAD_FORMAT: 'SET_DOWNLOAD_FORMAT',
     // CANCEL_DOWNLOAD: 'CANCEL_DOWNLOAD',
   };
 
-  const reducer = (action) => {
+  const mapReducer = (action) => {
     const { type, payload } = action;
     // console.log(payload);
     switch (type) {
-      case ActionType.SET_MAP_TITLE:
-        return setMapInfo((prevMapInfo) => ({
-          ...prevMapInfo,
-          title: payload,
-        }));
-      case ActionType.SET_MAP_TAGS:
-        return setMapInfo((prevMapInfo) => ({
-          ...prevMapInfo,
-          tags: payload,
-        }));
-      case ActionType.SET_FILE_FORMAT:
-        return setMapInfo((prevMapInfo) => ({
-          ...prevMapInfo,
-          fileFormat: payload,
-        }));
-      case ActionType.SET_FILE_CONTENT:
-        return setMapInfo((prevMapInfo) => ({
-          ...prevMapInfo,
-          fileContent: payload,
-        }));
-      case ActionType.SET_SHP_BUFFER:
-        return setMapInfo((prevMapInfo) => ({
-          ...prevMapInfo,
-          shpBuffer: payload,
-        }));
-      case ActionType.SET_DBF_BUFFER:
-        return setMapInfo((prevMapInfo) => ({
-          ...prevMapInfo,
-          dbfBuffer: payload,
-        }));
-      case ActionType.UPLOAD_MAP:
-        return setMapInfo((prevMapInfo) => ({
-          ...prevMapInfo,
-          // title: '',
-          // fileFormat: '',
-          // fileContent: '',
-          // tags: [],
-          // shpBuffer: null,
-          // dbfBuffer: null,
-          currentMap: payload,
-        }));
-      case ActionType.SET_CURRENT_MAP:
+      case MapActionType.UPLOAD_MAP:
         return setMapInfo((prevMapInfo) => ({
           ...prevMapInfo,
           currentMap: payload,
         }));
-      // case ActionType.SET_DOWNLOAD_FORMAT:
-      //     return setMapInfo((prevMapInfo) => ({
-      //         ...prevMapInfo,
-      //         download: true,
-      //         downloadFormat: payload
-      //     }));
-      // case ActionType.CANCEL_DOWNLOAD:
-      //     return setMapInfo((prevMapInfo) => ({
-      //         ...prevMapInfo,
-      //         download: false,
-      //         downloadFormat: ''
-      //     }));
-      case ActionType.LOAD_ALL_MAPS_FROM_USER:
+      case MapActionType.SET_CURRENT_MAP:
+        return setMapInfo((prevMapInfo) => ({
+          ...prevMapInfo,
+          currentMap: payload,
+          errorMessage: ""
+        }));
+      case MapActionType.LOAD_ALL_MAPS_FROM_USER:
         return setMapInfo((prevMapInfo) => ({
           ...prevMapInfo,
           allMapsByUser: payload,
+          errorMessage: ""
         }));
-      case ActionType.SET_CURRENT_REGION_COLOR:
+      case MapActionType.SET_CURRENT_REGION_COLOR:
         return setMapInfo((prevMapInfo) => ({
           ...prevMapInfo,
           currentRegionColor: payload,
+          errorMessage: ""
+        }));
+      case MapActionType.SET_CURRENT_COMMENT:
+        return setMapInfo((prevMapInfo) => ({
+          ...prevMapInfo,
+          currentComment: payload,
+        }));
+      case MapActionType.SET_ERROR_MSG:
+        return setMapInfo((prevMapInfo) => ({
+          ...prevMapInfo,
+          errorMessage: payload
         }));
       default:
         return mapInfo;
     }
   };
 
-  // set title for mapInfo
-  mapInfo.setTitle = (title) => {
-    reducer({
-      type: ActionType.SET_MAP_TITLE,
-      payload: title,
-    });
-  };
-
-  // set fileFormat(shp/geojson/kml) for mapInfo
-  mapInfo.setFileFormat = (fileFormat) => {
-    reducer({
-      type: ActionType.SET_FILE_FORMAT,
-      payload: fileFormat,
-    });
-  };
-
-  // set tags for mapInfo
-  mapInfo.setTags = (tags) => {
-    reducer({
-      type: ActionType.SET_MAP_TAGS,
-      payload: tags,
-    });
-  };
-
-  // set read fileContent
-  mapInfo.setFileContent = (fileContent) => {
-    reducer({
-      type: ActionType.SET_FILE_CONTENT,
-      payload: fileContent,
-    });
-  };
-
-  // set shapefile buffer
-  mapInfo.setShpBuffer = (shpBuffer) => {
-    reducer({
-      type: ActionType.SET_SHP_BUFFER,
-      payload: shpBuffer,
-    });
-  };
-
-  // set database file buffer
-  mapInfo.setDbfBuffer = (dbfBuffer) => {
-    reducer({
-      type: ActionType.SET_DBF_BUFFER,
-      payload: dbfBuffer,
-    });
-  };
-
   mapInfo.setCurrentRegionColor = (color) => {
-    reducer({
-      type: ActionType.SET_CURRENT_REGION_COLOR,
+    mapReducer({
+      type: MapActionType.SET_CURRENT_REGION_COLOR,
       payload: color,
     });
   };
@@ -190,15 +98,15 @@ export function MapContextProvider({children}){
         const response = await api.createMap(userName, title, fileFormat, mapContent, tags);
         if (response.status === 201) {
           navigate("/");
-          reducer({
-            type: ActionType.UPLOAD_MAP,
+          mapReducer({
+            type: MapActionType.UPLOAD_MAP,
             payload: {
               currentMap: mapContent,
             },
           });
         } else {
-          reducer({
-            type: ActionType.UPLOAD_MAP,
+          mapReducer({
+            type: MapActionType.UPLOAD_MAP,
             payload: {
               currentMap: null,
               errorMessage: response.data.errorMessage,
@@ -219,8 +127,8 @@ export function MapContextProvider({children}){
     console.log("setCurrentMap");
     console.log(map);
 
-    reducer({
-      type: ActionType.SET_CURRENT_MAP,
+    mapReducer({
+      type: MapActionType.SET_CURRENT_MAP,
       payload: map,
     });
   };
@@ -275,13 +183,19 @@ export function MapContextProvider({children}){
       console.log('mapInfo.getAllUserMaps');
 
       const response = await api.getAllUserMaps();
-      const mapIds = response.data.maps;
+      if(response?.status === 200){
+        const mapIds = response.data.maps;
 
-      const maps = await Promise.all(mapIds.map(mapId => mapInfo.getMapById(mapId)));
-      reducer({
-        type: ActionType.LOAD_ALL_MAPS_FROM_USER,
-        payload: maps.filter(map => map !== null),
-      });
+        if(!mapIds){
+          return;
+        }
+
+        const maps = await Promise.all(mapIds.map(mapId => mapInfo.getMapById(mapId)));
+        mapReducer({
+          type: MapActionType.LOAD_ALL_MAPS_FROM_USER,
+          payload: maps.filter(map => map !== null),
+        });
+      }
     }
     catch (error) {
       console.error('Error fetching user maps:', error);
@@ -289,21 +203,28 @@ export function MapContextProvider({children}){
   };
 
   mapInfo.getMapById = async function(mapId) {
-    const response = await api.getMapById(mapId);
-    console.log("real map object: ", response.data.map);
-    setMapInfo( (prevMapInfo) => ({
-      ...prevMapInfo,
-      map: response.data,
-      })
-    );
-    return response.data.map;
+    try{
+      const response = await api.getMapById(mapId);
+      console.log("real map object: ", response.data.map);
+
+      mapReducer({
+        type: MapActionType.SET_CURRENT_MAP,
+        payload: response.data.map
+      });
+    }
+    catch (error) {
+      mapReducer({
+        type: MapActionType.SET_ERROR_MSG,
+        payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error fetching current map from database"
+      });
+    }
   }
 
   mapInfo.getAllPublishedMapsFromGivenUser = async function(userId){
     const response = await api.getAllPublishedMapsFromGivenUser(userId);
     if(response.status === 200){
-      reducer({
-        type: ActionType.LOAD_ALL_MAPS_FROM_USER,
+      mapReducer({
+        type: MapActionType.LOAD_ALL_MAPS_FROM_USER,
         payload: response.data.maps
       });
     }
@@ -311,28 +232,6 @@ export function MapContextProvider({children}){
       console.log(response);
     }
   }
-
-  mapInfo.getAllUserMaps = async function () {
-    try {
-      const response = await api.getAllUserMaps();
-      reducer({
-        type: ActionType.LOAD_ALL_MAPS_FROM_USER,
-        payload: response.data,
-      });
-    } catch (error) {
-      console.error("Error fetching user maps:", error);
-    }
-  };
-
-  mapInfo.getMapById = async function (mapId) {
-    const response = await api.getMapById(mapId);
-    console.log("real map object: ", response.data.map);
-    setMapInfo((prevMapInfo) => ({
-      ...prevMapInfo,
-      currentMap: response.data.map,
-    }));
-    return response.data.map;
-  };
 
   mapInfo.updateMapContent = function (index, color) {
     let oldMap = mapInfo.currentMap;
@@ -374,52 +273,44 @@ export function MapContextProvider({children}){
     }
   };
 
-  // mapInfo.cancelDownload = () => {
-  //       reducer({
-  //           type: ActionType.CANCEL_DOWNLOAD,
-  //           payload: null
-  //       })
-  //   }
-
-  //   mapInfo.setDownloadFormat = (downloadFormat) => {
-  //       reducer({
-  //           type: ActionType.SET_DOWNLOAD_FORMAT,
-  //           payload: downloadFormat
-  //       })
-  //   }
-
-
   mapInfo.getAllCommentsFromPublishedMap = async function (mapId) {
+    if (!mapInfo.currentMap || !mapId) {
+      mapReducer({
+        type: MapActionType.SET_ERROR_MSG,
+        payload: "Map does not exist"
+      });
+      return;
+    }
+    
     try {
-        if (!mapInfo.currentMap || !mapId) {
-            return setMapInfo({
-                ...mapInfo,
-                allCommentsForMap: [],
-            });
+      const response = await api.getMapById(mapId);
+      if(response?.status === 200){
+        const map = response?.data.map;
+        if(!map.isPublished){
+          return setMapInfo({
+            ...mapInfo,
+            allCommentsForMap: [],
+            errorMessage: "Map is not published"
+          });
         }
-        // console.log("mapId 580", mapId);
-        // console.log(mapInfo.currentMap);
-
-        const map = await api.getMapById(mapId);
-        if(!map.data.map.isPublished){
+        
+        if(map.comments){
+          const response = await api.getAllCommentsFromPublishedMap(mapId);
+          if (response.status === 200) {
             return setMapInfo({
-                ...mapInfo,
-                allCommentsForMap: [],
+              ...mapInfo,
+              allCommentsForMap: response.data.comments,
             });
+          }
         }
-
-        const response = await api.getAllCommentsFromPublishedMap(mapId);
-
-        if (response.status === 200) {
-            return setMapInfo({
-                ...mapInfo,
-                allCommentsForMap: response.data.comments,
-            });
-        } else {
-            console.error("Unexpected response:", response);
-        }
-    } catch (error) {
-        console.error("Error fetching comments:", error);
+      }
+    }
+    catch (error) {
+      mapReducer({
+        type: MapActionType.SET_ERROR_MSG,
+        payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error fetching current map or its comments from database"
+      });
+      return;
     }
   };
 
@@ -436,7 +327,19 @@ export function MapContextProvider({children}){
     mapInfo.getMapById(mapId);
 
     console.log(mapInfo.currentMap);
-}
+  }
+
+  mapInfo.setCurrentComment = function (commentPayload) {
+    mapReducer({
+      type: MapActionType.SET_CURRENT_COMMENT,
+      payload: commentPayload,
+    });
+  };
+
+  mapInfo.deleteCommentById = async function (commentId) {
+    console.log(`delete map comment by id: ${commentId}`);
+  };
+
   return (
     <MapContext.Provider value={{ mapInfo }}>{children}</MapContext.Provider>
   );

@@ -1,5 +1,5 @@
 import { useContext, useRef, useState } from 'react';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Divider } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 import CommentInput from '../../screens/commonProps/input/CommentInput';
@@ -12,7 +12,7 @@ export default function MapCommentSideBar({ toggleCommentBox }){
     const { mapInfo } = useContext(MapContext);
     const { auth } = useContext(AuthContext);
 
-    // const inputRef = useRef(null);
+    const inputRef = useRef(null);
     const [commentInput, setCommentInput] = useState('');
 
     const handleInputChange = (event) => {
@@ -26,10 +26,10 @@ export default function MapCommentSideBar({ toggleCommentBox }){
             mapInfo.createMapComment(mapId, auth?.user?.userName, commentInput);
             setCommentInput('');
 
-            // // Reset the input value using the ref
-            // if(inputRef.current){
-            //     inputRef.current.value = '';
-            // }
+            // Reset the input value using the ref
+            if(inputRef.current){
+                inputRef.current.value = '';
+            }
         }
         else
         {
@@ -47,16 +47,21 @@ export default function MapCommentSideBar({ toggleCommentBox }){
             </Box>
 
             <CommentInput
+                type='comment'
                 commentInput={commentInput} 
-                // inputRef={inputRef}
+                inputRef={inputRef}
                 handleInputChange={handleInputChange}
                 handleSubmitComment={handleSubmitComment}
             />
 
+            <Divider id='comment-section-divider'>
+                Comment Section
+            </Divider>
+
             <Box id='map-comments-container'>
                 {
                     mapInfo?.allCommentsForMap?.map((pair, index) => (
-                        <MapComment id='map-comment' key={`comment-${index}`} payload={pair} index={index}/>
+                        <MapComment key={`comment-${index}`} payload={pair} index={index}/>
                     ))
                 }
             </Box>

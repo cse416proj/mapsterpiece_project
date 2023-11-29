@@ -44,7 +44,7 @@
     max-width: 800px;
     max-height: 80vh;
     background: var(--swatch-complement);
-    overflow: auto;
+    /* overflow: auto; */
     cursor: default;
     border-width: 0px;
     border-style: groove;

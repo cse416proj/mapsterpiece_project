@@ -35,20 +35,31 @@ export default function MapDetailTopBar(){
 
     const [title, setTitle] = useState('');
     const [tags, setTags] = useState([]);
+    const [likedUsers, setLikedUsers] = useState([]);
+    const [dislikedUsers, setDislikedUsers] = useState([]);
+
+    const [likes, setLikes] = useState(0);
+    const [dislikes, setDislikes] = useState(0);
+
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
     useEffect(() => {
-        if(mapInfo){
-            if(mapInfo.currentMap){
-                setTitle(mapInfo.currentMap.title);
-                setTags(mapInfo.currentMap.tags);
-            }
+        if(mapInfo?.currentMap){
+            setTitle(mapInfo.currentMap.title);
+            setTags(mapInfo.currentMap.tags);
+            setLikedUsers(mapInfo.currentMap.likedUsers);
+            setDislikedUsers(mapInfo.currentMap.dislikedUsers);
         }
-    }, []);
+    }, [mapInfo?.currentMap]);
 
-    let dislikes = 0
-    let likes = 0
+    useEffect(() => {
+        setLikes(likedUsers.length);
+    }, [likedUsers]);
+
+    useEffect(() => {
+        setDislikes(dislikedUsers.length);
+    }, [dislikedUsers]);
 
     function handleMyMaps(){
         userInfo.setCurrentUser(auth.user);
@@ -81,19 +92,16 @@ export default function MapDetailTopBar(){
     };
 
     function handleLikeMap(){
-        likes = likes + 1;
-        console.log("Likes =" + likes);
+        setLikes(likes+1);
     }
 
     function handleDislikeMap(){
-        dislikes = dislikes + 1;
-        console.log("Dislikes = " + dislikes);
+        setDislikes(dislikes+1);
     }
 
     function handleDeleteMap(event) {
         event.stopPropagation();
         event.preventDefault();
-        console.log('delete map')
         store.markMapForDeletion(mapInfo.currentMap);
     }
 
@@ -117,7 +125,7 @@ export default function MapDetailTopBar(){
                             <ThumbUpIcon style={{color:"black"}}></ThumbUpIcon> :
                             <ThumbUpOffAltIcon style={{color:"black"}}></ThumbUpOffAltIcon>
                     }
-                    <t style={{color:"black"}}> {likes} </t>
+                    <Typography style={{color:"black"}}> {likes} </Typography>
                 </IconButton>
                 <IconButton id="dislike-button" onClick={handleDislikeMap}>
                     {
@@ -125,7 +133,7 @@ export default function MapDetailTopBar(){
                             <ThumbDownIcon style={{color:"black"}}></ThumbDownIcon> :
                             <ThumbDownOffAltIcon style={{color:"black"}}></ThumbDownOffAltIcon>
                     }
-                    <t style={{color:"black"}}>{dislikes}</t>
+                    <Typography style={{color:"black"}}>{dislikes}</Typography>
                 </IconButton>
             </>
         );
@@ -159,18 +167,24 @@ export default function MapDetailTopBar(){
     return (
         <AppBar position='static'>
             <Toolbar className="map-screen-topbar">
-                {auth.user? 
-                 <Button
-                    style = {BackButtonStyle}
-                    onClick={handleMyMaps}>
-                    &lt;&lt; My Maps
-                </Button>
-                : <Button
-                style = {BackButtonStyle}
-                onClick = {handleCommunity}>
-                    &lt;&lt; Back to Community
-                </Button>
-            }
+                {(auth.user) ? 
+                    (
+                        <Button
+                            style = {BackButtonStyle}
+                            onClick={handleMyMaps}
+                        >
+                            &lt;&lt; My Maps
+                        </Button>
+                    ) :
+                    (
+                        <Button
+                            style = {BackButtonStyle}
+                            onClick = {handleCommunity}
+                        >
+                            &lt;&lt; Back to Community
+                        </Button>
+                    )
+                }
                
                 <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>{title}</Typography>
                 <Box className='flex-row' id='tags-container'>
@@ -188,14 +202,6 @@ export default function MapDetailTopBar(){
                     }
                 </Box>
                 <Box className="map-button-container">
-                    {/* <IconButton id="like-button" onClick={handleLikeMap}>
-                        <ThumbUpOffAltIcon style={{color:"black"}}></ThumbUpOffAltIcon>
-                        <t style={{color:"black"}}> {likes} </t>
-                    </IconButton>
-                    <IconButton id="dislike-button" onClick={handleDislikeMap}>
-                        <ThumbDownOffAltIcon style={{color:"black"}}></ThumbDownOffAltIcon>
-                        <t style={{color:"black"}}>{dislikes}</t>
-                    </IconButton> */}
                     { renderLikeButtons() }
                     { renderActionButtons() }
                 </Box>

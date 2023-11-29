@@ -164,10 +164,6 @@ input[type=file]::file-selector-button {
     background-color: var(--primary-color-hover);
     color: white;
 }
-  
-#map-viewer{
-    height: 91vh;
-}
 
 .loadingOverlay{
     z-index: 1;

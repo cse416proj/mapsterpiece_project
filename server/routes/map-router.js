@@ -7,7 +7,6 @@ router.post('/create', auth.verify, MapController.createMap);
 router.get('/get/:id', MapController.getMapById);
 router.put('/publishMap/:id', auth.verify, MapController.publishMapById);
 router.put('/unpublishMap/:id', auth.verify, MapController.unpublishMapById);
-// router.put('/update/:id', auth.verify, MapController.updateMapById);
 router.delete('/delete/:id', auth.verify, MapController.deleteMapById);
 router.get('/allMaps', auth.verify, MapController.getAllMapsFromCurrentUser);
 router.put('/updateMap/:id', auth.verify, MapController.updateMapById);
@@ -16,10 +15,9 @@ router.put('/updateMap/:id', auth.verify, MapController.updateMapById);
 router.get('/allPublicMaps/:userId', MapController.getAllPublishedMapsFromGivenUser);
 
 router.post('/createMapComment/:mapId', auth.verify, MapController.createMapComment);
+router.delete('/deleteMapComment/:commentId', auth.verify, MapController.deleteMapCommentById);
 
 // no auth needed because public can view comments
 router.get('/allMapComments/:mapId', MapController.getAllCommentsFromPublishedMap);
-
-router.delete('/deleteMapComment/:commentId', auth.verify, MapController.deleteMapCommentById);
 
 module.exports = router;
