@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import AuthContext from '../../../contexts/auth';
 import MapContext from '../../../contexts/map';
+import UserContext from '../../../contexts/user';
 import GlobalStoreContext from '../../../contexts/store';
 
 export default function MapEditTopBar() {
@@ -20,6 +21,7 @@ export default function MapEditTopBar() {
 
     const { auth } = useContext(AuthContext);
     const { mapInfo } = useContext(MapContext);
+    const { userInfo } = useContext(UserContext);
     const { store } = useContext(GlobalStoreContext);
     
     const navigate = useNavigate();
@@ -37,6 +39,7 @@ export default function MapEditTopBar() {
     }, []);
 
     function handleMyMaps(){
+        userInfo.setCurrentUser(auth.user);
         navigate(`/profile/${auth.user._id}`);
     }
     function handleExportPNG(){

@@ -1,18 +1,24 @@
-import React, { useContext, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Box, Typography, Accordion, AccordionSummary } from "@mui/material";
-import MapContext from "../../../../contexts/map";
-import AuthContext from "../../../../contexts/auth";
+import { useContext, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Box, Typography, Card, CardContent, CardActions, Collapse, IconButton, Button } from '@mui/material';
 
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
-export default function MapComment(payload, index) {
+import MapContext from '../../../../contexts/map';
+import AuthContext from '../../../../contexts/auth';
+
+export default function MapComment({payload, index}) {
   const { mapInfo } = useContext(MapContext);
   const { auth } = useContext(AuthContext);
+  // const { userInfo } = useContext(UserContext);
+  // const navigate = useNavigate();
+
   const { mapId } = useParams();
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     mapInfo.getMapById(mapId);
@@ -24,59 +30,76 @@ export default function MapComment(payload, index) {
     }
   }, [mapInfo.currentMap]);
 
-  payload = payload.payload;
+  // function handleVisitProfile(event){
+  //   event.stopPropagation();
+  //   event.preventDefault();
+  //   userInfo.setCurrentUser(auth.user);
+  //   navigate(`/profile/${auth.user._id}`);
+  // }
+
+  const handleExpandComments = () => {
+    setExpanded(!expanded);
+  };
 
   const deleteHandler = () => {
-    console.log("handle delete comment");
+    console.log('handle delete comment');
   };
 
-  const handlePlusIconClick = () => {
-    console.log("handle add subcomment");
+  const handleAddSubcomments = () => {
+    console.log('handle add subcomment');
   };
+
+  function renderDeleteBtn(){
+    if(auth.loggedIn){
+      return <IconButton><DeleteForeverOutlinedIcon onClick={deleteHandler}/></IconButton>
+    }
+    return null;
+  }
+
+  function renderCardActions(){
+    let expandIcon = (expanded) ? <ExpandLessIcon/> : <ExpandMoreIcon/>;
+
+    return(
+      <Box class='flex-row' id='card-actions'>
+        {
+          (auth.loggedIn) ?
+            <Button id='reply-button'>
+              <ChatBubbleOutlineIcon onClick={handleAddSubcomments}/>
+              <Typography>Reply</Typography>
+            </Button> :
+            null
+        }
+        <IconButton onClick={handleExpandComments}>
+          { expandIcon }
+        </IconButton>
+      </Box>
+    )
+  }
 
   return (
-    <div>
-      <Accordion
-        sx={{
-          //   bgcolor: "#ddebe4",
-          bgcolor: "white",
-          width: "92%",
-          marginBottom: "2vh",
-          marginTop: "2vh",
-          border: "2px solid #ddebe4",
-          left: "4%",
-        }}
-      >
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Box
-            className="accordionSummary"
-            sx={{ width: "90%", margin: "auto" }}
-          >
-            <Box>
-              <Box className="commentUserInfo">
-                <AccountCircleIcon />
-                <Typography
-                  style={{
-                    textAlign: `start`,
-                    padding: `10px`,
-                    fontWeight: `bold`,
-                  }}
-                >
-                  {payload.commenterUserName}
-                </Typography>
-                <DeleteForeverOutlinedIcon onClick={deleteHandler} />
-              </Box>
-
-              <Typography style={{ textAlign: `start`, padding: `10px` }}>
-                {payload.content}
-              </Typography>
+    <Card style={{ marginBottom: '1.5vh' }}>
+      <CardContent style={{height: '7.5vh'}}>
+        <Box>
+          <Box className='flex-row' id='comment-user-info-container'>
+            <Box className='flex-row' id='comment-user-info'>
+              <AccountCircleIcon/>
+              <Typography id='comment-owner-name'> {payload?.commenterUserName} </Typography>
             </Box>
-            {auth.loggedIn ? <AddIcon onClick={handlePlusIconClick} /> : null}
+            { renderDeleteBtn() }
           </Box>
-        </AccordionSummary>
-        {/* more about subcomments */}
-      </Accordion>
-      {/* more about subcomments */}
-    </div>
+          <Typography id='comment'>
+            {payload?.content}
+          </Typography>
+        </Box>
+      </CardContent>
+      <CardActions disableSpacing>
+        { renderCardActions() }
+      </CardActions>
+      <Collapse in={expanded} timeout='auto' unmountOnExit>
+        <CardContent>
+          hi
+        </CardContent>
+      </Collapse>
+    </Card>
   );
 }

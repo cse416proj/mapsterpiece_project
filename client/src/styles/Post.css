@@ -131,9 +131,11 @@
 }
 
 .commentUserInfo {
+    width: 12.5vw;
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-evenly;
 }
 
 .accordionSummary {

@@ -391,7 +391,7 @@ export function MapContextProvider({children}){
 
   mapInfo.getAllCommentsFromPublishedMap = async function (mapId) {
     try {
-        if (!mapInfo.currentMap || !mapId || !auth.user) {
+        if (!mapInfo.currentMap || !mapId) {
             return setMapInfo({
                 ...mapInfo,
                 allCommentsForMap: [],

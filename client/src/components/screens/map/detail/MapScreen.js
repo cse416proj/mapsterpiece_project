@@ -6,8 +6,7 @@ import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
 
 import MapContext from "../../../../contexts/map";
-import { MapContainer, GeoJSON } from "react-leaflet";
-
+import { MapContainer } from "react-leaflet";
 
 function MapScreen() {
   const location = useLocation();
@@ -18,9 +17,8 @@ function MapScreen() {
   const mapContentRef = useRef(null);
   const geoJsonRef = useRef(null);
 
-  const [canColor, setCanColor] = useState(false);
   const colorRef = useRef();
-
+  const [editMode, setEditMode] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const [regionNameLevel, setRegionNameLevel] = useState("");
 
@@ -31,7 +29,7 @@ function MapScreen() {
   }, [mapId]);
 
   useEffect(() => {
-    setCanColor((location.pathname.includes("map-detail") ? false : true));
+    setEditMode(location.pathname.includes("map-detail") ? false : true)
   }, [location]);
 
   useEffect(() => {
@@ -93,7 +91,7 @@ function MapScreen() {
   const handleFeatureClick = (event) => {
     const layer = event.sourceTarget;
 
-    if(canColor){
+    if(editMode){
       event.target.setStyle({
         fillColor: colorRef.current,
         fillOpacity: 1,
@@ -108,7 +106,7 @@ function MapScreen() {
     const index = mapContentRef.current.findIndex(
       (region) => region.properties[regionNameLevel] === layer.feature.properties[regionNameLevel]
     );
-    if (index !== -1 && canColor) {
+    if (index !== -1 && editMode) {
       mapContentRef.current[index].properties.fillColor = colorRef.current;
     }
 
@@ -137,7 +135,6 @@ function MapScreen() {
     })
     .openTooltip();
     
-
     if (layer.feature.properties.fillColor) {
       layer.setStyle({
         fillColor: layer.feature.properties.fillColor,
@@ -159,16 +156,16 @@ function MapScreen() {
     <>
       <MapContainer
         ref={mapContainerRef}
-        style={{ height: "91vh" }}
         id="map-viewer"
+        style={{ width: (editMode) ? '70vw' : '100vw' }}
         center={[0, 0]}
         zoom={2}
       >
-        <GeoJSON
+        {/* <GeoJSON
           data={mapContentRef?.current}
           onEachFeature={onEachFeature}
           ref={geoJsonRef}
-        />
+        /> */}
       </MapContainer>
     </>
   );

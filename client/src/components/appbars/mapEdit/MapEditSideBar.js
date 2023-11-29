@@ -35,10 +35,9 @@ function MapEditSideBar() {
   }, [title, tags]);
 
   const sideBarStyle = {
-    height: "88vh",
+    height: "74.5vh",
     top: "5px",
     width: "30%",
-    marginLeft: "1vw",
     backgroundColor: "#DEE9EB",
     boxShadow: "2px 0 5px rgba(0, 0, 0, 0.1)",
     padding: "20px",

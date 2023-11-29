@@ -16,7 +16,9 @@ router.put('/updateMap/:id', auth.verify, MapController.updateMapById);
 router.get('/allPublicMaps/:userId', MapController.getAllPublishedMapsFromGivenUser);
 
 router.post('/createMapComment/:mapId', auth.verify, MapController.createMapComment);
-router.get('/allMapComments/:mapId', auth.verify, MapController.getAllCommentsFromPublishedMap);
+
+// no auth needed because public can view comments
+router.get('/allMapComments/:mapId', MapController.getAllCommentsFromPublishedMap);
 
 router.delete('/deleteMapComment/:commentId', auth.verify, MapController.deleteMapCommentById);
 

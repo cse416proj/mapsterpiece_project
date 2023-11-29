@@ -472,6 +472,8 @@ getAllCommentsFromPublishedMap = async (req, res) => {
 
       const comments = await Comment.find({ _id: { $in: map.comments } });
 
+      console.log(comments);
+
       return res.status(200).json({ comments });
   } catch (error) {
       // console.error(error);

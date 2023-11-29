@@ -11,6 +11,7 @@ import { Tag } from "../../index";
 
 import AuthContext from '../../../contexts/auth';
 import MapContext from '../../../contexts/map';
+import UserContext from '../../../contexts/user';
 import GlobalStoreContext from '../../../contexts/store';
 
 export default function MapDetailTopBar(){
@@ -27,6 +28,7 @@ export default function MapDetailTopBar(){
 
     const { auth } = useContext(AuthContext);
     const { mapInfo } = useContext(MapContext);
+    const { userInfo } = useContext(UserContext);
     const { store } = useContext(GlobalStoreContext);
     const { mapId } = useParams();
     const navigate = useNavigate();
@@ -49,6 +51,7 @@ export default function MapDetailTopBar(){
     let likes = 0
 
     function handleMyMaps(){
+        userInfo.setCurrentUser(auth.user);
         navigate(`/profile/${auth.user._id}`);
     }
     function handleCommunity(){
@@ -148,7 +151,9 @@ export default function MapDetailTopBar(){
             buttonSet = buttonSet.slice(3);
         }
 
-        return buttonSet.map((btn) => (<Button variant="contained" style={toolButtonStyle} onClick={btn.handler}>{btn.text}</Button>))
+        return buttonSet.map((btn, index) => (
+            <Button key={index} variant="contained" style={toolButtonStyle} onClick={btn.handler}>{btn.text}</Button>)
+        )
     }
 
     return (
