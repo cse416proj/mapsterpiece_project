@@ -29,7 +29,7 @@ createMap = async (req, res) => {
   let featuresFiltered = [];
 
   // use regex to parse properties we want
-  const nameRegex = /^NAME(_[0-4])?$/i;
+  const nameRegex = /^NAME(_[0-3])?$/i;
 
   if (!features) {
     return res.status(400).json({ errorMessage: "Feature does not exist." });

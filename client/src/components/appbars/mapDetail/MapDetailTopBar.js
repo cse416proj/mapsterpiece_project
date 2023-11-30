@@ -10,6 +10,7 @@ import {
   AppBar,
   Toolbar,
   IconButton,
+  Alert
 } from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
@@ -45,18 +46,19 @@ export default function MapDetailTopBar() {
   const [likes, setLikes] = useState([]);
   const [dislikes, setDislikes] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const [alert, setAlert] = useState('');
+
   const open = Boolean(anchorEl);
 
   useEffect(() => {
-    if (mapInfo) {
-      if (mapInfo.currentMap) {
-        setTitle(mapInfo.currentMap.title);
-        setTags(mapInfo.currentMap.tags);
-        setLikes(mapInfo.currentMap.likedUsers);
-        setDislikes(mapInfo.currentMap.dislikedUsers);
-      }
+    if (mapInfo?.currentMap) {
+      setTitle(mapInfo.currentMap.title);
+      setTags(mapInfo.currentMap.tags);
+      setLikes(mapInfo.currentMap.likedUsers);
+      setDislikes(mapInfo.currentMap.dislikedUsers);
     }
-  }, []);
+  }, [mapInfo?.currentMap]);
 
   function handleMyMaps() {
     navigate(`/profile/${auth.user._id}`);
@@ -89,6 +91,7 @@ export default function MapDetailTopBar() {
 
   function handleLikeMap() {
     if (!auth.user) {
+      setAlert('Please login to like a map');
       return;
     }
     const userLikedMap = likes.find(
@@ -112,6 +115,7 @@ export default function MapDetailTopBar() {
 
   function handleDislikeMap() {
     if (!auth.user) {
+      setAlert('Please login to dislike a map');
       return;
     }
     const userLikedMap = likes.find(
@@ -148,22 +152,19 @@ export default function MapDetailTopBar() {
   }
 
   function renderLikeButtons() {
-    if (!auth?.user) {
-      return null;
-    }
-
     return (
       <>
         <IconButton id="like-button" onClick={handleLikeMap}>
-          {likes.includes(auth.user._id) ? (
+          {likes.includes(auth?.user?._id) ? (
             <ThumbUpIcon style={{ color: "black" }}></ThumbUpIcon>
           ) : (
             <ThumbUpOffAltIcon style={{ color: "black" }}></ThumbUpOffAltIcon>
           )}
           <t style={{ color: "black" }}> {likes.length} </t>
         </IconButton>
+        
         <IconButton id="dislike-button" onClick={handleDislikeMap}>
-          {dislikes?.includes(auth.user._id) ? (
+          {dislikes?.includes(auth?.user?._id) ? (
             <ThumbDownIcon style={{ color: "black" }}></ThumbDownIcon>
           ) : (
             <ThumbDownOffAltIcon
@@ -235,14 +236,13 @@ export default function MapDetailTopBar() {
           )}
         </Box>
         <Box className="map-button-container">
-          {/* <IconButton id="like-button" onClick={handleLikeMap}>
-                        <ThumbUpOffAltIcon style={{color:"black"}}></ThumbUpOffAltIcon>
-                        <t style={{color:"black"}}> {likes} </t>
-                    </IconButton>
-                    <IconButton id="dislike-button" onClick={handleDislikeMap}>
-                        <ThumbDownOffAltIcon style={{color:"black"}}></ThumbDownOffAltIcon>
-                        <t style={{color:"black"}}>{dislikes}</t>
-                    </IconButton> */}
+          {
+            (!auth.user && alert) &&
+            <Alert severity="error">
+              {alert}
+              <Button variant="contained" onClick={() => { setAlert('') }}>OK</Button>
+            </Alert>
+          }
           {renderLikeButtons()}
           {renderActionButtons()}
         </Box>
