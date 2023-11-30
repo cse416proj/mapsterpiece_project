@@ -49,16 +49,9 @@ function MapScreen() {
 
     let max = -1;
 
-    for(const obj of mapContentRef?.current){
-      const idNums = Object.keys(obj.properties)
-        .filter((key) => key.includes("ID"))
-        .map((id) => parseInt(id.charAt(3)));
-
-      const currMax = Math.max(...idNums);
-
-      if(!isNaN(currMax)){
-        max = Math.max(max, currMax);
-      }
+    const nameProperties = mapContentRef.current[0].properties;
+    for (const key in nameProperties) {
+      max = Math.max(max, parseInt(key.split("_")[1]));
     }
 
     let name = (
@@ -117,9 +110,6 @@ function MapScreen() {
     if(!layer.feature){
       return;
     }
-
-    console.log(layer.feature.properties);
-    console.log(layer.feature.properties[regionNameLevel]);
 
     const name = (layer.feature.properties[regionNameLevel]) ?
                   layer.feature.properties[regionNameLevel] :

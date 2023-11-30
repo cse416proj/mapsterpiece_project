@@ -49,6 +49,12 @@ export const updateMapById = (mapId, map) => {
   return api.put(`/updateMap/${mapId}`, map);
 }
 
+export const likeDislikeMapById = (mapId, isLike) => {
+  return api.put(`/likeDislikeMap/${mapId}`, {
+    isLike: isLike
+  });
+}
+
 export const getAllCommentsFromPublishedMap = (mapId) => {
   return api.get(`/allMapComments/${mapId}`);
 }
@@ -72,6 +78,7 @@ const apis = {
   updateMapById, 
   getAllCommentsFromPublishedMap,
   createMapComment,
+  likeDislikeMapById
 };
 
 export default apis;

@@ -1,11 +1,21 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { Box, Typography, Button, Menu, MenuItem, AppBar, Toolbar, IconButton } from '@mui/material';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import {
+  Box,
+  Typography,
+  Button,
+  Menu,
+  MenuItem,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Alert
+} from "@mui/material";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
+import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 
 import { Tag } from "../../index";
 
@@ -15,207 +25,241 @@ import UserContext from '../../../contexts/user';
 import GlobalStoreContext from '../../../contexts/store';
 
 export default function MapDetailTopBar(){
-    const BackButtonStyle = {
-        color: 'black',
-        fontSize: '15px',
-        fontWeight: 'bold',
+  const BackButtonStyle = {
+    color: 'black',
+    fontSize: '15px',
+    fontWeight: 'bold',
+  }
+  const toolButtonStyle={
+    backgroundColor: '#E9E1FF',
+    color: 'black',
+    fontWeight: 'bold',
+  }
+
+  const { auth } = useContext(AuthContext);
+  const { mapInfo } = useContext(MapContext);
+  const { userInfo } = useContext(UserContext);
+  const { store } = useContext(GlobalStoreContext);
+
+  const { mapId } = useParams();
+  const navigate = useNavigate();
+
+  const [title, setTitle] = useState('');
+  const [tags, setTags] = useState([]);
+  const [likes, setLikes] = useState([]);
+  const [dislikes, setDislikes] = useState([]);
+  const [hasUnpublished, setHasUnpublished] = useState(false);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  useEffect(() => {
+    setHasUnpublished(false);
+  }, []);
+
+  useEffect(() => {
+    if(mapInfo?.currentMap){
+      setTitle(mapInfo.currentMap.title);
+      setTags(mapInfo.currentMap.tags);
+      setLikes(mapInfo.currentMap.likedUsers);
+      setDislikes(mapInfo.currentMap.dislikedUsers);
+      setHasUnpublished((!mapInfo?.currentMap?.isPublished) ? true : false);
     }
-    const toolButtonStyle={
-        backgroundColor: '#E9E1FF',
-        color: 'black',
-        fontWeight: 'bold',
+  }, [mapInfo?.currentMap]);
+
+  // once unpublished, redirect
+  useEffect(() => {
+    if(hasUnpublished){
+      console.log('hasUnpublished');
+      navigate(`/map-edit/${mapId}`);
     }
+  }, [hasUnpublished]);
+  
+  // mark map & open modal when user clicks on delete map
+  function handleDeleteMap(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    store.markMapForDeletion(mapInfo.currentMap);
+  }
 
-    const { auth } = useContext(AuthContext);
-    const { mapInfo } = useContext(MapContext);
-    const { userInfo } = useContext(UserContext);
-    const { store } = useContext(GlobalStoreContext);
-    const { mapId } = useParams();
-    const navigate = useNavigate();
+  // mark map & open modal when user clicks on unpublish map
+  function handleUnpublishMap(event){
+    event.stopPropagation();
+    event.preventDefault();
+    store.markMapForUnpublish(mapInfo.currentMap);
+  };
 
-    const [title, setTitle] = useState('');
-    const [tags, setTags] = useState([]);
-    const [likedUsers, setLikedUsers] = useState([]);
-    const [dislikedUsers, setDislikedUsers] = useState([]);
+  // redirect user to view community / their own profile
+  function handleCommunity() {
+    navigate("/community");
+  }
 
-    const [likes, setLikes] = useState(0);
-    const [dislikes, setDislikes] = useState(0);
-    const [hasUnpublished, setHasUnpublished] = useState(false);
+  function handleMyMaps(){
+    userInfo.setCurrentUser(auth.user);
+    navigate(`/profile/${auth.user._id}`);
+  }
 
-    const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
+  function handleExportPNG() {
+    console.log("export PNG file");
+  }
+  function handleExportJPG() {
+    console.log("export JPG file.");
+  }
 
-    useEffect(() => {
-        if(mapInfo?.currentMap){
-            setTitle(mapInfo.currentMap.title);
-            setTags(mapInfo.currentMap.tags);
-            setLikedUsers(mapInfo.currentMap.likedUsers);
-            setDislikedUsers(mapInfo.currentMap.dislikedUsers);
+  function handleForkMap() {
+    console.log("fork this map");
+  }
 
-            setHasUnpublished((!mapInfo?.currentMap?.isPublished) ? true : false);
-        }
-    }, [mapInfo?.currentMap]);
+  function handleShareMap() {
+    console.log("share this map");
+  }
 
-    useEffect(() => {
-        if(hasUnpublished){
-            console.log('hasUnpublished');
-            navigate(`/map-edit/${mapId}`);
-        }
-    }, [hasUnpublished])
+  const openMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-    useEffect(() => {
-        setLikes(likedUsers.length);
-    }, [likedUsers]);
+  const closeMenu = () => {
+    setAnchorEl(null);
+  };
 
-    useEffect(() => {
-        setDislikes(dislikedUsers.length);
-    }, [dislikedUsers]);
-
-    function handleMyMaps(){
-        userInfo.setCurrentUser(auth.user);
-        navigate(`/profile/${auth.user._id}`);
+  // update likedUsers array when user click on like
+  function handleLikeMap() {
+    if (!auth.user) {
+      navigate('/login');
+      return;
     }
-    function handleCommunity(){
-        navigate('/community');
+    const userLikedMap = likes.find(
+      (user) => String(user) === String(auth.user._id)
+    );
+    const userDislikedMap = dislikes.find(
+      (user) => String(user) === String(auth.user._id)
+    );
+    if (userLikedMap) {
+      return;
     }
-    function handleExportPNG(){
-        console.log("export PNG file");
+    if (userDislikedMap) {
+      const tmpDislikes = dislikes.filter(
+        (user) => String(user) !== String(auth.user._id)
+      );
+      setDislikes(tmpDislikes);
     }
-    function handleExportJPG(){
-        console.log("export JPG file.");
-    }
+    setLikes([...likes, auth.user._id]);
+    mapInfo.updateMapLikeDislike(mapId, true);
+  }
 
-    function handleForkMap(){
-        console.log("fork this map");
-    }
-
-    function handleShareMap(){
-        console.log("share this map");
-    }
-
-    const openMenu = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const closeMenu = () => {
-        setAnchorEl(null);
-    };
-
-    function handleLikeMap(){
-        setLikes(likes+1);
-    }
-
-    function handleDislikeMap(){
-        setDislikes(dislikes+1);
-    }
-
-    function handleDeleteMap(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        store.markMapForDeletion(mapInfo.currentMap);
-    }
-
-    function handleUnpublishMap(event){
-        event.stopPropagation();
-        event.preventDefault();
-        store.markMapForUnpublish(mapInfo.currentMap);
-    };
-
-    function renderLikeButtons(){
-        if(!auth?.user){
-            return null;
-        }
-
-        return(
-            <>
-                <IconButton id="like-button" onClick={handleLikeMap}>
-                    {
-                        (mapInfo?.currentMap?.likedUsers?.includes(auth.user._id)) ?
-                            <ThumbUpIcon style={{color:"black"}}></ThumbUpIcon> :
-                            <ThumbUpOffAltIcon style={{color:"black"}}></ThumbUpOffAltIcon>
-                    }
-                    <Typography style={{color:"black"}}> {likes} </Typography>
-                </IconButton>
-                <IconButton id="dislike-button" onClick={handleDislikeMap}>
-                    {
-                        (mapInfo?.currentMap?.dislikedUsers?.includes(auth.user._id)) ?
-                            <ThumbDownIcon style={{color:"black"}}></ThumbDownIcon> :
-                            <ThumbDownOffAltIcon style={{color:"black"}}></ThumbDownOffAltIcon>
-                    }
-                    <Typography style={{color:"black"}}>{dislikes}</Typography>
-                </IconButton>
-            </>
-        );
+  // update dislikedUsers array when user click on like
+  function handleDislikeMap() {
+    if (!auth.user) {
+      navigate('/login');
+      return;
     }
 
-    function renderActionButtons(){
-        let buttonSet = [
-            { text: 'Delete', handler: handleDeleteMap },
-            { text: 'Unpublish', handler: handleUnpublishMap },
-            { text: 'Fork', handler: handleForkMap },
-            { text: 'Share Link', handler:handleShareMap },
-            { text: 'Export/Download', handler: handleExportJPG}
-        ]
-        
-        if(mapId && auth?.user){
-            // logged in but non-owner
-            if(!auth.user.maps?.includes(mapId)){
-                buttonSet = buttonSet.slice(2);
-            }
-        }
-        else{
-            // not logged in -> guest
-            buttonSet = buttonSet.slice(3);
-        }
-
-        return buttonSet.map((btn, index) => (
-            <Button key={index} variant="contained" style={toolButtonStyle} onClick={btn.handler}>{btn.text}</Button>)
-        )
-    }
-
-    return (
-        <AppBar position='static'>
-            <Toolbar className="map-screen-topbar">
-                {(auth.user) ? 
-                    (
-                        <Button
-                            style = {BackButtonStyle}
-                            onClick={handleMyMaps}
-                        >
-                            &lt;&lt; My Maps
-                        </Button>
-                    ) :
-                    (
-                        <Button
-                            style = {BackButtonStyle}
-                            onClick = {handleCommunity}
-                        >
-                            &lt;&lt; Back to Community
-                        </Button>
-                    )
-                }
-               
-                <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>{title}</Typography>
-                <Box className='flex-row' id='tags-container'>
-                    {
-                        (tags.length === 0) ?
-                            null :
-                            <>
-                                <Typography id='post-tags-text' style={{ color: 'black' }}>Tags:</Typography>
-                                {
-                                    tags.map((tag, index) => {
-                                        return <Tag key={index} index={index} tag={tag} removeTag={null}/>;
-                                    })
-                                }
-                            </>
-                    }
-                </Box>
-                <Box className="map-button-container">
-                    { renderLikeButtons() }
-                    { renderActionButtons() }
-                </Box>
-            </Toolbar>
-        </AppBar>
+    const userLikedMap = likes.find(
+      (user) => String(user) === String(auth.user._id)
+    );
+    const userDislikedMap = dislikes.find(
+      (user) => String(user) === String(auth.user._id)
     );
 
+    if (userDislikedMap) {
+      return;
+    }
+
+    if (userLikedMap) {
+      const tmpLikes = likes.filter(
+        (user) => String(user) !== String(auth.user._id)
+      );
+      setLikes(tmpLikes);
+    }
+
+    setDislikes([...dislikes, auth.user._id]);
+    mapInfo.updateMapLikeDislike(mapId, false);
+  }
+
+  function renderLikeButtons() {
+    return (
+      <>
+        <IconButton id="like-button" onClick={handleLikeMap}>
+          {likes.includes(auth?.user?._id) ? (
+            <ThumbUpIcon style={{ color: "black" }}></ThumbUpIcon>
+          ) : (
+            <ThumbUpOffAltIcon style={{ color: "black" }}></ThumbUpOffAltIcon>
+          )}
+          <t style={{ color: "black" }}> {likes.length} </t>
+        </IconButton>
+        
+        <IconButton id="dislike-button" onClick={handleDislikeMap}>
+          {dislikes?.includes(auth?.user?._id) ? (
+            <ThumbDownIcon style={{ color: "black" }}></ThumbDownIcon>
+          ) : (
+            <ThumbDownOffAltIcon
+              style={{ color: "black" }}
+            ></ThumbDownOffAltIcon>
+          )}
+          <t style={{ color: "black" }}>{dislikes.length}</t>
+        </IconButton>
+      </>
+    );
+  }
+
+  function renderActionButtons(){
+    let buttonSet = [
+      { text: 'Delete', handler: handleDeleteMap },
+      { text: 'Unpublish', handler: handleUnpublishMap },
+      { text: 'Fork', handler: handleForkMap },
+      { text: 'Share Link', handler:handleShareMap },
+      { text: 'Export/Download', handler: handleExportJPG}
+    ]
+    
+    if(mapId && auth?.user){
+      // logged in but non-owner
+      if(!auth.user.maps?.includes(mapId)){
+        buttonSet = buttonSet.slice(2);
+      }
+    }
+    else{
+      // not logged in -> guest
+      buttonSet = buttonSet.slice(3);
+    }
+
+    return buttonSet.map((btn, index) => (
+      <Button key={index} variant="contained" style={toolButtonStyle} onClick={btn.handler}>{btn.text}</Button>)
+    )
+  }
+
+  return(
+    <AppBar position='static'>
+      <Toolbar className="map-screen-topbar">
+        {
+          (auth.user) ? 
+            <Button style = {BackButtonStyle} onClick={handleMyMaps}>
+              &lt;&lt; My Maps
+            </Button> :
+            <Button style = {BackButtonStyle} onClick = {handleCommunity}>
+              &lt;&lt; Back to Community
+            </Button>
+        }
+
+        <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>{title}</Typography>
+
+        <Box className='flex-row' id='tags-container'>
+          {
+            (tags.length === 0) ?
+                null :
+                <>
+                  <Typography id='post-tags-text' style={{ color: 'black' }}>Tags:</Typography>
+                  { tags.map((tag, index) => {
+                    return <Tag key={index} index={index} tag={tag} removeTag={null}/>;
+                  })}
+                </>
+          }
+        </Box>
+
+        <Box className="map-button-container">
+          { renderLikeButtons() }
+          { renderActionButtons() }
+        </Box>
+      </Toolbar>
+    </AppBar>
+  );
 }

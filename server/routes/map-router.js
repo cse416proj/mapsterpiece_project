@@ -11,6 +11,7 @@ router.delete('/delete/:id', auth.verify, MapController.deleteMapById);
 router.get('/userMaps/:idLists', auth.verify, MapController.getMapsByMapIds);
 // router.get('/allMaps', auth.verify, MapController.getAllMapsFromCurrentUser);
 router.put('/updateMap/:id', auth.verify, MapController.updateMapById);
+router.put('/likeDislikeMap/:id', auth.verify, MapController.likeDislikeMapById);
 
 // no auth needed because it is for public profile
 router.get('/allPublicMaps/:userId', MapController.getAllPublishedMapsFromGivenUser);

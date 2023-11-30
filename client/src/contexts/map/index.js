@@ -7,12 +7,12 @@ import GlobalStoreContext from "../store";
 
 const MapContext = createContext();
 
-export function MapContextProvider({children}){
+export function MapContextProvider({ children }) {
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
 
   const navigate = useNavigate();
-  
+
   const [mapInfo, setMapInfo] = useState({
     currentMap: null,
     allMapsByUser: null,
@@ -84,8 +84,10 @@ export function MapContextProvider({children}){
   mapInfo.createMap = async function (newMap) {
     const { title, fileFormat, mapContent, tags } = newMap;
 
-    if(!title || !fileFormat || !mapContent || !tags){
-      store.uploadError('Please enter all fields: title/ fileFormat/ fileContent/ tags.')
+    if (!title || !fileFormat || !mapContent || !tags) {
+      store.uploadError(
+        "Please enter all fields: title/ fileFormat/ fileContent/ tags."
+      );
     }
 
     // create map for user
@@ -170,10 +172,10 @@ export function MapContextProvider({children}){
         payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error deleting current map from database"
       });
     }
-  }
+  };
 
-  mapInfo.publishMapById = async function(mapId){
-    try{
+  mapInfo.publishMapById = async function (mapId) {
+    try {
       const response = await api.publishMapById(mapId);
       if(response.status === 201){
         // close publish map modal & open publish success alert first
@@ -183,16 +185,15 @@ export function MapContextProvider({children}){
         console.log(response.data);
         await mapInfo.updateMapList();
       }
-    }
-    catch (error) {
+    } catch (error) {
       if (error.response) {
         console.log((error.response.status === 400) ? error.response.data.errorMessage : 'Unable to publish current map.');
       }
     }
-  }
+  };
 
-  mapInfo.unpublishMapById = async function(mapId){
-    try{
+  mapInfo.unpublishMapById = async function (mapId) {
+    try {
       const response = await api.unpublishMapById(mapId);
       if(response.status === 201){
         // close unpublish map modal & open unpublish success alert first
@@ -203,8 +204,7 @@ export function MapContextProvider({children}){
 
         mapInfo.updateMapList();
       }
-    }
-    catch (error) {
+    } catch (error) {
       if (error.response) {
         console.log((error.response.status === 400) ? error.response.data.errorMessage : 'Unable to unpublish current map.');
       }
@@ -269,11 +269,10 @@ export function MapContextProvider({children}){
           allMaps: response.data.maps
         }
       });
-    }
-    else{
+    } else {
       console.log(response);
     }
-  }
+  };
 
   mapInfo.updateMapContent = function (index, color) {
     let oldMap = mapInfo.currentMap;
@@ -303,6 +302,20 @@ export function MapContextProvider({children}){
       ...prevMapInfo,
       currentMap: oldMap,
     }));
+  };
+
+  mapInfo.updateMapLikeDislike = async function (mapId, isLike) {
+    try {
+      const response = await api.likeDislikeMapById(mapId, isLike);
+    } catch (error) {
+      if (error.response) {
+        console.log(
+          error.response.status === 400
+            ? error.response.data.errorMessage
+            : error.response.data
+        );
+      }
+    }
   };
 
   mapInfo.updateMapById = async function (mapId) {
@@ -356,14 +369,16 @@ export function MapContextProvider({children}){
     }
   };
 
-  mapInfo.createMapComment = async function (mapId, commenterUserName, content){
-    console.log("creating map comment...");
-    console.log(mapId, commenterUserName, content);
-    if (!mapId || !commenterUserName || !content){
+  mapInfo.createMapComment = async function (
+    mapId,
+    commenterUserName,
+    content
+  ) {
+    if (!mapId || !commenterUserName || !content) {
       return setMapInfo({
         ...mapInfo,
         allCommentsForMap: [],
-    });
+      });
     }
     const response = api.createMapComment(mapId, commenterUserName, content);
     mapInfo.getMapById(mapId);
