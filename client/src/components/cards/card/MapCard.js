@@ -2,24 +2,21 @@ import { useContext } from "react";
 import { Box, Card, CardContent, Typography, Chip, Stack } from "@mui/material";
 
 import ActionButtons from "./ActionButtons";
-import MapContext from "../../../contexts/map";
 import GlobalStoreContext from "../../../contexts/store";
 
 export default function MapCard({mapData, clickHandler, editHandler, deleteHandler}){
-    const { mapInfo } = useContext(MapContext);
     const { store } = useContext(GlobalStoreContext);
 
     function handlePublish(event){
         event.stopPropagation();
         event.preventDefault();
-        store.markMapForPublish(mapInfo.currentMap);
+        store.markMapForPublish(mapData);
     };
 
     function handleUnpublish(event){
         event.stopPropagation();
         event.preventDefault();
-        // come back later
-        // mapInfo.unpublishMapById(mapData._id);
+        store.markMapForUnpublish(mapData);
     };
 
     return(

@@ -118,8 +118,7 @@ export default function MapDetailTopBar(){
     function handleUnpublishMap(event){
         event.stopPropagation();
         event.preventDefault();
-        // come back later
-        // mapInfo.unpublishMapById(mapId);
+        store.markMapForUnpublish(mapInfo.currentMap);
     };
 
     function renderLikeButtons(){

@@ -21,21 +21,11 @@ export default function MapComment({ payload }) {
   // const { userInfo } = useContext(UserContext);
   // const navigate = useNavigate();
 
-  const { mapId } = useParams();
+  // const { mapId } = useParams();
 
   const [subcomment, setSubcomment] = useState('');
   const [expanded, setExpanded] = useState(false);
   const [addActive, setAddActive] = useState(false);
-
-  useEffect(() => {
-    mapInfo.getMapById(mapId);
-  }, []);
-
-  useEffect(() => {
-    if (mapInfo.currentMap) {
-      mapInfo.getAllCommentsFromPublishedMap(mapId);
-    }
-  }, [mapInfo.currentMap]);
 
   // function handleVisitProfile(event){
   //   event.stopPropagation();

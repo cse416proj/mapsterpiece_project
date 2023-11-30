@@ -1,28 +1,80 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
-import { Box, Alert, AlertTitle, Typography } from "@mui/material";
-import ExploreOffIcon from '@mui/icons-material/ExploreOff';
+import { Box } from "@mui/material";
 
-import { DeleteMapModal, MapCommentSideBox, MapDetailTopBar, MapScreen, Warning } from "../../../index";
+import { MapCommentSideBox, MapDetailTopBar, MapScreen } from "../../../index";
+import { DeleteMapModal, UnpublishMapModal, Warning, SuccessAlert } from "../../../index";
+
 import MapContext from "../../../../contexts/map";
+import GlobalStoreContext from "../../../../contexts/store";
 
 export default function MapDetailsScreen() {
   const { mapInfo } = useContext(MapContext);
+  const { store } = useContext(GlobalStoreContext);
+  
+  const { mapId } = useParams();
+  const navigate = useNavigate();
 
-  // function renderAlert(){
-  //   return(
-  //     <Alert
-  //       severity="success"
-  //       className="popUpBox" style={{ zIndex: 1000 }}
-  //       iconMapping={{
-  //         success: <ExploreOffIcon style={{ height: '7.5vw', width: '7.5vw', color: 'var(--icon)' }}/> 
-  //       }}
-  //     >
-  //       <AlertTitle style={{ fontSize: '2.5vw' }}>Map deleted!</AlertTitle>
-  //       <Typography variant='h6' style={{ fontSize: '1.5vw' }}>Redirecting...</Typography>
-  //     </Alert>
-  //   )
-  // }
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [unpublishSuccess, setUnpublishSuccess] = useState(false);
+
+  useEffect(() => {
+    setDeleteSuccess(false);
+    setUnpublishSuccess(false);
+  }, []);
+
+  useEffect(() => {
+    if(mapId){
+      mapInfo.getMapById(mapId);
+    }
+  }, [mapId]);
+
+  useEffect(() => {
+    if (mapInfo.currentMap) {
+      mapInfo.getAllCommentsFromPublishedMap(mapId);
+    }
+  }, [mapInfo.currentMap]);
+
+  // update & redirect if map got successfully deleted
+  useEffect(() => {
+    if((store?.deleteSuccess === true)){
+      setDeleteSuccess(true);
+    }
+    else{
+      setDeleteSuccess(false);
+    }
+  }, [store?.deleteSuccess]);
+
+  useEffect(() => {
+    console.log(`deleteSuccess: ${deleteSuccess}`);
+    if(deleteSuccess === true){
+      setTimeout(() => {
+        navigate('/');
+        store.clearDeleteSuccess();
+      }, 2250);
+    }
+  }, [deleteSuccess]);
+
+  // update & redirect if map got successfully unpublished
+  useEffect(() => {
+    if((store?.unpublishSuccess === true)){
+      setUnpublishSuccess(true);
+    }
+    else{
+      setUnpublishSuccess(false);
+    }
+  }, [store?.unpublishSuccess]);
+
+  useEffect(() => {
+    console.log(`unpublishSuccess: ${unpublishSuccess}`);
+    if(unpublishSuccess === true){
+      setTimeout(() => {
+        navigate(`/map-edit/${mapId}`);
+        store.clearUnpublishSuccess();
+      }, 2250);
+    }
+  }, [unpublishSuccess]);
 
   return (
     <Box>
@@ -30,12 +82,14 @@ export default function MapDetailsScreen() {
         (mapInfo?.errorMessage) ?
           <Warning message={mapInfo?.errorMessage}/> :
           <>
+            { deleteSuccess && <SuccessAlert type='map-delete'/> }
+            { unpublishSuccess && <SuccessAlert type='map-unpublish'/> }
             <MapDetailTopBar/>
-            {/* { renderAlert() } */}
             <Box className="map-screen-container">
               <MapScreen/>
               <MapCommentSideBox/>
               <DeleteMapModal/>
+              <UnpublishMapModal/>
             </Box>
           </>
       }

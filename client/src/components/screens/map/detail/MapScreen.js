@@ -10,7 +10,7 @@ import { MapContainer, GeoJSON } from "react-leaflet";
 
 function MapScreen() {
   const location = useLocation();
-  const { mapId } = useParams();
+  // const { mapId } = useParams();
   const { mapInfo } = useContext(MapContext);
 
   const mapContainerRef = useRef(null);
@@ -24,9 +24,9 @@ function MapScreen() {
 
   const [map, setMap] = useState(null);
 
-  useEffect(() => {
-    mapInfo?.getMapById(mapId);
-  }, [mapId]);
+  // useEffect(() => {
+  //   mapInfo?.getMapById(mapId);
+  // }, [mapId]);
 
   useEffect(() => {
     setEditMode(location.pathname.includes("map-detail") ? false : true)

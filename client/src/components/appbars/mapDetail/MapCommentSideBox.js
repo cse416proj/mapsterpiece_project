@@ -1,5 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useContext, useState } from 'react';
 
 import { Box, Toolbar, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
@@ -9,19 +8,8 @@ import MapCommentSideBar from './MapCommentSideBar';
 
 export default function MapCommentSideBox() {
     const { mapInfo } = useContext(MapContext);
-    const { mapId } = useParams();
 
     const [isCommentBoxExpanded, setIsCommentBoxExpanded] = useState(false);
-
-    useEffect(() => {
-      mapInfo.getMapById(mapId);
-    }, []);
-
-    useEffect(() => {
-      if(mapInfo.currentMap){
-        mapInfo.getAllCommentsFromPublishedMap(mapId);
-      }
-    }, [mapInfo?.currentMap]);
 
     const boxStyle = {
       border: (isCommentBoxExpanded) ? '1px solid #ddd' : 'none',

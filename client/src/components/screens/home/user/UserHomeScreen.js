@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 
-import { DynamicCard, DeletePostModal, DeleteMapModal, LoadingOverlay } from "../../../index";
+import { DynamicCard, DeletePostModal, DeleteMapModal, PublishMapModal, UnpublishMapModal } from "../../../index";
 import { HomeNavCard } from "../index";
 
 import AuthContext from "../../../../contexts/auth";
@@ -78,6 +78,8 @@ function UserHomeScreen() {
       </Box>
       <DeletePostModal />
       <DeleteMapModal/>
+      <PublishMapModal/>
+      <UnpublishMapModal/>
     </Box>
   );
 }

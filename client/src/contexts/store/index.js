@@ -16,9 +16,11 @@ export const GlobalStoreActionType = {
   MARK_COMMENT_FOR_DELETION: "MARK_COMMENT_FOR_DELETION",
   MARK_SUBCOMMENT_FOR_DELETION: "MARK_SUBCOMMENT_FOR_DELETION",
   MARK_MAP_FOR_PUBLISH: "MARK_MAP_FOR_PUBLISH",
+  MARK_MAP_FOR_UNPUBLISH: "MARK_MAP_FOR_UNPUBLISH",
   UPLOAD_ERROR: "UPLOAD_ERROR",
   SET_DELETE_STATUS: "SET_DELETE_STATUS",
   SET_PUBLISH_STATUS: "SET_PUBLISH_STATUS",
+  SET_UNPUBLISH_STATUS: "SET_UNPUBLISH_STATUS",
 };
 
 const CurrentView = {
@@ -59,13 +61,15 @@ const CurrentModal = {
   DELETE_ACCOUNT_MODAL: "DELETE_ACCOUNT_MODAL",
   DELETE_SUBCOMMENT_MODAL: "DELETE_SUBCOMMENT_MODAL",
   UPLOAD_ERROR_MODAL: "UPLOAD_ERROR_MODAL",
-  PUBLISH_MAP_MODAL: "PUBLISH_MAP_MODAL"
+  PUBLISH_MAP_MODAL: "PUBLISH_MAP_MODAL",
+  UNPUBLISH_MAP_MODAL: "UNPUBLISH_MAP_MODAL",
 };
 
 function GlobalStoreContextProvider(props) {
   const [store, setStore] = useState({
     deleteSuccess: false,
     publishSuccess: false,
+    unpublishSuccess: false,
 
     currentModal: CurrentModal.NONE,
     currentView: CurrentView.USER_HOME,
@@ -107,6 +111,7 @@ function GlobalStoreContextProvider(props) {
           ...prevStore,
           deleteSuccess: false,
           publishSuccess: false,
+          unpublishSuccess: false,
           allMaps: payload,
         }));
       case GlobalStoreActionType.LOAD_ALL_POSTS:
@@ -114,6 +119,7 @@ function GlobalStoreContextProvider(props) {
           ...prevStore,
           deleteSuccess: false,
           publishSuccess: false,
+          unpublishSuccess: false,
           allPosts: payload,
         }));
       case GlobalStoreActionType.LOAD_ALL_USERS:
@@ -121,6 +127,7 @@ function GlobalStoreContextProvider(props) {
           ...prevStore,
           deleteSuccess: false,
           publishSuccess: false,
+          unpublishSuccess: false,
           allUsers: payload.users,
           allMaps: payload.maps.filter((map) => map.isPublished),
           allPosts: payload.posts
@@ -130,6 +137,7 @@ function GlobalStoreContextProvider(props) {
           ...prevStore,
           deleteSuccess: false,
           publishSuccess: false,
+          unpublishSuccess: false,
           currentModal: CurrentModal.NONE,
           currentView: payload,
           mapMarked: null,
@@ -143,6 +151,7 @@ function GlobalStoreContextProvider(props) {
           ...prevStore,
           deleteSuccess: false,
           publishSuccess: false,
+          unpublishSuccess: false,
           currentModal: CurrentModal.DELETE_MAP_MODAL,
           mapMarked: payload,
         }));
@@ -151,6 +160,7 @@ function GlobalStoreContextProvider(props) {
           ...prevStore,
           deleteSuccess: false,
           publishSuccess: false,
+          unpublishSuccess: false,
           currentModal: CurrentModal.DELETE_POST_MODAL,
           postMarkedForDeletion: payload,
         }));
@@ -159,6 +169,7 @@ function GlobalStoreContextProvider(props) {
           ...prevStore,
           deleteSuccess: false,
           publishSuccess: false,
+          unpublishSuccess: false,
           currentModal: CurrentModal.DELETE_COMMENT_MODAL,
           commentMarkedForDeletion: payload,
         })); 
@@ -167,6 +178,7 @@ function GlobalStoreContextProvider(props) {
           ...prevStore,
           deleteSuccess: false,
           publishSuccess: false,
+          unpublishSuccess: false,
           currentModal: CurrentModal.DELETE_ACCOUNT_MODAL,
           accountMarkedForDeletion: payload,
         }));
@@ -175,6 +187,7 @@ function GlobalStoreContextProvider(props) {
           ...prevStore, 
           deleteSuccess: false,
           publishSuccess: false,
+          unpublishSuccess: false,
           currentModal: CurrentModal.DELETE_SUBCOMMENT_MODAL, 
           subcommentMarkedForDeletion: payload,
         }));
@@ -183,7 +196,19 @@ function GlobalStoreContextProvider(props) {
         return setStore((prevStore) => ({
           ...prevStore,
           deleteSuccess: false,
+          publishSuccess: false,
+          unpublishSuccess: false,
           currentModal: CurrentModal.PUBLISH_MAP_MODAL,
+          mapMarked: payload,
+        }));
+      case GlobalStoreActionType.MARK_MAP_FOR_UNPUBLISH:
+        console.log(`MARK_MAP_FOR_UNPUBLISH: ${payload}`)
+        return setStore((prevStore) => ({
+          ...prevStore,
+          deleteSuccess: false,
+          publishSuccess: false,
+          unpublishSuccess: false,
+          currentModal: CurrentModal.UNPUBLISH_MAP_MODAL,
           mapMarked: payload,
         }));
       case GlobalStoreActionType.UPLOAD_ERROR:
@@ -191,6 +216,7 @@ function GlobalStoreContextProvider(props) {
           ...prevStore,
           deleteSuccess: false,
           publishSuccess: false,
+          unpublishSuccess: false,
           currentModal: CurrentModal.UPLOAD_ERROR_MODAL,
           errorMsg: payload
         }));
@@ -199,6 +225,7 @@ function GlobalStoreContextProvider(props) {
           ...prevStore,
           deleteSuccess: false,
           publishSuccess: false,
+          unpublishSuccess: false,
           currentModal: CurrentModal.NONE,
           mapMarked: null,
           postMarkedForDeletion: null,
@@ -212,14 +239,26 @@ function GlobalStoreContextProvider(props) {
         return setStore((prevStore) => ({
           ...prevStore,
           deleteSuccess: payload,
+          publishSuccess: false,
+          unpublishSuccess: false,
           currentModal: CurrentModal.NONE,
         }));
-
       case GlobalStoreActionType.SET_PUBLISH_STATUS:
         console.log(`SET_PUBLISH_STATUS: ${payload}`)
         return setStore((prevStore) => ({
           ...prevStore,
-          deleteSuccess: payload,
+          deleteSuccess: false,
+          publishSuccess: payload,
+          unpublishSuccess: false,
+          currentModal: CurrentModal.NONE,
+        }));
+      case GlobalStoreActionType.SET_UNPUBLISH_STATUS:
+        console.log(`SET_UNPUBLISH_STATUS: ${payload}`)
+        return setStore((prevStore) => ({
+          ...prevStore,
+          deleteSuccess: false,
+          publishSuccess: false,
+          unpublishSuccess: payload,
           currentModal: CurrentModal.NONE,
         }));
       default:
@@ -294,6 +333,15 @@ function GlobalStoreContextProvider(props) {
     });
   };
 
+  store.markMapForUnpublish = function (mapData) {
+    console.log('markMapForUnpublish');
+    console.log(mapData);
+    storeReducer({
+      type: GlobalStoreActionType.MARK_MAP_FOR_UNPUBLISH,
+      payload: mapData,
+    });
+  };
+
   store.clearDeleteSuccess = function(){
     storeReducer({
       type: GlobalStoreActionType.SET_DELETE_STATUS,
@@ -308,6 +356,13 @@ function GlobalStoreContextProvider(props) {
     });
   }
 
+  store.clearUnpublishSuccess = function(){
+    storeReducer({
+      type: GlobalStoreActionType.SET_UNPUBLISH_STATUS,
+      payload: false
+    });
+  }
+  
   store.getData = function (currScreen) {
     const screenDataDict = {
       ALL_USERS: store.allUsers,
@@ -413,6 +468,8 @@ function GlobalStoreContextProvider(props) {
       return setStore((prevStore) => ({
         ...prevStore,
         deleteSuccess: true,
+        publishSuccess: false,
+        unpublishSuccess: false,
         currentModal: CurrentModal.NONE,
         allMaps: response.data.maps,
       }));
@@ -423,6 +480,18 @@ function GlobalStoreContextProvider(props) {
     return setStore((prevStore) => ({
       ...prevStore,
       publishSuccess: true,
+      deleteSuccess: false,
+      unpublishSuccess: false,
+      currentModal: CurrentModal.NONE,
+    }));
+  }
+
+  store.closeModalAfterUnpublish = function(){
+    return setStore((prevStore) => ({
+      ...prevStore,
+      unpublishSuccess: true,
+      deleteSuccess: false,
+      publishSuccess: false,
       currentModal: CurrentModal.NONE,
     }));
   }

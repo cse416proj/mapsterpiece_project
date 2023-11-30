@@ -21,6 +21,7 @@
 }
 
 #comment-side-bar{
+    z-index: 2000;
     width: 25vw;
     height: 77.5vh;
     position: absolute;

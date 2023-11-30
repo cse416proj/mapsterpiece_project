@@ -176,7 +176,7 @@ export function MapContextProvider({children}){
     try{
       const response = await api.publishMapById(mapId);
       if(response.status === 201){
-        // show publish map alert first
+        // close publish map modal & open publish success alert first
         store.closeModalAfterPublish();
 
         console.log('map published');
@@ -186,7 +186,7 @@ export function MapContextProvider({children}){
     }
     catch (error) {
       if (error.response) {
-        console.log((error.response.status === 400) ? error.response.data.errorMessage : error.response.data);
+        console.log((error.response.status === 400) ? error.response.data.errorMessage : 'Unable to publish current map.');
       }
     }
   }
@@ -195,12 +195,18 @@ export function MapContextProvider({children}){
     try{
       const response = await api.unpublishMapById(mapId);
       if(response.status === 201){
+        // close unpublish map modal & open unpublish success alert first
+        store.closeModalAfterUnpublish();
+
+        console.log('map unpublished');
+        console.log(response.data);
+
         mapInfo.updateMapList();
       }
     }
     catch (error) {
       if (error.response) {
-        console.log((error.response.status === 400) ? error.response.data.errorMessage : error.response.data);
+        console.log((error.response.status === 400) ? error.response.data.errorMessage : 'Unable to unpublish current map.');
       }
     }
   }

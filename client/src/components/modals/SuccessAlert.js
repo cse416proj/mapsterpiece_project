@@ -3,6 +3,7 @@ import { Box, Alert, AlertTitle, Typography } from "@mui/material";
 
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import PublicIcon from '@mui/icons-material/Public';
+import PublicOffIcon from '@mui/icons-material/PublicOff';
 
 export default function SuccessAlert({type}){
     const [msg, setMsg] = useState('');
@@ -23,6 +24,10 @@ export default function SuccessAlert({type}){
             case 'map-publish':
                 setMsg('Map has been published successfully!')
                 setIcon(<PublicIcon style={iconStyle}/>)
+                break;
+            case 'map-unpublish':
+                setMsg('Map has been unpublished successfully!')
+                setIcon(<PublicOffIcon style={iconStyle}/>)
                 break;
             default:
                 break;

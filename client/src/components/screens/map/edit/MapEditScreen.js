@@ -3,13 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import { Box } from "@mui/material";
 
-import { MapEditTopBar, MapEditSideBar, MapScreen, DeleteMapModal, PublishMapModal } from "../../../index";
+import { MapEditTopBar, MapEditSideBar, MapScreen } from "../../../index";
+import { DeleteMapModal, PublishMapModal, Warning, SuccessAlert } from "../../../index";
 
 import MapContext from "../../../../contexts/map";
 import AuthContext from "../../../../contexts/auth";
 import GlobalStoreContext from "../../../../contexts/store";
-
-import { Warning, SuccessAlert } from "../../../index";
 
 export default function MapEditScreen() {
   const { mapInfo } = useContext(MapContext);
@@ -65,8 +64,7 @@ export default function MapEditScreen() {
     console.log(`publishSuccess: ${publishSuccess}`);
     if(publishSuccess === true){
       setTimeout(() => {
-        navigate('/');
-        // navigate(`/map-detail/${mapId}`);
+        navigate(`/map-detail/${mapId}`);
         store.clearPublishSuccess();
       }, 2250);
     }
@@ -93,8 +91,8 @@ export default function MapEditScreen() {
         <MapScreen/>
         <MapEditSideBar/>
       </Box>
-      <PublishMapModal/>
       <DeleteMapModal/>
+      <PublishMapModal/>
     </Box>
   );
 }
