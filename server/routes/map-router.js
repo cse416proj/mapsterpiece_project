@@ -8,7 +8,8 @@ router.get('/get/:id', MapController.getMapById);
 router.put('/publishMap/:id', auth.verify, MapController.publishMapById);
 router.put('/unpublishMap/:id', auth.verify, MapController.unpublishMapById);
 router.delete('/delete/:id', auth.verify, MapController.deleteMapById);
-router.get('/allMaps', auth.verify, MapController.getAllMapsFromCurrentUser);
+router.get('/userMaps/:idLists', auth.verify, MapController.getMapsByMapIds);
+// router.get('/allMaps', auth.verify, MapController.getAllMapsFromCurrentUser);
 router.put('/updateMap/:id', auth.verify, MapController.updateMapById);
 
 // no auth needed because it is for public profile

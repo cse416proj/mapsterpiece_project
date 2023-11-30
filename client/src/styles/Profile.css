@@ -110,3 +110,9 @@
 #action-button:hover{
     color: var(--icon-hover);
 }
+
+#profile-cards{
+    margin-top: 1vh;
+    height: 95%;
+    overflow-Y: auto;
+}

@@ -40,6 +40,7 @@ export default function MapDetailTopBar(){
 
     const [likes, setLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
+    const [hasUnpublished, setHasUnpublished] = useState(false);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -50,8 +51,17 @@ export default function MapDetailTopBar(){
             setTags(mapInfo.currentMap.tags);
             setLikedUsers(mapInfo.currentMap.likedUsers);
             setDislikedUsers(mapInfo.currentMap.dislikedUsers);
+
+            setHasUnpublished((!mapInfo?.currentMap?.isPublished) ? true : false);
         }
     }, [mapInfo?.currentMap]);
+
+    useEffect(() => {
+        if(hasUnpublished){
+            console.log('hasUnpublished');
+            navigate(`/map-edit/${mapId}`);
+        }
+    }, [hasUnpublished])
 
     useEffect(() => {
         setLikes(likedUsers.length);
@@ -108,8 +118,8 @@ export default function MapDetailTopBar(){
     function handleUnpublishMap(event){
         event.stopPropagation();
         event.preventDefault();
-        mapInfo.unpublishMapById(mapId);
-        navigate(`/map-edit/${mapId}`);
+        // come back later
+        // mapInfo.unpublishMapById(mapId);
     };
 
     function renderLikeButtons(){

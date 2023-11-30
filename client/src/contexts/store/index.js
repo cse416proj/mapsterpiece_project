@@ -1,7 +1,5 @@
-import { createContext, useState, useContext, useEffect } from "react";
-import PostContext from "../post";
+import { createContext, useState } from "react";
 import api from "./store-request-api";
-import { Global } from "@emotion/react";
 
 export const GlobalStoreContext = createContext({});
 
@@ -17,7 +15,10 @@ export const GlobalStoreActionType = {
   MARK_ACCOUNT_FOR_DELETION: "MARK_ACCOUNT_FOR_DELETION",
   MARK_COMMENT_FOR_DELETION: "MARK_COMMENT_FOR_DELETION",
   MARK_SUBCOMMENT_FOR_DELETION: "MARK_SUBCOMMENT_FOR_DELETION",
+  MARK_MAP_FOR_PUBLISH: "MARK_MAP_FOR_PUBLISH",
   UPLOAD_ERROR: "UPLOAD_ERROR",
+  SET_DELETE_STATUS: "SET_DELETE_STATUS",
+  SET_PUBLISH_STATUS: "SET_PUBLISH_STATUS",
 };
 
 const CurrentView = {
@@ -58,12 +59,14 @@ const CurrentModal = {
   DELETE_ACCOUNT_MODAL: "DELETE_ACCOUNT_MODAL",
   DELETE_SUBCOMMENT_MODAL: "DELETE_SUBCOMMENT_MODAL",
   UPLOAD_ERROR_MODAL: "UPLOAD_ERROR_MODAL",
+  PUBLISH_MAP_MODAL: "PUBLISH_MAP_MODAL"
 };
 
 function GlobalStoreContextProvider(props) {
-  const { postInfo } = useContext(PostContext);
-
   const [store, setStore] = useState({
+    deleteSuccess: false,
+    publishSuccess: false,
+
     currentModal: CurrentModal.NONE,
     currentView: CurrentView.USER_HOME,
     allUsers: [],
@@ -85,7 +88,7 @@ function GlobalStoreContextProvider(props) {
     heatPosts: null,
 
     postMarkedForDeletion: null,
-    mapMarkedForDeletion: null,
+    mapMarked: null,
     accountMarkedForDeletion: null,
     commentMarkedForDeletion: null,
     subcommentMarkedForDeletion: null, 
@@ -102,16 +105,22 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.LOAD_ALL_MAPS:
         return setStore((prevStore) => ({
           ...prevStore,
+          deleteSuccess: false,
+          publishSuccess: false,
           allMaps: payload,
         }));
       case GlobalStoreActionType.LOAD_ALL_POSTS:
         return setStore((prevStore) => ({
           ...prevStore,
+          deleteSuccess: false,
+          publishSuccess: false,
           allPosts: payload,
         }));
       case GlobalStoreActionType.LOAD_ALL_USERS:
         return setStore((prevStore) => ({
           ...prevStore,
+          deleteSuccess: false,
+          publishSuccess: false,
           allUsers: payload.users,
           allMaps: payload.maps.filter((map) => map.isPublished),
           allPosts: payload.posts
@@ -119,9 +128,11 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.MARK_CURRENT_SCREEN:
         return setStore((prevStore) => ({
           ...prevStore,
+          deleteSuccess: false,
+          publishSuccess: false,
           currentModal: CurrentModal.NONE,
           currentView: payload,
-          mapMarkedForDeletion: null,
+          mapMarked: null,
           postMarkedForDeletion: null,
           accountMarkedForDeletion: null,
           commentMarkedForDeletion: null,
@@ -130,49 +141,86 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.MARK_MAP_FOR_DELETION:
         return setStore((prevStore) => ({
           ...prevStore,
+          deleteSuccess: false,
+          publishSuccess: false,
           currentModal: CurrentModal.DELETE_MAP_MODAL,
-          mapMarkedForDeletion: payload,
+          mapMarked: payload,
         }));
       case GlobalStoreActionType.MARK_POST_FOR_DELETION:
         return setStore((prevStore) => ({
           ...prevStore,
+          deleteSuccess: false,
+          publishSuccess: false,
           currentModal: CurrentModal.DELETE_POST_MODAL,
           postMarkedForDeletion: payload,
         }));
       case GlobalStoreActionType.MARK_COMMENT_FOR_DELETION:
         return setStore((prevStore) => ({
           ...prevStore,
+          deleteSuccess: false,
+          publishSuccess: false,
           currentModal: CurrentModal.DELETE_COMMENT_MODAL,
           commentMarkedForDeletion: payload,
         })); 
       case GlobalStoreActionType.MARK_ACCOUNT_FOR_DELETION:
         return setStore((prevStore) => ({
           ...prevStore,
+          deleteSuccess: false,
+          publishSuccess: false,
           currentModal: CurrentModal.DELETE_ACCOUNT_MODAL,
           accountMarkedForDeletion: payload,
         }));
       case GlobalStoreActionType.MARK_SUBCOMMENT_FOR_DELETION: 
         return setStore((prevStore)=>({
           ...prevStore, 
+          deleteSuccess: false,
+          publishSuccess: false,
           currentModal: CurrentModal.DELETE_SUBCOMMENT_MODAL, 
           subcommentMarkedForDeletion: payload,
+        }));
+      case GlobalStoreActionType.MARK_MAP_FOR_PUBLISH:
+        console.log(`MARK_MAP_FOR_PUBLISH: ${payload}`)
+        return setStore((prevStore) => ({
+          ...prevStore,
+          deleteSuccess: false,
+          currentModal: CurrentModal.PUBLISH_MAP_MODAL,
+          mapMarked: payload,
         }));
       case GlobalStoreActionType.UPLOAD_ERROR:
         return setStore((prevStore) => ({
           ...prevStore,
+          deleteSuccess: false,
+          publishSuccess: false,
           currentModal: CurrentModal.UPLOAD_ERROR_MODAL,
           errorMsg: payload
         }));
       case GlobalStoreActionType.HIDE_MODALS:
         return setStore((prevStore) => ({
           ...prevStore,
+          deleteSuccess: false,
+          publishSuccess: false,
           currentModal: CurrentModal.NONE,
-          mapMarkedForDeletion: null,
+          mapMarked: null,
           postMarkedForDeletion: null,
           accountMarkedForDeletion: null,
           commentMarkedForDeletion: null,
           subcommentMarkedForDeletion: null,
           errorMsg: ''
+        }));
+      case GlobalStoreActionType.SET_DELETE_STATUS:
+        console.log(`SET_DELETE_STATUS: ${payload}`)
+        return setStore((prevStore) => ({
+          ...prevStore,
+          deleteSuccess: payload,
+          currentModal: CurrentModal.NONE,
+        }));
+
+      case GlobalStoreActionType.SET_PUBLISH_STATUS:
+        console.log(`SET_PUBLISH_STATUS: ${payload}`)
+        return setStore((prevStore) => ({
+          ...prevStore,
+          deleteSuccess: payload,
+          currentModal: CurrentModal.NONE,
         }));
       default:
         return store;
@@ -198,7 +246,6 @@ function GlobalStoreContextProvider(props) {
   store.closeModal = function () {
     storeReducer({
       type: GlobalStoreActionType.HIDE_MODALS,
-      payload: {},
     });
   };
 
@@ -235,6 +282,29 @@ function GlobalStoreContextProvider(props) {
     storeReducer({
       type: GlobalStoreActionType.MARK_SUBCOMMENT_FOR_DELETION,
       payload: subcommentData,
+    });
+  }
+
+  store.markMapForPublish = function (mapData) {
+    console.log('markMapForPublish');
+    console.log(mapData);
+    storeReducer({
+      type: GlobalStoreActionType.MARK_MAP_FOR_PUBLISH,
+      payload: mapData,
+    });
+  };
+
+  store.clearDeleteSuccess = function(){
+    storeReducer({
+      type: GlobalStoreActionType.SET_DELETE_STATUS,
+      payload: false
+    });
+  }
+
+  store.clearPublishSuccess = function(){
+    storeReducer({
+      type: GlobalStoreActionType.SET_PUBLISH_STATUS,
+      payload: false
     });
   }
 
@@ -335,6 +405,27 @@ function GlobalStoreContextProvider(props) {
       });
     }
   };
+
+  // close modal and get all maps after delete
+  store.getAllMapsAfterDelete = async function () {
+    const response = await api.getAllMaps();
+    if(response.status === 200){
+      return setStore((prevStore) => ({
+        ...prevStore,
+        deleteSuccess: true,
+        currentModal: CurrentModal.NONE,
+        allMaps: response.data.maps,
+      }));
+    }
+  };
+
+  store.closeModalAfterPublish = function(){
+    return setStore((prevStore) => ({
+      ...prevStore,
+      publishSuccess: true,
+      currentModal: CurrentModal.NONE,
+    }));
+  }
 
   return (
     <GlobalStoreContext.Provider

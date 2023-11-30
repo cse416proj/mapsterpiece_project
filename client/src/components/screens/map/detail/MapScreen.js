@@ -7,7 +7,6 @@ import * as L from "leaflet";
 
 import MapContext from "../../../../contexts/map";
 import { MapContainer, GeoJSON } from "react-leaflet";
-import { Typography } from "@mui/material";
 
 function MapScreen() {
   const location = useLocation();
@@ -154,19 +153,22 @@ function MapScreen() {
   };
 
   return (
-    <MapContainer
-      ref={mapContainerRef}
-      id="map-viewer"
-      style={{ width: (editMode) ? '70vw' : '100vw' }}
-      center={[0, 0]}
-      zoom={2}
-    >
-      {/* <GeoJSON
-        data={mapContentRef?.current}
-        onEachFeature={onEachFeature}
-        ref={geoJsonRef}
-      /> */}
-    </MapContainer>
+    <>
+      <MapContainer
+        ref={mapContainerRef}
+        id="map-viewer"
+        style={{ width: (editMode) ? '70vw' : '100vw' }}
+        center={[0, 0]}
+        zoom={2}
+      >
+        <GeoJSON
+          data={mapContentRef?.current}
+          onEachFeature={onEachFeature}
+          ref={geoJsonRef}
+        />
+      </MapContainer>
+    </>
+    
   );
 }
 

@@ -3,24 +3,27 @@ import { Box, Card, CardContent, Typography, Chip, Stack } from "@mui/material";
 
 import ActionButtons from "./ActionButtons";
 import MapContext from "../../../contexts/map";
+import GlobalStoreContext from "../../../contexts/store";
 
 export default function MapCard({mapData, clickHandler, editHandler, deleteHandler}){
     const { mapInfo } = useContext(MapContext);
+    const { store } = useContext(GlobalStoreContext);
 
     function handlePublish(event){
         event.stopPropagation();
         event.preventDefault();
-        mapInfo.publishMapById(mapData._id);
+        store.markMapForPublish(mapInfo.currentMap);
     };
 
     function handleUnpublish(event){
         event.stopPropagation();
         event.preventDefault();
-        mapInfo.unpublishMapById(mapData._id);
+        // come back later
+        // mapInfo.unpublishMapById(mapData._id);
     };
 
     return(
-        <Card className="individualDynamicCard" >
+        <Card className="individualDynamicCard">
             <CardContent
                 className="cardContent"
                 style={{ height: `100%`, background: `#86C9B5` }}

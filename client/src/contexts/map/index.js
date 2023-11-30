@@ -19,13 +19,12 @@ export function MapContextProvider({children}){
     currentRegionColor: "#fff",
     allCommentsForMap: [],
     currentComment: null,
-    errorMessage: "",
+    errorMessage: null,
     // download: false,
     // downloadFormat: ''
   });
 
   const MapActionType = {
-    UPLOAD_MAP: "UPLOAD_MAP",
     SET_CURRENT_MAP: "SET_CURRENT_MAP",
     LOAD_ALL_MAPS_FROM_USER: "LOAD_ALL_MAPS_FROM_USER",
     SET_CURRENT_REGION_COLOR: "SET_CURRENT_REGION_COLOR",
@@ -39,28 +38,26 @@ export function MapContextProvider({children}){
     const { type, payload } = action;
     // console.log(payload);
     switch (type) {
-      case MapActionType.UPLOAD_MAP:
-        return setMapInfo((prevMapInfo) => ({
-          ...prevMapInfo,
-          currentMap: payload,
-        }));
       case MapActionType.SET_CURRENT_MAP:
+        console.log('set curr map')
+        console.log(payload)
         return setMapInfo((prevMapInfo) => ({
           ...prevMapInfo,
           currentMap: payload,
-          errorMessage: ""
+          errorMessage: null
         }));
       case MapActionType.LOAD_ALL_MAPS_FROM_USER:
         return setMapInfo((prevMapInfo) => ({
           ...prevMapInfo,
-          allMapsByUser: payload,
-          errorMessage: ""
+          currentMap: payload.currMap,
+          allMapsByUser: payload.allMaps,
+          errorMessage: null
         }));
       case MapActionType.SET_CURRENT_REGION_COLOR:
         return setMapInfo((prevMapInfo) => ({
           ...prevMapInfo,
           currentRegionColor: payload,
-          errorMessage: ""
+          errorMessage: null
         }));
       case MapActionType.SET_CURRENT_COMMENT:
         return setMapInfo((prevMapInfo) => ({
@@ -84,7 +81,7 @@ export function MapContextProvider({children}){
     });
   };
 
-  mapInfo.createMap = (newMap) => {
+  mapInfo.createMap = async function (newMap) {
     const { title, fileFormat, mapContent, tags } = newMap;
 
     if(!title || !fileFormat || !mapContent || !tags){
@@ -94,32 +91,21 @@ export function MapContextProvider({children}){
     // create map for user
     const user = auth.user;
     if (user) {
-      async function asyncCreateMap(userName, title, fileFormat, mapContent, tags) {
-        const response = await api.createMap(userName, title, fileFormat, mapContent, tags);
+      try{
+        const response = await api.createMap(user.userName, title, fileFormat, mapContent, tags);
         if (response.status === 201) {
-          navigate("/");
+          console.log(response.data);
           mapReducer({
-            type: MapActionType.UPLOAD_MAP,
-            payload: {
-              currentMap: mapContent,
-            },
-          });
-        } else {
-          mapReducer({
-            type: MapActionType.UPLOAD_MAP,
-            payload: {
-              currentMap: null,
-              errorMessage: response.data.errorMessage,
-            },
+            type: MapActionType.SET_CURRENT_MAP,
+            payload: response.data.map
           });
         }
       }
-      async function reloadMaps(userName, title, fileFormat, mapContent, tags) {
-        await asyncCreateMap(userName, title, fileFormat, mapContent, tags);
-        await mapInfo.getAllUserMaps();
-        navigate("/");
+      catch (error) {
+        if (error.response) {
+          console.log((error.response.status === 400) ? error.response.data.errorMessage : error);
+        }
       }
-      reloadMaps(user.userName, title, fileFormat, mapContent, tags);
     }
   };
 
@@ -135,18 +121,54 @@ export function MapContextProvider({children}){
 
   // Update user map list & public map list
   mapInfo.updateMapList = async function(){
-    await mapInfo.getAllUserMaps();
-    store.getAllMaps();
+    try{
+      console.log('updateMapList');
+      console.log(auth.user.maps);
+      await mapInfo.getMapsByMapIds(auth.user.maps);
+      store.getAllMaps();
+    }
+    catch (error) {
+      console.log(error)
+      mapReducer({
+        type: MapActionType.SET_ERROR_MSG,
+        payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error fetching current map or its comments from database"
+      });
+    }
   }
 
   mapInfo.deleteMapById = async function(mapId){
-    const response = await api.deleteMapById(mapId);
+    try{
+      const response = await api.deleteMapById(mapId);
 
-    if(response.status === 200){
-      mapInfo.updateMapList();
+      if(response.status === 200){
+        // show delete map alert first
+        store.getAllMapsAfterDelete();
+
+        const newMaps = auth.user?.maps?.filter((currMapId) => String(currMapId) !== String(mapId));
+        console.log(newMaps)
+
+        if(newMaps.length > 0){
+          await mapInfo.getMapsByMapIds(newMaps);
+          auth.userUpdateMaps(newMaps);
+        }
+        else{
+          auth.userUpdateMaps([]);
+          mapReducer({
+            type: MapActionType.LOAD_ALL_MAPS_FROM_USER,
+            payload: {
+              currentMap: null,
+              allMaps: []
+            }
+          });
+        }
+      }
     }
-    else{
-      console.log(response);
+    catch (error) {
+      console.log(error)
+      mapReducer({
+        type: MapActionType.SET_ERROR_MSG,
+        payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error deleting current map from database"
+      });
     }
   }
 
@@ -154,7 +176,12 @@ export function MapContextProvider({children}){
     try{
       const response = await api.publishMapById(mapId);
       if(response.status === 201){
-        mapInfo.updateMapList();
+        // show publish map alert first
+        store.closeModalAfterPublish();
+
+        console.log('map published');
+        console.log(response.data);
+        await mapInfo.updateMapList();
       }
     }
     catch (error) {
@@ -178,30 +205,6 @@ export function MapContextProvider({children}){
     }
   }
 
-  mapInfo.getAllUserMaps = async function() {
-    try {
-      console.log('mapInfo.getAllUserMaps');
-
-      const response = await api.getAllUserMaps();
-      if(response?.status === 200){
-        const mapIds = response.data.maps;
-
-        if(!mapIds){
-          return;
-        }
-
-        const maps = await Promise.all(mapIds.map(mapId => mapInfo.getMapById(mapId)));
-        mapReducer({
-          type: MapActionType.LOAD_ALL_MAPS_FROM_USER,
-          payload: maps.filter(map => map !== null),
-        });
-      }
-    }
-    catch (error) {
-      console.error('Error fetching user maps:', error);
-    }
-  };
-
   mapInfo.getMapById = async function(mapId) {
     try{
       const response = await api.getMapById(mapId);
@@ -220,12 +223,45 @@ export function MapContextProvider({children}){
     }
   }
 
+  mapInfo.getMapsByMapIds = async function (idList) {
+    try{
+      const response = await api.getMapsByMapIds(idList);
+      if(response?.status === 200){
+        // sometimes currentMap would get updated (publish/unpublish/delete)
+        let currMap = null;
+        const currMapId = (mapInfo.currentMap) ? mapInfo.currentMap._id : null;
+
+        if(currMapId){
+          currMap = response.data?.find((map) => map._id === currMapId);
+        }
+        mapReducer({
+          type: MapActionType.LOAD_ALL_MAPS_FROM_USER,
+          payload: {
+            currentMap: currMap,
+            allMaps: response.data
+          }
+        });
+      }
+    }
+    catch (error) {
+      mapReducer({
+        type: MapActionType.SET_ERROR_MSG,
+        payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error fetching user's maps from database"
+      });
+    }
+  };
+
   mapInfo.getAllPublishedMapsFromGivenUser = async function(userId){
     const response = await api.getAllPublishedMapsFromGivenUser(userId);
+
+    // should clear currentMap bec nothing is open
     if(response.status === 200){
       mapReducer({
         type: MapActionType.LOAD_ALL_MAPS_FROM_USER,
-        payload: response.data.maps
+        payload: {
+          currentMap: null,
+          allMaps: response.data.maps
+        }
       });
     }
     else{
@@ -266,7 +302,7 @@ export function MapContextProvider({children}){
   mapInfo.updateMapById = async function (mapId) {
     const response = await api.updateMapById(mapId, mapInfo.currentMap);
     if (response.status === 200) {
-      await mapInfo.getAllUserMaps();
+      await mapInfo.getMapsByMapIds(auth.user.maps);
       navigate("/");
     } else {
       console.log(response);

@@ -25,14 +25,14 @@ function Profile() {
 
   useEffect(() => {
     // only load other user's publish map
-    async function loadUserMapInfo(userId){
-      await mapInfo.getAllPublishedMapsFromGivenUser(userId);
-    }
     if(userInfo.currentUser){
       if(auth && auth.user && auth.user._id === userInfo.currentUser._id){
-        mapInfo.getAllUserMaps();
+        mapInfo.getMapsByMapIds(auth.user.maps);
       }
       else{
+        async function loadUserMapInfo(userId){
+          await mapInfo.getAllPublishedMapsFromGivenUser(userId);
+        }
         loadUserMapInfo(userInfo.currentUser._id);
       }
     }
@@ -95,7 +95,9 @@ function Profile() {
               value="post"
             />
           </Tabs>
-          <Box> {fetchContent()} </Box>
+          <Box id='profile-cards'>
+            {fetchContent()}
+          </Box>
         </Box>
         <ProfileCard
           initials={userInfo.getUserInitials().toUpperCase()}

@@ -16,8 +16,7 @@ export default function DeleteMapModal() {
   function handleDeleteModal(event) {
     event.stopPropagation();
     event.preventDefault();
-    mapInfo.deleteMapById(store.mapMarkedForDeletion._id);
-    store.closeModal();
+    mapInfo.deleteMapById(store.mapMarked._id);
   }
 
   function handleCloseModal(event) {
@@ -25,6 +24,8 @@ export default function DeleteMapModal() {
     event.preventDefault();
     store.closeModal();
   }
+
+  console.log(store.currentModal);
 
   return (
     <Modal className="modal" open={store.currentModal === "DELETE_MAP_MODAL"}>

@@ -4,6 +4,7 @@ import ButtonSet from "./button/ButtonSet";
 import PostInput from "./input/PostInput";
 import CommentInput from "./input/CommentInput";
 import CommentCard from "./CommentCard";
+import LoadingOverlay from "./LoadingOverlay";
 
 export { 
     Tag,
@@ -11,5 +12,6 @@ export {
     ButtonSet,
     PostInput,
     CommentInput,
-    CommentCard
+    CommentCard,
+    LoadingOverlay
 }
