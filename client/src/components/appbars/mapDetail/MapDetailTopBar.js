@@ -91,7 +91,7 @@ export default function MapDetailTopBar() {
 
   function handleLikeMap() {
     if (!auth.user) {
-      setAlert('Please login to like a map');
+      navigate('/login');
       return;
     }
     const userLikedMap = likes.find(
@@ -115,7 +115,7 @@ export default function MapDetailTopBar() {
 
   function handleDislikeMap() {
     if (!auth.user) {
-      setAlert('Please login to dislike a map');
+      navigate('/login');
       return;
     }
     const userLikedMap = likes.find(
