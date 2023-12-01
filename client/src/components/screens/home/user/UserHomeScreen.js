@@ -1,7 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
-import { Box, Typography } from "@mui/material";
+import { useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { DynamicCard, DeletePostModal, DeleteMapModal, PublishMapModal, UnpublishMapModal } from "../../../index";
+import { Box, Typography, Divider, Button } from "@mui/material";
+
+import { DynamicCard, Modals, CreatePrompt } from "../../../index";
 import { HomeNavCard } from "../index";
 
 import AuthContext from "../../../../contexts/auth";
@@ -17,12 +19,15 @@ function UserHomeScreen() {
   const { postInfo } = useContext(PostContext);
   const { mapInfo } = useContext(MapContext);
 
+  const navigate = useNavigate();
+
   const [loadingMaps, setLoadingMaps] = useState(false);
   const [loadingPosts, setLoadingPosts] = useState(false);
 
   const [mapCards, setMapCards] = useState(null);
   const [postCards, setPostCards] = useState(null);
 
+  // load maps & posts everytime user has update
   useEffect(() => {
     if(auth && auth.user) {
       userInfo.setCurrentUser(auth.user);
@@ -41,45 +46,76 @@ function UserHomeScreen() {
     }
   }, [auth?.user]);
 
+  // reload maps when current allMaps array changed
   useEffect(() => {
-    if(auth.user.maps?.length === mapInfo?.allMapsByUser?.length){
+    if(mapInfo?.allMapsByUser?.length > 0 && auth.user.maps?.length === mapInfo?.allMapsByUser?.length){
       setLoadingMaps(false);
       setMapCards(mapInfo?.allMapsByUser.map((pair, index) => (
         <DynamicCard key={index} userData={null} mapData={pair} postData={null}/>
       )));
+      return;
     }
+    setMapCards(<CreatePrompt type='map'/>);
   }, [mapInfo?.allMapsByUser]);
 
+  // reload post when current allPosts array changed
   useEffect(() => {
-    if(auth.user.posts?.length === postInfo?.allPostsByUser?.length){
+    if(postInfo?.allPostsByUser?.length > 0 && auth.user.posts?.length === postInfo?.allPostsByUser?.length){
       setLoadingPosts(false);
       setPostCards(postInfo?.allPostsByUser?.map((pair, index) => (
         <DynamicCard key={index} userData={null} mapData={null} postData={pair}/>
       )));
+      return;
     }
+    setPostCards(<CreatePrompt type='post'/>);
   }, [postInfo?.allPostsByUser]);
+
+  // function to render all map cards
+  function renderAllMaps(){
+    return (
+      <Box className='flex-column' id='all-container'>
+        <Typography variant='h1' id='all-title'>All Maps</Typography>
+        {
+          (loadingMaps) ?
+            <Box className="flex-column">
+              <Typography variant="h4">Currently fetching all maps created by user...</Typography>
+              <Box className="loadingCircle"></Box>
+            </Box> :
+            <>{mapCards}</>
+        }
+      </Box>
+    );
+  }
+
+  // function to render all post cards
+  function renderAllPosts(){
+    return (
+      <Box className='flex-column' id='all-container'>
+        <Typography variant='h1' id='all-title'>All Posts</Typography>
+        {
+          (loadingPosts) ?
+            <Box className="flex-column">
+              <Typography variant="h4">Currently fetching all posts created by user...</Typography>
+              <Box className="loadingCircle"></Box>
+            </Box> :
+            <>{postCards}</>
+        }
+      </Box>
+    );
+  }
  
   return (
     <Box className="home-content">
       <Typography id='welcome-text' variant="h3">Welcome, {auth.user.firstName}!</Typography>
       <Box className="home-feed">
         <Box className="display-container">
-          {
-            (loadingMaps || loadingPosts) ?
-              <Box className="flex-column">
-                  <Typography variant="h4">Currently fetching all maps & posts created by user...</Typography>
-                  <Box className="loadingCircle"></Box>
-              </Box> :
-              // <LoadingOverlay message='Currently fetching all maps & posts created by user...'/> :
-              <> {mapCards}{postCards} </>
-          }
+          { renderAllMaps() }
+          <Divider style={{ width: '100%', margin: '2.5vh auto' }}/>
+          { renderAllPosts() }
         </Box>
         <HomeNavCard/>
       </Box>
-      <DeletePostModal />
-      <DeleteMapModal/>
-      <PublishMapModal/>
-      <UnpublishMapModal/>
+      <Modals/>
     </Box>
   );
 }

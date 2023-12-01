@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 
 import { MapEditTopBar, MapEditSideBar, MapScreen } from "../../../index";
-import { DeleteMapModal, PublishMapModal, Warning, SuccessAlert } from "../../../index";
+import { Modals, Warning, SuccessAlert } from "../../../index";
 
 import MapContext from "../../../../contexts/map";
 import AuthContext from "../../../../contexts/auth";
@@ -91,8 +91,7 @@ export default function MapEditScreen() {
         <MapScreen/>
         <MapEditSideBar/>
       </Box>
-      <DeleteMapModal/>
-      <PublishMapModal/>
+      <Modals/>
     </Box>
   );
 }

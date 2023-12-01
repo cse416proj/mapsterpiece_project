@@ -13,10 +13,24 @@ createPost = async (req, res) => {
 
   const { title, tags, content } = req.body;
 
-  if (!title || !tags || !content) {
+  if (!title || !content || !tags) {
     return res
       .status(400)
       .json({ errorMessage: "Please enter all required fields." });
+  }
+
+  const trimmedTitle = title.replace(/(\s|\r\n|\n|\r)/gm, '');
+  if(trimmedTitle.length === 0) {
+    return res
+      .status(400)
+      .json({ errorMessage: "Post title must be entered with at least one non-space characters!" });
+  }
+
+  const trimmedContent = content.replace(/(\s|\r\n|\n|\r)/gm, '');
+  if(trimmedContent.length === 0) {
+    return res
+      .status(400)
+      .json({ errorMessage: "Post content must be entered with at least one non-space characters!" });
   }
 
   User.findById(req.userId, (err, user) => {
@@ -391,6 +405,4 @@ module.exports = {
   deleteCommentById,
   deleteSubCommById,
   getSubcommsByParentCommsId
-
-  // getSubcommsBySubcommsIds,
 };

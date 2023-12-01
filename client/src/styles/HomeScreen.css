@@ -5,7 +5,7 @@
 }
 
 #welcome-text{
-    margin: 2vh auto;
+    margin: 5vh auto 2vh auto;
 }
 
 .home-feed{
@@ -35,4 +35,14 @@
     justify-content: space-around;
     align-items: center;
     padding: 2.5vh 0;
+}
+
+#all-container, #create-prompt{
+    width: 95%;
+    align-items: flex-start;
+}
+
+#all-title{
+    font-size: 2vw;
+    margin-bottom: 2vh;
 }

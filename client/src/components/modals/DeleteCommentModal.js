@@ -22,7 +22,6 @@ export default function DeleteCommentModal() {
     event.stopPropagation();
     event.preventDefault();
     console.log("on click confirm delete comment");
-    console.log()
     // if(isMap){
     //   mapInfo.deleteCommentById(store.commentMarkedForDeletion._id);
     // }

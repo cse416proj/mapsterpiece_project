@@ -18,6 +18,7 @@ function MapEditSideBar() {
 
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState([]);
+  const [isEditingTag, setIsEditingTag] = useState(false);
   const [selectedColor, setSelectedColor] = useState('#ffffff');
   const [mapType, setMapType] = useState(10);
 
@@ -81,7 +82,7 @@ function MapEditSideBar() {
 
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Tags</Typography>
-          <Tags tags={tags} setTags={setTags} />
+          <Tags tags={tags} setTags={setTags} isEditingTag={isEditingTag} setIsEditingTag={setIsEditingTag}/>
         </Box>
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Legend</Typography>

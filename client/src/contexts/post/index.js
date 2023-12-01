@@ -10,6 +10,7 @@ export const PostActionType = {
   SET_CURRENT_COMMENT: "SET_CURRENT_COMMENT",
   SET_CURRENT_SUBCOMMENT: "SET_CURRENT_SUBCOMMENT",
   UPDATE_ALL_COMMENTS: "UPDATE_ALL_COMMENTS",
+  SET_ERROR_MSG: "SET_ERROR_MSG"
 };
 
 function PostContextProvider(props) {
@@ -56,10 +57,23 @@ function PostContextProvider(props) {
           allCommentsForPost: payload
         });
       }
+      case PostActionType.SET_ERROR_MSG: {
+        return setPostInfo({
+          ...postInfo, 
+          errorMessage: payload
+        });
+      }
       default:
         return postInfo;
     }
   };
+
+  postInfo.setErrorMsg = function (msg){
+    postReducer({
+      type: PostActionType.SET_ERROR_MSG,
+      payload: msg,
+    });
+  }
 
   postInfo.setCurrentPost = function (postPayload) {
     postReducer({
@@ -93,18 +107,22 @@ function PostContextProvider(props) {
   };
 
   postInfo.createPost = async function (title, tags, content) {
-    const response = await api.createPost(title, tags, content);
-    if (response.data.error) {
-      setPostInfo({
-        ...postInfo,
-        errorMessage: response.data.error,
-      });
-    } else {
-      setPostInfo({
-        ...postInfo,
-        errorMessage: null,
-      });
-      auth.getLoggedIn();
+    try{
+      const response = await api.createPost(title, tags, content);
+      if(response.status === 201){
+        console.log(response);
+        // close error modal & open create success alert first
+        store.createSuccessAlert();
+        setPostInfo({
+          ...postInfo,
+          currentPost: response.data.post,
+          errorMessage: null,
+        });
+        auth.getLoggedIn();
+      }
+    }
+    catch(error){
+      store.setError((error.response.data.errorMessage) ? error.response.data.errorMessage : 'Error creating post');
     }
   };
 
@@ -233,11 +251,19 @@ function PostContextProvider(props) {
   };
 
   postInfo.getPostById = async function (postId) {
-    const response = await api.getPostById(postId);
-    setPostInfo({
-      ...postInfo,
-      currentPost: response.data,
-    });
+    try{
+      const response = await api.getPostById(postId);
+      setPostInfo({
+        ...postInfo,
+        currentPost: response.data,
+      });
+    }
+    catch(error){
+      postReducer({
+        type: PostActionType.SET_ERROR_MSG,
+        payload: "Error fetching user's post. Possible reason: non-existing post."
+      });
+    }
   };
 
   postInfo.getCommentsByCommentIds = async function (idList) {

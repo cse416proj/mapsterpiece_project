@@ -19,7 +19,7 @@ export default function UploadMapErrorModal(){
     }
 
     return(
-        <Modal className="modal" open={store?.currentModal === "UPLOAD_ERROR_MODAL" && store?.errorMsg}>
+        <Modal className="modal" open={store?.currentModal === "ERROR_MODAL" && store?.errorMsg !== null}>
             <Box className="modal-box">
                 <Box className="modal-dialog">
                     <Box className="modal-context">

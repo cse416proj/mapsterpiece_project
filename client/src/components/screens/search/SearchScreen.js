@@ -5,7 +5,7 @@ import { Box, Typography } from "@mui/material";
 import { GlobalStoreContext } from "../../../contexts/store";
 import MapContext from "../../../contexts/map";
 import UserContext from "../../../contexts/user";
-import { SideNavBar, SearchBar, MapsCardSection, PostsCardSection, MapsPostsCardSection, DeletePostModal, DeleteMapModal, PublishMapModal, UnpublishMapModal } from "../../index";
+import { SideNavBar, SearchBar, MapsCardSection, PostsCardSection, MapsPostsCardSection, Modals } from "../../index";
 
 function SearchScreen(){
     const { store } = useContext(GlobalStoreContext);
@@ -70,10 +70,7 @@ function SearchScreen(){
                 <Box className="listsDisplay">
                     { listCard }
                 </Box>
-                <DeletePostModal/>
-                <DeleteMapModal/>
-                <PublishMapModal/>
-                <UnpublishMapModal/>
+                <Modals/>
             </Box>
         </Box>
     )

@@ -1,21 +1,21 @@
-import { useEffect } from 'react';
+import { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { SpeedDial, SpeedDialIcon, SpeedDialAction } from '@mui/material';
 import CreateIcon from '@mui/icons-material/Create';
 import SearchIcon from '@mui/icons-material/Search';
 
+import GlobalStoreContext from '../../../contexts/store';
+
 function ActionButton({isLoggedInUser}){
-    const navigate = useNavigate();
+    const { store } = useContext(GlobalStoreContext);
     const { userId } = useParams();
 
-    useEffect(() => {
-        console.log(`userId: ${userId}`)
-        // userInfo.getUserById(userId);
-    }, [userId]);
+    const navigate = useNavigate();
 
     function handleCreate(event){
         console.log('handleCreateMap');
+        store.setCurrentView('CREATE_MAP');
         navigate('/create');
     }
 

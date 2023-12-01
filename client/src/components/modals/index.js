@@ -8,4 +8,20 @@ import DeleteSubCommModal from './DeleteSubCommModal';
 import UploadMapErrorModal from './UploadMapErrorModal';
 import SuccessAlert from './SuccessAlert';
 
-export { PublishMapModal, UnpublishMapModal, DeleteMapModal, DeletePostModal, DeleteAccountModal, DeleteCommentModal, DeleteSubCommModal, UploadMapErrorModal, SuccessAlert }
+
+const Modals = () => (
+    <>
+        <PublishMapModal/>
+        <UnpublishMapModal/>
+        <DeleteMapModal/>
+        <DeletePostModal/>
+        <DeleteAccountModal/>
+        <DeleteCommentModal/>
+        <DeleteSubCommModal/>
+        <UploadMapErrorModal/>
+    </>
+);
+  
+export { Modals, SuccessAlert };
+
+// export { Modals, PublishMapModal, UnpublishMapModal, DeleteMapModal, DeletePostModal, DeleteAccountModal, DeleteCommentModal, DeleteSubCommModal, UploadMapErrorModal, SuccessAlert }
