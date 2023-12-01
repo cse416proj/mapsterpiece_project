@@ -5,7 +5,7 @@ import { DynamicCard } from '../../index';
 
 function PostsCardSection({ data, search, sortBy, currScreen }) {
   const [filterData, setFilteredData] = useState([]);
-  console.log(sortBy, currScreen);
+  // console.log(sortBy, currScreen);
 
   // update filteredData when data/search property changes
   useEffect(() => {
@@ -18,7 +18,7 @@ function PostsCardSection({ data, search, sortBy, currScreen }) {
         searchTerm === '' ||
         pair.title.toLowerCase().includes(searchTerm) ||
         pair.tags.some((tag) => tag.toLowerCase().includes(searchTerm)) ||
-        pair.postBody.toLowerCase().includes(searchTerm)
+        pair?.postBody?.toLowerCase().includes(searchTerm)
       );
     });
     if(currScreen.includes('POST')){

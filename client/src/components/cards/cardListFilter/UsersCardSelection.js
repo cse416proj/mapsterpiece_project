@@ -5,7 +5,7 @@ import { DynamicCard } from '../../index';
 
 function UsersCardSection({ data, search, sortBy, currScreen }) {
   const [filterData, setFilteredData] = useState([]);
-  console.log(sortBy, currScreen);
+  // console.log(sortBy, currScreen);
 
   useEffect(() => {
     if (!data) {

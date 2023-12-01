@@ -61,7 +61,6 @@ export default function SearchBar(props) {
     props.setSortBy('MostRecentEdit-map');
     setAnchorEl(null);
   }
-
   const handleSortMapLREdit = (event)=>{
     event.stopPropagation();
     event.preventDefault();
@@ -74,7 +73,6 @@ export default function SearchBar(props) {
     props.setSortBy('MostRecentPublish-map');
     setAnchorEl(null);
   }
-
   const handleSortMapLRPublish = (event)=>{
     event.stopPropagation();
     event.preventDefault();
@@ -199,6 +197,7 @@ export default function SearchBar(props) {
               marginLeft: "10px",
               width: (currScreen.includes("HOME")) ? "72.5vw" : "62.5vw",
             }}
+            onSubmit={(event) => {event.preventDefault();}}
           >
             <InputBase 
               onChange={(event)=>props.setSearch(event.target.value)}

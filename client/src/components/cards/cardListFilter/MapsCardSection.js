@@ -5,7 +5,7 @@ import { DynamicCard } from '../../index';
 
 function MapsCardSection({ data, search, sortBy, currScreen }) {
   const [filterData, setFilteredData] = useState([]);
-  console.log(sortBy, currScreen);
+  // console.log(sortBy, currScreen);
 
   // update filteredData when data/search property changes
   useEffect(() => {

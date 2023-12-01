@@ -3,8 +3,9 @@ import { Box } from '@mui/material';
 
 import { DynamicCard } from '../../index';
 
-function MapsPostsCardSection({ data, search }) {
+function MapsPostsCardSection({ data, search, sortBy, currScreen }) {
   const [filterData, setFilteredData] = useState([]);
+  // console.log(sortBy, currScreen);
 
   // update filteredData when data/search property changes
   useEffect(() => {
