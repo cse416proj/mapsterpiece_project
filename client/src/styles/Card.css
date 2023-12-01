@@ -1,7 +1,7 @@
 .individualDynamicCard{
-    margin-top: 2%;
     border: 1px solid var(--primary-color);
     height: 20vh;
+    margin-bottom: 2%;
 }
 
 .cardContent{

@@ -26,27 +26,37 @@ function NavBar(){
     };
     
     function handleGoHome(event){
+        event.stopPropagation();
+        event.preventDefault();
         store.setCurrentView("USER_HOME");
         navigate('/');
     }
 
     function handleSignin(event){
+        event.stopPropagation();
+        event.preventDefault();
         closeMenu();
         navigate('/login');
     }
 
     function handleRegister(event){
+        event.stopPropagation();
+        event.preventDefault();
         closeMenu();
         navigate('/register');
     }
 
     function handleViewProfile(event){
+        event.stopPropagation();
+        event.preventDefault();
         closeMenu();
         userInfo.setCurrentUser(auth.user);
-        navigate(`profile/${auth.user._id}`);
+        navigate(`/profile/${auth.user._id}`);
     }
 
     function handleLogout(event){
+        event.stopPropagation();
+        event.preventDefault();
         closeMenu();
         auth.logoutUser();
     }

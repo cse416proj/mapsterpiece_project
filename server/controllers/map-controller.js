@@ -2,7 +2,7 @@ const Map = require("../models/map-model");
 const User = require("../models/user-model");
 const auth = require("../auth");
 const Comment = require("../models/comment-model");
-const Subcomment = require("../models/subcomment-model")
+const Subcomment = require("../models/subcomment-model");
 
 createMap = async (req, res) => {
   if (auth.verifyUser(req) === null) {
@@ -25,41 +25,34 @@ createMap = async (req, res) => {
       .json({ errorMessage: "Please enter all required fields." });
   }
 
-  const allowProperties = [
-    "NAME_0",
-    "NAME_1",
-    "NAME_2",
-    "NAME_3",
-    "name_0",
-    "name_1",
-    "name_2",
-    "name_3",
-    "ID_0",
-    "ID_1",
-    "ID_2",
-    "ID_3",
-    "name",
-  ];
-
   const features = mapContent.features;
-  let nameListUpper = ["NAME_0", "NAME_1", "NAME_2", "NAME_3"];
   let featuresFiltered = [];
 
+  // use regex to parse properties we want
+  const nameRegex = /^NAME(_[0-3])?$/i;
+
+  if (!features) {
+    return res.status(400).json({ errorMessage: "Feature does not exist." });
+  }
+
   for (let i = 0; i < features.length; i++) {
-    if (features[i].properties) {
-      Object.keys(features[i].properties).forEach((property) => {
-        if (!allowProperties.includes(property))
-          delete features[i].properties[property];
-        else {
-          if (nameListUpper.includes(property)) {
-            features[i].properties[property.toLowerCase()] =
-              features[i].properties[property];
-            delete features[i].properties[property];
-          }
-        }
+    const currFeature = features[i];
+    if (currFeature.properties) {
+      let newProperties = {};
+      const propKeys = Object.keys(currFeature.properties);
+      const newPropKeys = propKeys.filter((property) =>
+        nameRegex.test(property)
+      );
+
+      // keep properties we want
+      newPropKeys.forEach((property) => {
+        newProperties[property.toLowerCase()] =
+          currFeature.properties[property];
       });
+      currFeature.properties = newProperties;
     }
-    featuresFiltered[i] = features[i];
+
+    featuresFiltered[i] = currFeature;
   }
 
   // create map
@@ -95,7 +88,7 @@ createMap = async (req, res) => {
         newMap
           .save()
           .then(() => {
-            console.log('success');
+            console.log("success");
             return res.status(201).json({
               success: true,
               map: newMap,
@@ -200,35 +193,53 @@ deleteMapById = async (req, res) => {
   });
 };
 
-getAllMapsFromCurrentUser = async (req, res) => {
-  if (auth.verifyUser(req) === null) {
-    return res.status(401).json({
-      errorMessage: "Unauthorized",
-    });
+// getAllMapsFromCurrentUser = async (req, res) => {
+//   if (auth.verifyUser(req) === null) {
+//     return res.status(401).json({
+//       errorMessage: "Unauthorized",
+//     });
+//   }
+
+//   // check user existence
+//   const userId = req.userId;
+//   if (!userId) {
+//     return res.status(400).json({ errorMessage: "User does not exist." });
+//   }
+
+//   console.log(`Now getting maps from user ${userId}`);
+
+//   User.findById(userId)
+//     .populate({
+//       path: "maps",
+//       model: "Map",
+//     })
+//     .exec((err, user) => {
+//       if (err) {
+//         return res.status(500).json({ errorMessage: err.message });
+//       } else if (!user) {
+//         return res.status(404).json({ errorMessage: "User not found." });
+//       }
+
+//       return res.status(200).json(user.maps);
+//     });
+// };
+
+getMapsByMapIds = async (req, res) => {
+  let idList = req.params.idLists;
+  idList = idList.split(",");
+  if (!idList) {
+    return [];
   }
 
-  // check user existence
-  const userId = req.userId;
-  if (!userId) {
-    return res.status(400).json({ errorMessage: "User does not exist." });
-  }
+  Map.find({ _id: { $in: idList } }, (err, maps) => {
+    if (err) {
+      return res.status(500).json({ errorMessage: err.message });
+    } else if (!maps) {
+      return res.status(404).json({ errorMessage: "Maps not found." });
+    }
 
-  console.log(`Now getting maps from user ${userId}`);
-
-  User.findById(userId)
-    .populate({
-      path: "maps",
-      model: "Map",
-    })
-    .exec((err, user) => {
-      if (err) {
-        return res.status(500).json({ errorMessage: err.message });
-      } else if (!user) {
-        return res.status(404).json({ errorMessage: "User not found." });
-      }
-
-      return res.status(200).json(user.maps);
-    });
+    return res.status(200).json(maps);
+  });
 };
 
 // helper function to update map publish status
@@ -411,118 +422,208 @@ updateMapById = async (req, res) => {
   });
 };
 
-createMapComment = async (req, res) =>{
+createMapComment = async (req, res) => {
   try {
-      if (auth.verifyUser(req) === null) {
-          return res.status(401).json({
-              errorMessage: "Unauthorized",
-          });
-      }
-
-      const userId = req.userId;
-      const mapId = req.params.mapId;
-      const { commenterUserName, content } = req.body;
-
-      if(!userId){
-          return res.status(400).json({ errorMessage: "User does not exist." });
-      }
-      if (!commenterUserName || !content) {
-          return res.status(400).json({ errorMessage: "Please enter both commenterUserName and content." });
-      }
-
-      const map = await Map.findById(mapId);
-      if (!map || !map.isPublished) {
-          return res.status(404).json({ errorMessage: "Map not found or not published." });
-      }
-
-      const newComment = new Comment({
-          commenterUserName,
-          content,
+    if (auth.verifyUser(req) === null) {
+      return res.status(401).json({
+        errorMessage: "Unauthorized",
       });
+    }
 
-      await newComment.save();
-      map.comments.push(newComment._id);
-      await map.save();
+    const userId = req.userId;
+    const mapId = req.params.mapId;
+    const { commenterUserName, content } = req.body;
 
-      return res.status(201).json({
-          success: true,
-          comment: newComment,
-          message: "Comment added successfully!",
+    if (!userId) {
+      return res.status(400).json({ errorMessage: "User does not exist." });
+    }
+    if (!commenterUserName || !content) {
+      return res.status(400).json({
+        errorMessage: "Please enter both commenterUserName and content.",
       });
+    }
+
+    const map = await Map.findById(mapId);
+    if (!map || !map.isPublished) {
+      return res
+        .status(404)
+        .json({ errorMessage: "Map not found or not published." });
+    }
+
+    const newComment = new Comment({
+      commenterUserName: commenterUserName,
+      type: 'map',
+      content: content,
+    });
+
+    await newComment.save();
+    map.comments.push(newComment._id);
+    await map.save();
+
+    return res.status(201).json({
+      success: true,
+      comment: newComment,
+      message: "Comment added successfully!",
+    });
   } catch (error) {
-      console.error(error);
-      return res.status(500).json({ errorMessage: "Internal server error" });
+    console.error(error);
+    return res.status(500).json({ errorMessage: "Internal server error" });
   }
-}
-
+};
 
 getAllCommentsFromPublishedMap = async (req, res) => {
-  const mapId = req.params.mapId; 
+  const mapId = req.params.mapId;
   // console.log(mapId);
 
   try {
-      const map = await Map.findById(mapId);
+    const map = await Map.findById(mapId);
 
-      if (!map) {
-          return res.status(404).json({ errorMessage: "Map not found." });
-      }
-      if (!map.isPublished) {
-          return res.status(400).json({ errorMessage: "Map is not published." });
-      }
+    if (!map) {
+      return res.status(404).json({ errorMessage: "Map not found." });
+    }
+    if (!map.isPublished) {
+      return res.status(400).json({ errorMessage: "Map is not published." });
+    }
 
-      const comments = await Comment.find({ _id: { $in: map.comments } });
-
-      return res.status(200).json({ comments });
+    const comments = await Comment.find({ _id: { $in: map.comments } });
+    return res.status(200).json({ comments });
   } catch (error) {
-      // console.error(error);
-      return res.status(500).json({ errorMessage: "Internal server error" });
+    // console.error(error);
+    return res.status(500).json({ errorMessage: "Internal server error" });
   }
-}
-
+};
 
 deleteMapCommentById = async (req, res) => {
   try {
-      if (auth.verifyUser(req) === null) {
-          return res.status(401).json({
-              errorMessage: "Unauthorized",
-          });
-      }
-
-      const commentId = req.params.commentId;
-      console.log("Map commentId for deletion: ", commentId);
-
-      const deletedComment = await Comment.findByIdAndDelete(commentId);
-
-      if (!deletedComment) {
-          return res.status(404).json({ errorMessage: "Comment not found" });
-      }
-
-      const updatedMap = await Map.findOneAndUpdate(
-          { comments: commentId },
-          { $pull: { comments: commentId } },
-          { new: true }
-      );
-
-      if (!updatedMap) {
-          return res.status(404).json({ errorMessage: "Map not found for the given comment" });
-      }
-
-      res.status(200).json({
-          message: "Comment deleted successfully",
-          deletedComment: deletedComment,
-          updatedMap: updatedMap,
+    if (auth.verifyUser(req) === null) {
+      return res.status(401).json({
+        errorMessage: "Unauthorized",
       });
+    }
+
+    const commentId = req.params.commentId;
+    console.log("Map commentId for deletion: ", commentId);
+
+    const deletedComment = await Comment.findByIdAndDelete(commentId);
+
+    if (!deletedComment) {
+      return res.status(404).json({ errorMessage: "Comment not found" });
+    }
+
+    const updatedMap = await Map.findOneAndUpdate(
+      { comments: commentId },
+      { $pull: { comments: commentId } },
+      { new: true }
+    );
+
+    if (!updatedMap) {
+      return res
+        .status(404)
+        .json({ errorMessage: "Map not found for the given comment" });
+    }
+
+    res.status(200).json({
+      message: "Comment deleted successfully",
+      deletedComment: deletedComment,
+      updatedMap: updatedMap,
+    });
   } catch (error) {
-      console.error("Error deleting comment:", error);
-      res.status(500).json({ errorMessage: "Internal server error" });
+    console.error("Error deleting comment:", error);
+    res.status(500).json({ errorMessage: "Internal server error" });
   }
+};
+
+likeDislikeMapById = async (req, res) => {
+  if (auth.verifyUser(req) === null) {
+    return res.status(401).json({
+      errorMessage: "Unauthorized",
+    });
+  }
+
+  const userId = req.userId;
+  const mapId = req.params.id;
+  const { isLike } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ errorMessage: "User does not exist." });
+  }
+  if (!mapId) {
+    return res.status(400).json({ errorMessage: "Map ID does not exist." });
+  }
+
+  User.findById(userId, (err, user) => {
+    if (err) {
+      return res.status(500).json({ errorMessage: err.message });
+    } else if (!user) {
+      return res.status(404).json({ errorMessage: "User cannot be found." });
+    }
+
+    Map.findById(mapId, (err, map) => {
+      if (err) {
+        return res.status(500).json({ errorMessage: err.message });
+      }
+
+      const userLikedMap = map.likedUsers.find(user => String(user) === String(userId));
+      const userDislikedMap = map.dislikedUsers.find(user => String(user) === String(userId));
+
+      if (isLike) {
+        if (userLikedMap) {
+          return res
+            .status(400)
+            .json({ errorMessage: "User already liked map" });
+        }
+        if (userDislikedMap) {
+          map.dislikedUsers = map.dislikedUsers.filter(
+            user => String(user) !== String(userId)
+          );
+        }
+        map.likedUsers.push(userId);
+      } else {
+        if (userDislikedMap) {
+          return res
+            .status(400)
+            .json({ errorMessage: "User already disliked map" });
+        }
+        if (userLikedMap) {
+          map.likedUsers = map.likedUsers.filter(
+            user => String(user) !== String(userId)
+          );
+        }
+        map.dislikedUsers.push(userId);
+      }
+
+      map
+        .save()
+        .then(() => {
+          return res.status(201).json({
+            success: true,
+            map: map,
+            message: "Map's like/dislike status has been updated!",
+          });
+        })
+        .catch((error) => {
+          return res.status(400).json({
+            error,
+            errorMessage:
+              "Failed to update like/dislike of the map, please try again.",
+          });
+        });
+    }).catch((error) => {
+      return res.status(400).json({
+        error,
+        errorMessage:
+          "Failed to update like/dislike of the map, please try again.",
+      });
+    });
+  });
 };
 
 module.exports = {
   createMap,
   getMapById,
   deleteMapById,
-  getAllMapsFromCurrentUser,
+  // getAllMapsFromCurrentUser,
+  getMapsByMapIds,
   publishMapById,
   unpublishMapById,
   getAllPublishedMapsFromGivenUser,
@@ -530,4 +631,5 @@ module.exports = {
   createMapComment,
   getAllCommentsFromPublishedMap,
   deleteMapCommentById,
+  likeDislikeMapById,
 };

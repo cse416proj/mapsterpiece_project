@@ -9,23 +9,20 @@ import "./styles/Modal.css";
 import "./styles/Post.css";
 import "./styles/Map.css";
 import "./styles/Edit.css";
-
+// testing cicd
 import { React } from "react";
 import { Box } from "@mui/material";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import { AppContextProvider } from './contexts';
-import { NavBar, HomeScreen, AuthScreen, PasswordScreen, Profile, CreateScreen, SearchScreen, CommunityScreen, PostDetailScreen, MapEditScreen, PostEditScreen, MaybeShowNavBar } from "./components";
-import MapDetailsScreen from './components/screens/map/MapDetailsScreen'
+import { NavBar, HomeScreen, AuthScreen, PasswordScreen, Profile, CreateScreen, SearchScreen, CommunityScreen, MapDetailsScreen, PostDetailScreen, MapEditScreen, PostEditScreen } from "./components";
 
 function App() {
   return (
     <Router>
       <AppContextProvider>
         <Box className="App">
-          <MaybeShowNavBar>
-            <NavBar/>
-          </MaybeShowNavBar>
+          <NavBar/>
           
           <Routes>
             <Route path='/' element={<HomeScreen/>}></Route>
