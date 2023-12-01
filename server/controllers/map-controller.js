@@ -397,6 +397,7 @@ updateMapById = async (req, res) => {
       map.title = title;
       map.mapContent = mapContent;
       map.tags = tags;
+      map.dateEdited = new Date();
 
       map
         .save()

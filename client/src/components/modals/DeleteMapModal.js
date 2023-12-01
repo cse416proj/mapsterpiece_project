@@ -25,7 +25,7 @@ export default function DeleteMapModal() {
     store.closeModal();
   }
 
-  console.log(store.currentModal);
+  // console.log(store.currentModal);
 
   return (
     <Modal className="modal" open={store.currentModal === "DELETE_MAP_MODAL"}>

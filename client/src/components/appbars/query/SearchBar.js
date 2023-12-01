@@ -28,6 +28,12 @@ export default function SearchBar(props) {
     setAnchorEl(null);
   };
 
+  const handleSortA2Z = (event) =>{
+    event.stopPropagation();
+    event.preventDefault();
+    setAnchorEl(null);
+  }
+
   // Now update currScreen; reason: currentView changes in Store
   useEffect(() => {
     if(store?.currentView){
@@ -41,7 +47,7 @@ export default function SearchBar(props) {
       setPlaceholder('Search by userName/email/id...');
       setMenuItems(
         [
-          { sortBy: 'Alphabet (A-Z)', handler: closeMenu },
+          { sortBy: 'Alphabet (A-Z)', handler: handleSortA2Z },
           { sortBy: 'Alphabet (Z-A)', handler: closeMenu },
         ]
       )
