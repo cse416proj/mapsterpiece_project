@@ -5,7 +5,7 @@ import { DynamicCard } from '../../index';
 
 function MapsPostsCardSection({ data, search, sortBy, currScreen }) {
   const [filterData, setFilteredData] = useState([]);
-  // console.log(sortBy, currScreen);
+  console.log(sortBy, currScreen);
 
   // update filteredData when data/search property changes
   useEffect(() => {
@@ -20,6 +20,22 @@ function MapsPostsCardSection({ data, search, sortBy, currScreen }) {
         pair.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
       );
     });
+    if(currScreen === 'ALL_MAPS_POSTS'){
+      // A-Z && Z-A
+      if (sortBy.includes('2')) {
+        result.sort((a, b) => {
+          const titleA = a.title.toLowerCase();
+          const titleB = b.title.toLowerCase();
+
+          if (sortBy === 'A2Z-both') {
+            return titleA.localeCompare(titleB);
+          } else if (sortBy === 'Z2A-both') {
+            return titleB.localeCompare(titleA);
+          }
+          return 0;
+        });
+      }
+    }
     setFilteredData(result);
   }, [data, search]);
 

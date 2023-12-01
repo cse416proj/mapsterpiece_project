@@ -13,10 +13,12 @@ function SearchScreen(){
     const { mapInfo } = useContext(MapContext);
     const { userId } = useParams();
     const [currScreen, setCurrScreen] = useState('');
-    const [searchSortBy, setSearchSortBy] = useState('');
+    const [sortBy, setSortBy] = useState('');
 
     const [search, setSearch] = useState('');
     const [listCard, setListCard] = useState(null);
+
+    // console.log(sortBy);
 
     useEffect(() => {
         if(userId){
@@ -41,13 +43,12 @@ function SearchScreen(){
     // Now update list card rendering; reason: store changes in Store or search changes in SearchScreen
     useEffect(() => {
         if(store){
-            // console.log(store.currentView)
             var data = store.getData(currScreen);
-            console.log(data);
+            // console.log(data);
 
             switch(store.currentView){
                 case "ALL_MAPS_POSTS":
-                    setListCard(<MapsPostsCardSection data={data} search={search} searchSortBy={searchSortBy} currScreen={currScreen}/>);
+                    setListCard(<MapsPostsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
                     break;
                 case "ALL_MAPS":
                 case "BIN_MAPS":
@@ -55,7 +56,7 @@ function SearchScreen(){
                 case "DOT_MAPS":
                 case "GRAD_MAPS":
                 case "HEAT_MAPS":
-                    setListCard(<MapsCardSection data={data} search={search} searchSortBy={searchSortBy} currScreen={currScreen}/>);
+                    setListCard(<MapsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
                     break;
                 case "ALL_POSTS":
                 case "BIN_POSTS":
@@ -63,20 +64,20 @@ function SearchScreen(){
                 case "DOT_POSTS":
                 case "GRAD_POSTS":
                 case "HEAT_POSTS":
-                    setListCard(<PostsCardSection data={data} search={search} searchSortBy={searchSortBy} currScreen={currScreen}/>);
+                    setListCard(<PostsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
                     break;
                 default:
                     setListCard(<Typography variant='h5' style={{ marginTop: '1.5vh' }}> You can search for your own maps and posts on this page. <br /><br />Please select Maps and/or Posts on the right.</Typography>);
                     break;
             }
         }
-    }, [search, store, currScreen, searchSortBy]);
+    }, [search, store, currScreen, sortBy]);
 
     return (
         <Box className='queryScreenWrapper'>
             <SideNavBar/>
             <Box className="queryScreenContent">
-                <SearchBar setSearch={setSearch} setSearchSortBy = {setSearchSortBy}/>
+                <SearchBar setSearch={setSearch} setSortBy = {setSortBy}/>
                 <Box className="listsDisplay">
                     { listCard }
                 </Box>

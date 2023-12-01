@@ -34,7 +34,6 @@ export default function SearchBar(props) {
     props.setSortBy('A2Z-user');
     setAnchorEl(null);
   }
-
   const handleSortUserZ2A = (event)=>{
     event.stopPropagation();
     event.preventDefault();
@@ -48,7 +47,6 @@ export default function SearchBar(props) {
     props.setSortBy('A2Z-map');
     setAnchorEl(null);
   }
-
   const handleSortMapZ2A = (event)=>{
     event.stopPropagation();
     event.preventDefault();
@@ -86,25 +84,37 @@ export default function SearchBar(props) {
     props.setSortBy('A2Z-post');
     setAnchorEl(null);
   }
-
   const handleSortPostZ2A = (event)=>{
     event.stopPropagation();
     event.preventDefault();
     props.setSortBy('Z2A-post');
     setAnchorEl(null);
   }
-
   const handleSortPostMR = (event) =>{
     event.stopPropagation();
     event.preventDefault();
     props.setSortBy('MostRecent-post');
     setAnchorEl(null);
   }
-
   const handleSortPostLR= (event)=>{
     event.stopPropagation();
     event.preventDefault();
     props.setSortBy('LeastRecent-post');
+    setAnchorEl(null);
+  }
+
+  const handleSortBothA2Z = (event) =>{
+    event.stopPropagation();
+    event.preventDefault();
+    console.log("current screen: ",currScreen);
+    props.setSortBy('A2Z-both');
+    setAnchorEl(null);
+  }
+
+  const handleSortBothZ2A = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('Z2A-Both');
     setAnchorEl(null);
   }
 
@@ -123,6 +133,15 @@ export default function SearchBar(props) {
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortUserA2Z },
           { sortBy: 'Alphabet (Z-A)', handler: handleSortUserZ2A },
+        ]
+      )
+    }
+    else if(currScreen==='ALL_MAPS_POSTS'){
+      setPlaceholder('Search by userName/email/id...');
+      setMenuItems(
+        [
+          { sortBy: 'Alphabet (A-Z)', handler: handleSortBothA2Z },
+          { sortBy: 'Alphabet (Z-A)', handler: handleSortBothZ2A },
         ]
       )
     }
