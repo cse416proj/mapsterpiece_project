@@ -4,7 +4,6 @@ import { Box, Typography, CardContent, IconButton } from '@mui/material';
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
-import { DeleteCommentModal } from "../../modals";
 import AuthContext from '../../../contexts/auth';
 
 export default function CommentCard({ type, comment, deleteHandler }){
@@ -27,9 +26,6 @@ export default function CommentCard({ type, comment, deleteHandler }){
                 { renderDeleteBtn() }
             </Box>
             <Typography id='comment'>{comment?.content}</Typography>
-            {
-                (type==='comment') ? <DeleteCommentModal type='map'/> : null
-            }
         </CardContent>
     )
 }
