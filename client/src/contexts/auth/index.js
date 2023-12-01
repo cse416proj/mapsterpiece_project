@@ -15,7 +15,8 @@ export const AuthActionType = {
   CLOSE_MODAL: "CLOSE_MODAL",
   SET_MSG: "SET_MSG",
   SET_ERROR: "SET_ERROR",
-  SET_LOST_PW_USER: "SET_LOST_PW_USER"
+  SET_LOST_PW_USER: "SET_LOST_PW_USER",
+  UPDATE_USER: "UPDATE_USER"
 };
 
 function AuthContextProvider(props) {
@@ -114,6 +115,14 @@ function AuthContextProvider(props) {
         }));
       }
       case AuthActionType.SET_LOST_PW_USER: {
+        return setAuth((prevAuth) => ({
+          ...prevAuth,
+          msg: null,
+          errMsg: null,
+          lostPwUser: payload
+        }));
+      }
+      case AuthActionType.UPDATE_USER: {
         return setAuth((prevAuth) => ({
           ...prevAuth,
           msg: null,
@@ -311,6 +320,17 @@ function AuthContextProvider(props) {
         })
       }
     }
+  }
+
+  // when map got created/deleted, update user's maps as well
+  auth.userUpdateMaps = function(newMaps){
+    setAuth((prevAuth) => ({
+      ...prevAuth,
+      user: {
+        ...prevAuth.user,
+        maps: newMaps
+      }
+    }));
   }
 
   return (

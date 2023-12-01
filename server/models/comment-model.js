@@ -6,6 +6,7 @@ const ObjectId = Schema.Types.ObjectId;
 const CommentSchema = new Schema(
   {
     commenterUserName: { type: String, required: true },
+    type: { type: String, required: true },
     content: { type: String, required: true },
     subComments: [{ type: ObjectId, ref: "Subcomment" }],
   },

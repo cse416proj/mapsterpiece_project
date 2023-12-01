@@ -19,53 +19,86 @@ import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 
 import { Tag } from "../../index";
 
-import AuthContext from "../../../contexts/auth";
-import MapContext from "../../../contexts/map";
-import GlobalStoreContext from "../../../contexts/store";
+import AuthContext from '../../../contexts/auth';
+import MapContext from '../../../contexts/map';
+import UserContext from '../../../contexts/user';
+import GlobalStoreContext from '../../../contexts/store';
 
-export default function MapDetailTopBar() {
+export default function MapDetailTopBar(){
   const BackButtonStyle = {
-    color: "black",
-    fontSize: "15px",
-    fontWeight: "bold",
-  };
-  const toolButtonStyle = {
-    backgroundColor: "#E9E1FF",
-    color: "black",
-    fontWeight: "bold",
-  };
+    color: 'black',
+    fontSize: '15px',
+    fontWeight: 'bold',
+  }
+  const toolButtonStyle={
+    backgroundColor: '#E9E1FF',
+    color: 'black',
+    fontWeight: 'bold',
+  }
 
   const { auth } = useContext(AuthContext);
   const { mapInfo } = useContext(MapContext);
+  const { userInfo } = useContext(UserContext);
   const { store } = useContext(GlobalStoreContext);
+
   const { mapId } = useParams();
   const navigate = useNavigate();
 
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState('');
   const [tags, setTags] = useState([]);
   const [likes, setLikes] = useState([]);
   const [dislikes, setDislikes] = useState([]);
+  const [hasUnpublished, setHasUnpublished] = useState(false);
+
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const [alert, setAlert] = useState('');
-
   const open = Boolean(anchorEl);
 
   useEffect(() => {
-    if (mapInfo?.currentMap) {
+    setHasUnpublished(false);
+  }, []);
+
+  useEffect(() => {
+    if(mapInfo?.currentMap){
       setTitle(mapInfo.currentMap.title);
       setTags(mapInfo.currentMap.tags);
       setLikes(mapInfo.currentMap.likedUsers);
       setDislikes(mapInfo.currentMap.dislikedUsers);
+      setHasUnpublished((!mapInfo?.currentMap?.isPublished) ? true : false);
     }
   }, [mapInfo?.currentMap]);
 
-  function handleMyMaps() {
-    navigate(`/profile/${auth.user._id}`);
+  // once unpublished, redirect
+  useEffect(() => {
+    if(hasUnpublished){
+      console.log('hasUnpublished');
+      navigate(`/map-edit/${mapId}`);
+    }
+  }, [hasUnpublished]);
+  
+  // mark map & open modal when user clicks on delete map
+  function handleDeleteMap(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    store.markMapForDeletion(mapInfo.currentMap);
   }
+
+  // mark map & open modal when user clicks on unpublish map
+  function handleUnpublishMap(event){
+    event.stopPropagation();
+    event.preventDefault();
+    store.markMapForUnpublish(mapInfo.currentMap);
+  };
+
+  // redirect user to view community / their own profile
   function handleCommunity() {
     navigate("/community");
   }
+
+  function handleMyMaps(){
+    userInfo.setCurrentUser(auth.user);
+    navigate(`/profile/${auth.user._id}`);
+  }
+
   function handleExportPNG() {
     console.log("export PNG file");
   }
@@ -89,6 +122,7 @@ export default function MapDetailTopBar() {
     setAnchorEl(null);
   };
 
+  // update likedUsers array when user click on like
   function handleLikeMap() {
     if (!auth.user) {
       navigate('/login');
@@ -113,42 +147,33 @@ export default function MapDetailTopBar() {
     mapInfo.updateMapLikeDislike(mapId, true);
   }
 
+  // update dislikedUsers array when user click on like
   function handleDislikeMap() {
     if (!auth.user) {
       navigate('/login');
       return;
     }
+
     const userLikedMap = likes.find(
       (user) => String(user) === String(auth.user._id)
     );
     const userDislikedMap = dislikes.find(
       (user) => String(user) === String(auth.user._id)
     );
+
     if (userDislikedMap) {
       return;
     }
+
     if (userLikedMap) {
       const tmpLikes = likes.filter(
         (user) => String(user) !== String(auth.user._id)
       );
       setLikes(tmpLikes);
     }
+
     setDislikes([...dislikes, auth.user._id]);
     mapInfo.updateMapLikeDislike(mapId, false);
-  }
-
-  function handleDeleteMap(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    console.log("delete map");
-    store.markMapForDeletion(mapInfo.currentMap);
-  }
-
-  function handleUnpublishMap(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    mapInfo.unpublishMapById(mapId);
-    navigate(`/map-edit/${mapId}`);
   }
 
   function renderLikeButtons() {
@@ -177,74 +202,62 @@ export default function MapDetailTopBar() {
     );
   }
 
-  function renderActionButtons() {
+  function renderActionButtons(){
     let buttonSet = [
-      { text: "Delete", handler: handleDeleteMap },
-      { text: "Unpublish", handler: handleUnpublishMap },
-      { text: "Fork", handler: handleForkMap },
-      { text: "Share Link", handler: handleShareMap },
-      { text: "Export/Download", handler: handleExportJPG },
-    ];
-
-    if (mapId && auth?.user) {
+      { text: 'Delete', handler: handleDeleteMap },
+      { text: 'Unpublish', handler: handleUnpublishMap },
+      { text: 'Fork', handler: handleForkMap },
+      { text: 'Share Link', handler:handleShareMap },
+      { text: 'Export/Download', handler: handleExportJPG}
+    ]
+    
+    if(mapId && auth?.user){
       // logged in but non-owner
-      if (!auth.user.maps?.includes(mapId)) {
+      if(!auth.user.maps?.includes(mapId)){
         buttonSet = buttonSet.slice(2);
       }
-    } else {
+    }
+    else{
       // not logged in -> guest
       buttonSet = buttonSet.slice(3);
     }
 
-    return buttonSet.map((btn) => (
-      <Button variant="contained" style={toolButtonStyle} onClick={btn.handler}>
-        {btn.text}
-      </Button>
-    ));
+    return buttonSet.map((btn, index) => (
+      <Button key={index} variant="contained" style={toolButtonStyle} onClick={btn.handler}>{btn.text}</Button>)
+    )
   }
 
-  return (
-    <AppBar position="static">
+  return(
+    <AppBar position='static'>
       <Toolbar className="map-screen-topbar">
-        {auth.user ? (
-          <Button style={BackButtonStyle} onClick={handleMyMaps}>
-            &lt;&lt; My Maps
-          </Button>
-        ) : (
-          <Button style={BackButtonStyle} onClick={handleCommunity}>
-            &lt;&lt; Back to Community
-          </Button>
-        )}
+        {
+          (auth.user) ? 
+            <Button style = {BackButtonStyle} onClick={handleMyMaps}>
+              &lt;&lt; My Maps
+            </Button> :
+            <Button style = {BackButtonStyle} onClick = {handleCommunity}>
+              &lt;&lt; Back to Community
+            </Button>
+        }
 
-        <Typography
-          sx={{ fontWeight: `bold`, color: `black`, fontSize: `30px` }}
-        >
-          {title}
-        </Typography>
-        <Box className="flex-row" id="tags-container">
-          {tags.length === 0 ? null : (
-            <>
-              <Typography id="post-tags-text" style={{ color: "black" }}>
-                Tags:
-              </Typography>
-              {tags.map((tag, index) => {
-                return (
-                  <Tag key={index} index={index} tag={tag} removeTag={null} />
-                );
-              })}
-            </>
-          )}
-        </Box>
-        <Box className="map-button-container">
+        <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>{title}</Typography>
+
+        <Box className='flex-row' id='tags-container'>
           {
-            (!auth.user && alert) &&
-            <Alert severity="error">
-              {alert}
-              <Button variant="contained" onClick={() => { setAlert('') }}>OK</Button>
-            </Alert>
+            (tags.length === 0) ?
+                null :
+                <>
+                  <Typography id='post-tags-text' style={{ color: 'black' }}>Tags:</Typography>
+                  { tags.map((tag, index) => {
+                    return <Tag key={index} index={index} tag={tag} removeTag={null}/>;
+                  })}
+                </>
           }
-          {renderLikeButtons()}
-          {renderActionButtons()}
+        </Box>
+
+        <Box className="map-button-container">
+          { renderLikeButtons() }
+          { renderActionButtons() }
         </Box>
       </Toolbar>
     </AppBar>

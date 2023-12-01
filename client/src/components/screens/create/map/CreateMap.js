@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useContext } from 'react';
-import { Box, TextField, Modal, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Box, TextField, Typography, Alert } from '@mui/material';
 
 import JSZip from "jszip";
 import * as shapefile from "shapefile";
@@ -8,9 +9,11 @@ import { kml } from "@tmcw/togeojson";
 import FileUpload from './FileUpload';
 import FileDropdown from './FileDropdown';
 import { Tags, ButtonSet } from '../../commonProps';
-import MapContext from '../../../../contexts/map';
-import {GlobalStoreContext} from "../../../../contexts/store";
 import { UploadMapErrorModal } from "../../../index";
+
+import MapContext from '../../../../contexts/map';
+import { GlobalStoreContext } from "../../../../contexts/store";
+import AuthContext from '../../../../contexts/auth';
 
 function CreateMap(){
     // define file extension
@@ -23,11 +26,13 @@ function CreateMap(){
     // set up file reference
     const inputFile = useRef(null);
 
-    // get map Info from MapContext
-    const { mapInfo } = useContext(MapContext);
-
-    // get store
+    // get store & map Info from MapContext
     const { store } = useContext(GlobalStoreContext);
+    const { mapInfo } = useContext(MapContext);
+    const { auth } = useContext(AuthContext);
+
+    // use Navigation
+    const navigate = useNavigate();
 
     // set up input variables
     const [title, setTitle] = useState('');
@@ -41,9 +46,18 @@ function CreateMap(){
     // set up flags for loading content
     const [isLoading, setIsLoading] = useState(false);
 
+    // success alert
+    const [openSuccess, setOpenSuccess] = useState(false);
+
     // set up error flags for these input
     const [missingTitle, setMissingTitle] = useState(false);
     const [missingFileFormat, setMissingFileFormat] = useState(false);
+
+
+    // reset success alert when first enter
+    useEffect(() => {
+        setOpenSuccess(false);
+    }, []);
 
     // re-run effect when buffers change
     useEffect(() => {
@@ -77,10 +91,30 @@ function CreateMap(){
         }
     }, [fileContent]);
 
-
+    // clear input file when file format changes
     useEffect(() => {
         clearInputFile();
     }, [fileFormat]);
+
+    // set open success true & open alert when map get created
+    useEffect(() => {
+        const currMap = mapInfo.currentMap;
+        if(currMap && currMap._id && mapInfo.errorMessage === null){
+            const newMaps = [...auth.user?.maps, currMap._id];
+            auth.userUpdateMaps(newMaps);
+            setOpenSuccess(true);
+        }
+    }, [mapInfo?.currentMap]);
+
+    // turn off open success & close alert after 1 sec
+    useEffect(() => {
+        if(openSuccess && mapInfo?.currentMap){
+            setTimeout(() => {
+                setOpenSuccess(false);
+                navigate(`/map-edit/${mapInfo?.currentMap._id}`);
+            }, 1000);
+        }
+    }, [openSuccess])
 
     // handle title change
     const handleTitleChange = (event) => {
@@ -295,8 +329,8 @@ function CreateMap(){
     function renderLoading(){
         if(isLoading){
             return (
-                <Box className="loadingOverlay">
-                    <Box className="loading">
+                <Box className="popUpBoxOverlay">
+                    <Box className="popUpBox">
                         <Typography variant="h4">Currently loading map content...</Typography>
                         <Box className="loadingCircle"></Box>
                     </Box>
@@ -308,6 +342,7 @@ function CreateMap(){
 
     return (
         <Box className='flex-column' id='create-container'>
+            {openSuccess && <Alert severity="success">Map created! Redirecting...</Alert>}
             {
                renderLoading()
             }

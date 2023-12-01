@@ -1,3 +1,15 @@
+/* .modal{
+    height: 62.5vh;
+    width: 55vw;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1000;
+} */
+
 .modal {
     position: fixed;
     top: 0;
@@ -11,7 +23,6 @@
     background: var(--black);
     color: var(--swatch-text);
     cursor: pointer;
-    /* visibility: hidden; */
     opacity: 0;
     transition: all 0.35s ease-in;
     font-family: var(--font-primary);
@@ -34,7 +45,9 @@
     box-shadow: 24;
     padding: 15px;
     border-radius: 20px;
+    z-index: 1000;
 }
+
 .modal-dialog{
     position: relative;
 }
@@ -44,7 +57,7 @@
     max-width: 800px;
     max-height: 80vh;
     background: var(--swatch-complement);
-    overflow: auto;
+    /* overflow: auto; */
     cursor: default;
     border-width: 0px;
     border-style: groove;
@@ -65,4 +78,88 @@
 .dialog-header{
     padding-bottom: 9px;
     font-weight: bold;
+}
+
+#modal{
+    z-index: 1000;
+    height: 47.5vh;
+    width: 47.5vw;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+
+#modal-header{
+    height: 19vh;
+    justify-content: space-around;
+}
+
+#modal-icon{
+    height: 12.5vh;
+    width: 12.5vh;
+    color: var(--secondary-color);
+}
+
+#modal-title{
+    font-size: 2.25vw;
+    color: var(--secondary-color);
+    font-weight: bolder;
+}
+
+#modal-title:hover{
+    border-bottom: 0.25vh dashed var(--secondary-color);
+}
+
+#modal-divider{
+    width: 97.5%;
+    margin: 2vh auto;
+    border: 0.1vh solid var(--secondary-color);
+}
+
+#modal-text{
+    height: 12.5vh;
+}
+
+#modal-msg{
+    width: 85%;
+    font-size: 1.35vw;
+}
+
+#modal-note{
+    margin-top: 1.5vh;
+    font-size: 1vw;
+    font-weight: bold;
+    font-style: italic;
+}
+
+#modal-buttons{
+    height: 6.5vh;
+    width: 62.5%;
+    margin-top: 1.25vh;
+    justify-content: space-around;
+}
+
+#modal-contained-button, #modal-outline-button{
+    height: 100%;
+    width: 42.5%;
+}
+
+#modal-contained-button{
+    background-color: var(--secondary-color);
+}
+
+#modal-contained-button:hover{
+    background-color: var(--secondary-color-hover);
+}
+
+#modal-outline-button{
+    border: 0.4vh solid var(--secondary-color);
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+
+#modal-outline-button:hover{
+    border-color: var(--secondary-color-hover);
+    color: var(--secondary-color-hover);
 }

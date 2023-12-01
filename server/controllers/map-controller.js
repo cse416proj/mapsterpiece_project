@@ -193,35 +193,53 @@ deleteMapById = async (req, res) => {
   });
 };
 
-getAllMapsFromCurrentUser = async (req, res) => {
-  if (auth.verifyUser(req) === null) {
-    return res.status(401).json({
-      errorMessage: "Unauthorized",
-    });
+// getAllMapsFromCurrentUser = async (req, res) => {
+//   if (auth.verifyUser(req) === null) {
+//     return res.status(401).json({
+//       errorMessage: "Unauthorized",
+//     });
+//   }
+
+//   // check user existence
+//   const userId = req.userId;
+//   if (!userId) {
+//     return res.status(400).json({ errorMessage: "User does not exist." });
+//   }
+
+//   console.log(`Now getting maps from user ${userId}`);
+
+//   User.findById(userId)
+//     .populate({
+//       path: "maps",
+//       model: "Map",
+//     })
+//     .exec((err, user) => {
+//       if (err) {
+//         return res.status(500).json({ errorMessage: err.message });
+//       } else if (!user) {
+//         return res.status(404).json({ errorMessage: "User not found." });
+//       }
+
+//       return res.status(200).json(user.maps);
+//     });
+// };
+
+getMapsByMapIds = async (req, res) => {
+  let idList = req.params.idLists;
+  idList = idList.split(",");
+  if (!idList) {
+    return [];
   }
 
-  // check user existence
-  const userId = req.userId;
-  if (!userId) {
-    return res.status(400).json({ errorMessage: "User does not exist." });
-  }
+  Map.find({ _id: { $in: idList } }, (err, maps) => {
+    if (err) {
+      return res.status(500).json({ errorMessage: err.message });
+    } else if (!maps) {
+      return res.status(404).json({ errorMessage: "Maps not found." });
+    }
 
-  console.log(`Now getting maps from user ${userId}`);
-
-  User.findById(userId)
-    .populate({
-      path: "maps",
-      model: "Map",
-    })
-    .exec((err, user) => {
-      if (err) {
-        return res.status(500).json({ errorMessage: err.message });
-      } else if (!user) {
-        return res.status(404).json({ errorMessage: "User not found." });
-      }
-
-      return res.status(200).json(user.maps);
-    });
+    return res.status(200).json(maps);
+  });
 };
 
 // helper function to update map publish status
@@ -433,8 +451,9 @@ createMapComment = async (req, res) => {
     }
 
     const newComment = new Comment({
-      commenterUserName,
-      content,
+      commenterUserName: commenterUserName,
+      type: 'map',
+      content: content,
     });
 
     await newComment.save();
@@ -467,7 +486,6 @@ getAllCommentsFromPublishedMap = async (req, res) => {
     }
 
     const comments = await Comment.find({ _id: { $in: map.comments } });
-
     return res.status(200).json({ comments });
   } catch (error) {
     // console.error(error);
@@ -604,7 +622,8 @@ module.exports = {
   createMap,
   getMapById,
   deleteMapById,
-  getAllMapsFromCurrentUser,
+  // getAllMapsFromCurrentUser,
+  getMapsByMapIds,
   publishMapById,
   unpublishMapById,
   getAllPublishedMapsFromGivenUser,

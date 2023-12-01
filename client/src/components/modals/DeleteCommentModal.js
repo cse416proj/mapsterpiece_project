@@ -3,10 +3,14 @@ import * as React from "react";
 import { Box, Modal, Button, Typography } from "@mui/material";
 import { GlobalStoreContext } from "../../contexts/store";
 import { PostContext } from "../../contexts/post";
+import MapContext from "../../contexts/map";
 
-export default function DeleteCommentModal() {
+export default function DeleteCommentModal({ type }) {
   const { store } = useContext(GlobalStoreContext);
+  const { mapInfo } = useContext(MapContext);
   const { postInfo } = useContext(PostContext);
+
+  const isMap = (type === 'map');
 
   const buttonStyle = {
     backgroundColor: "#649a92",
@@ -17,7 +21,12 @@ export default function DeleteCommentModal() {
     event.stopPropagation();
     event.preventDefault();
     console.log("on click confirm delete comment");
-    postInfo.deleteCommentById(store.commentMarkedForDeletion._id);
+    if(isMap){
+      mapInfo.deleteCommentById(store.commentMarkedForDeletion._id);
+    }
+    else{
+      postInfo.deleteCommentById(store.commentMarkedForDeletion._id);
+    }
     store.closeModal();
   }
 

@@ -4,7 +4,6 @@ import SearchScreen from './screens/search/SearchScreen';
 import CreateScreen from './screens/create/CreateScreen';
 import CommunityScreen from './screens/community/CommunityScreen';
 
-export { Tag, Tags } from './screens/commonProps';
 export { Hero, UserHomeScreen, HomeScreen } from './screens/home';
 
 export {
@@ -26,17 +25,29 @@ export {
 } from './cards';
 
 export {
+    PublishMapModal,
+    UnpublishMapModal,
     DeleteMapModal,
     DeletePostModal,
     DeleteAccountModal,
     DeleteCommentModal,
     DeleteSubCommModal,
-    UploadMapErrorModal
+    UploadMapErrorModal,
+    SuccessAlert
 } from './modals';
 
 export {
+    Warning,
     NoAccessWarning
 } from './warnings';
+
+export {
+    Tag,
+    Tags,
+    CommentInput,
+    CommentCard,
+    LoadingOverlay
+} from './screens/commonProps';
 
 export {
     Login,

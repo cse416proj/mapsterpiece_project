@@ -1,82 +1,134 @@
-import React, { useContext, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Box, Typography, Accordion, AccordionSummary } from "@mui/material";
-import MapContext from "../../../../contexts/map";
-import AuthContext from "../../../../contexts/auth";
+import { useContext, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Box, Typography, Card, CardContent, CardActions, Collapse, IconButton, Button, Divider } from '@mui/material';
 
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 
-export default function MapComment(payload, index) {
-  const { mapInfo } = useContext(MapContext);
+import MapSubComment from './MapSubComment';
+import { CommentInput, CommentCard } from '../../commonProps';
+
+import MapContext from '../../../../contexts/map';
+import AuthContext from '../../../../contexts/auth';
+import GlobalStoreContext from '../../../../contexts/store';
+
+export default function MapComment({ payload }) {
   const { auth } = useContext(AuthContext);
-  const { mapId } = useParams();
+  const { store } = useContext(GlobalStoreContext);
+  const { mapInfo } = useContext(MapContext);
+  // const { userInfo } = useContext(UserContext);
+  // const navigate = useNavigate();
 
-  useEffect(() => {
-    mapInfo.getMapById(mapId);
-  }, []);
+  // const { mapId } = useParams();
 
-  useEffect(() => {
-    if (mapInfo.currentMap) {
-      mapInfo.getAllCommentsFromPublishedMap(mapId);
-    }
-  }, [mapInfo.currentMap]);
+  const [subcomment, setSubcomment] = useState('');
+  const [expanded, setExpanded] = useState(false);
+  const [addActive, setAddActive] = useState(false);
 
-  payload = payload.payload;
+  // function handleVisitProfile(event){
+  //   event.stopPropagation();
+  //   event.preventDefault();
+  //   userInfo.setCurrentUser(auth.user);
+  //   navigate(`/profile/${auth.user._id}`);
+  // }
 
-  const deleteHandler = () => {
-    console.log("handle delete comment");
+  const handleExpandComments = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setAddActive((expanded) ? false : addActive);
+    setExpanded(!expanded);
   };
 
-  const handlePlusIconClick = () => {
-    console.log("handle add subcomment");
+  const handleAddComment = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setExpanded(true);
+    setAddActive(true);
+  }
+
+  const handleDeleteComment = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log('handle delete comment');
+    mapInfo.setCurrentComment(payload);
+    store.markCommentForDeletion(payload);
   };
+
+  const handleSubcommentInputChange = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setSubcomment(event.target.value);
+  }
+
+  const handleAddSubcomments = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log('handle add subcomment');
+  };
+
+  const handleDeleteSubcomment = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log('handle delete subcomment');
+  };
+
+  function renderCardActions(){
+    let expandIcon = (expanded) ? <ExpandLessIcon/> : <ExpandMoreIcon/>;
+
+    return(
+      <Box className='flex-row' id='card-actions'>
+        {
+          (auth.loggedIn) ?
+            <Button id='reply-button' onClick={handleAddComment}>
+              <ChatBubbleOutlineRoundedIcon/>
+              <Typography>Reply</Typography>
+            </Button> :
+            null
+        }
+        <IconButton onClick={handleExpandComments}>
+          { expandIcon }
+        </IconButton>
+      </Box>
+    )
+  }
+
+  const fakeSubComments = [ { commenterUserName: 'me', content: 'bruh'  }, { commenterUserName: 'me', content: 'sadge'  } ]
 
   return (
-    <div>
-      <Accordion
-        sx={{
-          //   bgcolor: "#ddebe4",
-          bgcolor: "white",
-          width: "92%",
-          marginBottom: "2vh",
-          marginTop: "2vh",
-          border: "2px solid #ddebe4",
-          left: "4%",
-        }}
-      >
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Box
-            className="accordionSummary"
-            sx={{ width: "90%", margin: "auto" }}
-          >
-            <Box>
-              <Box className="commentUserInfo">
-                <AccountCircleIcon />
-                <Typography
-                  style={{
-                    textAlign: `start`,
-                    padding: `10px`,
-                    fontWeight: `bold`,
-                  }}
-                >
-                  {payload.commenterUserName}
-                </Typography>
-                <DeleteForeverOutlinedIcon onClick={deleteHandler} />
-              </Box>
+    <Card id='comment-card' style={ (expanded) ? { minHeight: '100%' } : { minHeight: '20vh' } }>
+      <CommentCard
+        type='comment'
+        comment={payload}
+        deleteHandler={handleDeleteComment}
+      />
 
-              <Typography style={{ textAlign: `start`, padding: `10px` }}>
-                {payload.content}
-              </Typography>
-            </Box>
-            {auth.loggedIn ? <AddIcon onClick={handlePlusIconClick} /> : null}
-          </Box>
-        </AccordionSummary>
-        {/* more about subcomments */}
-      </Accordion>
-      {/* more about subcomments */}
-    </div>
+      <CardActions disableSpacing>
+        { renderCardActions() }
+      </CardActions>
+
+      <Collapse in={expanded} timeout='auto' unmountOnExit>
+        {
+          (addActive) ? 
+            <CommentInput
+              type='subcomment'
+              commentInput={subcomment}
+              handleInputChange={handleSubcommentInputChange}
+              handleSubmitComment={handleAddSubcomments}
+            /> :
+            null
+        }
+       {
+        fakeSubComments.map((subcomm, index) => (
+          <>
+            <MapSubComment key={index} subcomment={subcomm} deleteHandler={handleDeleteSubcomment}/>
+            {/* {
+              (index === fakeSubComments.length-1) ? null : <Divider sx={{ width: '97.5%', margin: '0 auto' , borderColor: '#1c1e1d' }} />
+            } */}
+          </>
+        ))
+      }
+      </Collapse>
+    </Card>
   );
 }

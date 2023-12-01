@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { PostContext } from "../../../../contexts/post";
-import { Box } from "@mui/material";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
@@ -21,7 +20,7 @@ export default function PostSubComment({parentComment, subcomment}) {
     }
 
     if(!subcomment){
-        return null;
+      return null;
     }
 
     return (
