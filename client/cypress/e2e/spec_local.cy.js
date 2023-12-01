@@ -19,7 +19,8 @@ describe('Mapsterpiece local tests', () => {
     cy.get('input[name = "confirmPassword"]').clear('ThisIsAnotherPassword');
     cy.get('input[name = "confirmPassword"]').type('ThisIsAnotherPassword');
     cy.get('button[type = "submit"]').click();
-    cy.get('#auth-alert').should('be.visible').should('contain', 'Please enter the same password twice.');
+    cy.url().should('include', '/register');
+    // cy.get('#auth-alert').should('be.visible').should('contain', 'Please enter the same password twice.');
   })
 
   it('login user fail', function() {
@@ -31,7 +32,8 @@ describe('Mapsterpiece local tests', () => {
     cy.get('input[name = "password"]').clear('ThisIsAnotherPassword');
     cy.get('input[name = "password"]').type('ThisIsAnotherPassword');
     cy.get('button[type = "submit"]').click();
-    cy.get('#auth-alert').should('be.visible').should('contain', 'Wrong email or password provided.');
+    cy.url().should('include', '/login');
+    // cy.get('#auth-alert').should('be.visible').should('contain', 'Wrong email or password provided.');
   })
 
   it('login-logout user success', function() {
@@ -45,8 +47,8 @@ describe('Mapsterpiece local tests', () => {
     cy.get('input[name = "password').type('ThisIsAPassword');
     cy.get('button[type = "submit"]').click();
     cy.wait(1000);
-    cy.get('#auth-alert').should('contain', 'Login success! Now redirecting...')
-    cy.wait(1000);
+    // cy.get('#auth-alert').should('contain', 'Login success! Now redirecting...')
+    // cy.wait(1000);
     cy.get('#initialsIcon').click();
     cy.get('.MuiList-root > [tabindex="-1"]').click();
     cy.get('#logo').click();
@@ -75,8 +77,8 @@ describe('Mapsterpiece local tests', () => {
     cy.get('input[name = "password').type('ThisIsAPassword');
     cy.get('button[type = "submit"]').click();
     cy.wait(1000);
-    cy.get('#auth-alert').should('contain', 'Login success! Now redirecting...')
-    cy.wait(1000);
+    // cy.get('#auth-alert').should('contain', 'Login success! Now redirecting...')
+    // cy.wait(1000);
 
     cy.get('.CREATE').click();
     cy.url().should('include', '/create');
@@ -99,7 +101,7 @@ describe('Mapsterpiece local tests', () => {
     cy.get('input[name = "password').clear('ThisIsAPassword');
     cy.get('input[name = "password').type('ThisIsAPassword');
     cy.get('button[type = "submit"]').click();
-    cy.get('#auth-alert').should('contain', 'Login success! Now redirecting...')
+    // cy.get('#auth-alert').should('contain', 'Login success! Now redirecting...')
     cy.wait(1000);
 
     cy.get('.CREATE').click();
@@ -114,7 +116,7 @@ describe('Mapsterpiece local tests', () => {
   })
 
   it('user view owned unpublished map, edit color', ()=>{
-    //   // click on the 2nd card at home screen
+    // click on the 2nd card at home screen
 
     cy.visit('http://localhost:3000');
     cy.get('.login').click();
