@@ -55,6 +55,32 @@ export default function SearchBar(props) {
     props.setSortBy('Z2A-map');
     setAnchorEl(null);
   }
+  const handleSortMapMREdit = (event) =>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('MostRecentEdit-map');
+    setAnchorEl(null);
+  }
+
+  const handleSortMapLREdit = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('LeastRecentEdit-map');
+    setAnchorEl(null);
+  }
+  const handleSortMapMRPublish = (event) =>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('MostRecentPublish-map');
+    setAnchorEl(null);
+  }
+
+  const handleSortMapLRPublish = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('LeastRecentPublish-map');
+    setAnchorEl(null);
+  }
 
   const handleSortPostA2Z = (event) =>{
     event.stopPropagation();
@@ -67,6 +93,20 @@ export default function SearchBar(props) {
     event.stopPropagation();
     event.preventDefault();
     props.setSortBy('Z2A-post');
+    setAnchorEl(null);
+  }
+
+  const handleSortPostMR = (event) =>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('MostRecent-post');
+    setAnchorEl(null);
+  }
+
+  const handleSortPostLR= (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('LeastRecent-post');
     setAnchorEl(null);
   }
 
@@ -94,10 +134,10 @@ export default function SearchBar(props) {
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortMapA2Z },
           { sortBy: 'Alphabet (Z-A)', handler: handleSortMapZ2A },
-          { sortBy: 'Most recent edit', handler: closeMenu },
-          { sortBy: 'Least recent edit', handler: closeMenu },
-          { sortBy: 'Most recent publish', handler: closeMenu },
-          { sortBy: 'Least recent publish', handler: closeMenu },
+          { sortBy: 'Most recent edit', handler: handleSortMapMREdit },
+          { sortBy: 'Least recent edit', handler: handleSortMapLREdit },
+          { sortBy: 'Most recent publish', handler: handleSortMapMRPublish },
+          { sortBy: 'Least recent publish', handler: handleSortMapLRPublish },
           
         ]
       )
@@ -108,8 +148,8 @@ export default function SearchBar(props) {
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortPostA2Z },
           { sortBy: 'Alphabet (Z-A)', handler: handleSortPostZ2A },
-          { sortBy: 'Most recent post', handler: closeMenu },
-          { sortBy: 'Least recent post', handler: closeMenu },
+          { sortBy: 'Most recent post', handler: handleSortPostMR },
+          { sortBy: 'Least recent post', handler: handleSortPostLR },
         ]
       )
     }
