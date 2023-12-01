@@ -60,7 +60,9 @@ createMap = async (req, res) => {
     ownerUserName,
     title,
     fileFormat,
+    mapType: "REGULAR",
     mapContent: featuresFiltered,
+    heatmapData: {max: 0, data: []},
     tags,
     isPublished: false,
   });
@@ -118,22 +120,19 @@ getMapById = async (req, res) => {
     return res.status(400).json({ errorMessage: "Map ID does not exist." });
   }
 
-  Map.findById(mapId, (err, map) => {
-    if (err) {
-      return res.status(500).json({ errorMessage: err.message });
-    } else if (!map) {
-      return res.status(404).json({ errorMessage: "Map is not found." });
-    }
-    return res.status(200).json({
-      success: true,
-      map: map,
+  Map.findById(mapId)
+    .populate("comments")
+    .exec((err, map) => {
+      if (err) {
+        return res.status(500).json({ errorMessage: err.message });
+      } else if (!map) {
+        return res.status(404).json({ errorMessage: "Map is not found." });
+      }
+      return res.status(200).json({
+        success: true,
+        map: map,
+      });
     });
-  }).catch((error) => {
-    return res.status(400).json({
-      error,
-      errorMessage: "Failed to get user's map, please try again.",
-    });
-  });
 };
 
 deleteMapById = async (req, res) => {
@@ -168,7 +167,6 @@ deleteMapById = async (req, res) => {
         console.log(user);
 
         Map.findByIdAndDelete(mapId, (err, mapToDelete) => {
-          console.log(mapToDelete);
 
           if (err) {
             return res.status(500).json({ errorMessage: err.message });
@@ -392,11 +390,13 @@ updateMapById = async (req, res) => {
         return res.status(404).json({ errorMessage: "Map is not found." });
       }
 
-      const { title, mapContent, tags } = req.body;
+      const { title, mapContent, tags, mapType, heatmapData } = req.body;
 
       map.title = title;
       map.mapContent = mapContent;
       map.tags = tags;
+      map.mapType = mapType;
+      map.heatmapData = heatmapData;
 
       map
         .save()
@@ -452,7 +452,7 @@ createMapComment = async (req, res) => {
 
     const newComment = new Comment({
       commenterUserName: commenterUserName,
-      type: 'map',
+      type: "map",
       content: content,
     });
 
@@ -563,8 +563,12 @@ likeDislikeMapById = async (req, res) => {
         return res.status(500).json({ errorMessage: err.message });
       }
 
-      const userLikedMap = map.likedUsers.find(user => String(user) === String(userId));
-      const userDislikedMap = map.dislikedUsers.find(user => String(user) === String(userId));
+      const userLikedMap = map.likedUsers.find(
+        (user) => String(user) === String(userId)
+      );
+      const userDislikedMap = map.dislikedUsers.find(
+        (user) => String(user) === String(userId)
+      );
 
       if (isLike) {
         if (userLikedMap) {
@@ -574,7 +578,7 @@ likeDislikeMapById = async (req, res) => {
         }
         if (userDislikedMap) {
           map.dislikedUsers = map.dislikedUsers.filter(
-            user => String(user) !== String(userId)
+            (user) => String(user) !== String(userId)
           );
         }
         map.likedUsers.push(userId);
@@ -586,7 +590,7 @@ likeDislikeMapById = async (req, res) => {
         }
         if (userLikedMap) {
           map.likedUsers = map.likedUsers.filter(
-            user => String(user) !== String(userId)
+            (user) => String(user) !== String(userId)
           );
         }
         map.dislikedUsers.push(userId);
