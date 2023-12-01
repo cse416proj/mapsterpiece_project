@@ -112,7 +112,7 @@ export default function PostComment({payload, index}) {
           {renderAccordionDetails()}
           {renderCommentInput()}
         </AccordionDetails>
-        <DeleteCommentModal type='post'/>
+        <DeleteCommentModal/>
       </Accordion>
     </div>
   );
