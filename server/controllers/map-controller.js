@@ -287,6 +287,12 @@ updateMapPublishStatusById = async (req, res, newPublishStatus) => {
       }
 
       map.isPublished = newPublishStatus;
+      if (newPublishStatus) {
+        map.datePublished = new Date();
+      } else {
+        map.datePublished = null;
+      }
+      
       map
         .save()
         .then(() => {

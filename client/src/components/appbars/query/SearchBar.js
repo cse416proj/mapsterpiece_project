@@ -28,9 +28,45 @@ export default function SearchBar(props) {
     setAnchorEl(null);
   };
 
-  const handleSortA2Z = (event) =>{
+  const handleSortUserA2Z = (event) =>{
     event.stopPropagation();
     event.preventDefault();
+    props.setSortBy('A2Z-user');
+    setAnchorEl(null);
+  }
+
+  const handleSortUserZ2A = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('Z2A-user');
+    setAnchorEl(null);
+  }
+
+  const handleSortMapA2Z = (event) =>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('A2Z-map');
+    setAnchorEl(null);
+  }
+
+  const handleSortMapZ2A = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('Z2A-map');
+    setAnchorEl(null);
+  }
+
+  const handleSortPostA2Z = (event) =>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('A2Z-post');
+    setAnchorEl(null);
+  }
+
+  const handleSortPostZ2A = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('Z2A-post');
     setAnchorEl(null);
   }
 
@@ -47,8 +83,8 @@ export default function SearchBar(props) {
       setPlaceholder('Search by userName/email/id...');
       setMenuItems(
         [
-          { sortBy: 'Alphabet (A-Z)', handler: handleSortA2Z },
-          { sortBy: 'Alphabet (Z-A)', handler: closeMenu },
+          { sortBy: 'Alphabet (A-Z)', handler: handleSortUserA2Z },
+          { sortBy: 'Alphabet (Z-A)', handler: handleSortUserZ2A },
         ]
       )
     }
@@ -56,8 +92,8 @@ export default function SearchBar(props) {
       setPlaceholder('Search by title/tag...');
       setMenuItems(
         [
-          { sortBy: 'Alphabet (A-Z)', handler: closeMenu },
-          { sortBy: 'Alphabet (Z-A)', handler: closeMenu },
+          { sortBy: 'Alphabet (A-Z)', handler: handleSortMapA2Z },
+          { sortBy: 'Alphabet (Z-A)', handler: handleSortMapZ2A },
           { sortBy: 'Most recent edit', handler: closeMenu },
           { sortBy: 'Least recent edit', handler: closeMenu },
           { sortBy: 'Most recent publish', handler: closeMenu },
@@ -70,8 +106,8 @@ export default function SearchBar(props) {
       setPlaceholder('Search by title/tag/context...');
       setMenuItems(
         [
-          { sortBy: 'Alphabet (A-Z)', handler: closeMenu },
-          { sortBy: 'Alphabet (Z-A)', handler: closeMenu },
+          { sortBy: 'Alphabet (A-Z)', handler: handleSortPostA2Z },
+          { sortBy: 'Alphabet (Z-A)', handler: handleSortPostZ2A },
           { sortBy: 'Most recent post', handler: closeMenu },
           { sortBy: 'Least recent post', handler: closeMenu },
         ]

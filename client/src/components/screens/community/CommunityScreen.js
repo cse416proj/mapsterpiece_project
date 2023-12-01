@@ -12,6 +12,7 @@ export default function CommunityScreen() {
   const [search, setSearch] = useState('');
   const [listCard, setListCard] = useState(null);
   const [currScreen, setCurrScreen] = useState('');
+  const [sortBy, setSortBy] = useState('');
 
   useEffect(() => {
     store.getAllMaps();
@@ -33,8 +34,8 @@ export default function CommunityScreen() {
 
       var data = store.getData(currScreen);
 
-      console.log(currScreen);
-      console.log(data);
+      // console.log(currScreen);
+      // console.log(data);
 
       if(!data){
         setListCard(null);
@@ -43,7 +44,7 @@ export default function CommunityScreen() {
 
       switch(currScreen){
         case "ALL_USERS":
-          setListCard(<UsersCardSection data={data} search={search}/>);
+          setListCard(<UsersCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
           break;
         case "ALL_MAPS":
         case "BIN_MAPS":
@@ -51,7 +52,7 @@ export default function CommunityScreen() {
         case "DOT_MAPS":
         case "GRAD_MAPS":
         case "HEAT_MAPS":
-          setListCard(<MapsCardSection data={data} search={search}/>);
+          setListCard(<MapsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
           break;
         case "ALL_POSTS":
         case "BIN_POSTS":
@@ -59,14 +60,14 @@ export default function CommunityScreen() {
         case "DOT_POSTS":
         case "GRAD_POSTS":
         case "HEAT_POSTS":
-          setListCard(<PostsCardSection data={data} search={search}/>);
+          setListCard(<PostsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
           break;
         default:
           setListCard(null);
           break;
       }
     }
-  }, [currScreen, search, store]);
+  }, [currScreen, search, store, sortBy, currScreen]);
 
   function renderCard(){
     if(listCard){
@@ -79,7 +80,7 @@ export default function CommunityScreen() {
     <Box className="queryScreenWrapper">
       <SideNavBar />
       <Box className="queryScreenContent">
-        <SearchBar setSearch={setSearch}/>
+        <SearchBar setSearch={setSearch} setSortBy = {setSortBy}/>
         <Box className="listsDisplay">
           {
             renderCard()
