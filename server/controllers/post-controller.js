@@ -280,6 +280,7 @@ createComment = async (req, res) => {
 
     const newComment = new Comment({
       commenterUserName: commenterUserName,
+      type: 'post',
       content: content,
     });
 

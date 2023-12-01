@@ -1,6 +1,9 @@
 import { useContext, useRef, useState } from 'react';
-import { Typography, Box, Divider } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+
+import { Typography, Box, Divider, Button } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
 
 import CommentInput from '../../screens/commonProps/input/CommentInput';
 import { MapComment } from '../../index';
@@ -11,6 +14,7 @@ import AuthContext from '../../../contexts/auth';
 export default function MapCommentSideBar({ toggleCommentBox }){
     const { mapInfo } = useContext(MapContext);
     const { auth } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const inputRef = useRef(null);
     const [commentInput, setCommentInput] = useState('');
@@ -37,6 +41,14 @@ export default function MapCommentSideBar({ toggleCommentBox }){
         }
     }
 
+    const handleSignUp = () => {
+        navigate('/register');
+    }
+
+    const handleSignIn = () => {
+        navigate('/login');
+    }
+
     return (
         <Box className='flex-column' id='comment-sidebar-container'>
             <Box className='flex-row' id='close-comment-sidebar'>
@@ -46,13 +58,28 @@ export default function MapCommentSideBar({ toggleCommentBox }){
                 <CloseIcon id='close-comment-btn' onClick={toggleCommentBox}/>
             </Box>
 
-            <CommentInput
-                type='comment'
-                commentInput={commentInput} 
-                inputRef={inputRef}
-                handleInputChange={handleInputChange}
-                handleSubmitComment={handleSubmitComment}
-            />
+            <Divider id='comment-section-divider' style={{ margin: '0 auto 2vh auto' }}/>
+
+            {
+                (auth.user) ? 
+                    <CommentInput
+                        type='comment'
+                        commentInput={commentInput} 
+                        inputRef={inputRef}
+                        handleInputChange={handleInputChange}
+                        handleSubmitComment={handleSubmitComment}
+                    /> :
+                    <Box className='flex-column' id='account-prompt'>
+                        <Box className='flex-row' id='account-prompt-description'>
+                            <SmsRoundedIcon id='account-prompt-icon'/> 
+                            <Typography variant='h6' id='account-prompt-text'>Want to leave a comment?</Typography>
+                        </Box>
+                        <Box className='flex-row' id='account-prompt-actions'>
+                            <Button variant='contained' className='account-prompt-btns' id='account-signup' onClick={handleSignUp}>Sign Up</Button>
+                            <Button variant='contained' className='account-prompt-btns' id='account-login' onClick={handleSignIn}>Login</Button>
+                        </Box>
+                    </Box>
+            }
 
             <Divider id='comment-section-divider'>
                 Comment Section

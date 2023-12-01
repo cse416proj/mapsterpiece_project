@@ -173,11 +173,56 @@
 
 #comment-card{
     height: auto;
-    /* min-height: 15vh; */
     margin-bottom: 1.5vh;
+    /* min-height: 15vh; */
     /* overflow-Y: auto; */
 }
 
 #map-subcomment{
     background-color: #ddebe4;
+    border-bottom: 1px solid black;
+}
+
+#account-prompt{
+    height: 20%;
+    width: 100%;
+    justify-content: space-between;
+}
+
+#account-prompt-description{
+    width: 77.5%;
+    justify-content: space-around;
+    color: #092A37;
+    font-style: italic;
+}
+
+#account-prompt-icon{
+    height: 2.25vw;
+    width: 2.25vw;
+}
+
+#account-prompt-text{
+    font-weight: bold;
+    font-size: 1.125vw;
+}
+
+#account-prompt-actions{
+    height: 60%;
+    width: 100%;
+    justify-content: space-around;
+}
+
+.account-prompt-btns{
+    height: 80%;
+    width: 45%;
+    text-transform: none;
+}
+
+#account-signup, #account-login{
+    background-color: var(--secondary-color);
+    border-radius: 25px;
+}
+
+#account-signup:hover, #account-login:hover{
+    background-color: var(--secondary-color-hover);
 }

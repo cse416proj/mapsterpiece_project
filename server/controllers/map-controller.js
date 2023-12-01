@@ -451,8 +451,9 @@ createMapComment = async (req, res) => {
     }
 
     const newComment = new Comment({
-      commenterUserName,
-      content,
+      commenterUserName: commenterUserName,
+      type: 'map',
+      content: content,
     });
 
     await newComment.save();

@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Textarea } from '@mui/joy';
-import { Box, Button, Typography, Divider } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 
 import AuthContext from "../../../../contexts/auth";
 import UserContext from "../../../../contexts/user";

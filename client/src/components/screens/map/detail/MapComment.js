@@ -4,8 +4,7 @@ import { Box, Typography, Card, CardContent, CardActions, Collapse, IconButton, 
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 
 import MapSubComment from './MapSubComment';
 import { CommentInput, CommentCard } from '../../commonProps';
@@ -44,7 +43,7 @@ export default function MapComment({ payload }) {
   const handleAddComment = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    setExpanded(!expanded);
+    setExpanded(true);
     setAddActive(true);
   }
 
@@ -82,7 +81,7 @@ export default function MapComment({ payload }) {
         {
           (auth.loggedIn) ?
             <Button id='reply-button' onClick={handleAddComment}>
-              <ChatBubbleOutlineIcon onClick={handleAddSubcomments}/>
+              <ChatBubbleOutlineRoundedIcon/>
               <Typography>Reply</Typography>
             </Button> :
             null
@@ -123,9 +122,9 @@ export default function MapComment({ payload }) {
         fakeSubComments.map((subcomm, index) => (
           <>
             <MapSubComment key={index} subcomment={subcomm} deleteHandler={handleDeleteSubcomment}/>
-            {
+            {/* {
               (index === fakeSubComments.length-1) ? null : <Divider sx={{ width: '97.5%', margin: '0 auto' , borderColor: '#1c1e1d' }} />
-            }
+            } */}
           </>
         ))
       }
