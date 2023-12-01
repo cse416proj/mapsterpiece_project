@@ -1,12 +1,13 @@
 import { useState, useContext, useEffect, useRef } from "react";
 import { useParams, useLocation } from "react-router-dom";
-
+import { DataEntryModal } from "../../../index";
 // import html2canvas from 'html2canvas';
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
 
 import MapContext from "../../../../contexts/map";
 import { MapContainer, GeoJSON } from "react-leaflet";
+import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
 
 function MapScreen() {
   const location = useLocation();
@@ -19,17 +20,20 @@ function MapScreen() {
 
   const colorRef = useRef();
   const [editMode, setEditMode] = useState(false);
+  const [dataEditMode, setDataEditMode] = useState(
+    mapInfo?.currentMap?.mapType !== "REGULAR"
+  );
+  const [dataEntryModalOpen, setDataEntryModalOpen] = useState(false);
+  const dataEditModeRef = useRef(dataEditMode);
   const [initialLoad, setInitialLoad] = useState(true);
   const [regionNameLevel, setRegionNameLevel] = useState("");
+  const [heatMapLayer, setHeatMapLayer] = useState(null);
 
   const [map, setMap] = useState(null);
-
-  // useEffect(() => {
-  //   mapInfo?.getMapById(mapId);
-  // }, [mapId]);
+  const [selectedRegionProps, setSelectedRegionProps] = useState(null);
 
   useEffect(() => {
-    setEditMode(location.pathname.includes("map-detail") ? false : true)
+    setEditMode(location.pathname.includes("map-detail") ? false : true);
   }, [location]);
 
   useEffect(() => {
@@ -43,7 +47,7 @@ function MapScreen() {
   useEffect(() => {
     mapContentRef.current = map?.mapContent;
 
-    if(!mapContentRef?.current){
+    if (!mapContentRef?.current) {
       return;
     }
 
@@ -54,13 +58,16 @@ function MapScreen() {
       max = Math.max(max, parseInt(key.split("_")[1]));
     }
 
-    let name = (
-      (max === 3) ? "name_3"
-        : (max === 2) ? "name_2"
-          : (max === 1) ? "name_1"
-            : (max === 0) ? "name_0"
-              : "name"
-    );
+    let name =
+      max === 3
+        ? "name_3"
+        : max === 2
+        ? "name_2"
+        : max === 1
+        ? "name_1"
+        : max === 0
+        ? "name_0"
+        : "name";
     setRegionNameLevel(name);
   }, [map]);
 
@@ -75,7 +82,44 @@ function MapScreen() {
       mapContainerRef.current.fitBounds(featureGroup.getBounds());
       setInitialLoad(false);
     }
-  }, [initialLoad && mapContainerRef?.current && geoJsonRef?.current])
+  }, [initialLoad && mapContainerRef?.current && geoJsonRef?.current]);
+
+  useEffect(() => {
+    if (mapInfo?.currentMapEditType === "REGULAR") {
+      dataEditModeRef.current = false;
+    } else {
+      dataEditModeRef.current = true;
+    }
+  }, [mapInfo?.currentMapEditType]);
+
+  useEffect(() => {
+    if (!mapContainerRef?.current || !geoJsonRef?.current || !map) {
+      return;
+    }
+
+    if (map.mapType === "HEATMAP") {
+      const initialHeatMapLayer = new HeatmapOverlay({
+        radius: 3,
+        maxOpacity: 1,
+        scaleRadius: true,
+        useLocalExtrema: true,
+        latField: "lat",
+        lngField: "lng",
+        valueField: "value",
+      });
+  
+      const heatMapdata = map?.heatmapData
+        ? map?.heatmapData
+        : {
+            max: 0,
+            data: [],
+          };
+  
+      initialHeatMapLayer.setData(heatMapdata);
+      mapContainerRef.current.addLayer(initialHeatMapLayer);
+      setHeatMapLayer(initialHeatMapLayer);
+    }
+  }, [mapContainerRef?.current && geoJsonRef?.current, map?.mapType]);
 
   if (!mapInfo || !mapContentRef?.current) {
     return null;
@@ -84,47 +128,70 @@ function MapScreen() {
   const handleFeatureClick = (event) => {
     const layer = event.sourceTarget;
 
-    if(editMode){
+    if (editMode && !dataEditModeRef.current) {
       event.target.setStyle({
         fillColor: colorRef.current,
         fillOpacity: 1,
       });
     }
 
-    if(!layer.feature){
+    const position = layer.getBounds().getCenter();
+    const regionName = layer.feature.properties[regionNameLevel];
+    setSelectedRegionProps({ position, regionName });
+
+    if (!layer.feature) {
       return;
     }
 
     // update mapcontent ref
     const index = mapContentRef.current.findIndex(
-      (region) => region.properties[regionNameLevel] === layer.feature.properties[regionNameLevel]
+      (region) =>
+        region.properties[regionNameLevel] ===
+        layer.feature.properties[regionNameLevel]
     );
-    if (index !== -1 && editMode) {
+    if (index !== -1 && editMode && !dataEditModeRef.current) {
       mapContentRef.current[index].properties.fillColor = colorRef.current;
+      mapInfo.updateMapContent(index, colorRef.current);
     }
 
-    mapInfo.updateMapContent(index, colorRef.current);
+    if (dataEditModeRef.current) {
+      setDataEntryModalOpen(true);
+    }
+  };
+
+  const editValue = (value) => {
+    const newDataObj = {
+      lat: selectedRegionProps.position.lat,
+      lng: selectedRegionProps.position.lng,
+      value: value,
+      regionName: selectedRegionProps.regionName,
+    }
+
+    if (map.mapType === "HEATMAP") {
+      heatMapLayer.addData(newDataObj);
+
+      mapInfo.updateHeatmapData(newDataObj);
+    }
+    
   };
 
   const onEachFeature = (feature, layer) => {
-    if(!layer.feature){
+    if (!layer.feature) {
       return;
     }
 
-    const name = (layer.feature.properties[regionNameLevel]) ?
-                  layer.feature.properties[regionNameLevel] :
-                  (
-                    (layer.feature.properties["name_0"]) ? 
-                      layer.feature.properties["name_0"] :
-                      layer.feature.properties["name"]
-                  );
+    const name = layer.feature.properties[regionNameLevel]
+      ? layer.feature.properties[regionNameLevel]
+      : layer.feature.properties["name_0"]
+      ? layer.feature.properties["name_0"]
+      : layer.feature.properties["name"];
 
     layer
-    .bindTooltip(name, {
-      permanent: true,
-    })
-    .openTooltip();
-    
+      .bindTooltip(name, {
+        permanent: true,
+      })
+      .openTooltip();
+
     if (layer.feature.properties.fillColor) {
       layer.setStyle({
         fillColor: layer.feature.properties.fillColor,
@@ -133,10 +200,10 @@ function MapScreen() {
     } else {
       layer.setStyle({
         fillColor: "#FFFFFF",
-        fillOpacity: 1,
+        fillOpacity: 0.1,
       });
     }
-    
+
     layer.on({
       click: handleFeatureClick,
     });
@@ -144,10 +211,15 @@ function MapScreen() {
 
   return (
     <>
+      <DataEntryModal
+        isOpen={dataEntryModalOpen}
+        handleClose={() => setDataEntryModalOpen(false)}
+        setData={editValue}
+      />
       <MapContainer
         ref={mapContainerRef}
         id="map-viewer"
-        style={{ width: (editMode) ? '70vw' : '100vw' }}
+        style={{ width: editMode ? "70vw" : "100vw", zIndex: 0 }}
         center={[0, 0]}
         zoom={2}
       >
@@ -158,7 +230,6 @@ function MapScreen() {
         />
       </MapContainer>
     </>
-    
   );
 }
 

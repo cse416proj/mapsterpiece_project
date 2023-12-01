@@ -33,7 +33,8 @@ export {
     DeleteCommentModal,
     DeleteSubCommModal,
     UploadMapErrorModal,
-    SuccessAlert
+    SuccessAlert,
+    DataEntryModal,
 } from './modals';
 
 export {

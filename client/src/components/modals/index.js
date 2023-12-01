@@ -7,5 +7,6 @@ import DeleteCommentModal from './DeleteCommentModal';
 import DeleteSubCommModal from './DeleteSubCommModal';
 import UploadMapErrorModal from './UploadMapErrorModal';
 import SuccessAlert from './SuccessAlert';
+import DataEntryModal from './DataEntryModal';
 
-export { PublishMapModal, UnpublishMapModal, DeleteMapModal, DeletePostModal, DeleteAccountModal, DeleteCommentModal, DeleteSubCommModal, UploadMapErrorModal, SuccessAlert }
+export { PublishMapModal, UnpublishMapModal, DeleteMapModal, DeletePostModal, DeleteAccountModal, DeleteCommentModal, DeleteSubCommModal, UploadMapErrorModal, SuccessAlert, DataEntryModal }

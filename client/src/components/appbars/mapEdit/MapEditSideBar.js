@@ -19,20 +19,21 @@ function MapEditSideBar() {
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState([]);
   const [selectedColor, setSelectedColor] = useState('#ffffff');
-  const [mapType, setMapType] = useState(10);
+  const [mapType, setMapType] = useState(mapInfo?.currentMap?.mapType);
 
   useEffect(() => {
     if (mapInfo) {
       if (mapInfo.currentMap) {
         setTitle(mapInfo.currentMap.title);
         setTags(mapInfo.currentMap.tags);
+        setMapType(mapInfo.currentMap.mapType);
       }
     }
   }, []);
 
   useEffect(() => {
-    mapInfo?.updateMapGeneralInfo(title, tags);
-  }, [title, tags]);
+    mapInfo?.updateMapGeneralInfo(title, tags, mapType);
+  }, [title, tags, mapType]);
 
   const sideBarStyle = {
     height: "74.5vh",
@@ -49,6 +50,11 @@ function MapEditSideBar() {
     setSelectedColor(color.hex);
   };
 
+  const handleSetMapType = (e) => {
+    setMapType(e);
+    mapInfo?.setCurrentMapEditType(e);
+  }
+
   return (
     <Sidebar style={sideBarStyle}>
       <Toolbar className="map-screen-sidebar">
@@ -57,12 +63,13 @@ function MapEditSideBar() {
         </Typography>
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Map Type</Typography>
-          <Select defaultValue={10} onChange={(e) => setMapType(e.target.value)} className="sidebar-block-content">
-            <MenuItem value={10}>Bin Map</MenuItem>
-            <MenuItem value={20}>Choropleth Map</MenuItem>
-            <MenuItem value={30}>Dot Distribution Map</MenuItem>
-            <MenuItem value={40}>Graduated Symbol Map</MenuItem>
-            <MenuItem value={50}>Heat Map</MenuItem>
+          <Select defaultValue={mapType} onChange={(e) => handleSetMapType(e.target.value)} className="sidebar-block-content">
+            <MenuItem value={"REGULAR"}>Regular</MenuItem>
+            <MenuItem value={"BINMAP"}>Bin Map</MenuItem>
+            <MenuItem value={"CHOROPLETH"}>Choropleth Map</MenuItem>
+            <MenuItem value={"DOT_DISTRIBUTION"}>Dot Distribution Map</MenuItem>
+            <MenuItem value={"GRADUATED_SYMBOL"}>Graduated Symbol Map</MenuItem>
+            <MenuItem value={"HEATMAP"}>Heat Map</MenuItem>
           </Select>
         </Box>
 

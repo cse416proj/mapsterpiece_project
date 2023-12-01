@@ -20,16 +20,27 @@ export function MapContextProvider({ children }) {
     allCommentsForMap: [],
     currentComment: null,
     errorMessage: null,
+    currentMapEditType: "REGULAR",
     // download: false,
     // downloadFormat: ''
   });
+
+  const curMapEditType = {
+    REGULAR: "REGULAR",
+    HEATMAP: "HEATMAP",
+    CHOROPLETH: "CHOROPLETH",
+    DOT_DISTRIBUTION: "DOT_DISTRIBUTION",
+    GRADUATED_SYMBOL: "GRADUATED_SYMBOL",
+    BINMAP: "BINMAP",
+  }
 
   const MapActionType = {
     SET_CURRENT_MAP: "SET_CURRENT_MAP",
     LOAD_ALL_MAPS_FROM_USER: "LOAD_ALL_MAPS_FROM_USER",
     SET_CURRENT_REGION_COLOR: "SET_CURRENT_REGION_COLOR",
     SET_CURRENT_COMMENT: "SET_CURRENT_COMMENT",
-    SET_ERROR_MSG: "SET_ERROR_MSG"
+    SET_ERROR_MSG: "SET_ERROR_MSG",
+    SET_CURRENT_MAP_EDIT_TYPE: "SET_CURRENT_MAP_EDIT_TYPE",
     // SET_DOWNLOAD_FORMAT: 'SET_DOWNLOAD_FORMAT',
     // CANCEL_DOWNLOAD: 'CANCEL_DOWNLOAD',
   };
@@ -69,6 +80,11 @@ export function MapContextProvider({ children }) {
           ...prevMapInfo,
           errorMessage: payload
         }));
+      case MapActionType.SET_CURRENT_MAP_EDIT_TYPE:
+        return setMapInfo((prevMapInfo) => ({
+          ...prevMapInfo,
+          currentMapEditType: payload
+        }));
       default:
         return mapInfo;
     }
@@ -78,6 +94,13 @@ export function MapContextProvider({ children }) {
     mapReducer({
       type: MapActionType.SET_CURRENT_REGION_COLOR,
       payload: color,
+    });
+  };
+
+  mapInfo.setCurrentMapEditType = (mapTypeForEdit) => {
+    mapReducer({
+      type: MapActionType.SET_CURRENT_MAP_EDIT_TYPE,
+      payload: mapTypeForEdit,
     });
   };
 
@@ -283,7 +306,7 @@ export function MapContextProvider({ children }) {
     }));
   };
 
-  mapInfo.updateMapGeneralInfo = function (title, tags) {
+  mapInfo.updateMapGeneralInfo = function (title, tags, mapType) {
     if (!mapInfo.currentMap) {
       return;
     }
@@ -295,9 +318,29 @@ export function MapContextProvider({ children }) {
       oldMap.tags = tags;
     }
 
+    oldMap.mapType = mapType;
+
     if (!title && !tags) {
       return;
     }
+    setMapInfo((prevMapInfo) => ({
+      ...prevMapInfo,
+      currentMap: oldMap,
+    }));
+  };
+
+  mapInfo.updateHeatmapData = function (heatmapDataIndividualObj) {
+    if (!mapInfo.currentMap) {
+      return;
+    }
+    let oldMap = mapInfo.currentMap;
+    let originalHeatmapData = oldMap.heatmapData ? oldMap.heatmapData : {max: 0, data: []};
+    if (heatmapDataIndividualObj.value > originalHeatmapData.max) {
+      originalHeatmapData.max = heatmapDataIndividualObj.value;
+    }
+    originalHeatmapData.data.push(heatmapDataIndividualObj);
+    oldMap.heatmapData = originalHeatmapData;
+    console.log(oldMap.heatmapData)
     setMapInfo((prevMapInfo) => ({
       ...prevMapInfo,
       currentMap: oldMap,
@@ -319,6 +362,7 @@ export function MapContextProvider({ children }) {
   };
 
   mapInfo.updateMapById = async function (mapId) {
+    console.log(mapInfo.currentMap)
     const response = await api.updateMapById(mapId, mapInfo.currentMap);
     if (response.status === 200) {
       await mapInfo.getMapsByMapIds(auth.user.maps);
