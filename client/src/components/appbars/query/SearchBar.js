@@ -28,6 +28,96 @@ export default function SearchBar(props) {
     setAnchorEl(null);
   };
 
+  const handleSortUserA2Z = (event) =>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('A2Z-user');
+    setAnchorEl(null);
+  }
+  const handleSortUserZ2A = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('Z2A-user');
+    setAnchorEl(null);
+  }
+
+  const handleSortMapA2Z = (event) =>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('A2Z-map');
+    setAnchorEl(null);
+  }
+  const handleSortMapZ2A = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('Z2A-map');
+    setAnchorEl(null);
+  }
+  const handleSortMapMREdit = (event) =>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('MostRecentEdit-map');
+    setAnchorEl(null);
+  }
+  const handleSortMapLREdit = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('LeastRecentEdit-map');
+    setAnchorEl(null);
+  }
+  const handleSortMapMRPublish = (event) =>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('MostRecentPublish-map');
+    setAnchorEl(null);
+  }
+  const handleSortMapLRPublish = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('LeastRecentPublish-map');
+    setAnchorEl(null);
+  }
+
+  const handleSortPostA2Z = (event) =>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('A2Z-post');
+    setAnchorEl(null);
+  }
+  const handleSortPostZ2A = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('Z2A-post');
+    setAnchorEl(null);
+  }
+  const handleSortPostMR = (event) =>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('MostRecent-post');
+    setAnchorEl(null);
+  }
+  const handleSortPostLR= (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('LeastRecent-post');
+    setAnchorEl(null);
+  }
+
+  const handleSortBothA2Z = (event) =>{
+    event.stopPropagation();
+    event.preventDefault();
+    console.log("current screen: ",currScreen);
+    props.setSortBy('A2Z-both');
+    setAnchorEl(null);
+  }
+
+  const handleSortBothZ2A = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('Z2A-Both');
+    setAnchorEl(null);
+  }
+
   // Now update currScreen; reason: currentView changes in Store
   useEffect(() => {
     if(store?.currentView){
@@ -41,8 +131,17 @@ export default function SearchBar(props) {
       setPlaceholder('Search by userName/email/id...');
       setMenuItems(
         [
-          { sortBy: 'Alphabet (A-Z)', handler: closeMenu },
-          { sortBy: 'Alphabet (Z-A)', handler: closeMenu },
+          { sortBy: 'Alphabet (A-Z)', handler: handleSortUserA2Z },
+          { sortBy: 'Alphabet (Z-A)', handler: handleSortUserZ2A },
+        ]
+      )
+    }
+    else if(currScreen==='ALL_MAPS_POSTS'){
+      setPlaceholder('Search by userName/email/id...');
+      setMenuItems(
+        [
+          { sortBy: 'Alphabet (A-Z)', handler: handleSortBothA2Z },
+          { sortBy: 'Alphabet (Z-A)', handler: handleSortBothZ2A },
         ]
       )
     }
@@ -50,12 +149,12 @@ export default function SearchBar(props) {
       setPlaceholder('Search by title/tag...');
       setMenuItems(
         [
-          { sortBy: 'Alphabet (A-Z)', handler: closeMenu },
-          { sortBy: 'Alphabet (Z-A)', handler: closeMenu },
-          { sortBy: 'Most recent edit', handler: closeMenu },
-          { sortBy: 'Least recent edit', handler: closeMenu },
-          { sortBy: 'Most recent publish', handler: closeMenu },
-          { sortBy: 'Least recent publish', handler: closeMenu },
+          { sortBy: 'Alphabet (A-Z)', handler: handleSortMapA2Z },
+          { sortBy: 'Alphabet (Z-A)', handler: handleSortMapZ2A },
+          { sortBy: 'Most recent edit', handler: handleSortMapMREdit },
+          { sortBy: 'Least recent edit', handler: handleSortMapLREdit },
+          { sortBy: 'Most recent publish', handler: handleSortMapMRPublish },
+          { sortBy: 'Least recent publish', handler: handleSortMapLRPublish },
           
         ]
       )
@@ -64,10 +163,10 @@ export default function SearchBar(props) {
       setPlaceholder('Search by title/tag/context...');
       setMenuItems(
         [
-          { sortBy: 'Alphabet (A-Z)', handler: closeMenu },
-          { sortBy: 'Alphabet (Z-A)', handler: closeMenu },
-          { sortBy: 'Most recent post', handler: closeMenu },
-          { sortBy: 'Least recent post', handler: closeMenu },
+          { sortBy: 'Alphabet (A-Z)', handler: handleSortPostA2Z },
+          { sortBy: 'Alphabet (Z-A)', handler: handleSortPostZ2A },
+          { sortBy: 'Most recent post', handler: handleSortPostMR },
+          { sortBy: 'Least recent post', handler: handleSortPostLR },
         ]
       )
     }
@@ -117,6 +216,7 @@ export default function SearchBar(props) {
               marginLeft: "10px",
               width: (currScreen.includes("HOME")) ? "72.5vw" : "62.5vw",
             }}
+            onSubmit={(event) => {event.preventDefault();}}
           >
             <InputBase 
               onChange={(event)=>props.setSearch(event.target.value)}

@@ -124,7 +124,8 @@ export default function MapEditTopBar() {
         <Toolbar className='map-screen-topbar'>
             <Button 
                 style = {BackButtonStyle}
-                onClick={handleMyMaps}>
+                onClick={handleMyMaps}
+                id ="back">
                 &lt;&lt; My Maps
             </Button>
             <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>{title}</Typography>

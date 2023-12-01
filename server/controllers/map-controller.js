@@ -295,6 +295,12 @@ updateMapPublishStatusById = async (req, res, newPublishStatus) => {
       }
 
       map.isPublished = newPublishStatus;
+      if (newPublishStatus) {
+        map.datePublished = new Date();
+      } else {
+        map.datePublished = null;
+      }
+      
       map
         .save()
         .then(() => {
@@ -405,6 +411,7 @@ updateMapById = async (req, res) => {
       map.title = title;
       map.mapContent = mapContent;
       map.tags = tags;
+      map.dateEdited = new Date();
 
       map
         .save()
