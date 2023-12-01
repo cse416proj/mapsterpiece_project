@@ -32,6 +32,9 @@ function UserHomeScreen() {
     if(auth && auth.user) {
       userInfo.setCurrentUser(auth.user);
 
+      // close all success alert message
+      store.closeModal();
+
       if(auth.user.maps?.length > 0){
         console.log('now load maps')
         setLoadingMaps(true);

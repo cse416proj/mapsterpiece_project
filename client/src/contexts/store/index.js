@@ -520,6 +520,7 @@ function GlobalStoreContextProvider(props) {
     if(response.status === 200){
       return setStore((prevStore) => ({
         ...prevStore,
+        createSuccess: false,
         deleteSuccess: true,
         publishSuccess: false,
         unpublishSuccess: false,
@@ -544,8 +545,9 @@ function GlobalStoreContextProvider(props) {
   store.closeModalAfterPublish = function(){
     return setStore((prevStore) => ({
       ...prevStore,
-      publishSuccess: true,
+      createSuccess: false,
       deleteSuccess: false,
+      publishSuccess: true,
       unpublishSuccess: false,
       currentModal: CurrentModal.NONE,
     }));
@@ -554,9 +556,10 @@ function GlobalStoreContextProvider(props) {
   store.closeModalAfterUnpublish = function(){
     return setStore((prevStore) => ({
       ...prevStore,
-      unpublishSuccess: true,
+      createSuccess: false,
       deleteSuccess: false,
       publishSuccess: false,
+      unpublishSuccess: true,
       currentModal: CurrentModal.NONE,
     }));
   }

@@ -22,8 +22,7 @@ export default function MapEditScreen() {
   const [publishSuccess, setPublishSuccess] = useState(false);
 
   useEffect(() => {
-    setDeleteSuccess(false);
-    setPublishSuccess(false);
+    store.closeModal();
 
     if(mapId){
       mapInfo?.getMapById(mapId);

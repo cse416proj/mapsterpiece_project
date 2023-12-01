@@ -38,7 +38,7 @@ export default function MapDetailsScreen() {
 
   // update & redirect if map got successfully deleted
   useEffect(() => {
-    if((store?.deleteSuccess === true)){
+    if(store?.deleteSuccess === true){
       setDeleteSuccess(true);
     }
     else{
