@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect, useRef } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import { DataEntryModal } from "../../../index";
+import { Modals, DataEntryModal } from "../../../index";
 // import html2canvas from 'html2canvas';
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
@@ -23,14 +23,17 @@ function MapScreen() {
   const [dataEditMode, setDataEditMode] = useState(
     mapInfo?.currentMap?.mapType !== "REGULAR"
   );
-  const [dataEntryModalOpen, setDataEntryModalOpen] = useState(false);
   const dataEditModeRef = useRef(dataEditMode);
+  const [dataEntryModalOpen, setDataEntryModalOpen] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const [regionNameLevel, setRegionNameLevel] = useState("");
   const [heatMapLayer, setHeatMapLayer] = useState(null);
 
   const [map, setMap] = useState(null);
   const [selectedRegionProps, setSelectedRegionProps] = useState(null);
+
+  console.log(`mapInfo?.currentMap?.mapType: ${mapInfo?.currentMap?.mapType}`);
+  console.log(`mapInfo?.currentMapEditType: ${mapInfo?.currentMapEditType}`);
 
   useEffect(() => {
     setEditMode(location.pathname.includes("map-detail") ? false : true);
@@ -43,6 +46,21 @@ function MapScreen() {
   useEffect(() => {
     setMap(mapInfo.currentMap);
   }, [mapInfo?.currentMap]);
+
+  useEffect(() => {
+    if (geoJsonRef?.current) {
+      geoJsonRef.current.setStyle({
+        fillColor: "transparent",
+        fillOpacity: 0,
+      });
+    }
+
+    if (mapInfo?.currentMapEditType === "REGULAR") {
+      dataEditModeRef.current = false;
+    } else {
+      dataEditModeRef.current = true;
+    }
+  }, [mapInfo?.currentMapEditType]);
 
   useEffect(() => {
     mapContentRef.current = map?.mapContent;
@@ -83,14 +101,6 @@ function MapScreen() {
       setInitialLoad(false);
     }
   }, [initialLoad && mapContainerRef?.current && geoJsonRef?.current]);
-
-  useEffect(() => {
-    if (mapInfo?.currentMapEditType === "REGULAR") {
-      dataEditModeRef.current = false;
-    } else {
-      dataEditModeRef.current = true;
-    }
-  }, [mapInfo?.currentMapEditType]);
 
   useEffect(() => {
     if (!mapContainerRef?.current || !geoJsonRef?.current || !map) {
@@ -211,6 +221,7 @@ function MapScreen() {
 
   return (
     <>
+      <Modals/>
       <DataEntryModal
         isOpen={dataEntryModalOpen}
         handleClose={() => setDataEntryModalOpen(false)}

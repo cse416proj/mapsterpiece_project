@@ -6,8 +6,8 @@ import DeleteAccountModal from './DeleteAccountModal';
 import DeleteCommentModal from './DeleteCommentModal';
 import DeleteSubCommModal from './DeleteSubCommModal';
 import UploadMapErrorModal from './UploadMapErrorModal';
-import SuccessAlert from './SuccessAlert';
 import DataEntryModal from './DataEntryModal';
+import SuccessAlert from './SuccessAlert';
 
 const Modals = () => (
     <>
@@ -22,6 +22,6 @@ const Modals = () => (
     </>
 );
   
-export { Modals, SuccessAlert };
+export { Modals, DataEntryModal, SuccessAlert };
 
 // export { Modals, PublishMapModal, UnpublishMapModal, DeleteMapModal, DeletePostModal, DeleteAccountModal, DeleteCommentModal, DeleteSubCommModal, UploadMapErrorModal, SuccessAlert }

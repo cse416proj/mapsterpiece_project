@@ -90,14 +90,14 @@ export function MapContextProvider({ children }) {
     }
   };
 
-  mapInfo.setCurrentRegionColor = (color) => {
+  mapInfo.setCurrentRegionColor = function (color) {
     mapReducer({
       type: MapActionType.SET_CURRENT_REGION_COLOR,
       payload: color,
     });
   };
 
-  mapInfo.setCurrentMapEditType = (mapTypeForEdit) => {
+  mapInfo.setCurrentMapEditType = function (mapTypeForEdit) {
     mapReducer({
       type: MapActionType.SET_CURRENT_MAP_EDIT_TYPE,
       payload: mapTypeForEdit,

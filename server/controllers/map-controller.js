@@ -46,8 +46,10 @@ createMap = async (req, res) => {
     if (currFeature.properties) {
       let newProperties = {};
       const propKeys = Object.keys(currFeature.properties);
+
+      // come back later, to be removed
       const newPropKeys = propKeys.filter((property) =>
-        nameRegex.test(property)
+        (nameRegex.test(property) || property === 'gdp_md')
       );
 
       // keep properties we want

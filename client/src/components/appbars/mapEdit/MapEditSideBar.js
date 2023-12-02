@@ -20,7 +20,7 @@ function MapEditSideBar() {
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState([]);
   const [selectedColor, setSelectedColor] = useState("#ffffff");
-  const [mapType, setMapType] = useState(mapInfo?.currentMap?.mapType);
+  const [mapType, setMapType] = useState("REGULAR");
   const [isEditingTag, setIsEditingTag] = useState(false);
 
   useEffect(() => {
@@ -52,10 +52,21 @@ function MapEditSideBar() {
     setSelectedColor(color.hex);
   };
 
-  const handleSetMapType = (e) => {
-    setMapType(e);
-    mapInfo?.setCurrentMapEditType(e);
-  };
+  useEffect(() => {
+    console.log(`mapType: ${mapType}`);
+  }, [mapType])
+
+  useEffect(() => {
+    const newType = mapInfo?.currentMap?.mapType;
+    if(newType){
+      setMapType(newType);
+    }
+  }, [mapInfo?.currentMap?.mapType])
+
+  const handleMapTypeChange = (event) => {
+    console.log(`event.target.value: ${event.target.value}`)
+    mapInfo?.setCurrentMapEditType(event.target.value);
+  }
 
   return (
     <Sidebar style={sideBarStyle}>
@@ -67,7 +78,7 @@ function MapEditSideBar() {
           <Typography className="sidebar-block-title">Map Type</Typography>
           <Select
             defaultValue={mapType}
-            onChange={(e) => handleSetMapType(e.target.value)}
+            onChange={handleMapTypeChange}
             className="sidebar-block-content"
           >
             <MenuItem value={"REGULAR"}>Regular</MenuItem>
