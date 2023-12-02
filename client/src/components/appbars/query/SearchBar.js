@@ -206,7 +206,7 @@ export default function SearchBar(props) {
   // render menuitems based on menuItems array
   function renderDynamicMenuItems(){
     return menuItems.map((item) => {
-      return <MenuItem key={item.sortBy} onClick={item.handler}>{item.sortBy}</MenuItem>;
+      return <MenuItem key={item.sortBy} onClick={item.handler} id={item.sortBy}>{item.sortBy}</MenuItem>;
     });
   }
 
