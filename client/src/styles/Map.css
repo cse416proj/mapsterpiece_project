@@ -226,3 +226,25 @@
 #account-signup:hover, #account-login:hover{
     background-color: var(--secondary-color-hover);
 }
+
+#data-info-control, #legend-control {
+    z-index: 1500;
+    position: absolute;
+    border: 1px solid #ccc;
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+    
+#data-info-control {
+    top: 10px;
+    right: 10px;
+}
+
+#legend-control{
+    bottom: 10px;
+    right: 10px;
+}
