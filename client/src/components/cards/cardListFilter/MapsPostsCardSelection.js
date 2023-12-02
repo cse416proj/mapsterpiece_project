@@ -5,7 +5,7 @@ import { DynamicCard } from '../../index';
 
 function MapsPostsCardSection({ data, search, sortBy, currScreen }) {
   const [filterData, setFilteredData] = useState([]);
-  // console.log(sortBy, currScreen);
+  console.log(sortBy, currScreen);
 
   // update filteredData when data/search property changes
   useEffect(() => {
@@ -31,6 +31,19 @@ function MapsPostsCardSection({ data, search, sortBy, currScreen }) {
             return titleA.localeCompare(titleB);
           } else if (sortBy === 'Z2A-both') {
             return titleB.localeCompare(titleA);
+          }
+          return 0;
+        });
+      }
+      else if (sortBy.includes('Recent')) {
+        result.sort((a, b) => {
+          const timeA = a.fileFormat ? new Date(a.dateEdited).getTime() : new Date(a.updatedAt).getTime();
+          const timeB = b.fileFormat ? new Date(b.dateEdited).getTime() : new Date(b.updatedAt).getTime();
+
+          if (sortBy === 'MostRecent-both') {
+            return timeB - timeA;
+          } else if (sortBy === 'LeastRecent-both') {
+            return timeA - timeB;
           }
           return 0;
         });

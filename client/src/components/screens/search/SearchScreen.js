@@ -5,16 +5,20 @@ import { Box, Typography } from "@mui/material";
 import { GlobalStoreContext } from "../../../contexts/store";
 import MapContext from "../../../contexts/map";
 import UserContext from "../../../contexts/user";
+import AuthContext from "../../../contexts/auth";
+
 import { SideNavBar, SearchBar, MapsCardSection, PostsCardSection, MapsPostsCardSection, DeletePostModal, DeleteMapModal, PublishMapModal, UnpublishMapModal } from "../../index";
 
 function SearchScreen(){
     const { store } = useContext(GlobalStoreContext);
     const { userInfo } = useContext(UserContext);
     const { mapInfo } = useContext(MapContext);
+    const {auth} = useContext(AuthContext);
+
     const { userId } = useParams();
+
     const [currScreen, setCurrScreen] = useState('');
     const [sortBy, setSortBy] = useState('');
-
     const [search, setSearch] = useState('');
     const [listCard, setListCard] = useState(null);
 
@@ -28,7 +32,7 @@ function SearchScreen(){
     }, [userId])
 
     useEffect(() => {
-        if(userInfo && userInfo.currentUser){
+        if(userInfo && userInfo?.currentUser){
             const userMaps = userInfo.currentUser?.maps;
             const userPosts = userInfo.currentUser?.posts;
             store.getAllMapsPosts(userMaps, userPosts, userInfo.currentUser);
@@ -42,6 +46,15 @@ function SearchScreen(){
     }
     }, [store?.currentView]);
 
+    let UsernameBox;
+    if(userInfo?.currentUser?.userName){
+       UsernameBox = (
+        <Box component="span" fontWeight="bold">
+          {userInfo?.currentUser?.userName}
+        </Box>
+        ); 
+    }
+    
     // Now update list card rendering; reason: store changes in Store or search changes in SearchScreen
     useEffect(() => {
         if(store){
@@ -68,7 +81,19 @@ function SearchScreen(){
                     setListCard(<PostsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
                     break;
                 default:
-                    setListCard(<Typography variant='h5' style={{ marginTop: '1.5vh' }}> You can search for your own maps and posts on this page. <br /><br />Please select Maps and/or Posts on the right.</Typography>);
+                    if(auth?.user?.userName !== userInfo?.currentUser?.userName){
+                        setListCard(
+                        <Typography variant='h5' style={{ marginTop: '1.5vh' }}> 
+                        You can search for maps and posts owned by {UsernameBox} on this page.
+                        <br /><br />Please select Maps and/or Posts on the right.
+                        </Typography>); 
+                    }else{
+                       setListCard(
+                       <Typography variant='h5' style={{ marginTop: '1.5vh' }}> 
+                       You can search for your own maps and posts on this page.
+                       <br /><br />Please select Maps and/or Posts on the right.
+                       </Typography>); 
+                    }
                     break;
             }
         }

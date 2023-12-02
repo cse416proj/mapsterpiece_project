@@ -1,6 +1,8 @@
 import { useState, useContext, useEffect } from "react";
 import { AppBar, Toolbar, Box, Typography, Paper, InputBase, Menu, MenuItem } from "@mui/material";
 import { GlobalStoreContext } from "../../../contexts/store";
+import UserContext from "../../../contexts/user";
+import AuthContext from "../../../contexts/auth";
 
 import SearchIcon from "@mui/icons-material/Search";
 import SortIcon from '@mui/icons-material/Sort';
@@ -11,6 +13,8 @@ export default function SearchBar(props) {
   const [currScreen, setCurrScreen] = useState("HOME");
   const [placeholder, setPlaceholder] = useState('Select a category first...');
   const [menuItems, setMenuItems] = useState([]);
+  const { userInfo } = useContext(UserContext);
+  const {auth} = useContext(AuthContext);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -109,11 +113,22 @@ export default function SearchBar(props) {
     props.setSortBy('A2Z-both');
     setAnchorEl(null);
   }
-
   const handleSortBothZ2A = (event)=>{
     event.stopPropagation();
     event.preventDefault();
     props.setSortBy('Z2A-both');
+    setAnchorEl(null);
+  }
+  const handleSortBothMR = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('MostRecent-both');
+    setAnchorEl(null);
+  }
+  const handleSortBothLR = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('LeastRecent-both');
     setAnchorEl(null);
   }
 
@@ -141,6 +156,21 @@ export default function SearchBar(props) {
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortBothA2Z },
           { sortBy: 'Alphabet (Z-A)', handler: handleSortBothZ2A },
+          { sortBy: 'Most recent maps & post', handler: handleSortBothMR },
+          { sortBy: 'Least recent maps & post', handler: handleSortBothLR },
+        ]
+      )
+    }
+    else if(currScreen==='USER_OWNED_MAPS' && auth?.user?.userName===userInfo?.currentUser?.userName){
+      setPlaceholder('Search by title/tag...');
+      setMenuItems(
+        [
+          { sortBy: 'Alphabet (A-Z)', handler: handleSortMapA2Z },
+          { sortBy: 'Alphabet (Z-A)', handler: handleSortMapZ2A },
+          { sortBy: 'Most recent edit', handler: handleSortMapMREdit },
+          { sortBy: 'Least recent edit', handler: handleSortMapLREdit },
+          { sortBy: 'Most recent publish', handler: handleSortMapMRPublish },
+          { sortBy: 'Least recent publish', handler: handleSortMapLRPublish },
         ]
       )
     }
@@ -150,8 +180,6 @@ export default function SearchBar(props) {
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortMapA2Z },
           { sortBy: 'Alphabet (Z-A)', handler: handleSortMapZ2A },
-          { sortBy: 'Most recent edit', handler: handleSortMapMREdit },
-          { sortBy: 'Least recent edit', handler: handleSortMapLREdit },
           { sortBy: 'Most recent publish', handler: handleSortMapMRPublish },
           { sortBy: 'Least recent publish', handler: handleSortMapLRPublish },
           
