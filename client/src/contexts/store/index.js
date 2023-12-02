@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import { useLocation } from "react-router-dom";
 import api from "./store-request-api";
 
 export const GlobalStoreContext = createContext({});
@@ -66,6 +67,8 @@ const CurrentModal = {
 };
 
 function GlobalStoreContextProvider(props) {
+  const location = useLocation();
+
   const [store, setStore] = useState({
     deleteSuccess: false,
     publishSuccess: false,
@@ -364,44 +367,45 @@ function GlobalStoreContextProvider(props) {
   }
   
   store.getData = function (currScreen) {
-    const screenDataDict = {
-      ALL_USERS: store.allUsers,
-      ALL_MAPS: store.allMaps,
-      // USER_OWNED_MAPS: store.allMaps,
-      ALL_MAPS_POSTS: store.allMapsPosts,
-      BIN_MAPS: store.binMaps,
-      CHOROPLETH_MAPS: store.choroplethMaps,
-      DOT_MAPS: store.dotMaps,
-      GRAD_MAPS: store.gradMaps,
-      HEAT_MAPS: store.heatMaps,
-      ALL_POSTS: store.allPosts,
-      // USER_OWNED_POSTS: store.allPosts,
-      BIN_POSTS: store.binPosts,
-      CHOROPLETH_POSTS: store.choroplethPosts,
-      DOT_POSTS: store.dotPosts,
-      GRAD_POSTS: store.gradPosts,
-      HEAT_POSTS: store.heatPosts,
-    };
+    const  screenDataDict = {
+        ALL_USERS: store.allUsers,
+        ALL_MAPS: store.allMaps,
+        USER_OWNED_MAPS: store.allMaps,
+        ALL_MAPS_POSTS: store.allMapsPosts,
+        BIN_MAPS: store.binMaps,
+        CHOROPLETH_MAPS: store.choroplethMaps,
+        DOT_MAPS: store.dotMaps,
+        GRAD_MAPS: store.gradMaps,
+        HEAT_MAPS: store.heatMaps,
+        ALL_POSTS: store.allPosts,
+        USER_OWNED_POSTS: store.allPosts,
+        BIN_POSTS: store.binPosts,
+        CHOROPLETH_POSTS: store.choroplethPosts,
+        DOT_POSTS: store.dotPosts,
+        GRAD_POSTS: store.gradPosts,
+        HEAT_POSTS: store.heatPosts,
+      };
 
     console.log(screenDataDict[currScreen]);
-
     return (currScreen in screenDataDict) ? screenDataDict[currScreen] : null;
   };
 
   const updateMaps = (allMaps) => ({
-    binMaps: allMaps.filter((pair)=>{return pair.tags[0]==="Bin Map"}),
-    choroplethMaps: allMaps.filter((pair)=>{return pair.tags[0]==="Choropleth Map"}),
-    dotMaps: allMaps.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"}),
-    gradMaps:allMaps.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"}),
-    heatMaps: allMaps.filter((pair)=>{return pair.tags[0]==="Heat Map"}),
+    binMaps: allMaps.filter((pair)=>{
+      // console.log(allMaps);
+      return pair?.tags[0]==="Bin Map"}),
+    choroplethMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Choropleth Map"}),
+    dotMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Dot Distribution Map"}),
+    gradMaps:allMaps.filter((pair)=>{return pair?.tags[0]==="Graduated Symbol Map"}),
+    heatMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Heat Map"}),
   });
   
   const updatePosts = (allPosts) => ({
-    binPosts: allPosts.filter((pair)=>{return pair.tags[0]==="Bin Map"}),
-    choroplethPosts: allPosts.filter((pair)=>{return pair.tags[0]==="Choropleth Map"}),
-    dotPosts: allPosts.filter((pair)=>{return pair.tags[0]==="Dot Distribution Map"}),
-    gradPosts: allPosts.filter((pair)=>{return pair.tags[0]==="Graduated Symbol Map"}),
-    heatPosts: allPosts.filter((pair)=>{return pair.tags[0]==="Heat Map"}),
+    binPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Bin Map"}),
+    choroplethPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Choropleth Map"}),
+    dotPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Dot Distribution Map"}),
+    gradPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Graduated Symbol Map"}),
+    heatPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Heat Map"}),
   });
 
   store.setData = function () {
@@ -494,6 +498,51 @@ function GlobalStoreContextProvider(props) {
       publishSuccess: false,
       currentModal: CurrentModal.NONE,
     }));
+  }
+  //getAllMapsPosts from given user
+  store.getAllMapsPosts = function(userMaps, userPosts, user){
+    // console.log(typeof userMaps[0], typeof userMaps[0] ==='object');
+    // console.log(typeof userPosts[0], typeof userPosts[0] ==='object');
+    console.log(user);
+
+    if(typeof userMaps[0] ==='object' && typeof userPosts[0] ==='object'){
+    // let Maps=[];
+    // let Posts = [];
+    // if(userMaps && typeof userMaps[0] ==='string'){
+    //   // Maps = store.getMapsByIds(userMaps);
+    //   console.log("call api to get map objects");
+    // }
+    // else if(userMaps){
+
+      // sort map by user
+      const Maps = userMaps;
+      
+    // }
+
+    // if(userPosts && typeof userPosts[0]==='string'){
+    //   // Posts = store.getPostsByIds(userMaps);
+    //   console.log("call api to get map objects");
+    // }
+    // else if(userPosts){
+      const Posts = userPosts;
+    // }
+    const userMapsNPosts = [...userMaps, ...userPosts];
+
+    setStore((prevStore) => ({
+      ...prevStore,
+      allMaps: Maps,
+      allPosts: Posts,
+      allMapsPosts: userMapsNPosts,
+    }));
+
+    if(!store.currentView.includes('search')){store.setData();}
+
+    console.log(store.binMaps);
+    }
+    else{
+      return;
+    }
+    
   }
 
   return (
