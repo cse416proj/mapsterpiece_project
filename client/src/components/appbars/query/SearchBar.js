@@ -9,12 +9,13 @@ import SortIcon from '@mui/icons-material/Sort';
 
 export default function SearchBar(props) {
   const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
+  const { userInfo } = useContext(UserContext);
 
   const [currScreen, setCurrScreen] = useState("HOME");
   const [placeholder, setPlaceholder] = useState('Select a category first...');
+  const [searchInput, setSearchInput] = useState('');
   const [menuItems, setMenuItems] = useState([]);
-  const { userInfo } = useContext(UserContext);
-  const {auth} = useContext(AuthContext);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -142,7 +143,7 @@ export default function SearchBar(props) {
   // Now update placeholder & menu items; reason: currScreen changes in SearchBar
   useEffect(() => {
     if(currScreen.includes("USERS")){
-      setPlaceholder('Search by userName/email/id...');
+      setPlaceholder('Search by userName/id...');
       setMenuItems(
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortUserA2Z },
@@ -151,7 +152,7 @@ export default function SearchBar(props) {
       )
     }
     else if(currScreen==='ALL_MAPS_POSTS'){
-      setPlaceholder('Search by userName/email/id...');
+      setPlaceholder('Search by map title/tag or post title/tag...');
       setMenuItems(
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortBothA2Z },
@@ -162,7 +163,7 @@ export default function SearchBar(props) {
       )
     }
     else if(currScreen==='USER_OWNED_MAPS' && auth?.user?.userName===userInfo?.currentUser?.userName){
-      setPlaceholder('Search by title/tag...');
+      setPlaceholder('Search by map title/tag...');
       setMenuItems(
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortMapA2Z },
@@ -175,7 +176,7 @@ export default function SearchBar(props) {
       )
     }
     else if(currScreen.includes("MAPS")){
-      setPlaceholder('Search by title/tag...');
+      setPlaceholder('Search by map title/tag...');
       setMenuItems(
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortMapA2Z },
@@ -187,7 +188,7 @@ export default function SearchBar(props) {
       )
     }
     else if(currScreen.includes("POSTS")){
-      setPlaceholder('Search by title/tag/context...');
+      setPlaceholder('Search by post title/tag/content...');
       setMenuItems(
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortPostA2Z },
@@ -202,6 +203,27 @@ export default function SearchBar(props) {
       setMenuItems([]);
     }
   }, [currScreen]);
+
+  // update search input when user enter something
+  const updateSearchInput = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    setSearchInput(event.target.value)
+  }
+
+  // search when user hits enter key
+  const handleSearch = (event) => {
+    if(event.key !== 'Enter'){
+      return;
+    }
+
+    const trimmedInputWithoutSpace = searchInput.replace(/(\s|\r\n|\n|\r)/gm, '');
+    if(trimmedInputWithoutSpace.length === 0){
+      return;
+    }
+    
+    props.setSearch(searchInput);
+  }
 
   // render menuitems based on menuItems array
   function renderDynamicMenuItems(){
@@ -246,9 +268,10 @@ export default function SearchBar(props) {
             onSubmit={(event) => {event.preventDefault();}}
           >
             <InputBase 
-              onChange={(event)=>props.setSearch(event.target.value)}
+              onChange={updateSearchInput}
+              onKeyDown={handleSearch}
               sx={{ ml: 1, flex: 1 }}
-              placeholder={placeholder} // to be replace with what to actually search for
+              placeholder={placeholder}
             />
           </Paper>
         </Box>
