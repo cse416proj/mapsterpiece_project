@@ -106,7 +106,6 @@ export default function SearchBar(props) {
   const handleSortBothA2Z = (event) =>{
     event.stopPropagation();
     event.preventDefault();
-    console.log("current screen: ",currScreen);
     props.setSortBy('A2Z-both');
     setAnchorEl(null);
   }
@@ -114,7 +113,7 @@ export default function SearchBar(props) {
   const handleSortBothZ2A = (event)=>{
     event.stopPropagation();
     event.preventDefault();
-    props.setSortBy('Z2A-Both');
+    props.setSortBy('Z2A-both');
     setAnchorEl(null);
   }
 

@@ -46,13 +46,12 @@ function SearchScreen(){
     useEffect(() => {
         if(store){
             var data = store.getData(currScreen);
-            // console.log(data);
 
             switch(currScreen){
                 case "ALL_MAPS_POSTS":
                     setListCard(<MapsPostsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
                     break;
-                case "ALL_MAPS":
+                case "USER_OWNED_MAPS":
                 case "BIN_MAPS":
                 case "CHOROPLETH_MAPS":
                 case "DOT_MAPS":
@@ -60,7 +59,7 @@ function SearchScreen(){
                 case "HEAT_MAPS":
                     setListCard(<MapsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
                     break;
-                case "ALL_POSTS":
+                case "USER_OWNED_POSTS":
                 case "BIN_POSTS":
                 case "CHOROPLETH_POSTS":
                 case "DOT_POSTS":

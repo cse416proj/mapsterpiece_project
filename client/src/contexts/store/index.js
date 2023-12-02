@@ -1,6 +1,7 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { useLocation } from "react-router-dom";
 import api from "./store-request-api";
+import AuthContext from "../auth";
 
 export const GlobalStoreContext = createContext({});
 
@@ -68,6 +69,7 @@ const CurrentModal = {
 
 function GlobalStoreContextProvider(props) {
   const location = useLocation();
+  const {auth} = useContext(AuthContext);
 
   const [store, setStore] = useState({
     deleteSuccess: false,
@@ -386,14 +388,12 @@ function GlobalStoreContextProvider(props) {
         HEAT_POSTS: store.heatPosts,
       };
 
-    console.log(screenDataDict[currScreen]);
+    // console.log(screenDataDict[currScreen]);
     return (currScreen in screenDataDict) ? screenDataDict[currScreen] : null;
   };
 
   const updateMaps = (allMaps) => ({
-    binMaps: allMaps.filter((pair)=>{
-      // console.log(allMaps);
-      return pair?.tags[0]==="Bin Map"}),
+    binMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Bin Map"}),
     choroplethMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Choropleth Map"}),
     dotMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Dot Distribution Map"}),
     gradMaps:allMaps.filter((pair)=>{return pair?.tags[0]==="Graduated Symbol Map"}),
@@ -501,43 +501,28 @@ function GlobalStoreContextProvider(props) {
   }
   //getAllMapsPosts from given user
   store.getAllMapsPosts = function(userMaps, userPosts, user){
-    // console.log(typeof userMaps[0], typeof userMaps[0] ==='object');
-    // console.log(typeof userPosts[0], typeof userPosts[0] ==='object');
-    console.log(user);
-
     if(typeof userMaps[0] ==='object' && typeof userPosts[0] ==='object'){
-    // let Maps=[];
-    // let Posts = [];
-    // if(userMaps && typeof userMaps[0] ==='string'){
-    //   // Maps = store.getMapsByIds(userMaps);
-    //   console.log("call api to get map objects");
-    // }
-    // else if(userMaps){
+      let tmpMaps = [];
+      if(!auth.user || auth.user != user){
+        tmpMaps = userMaps.filter((pair)=>{return pair.isPublished});
+      }else{
+        tmpMaps = userMaps;
+      }
 
-      // sort map by user
-      const Maps = userMaps;
-      
-    // }
-
-    // if(userPosts && typeof userPosts[0]==='string'){
-    //   // Posts = store.getPostsByIds(userMaps);
-    //   console.log("call api to get map objects");
-    // }
-    // else if(userPosts){
+      const Maps = tmpMaps;
       const Posts = userPosts;
-    // }
-    const userMapsNPosts = [...userMaps, ...userPosts];
+      const userMapsNPosts = [...Maps, ...Posts];
 
-    setStore((prevStore) => ({
-      ...prevStore,
-      allMaps: Maps,
-      allPosts: Posts,
-      allMapsPosts: userMapsNPosts,
-    }));
+      setStore((prevStore) => ({
+        ...prevStore,
+        allMaps: Maps,
+        allPosts: Posts,
+        allMapsPosts: userMapsNPosts,
+      }));
 
-    if(!store.currentView.includes('search')){store.setData();}
-
-    console.log(store.binMaps);
+      if(!store.currentView.includes('search')){
+        store.setData();
+      }
     }
     else{
       return;
