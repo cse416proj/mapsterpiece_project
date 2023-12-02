@@ -1,14 +1,27 @@
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Box, FormControl, Tabs, Tab } from '@mui/material';
 
 import CreateMap from './map/CreateMap';
 import CreatePost from './post/CreatePost';
 
-function CreateScreen(){
-    const [tab, setTab] = useState('map');
+import GlobalStoreContext from '../../../contexts/store';
 
+function CreateScreen(){
+    const { store } = useContext(GlobalStoreContext);
+    const [tab, setTab] = useState('CREATE_MAP');
+
+    // update create tab view when currentView changed
+    useEffect(() => {
+        if(store?.currentView === 'CREATE_MAP' || store?.currentView === 'CREATE_POST'){
+            setTab(store?.currentView);
+        }
+    }, [store?.currentView])
+
+    // update view when tab get clicked
     const handleChangeTab = (event, newTab) => {
-        setTab(newTab);
+        event.stopPropagation();
+        event.preventDefault();
+        store.setCurrentView(newTab);
     }
 
     return (
@@ -21,18 +34,18 @@ function CreateScreen(){
                     value={tab}
                 >
                     <Tab
-                        id={tab === 'map' ? 'tab-selected' : 'tab'}
+                        id={tab === 'CREATE_MAP' ? 'tab-selected' : 'tab'}
                         label='Create Map'
-                        value='map'
+                        value='CREATE_MAP'
                     />
                     <Tab
-                        id={tab === 'post' ? 'tab-selected' : 'tab'}
+                        id={tab === 'CREATE_POST' ? 'tab-selected' : 'tab'}
                         label='Create Post'
-                        value='post'
+                        value='CREATE_POST'
                     />
                 </Tabs>
                 {
-                    (tab === 'map') ? <CreateMap/> : <CreatePost/>
+                    (tab === 'CREATE_MAP') ? <CreateMap/> : <CreatePost/>
                 }
             </FormControl>
         </Box>

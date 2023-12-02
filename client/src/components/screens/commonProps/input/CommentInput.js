@@ -7,7 +7,7 @@ import { Box, Button, Typography } from '@mui/material';
 import AuthContext from "../../../../contexts/auth";
 import UserContext from "../../../../contexts/user";
 
-export default function CommentInput({ type, commentInput, inputRef, handleInputChange, handleSubmitComment }){
+export default function CommentInput({ type, commentInput, inputRef, error, handleInputChange, handleSubmitComment }){
     const { auth } = useContext(AuthContext);
     const { userInfo } = useContext(UserContext);
     const navigate = useNavigate();
@@ -23,7 +23,7 @@ export default function CommentInput({ type, commentInput, inputRef, handleInput
         // }, [missingContent]);
 
     function handleVisitProfile(event){
-        event.stopPropagation();
+        event.stopPropagation(inputRef?.current);
         event.preventDefault();
         userInfo.setCurrentUser(auth.user);
         navigate(`/profile/${auth.user._id}`);
@@ -42,13 +42,15 @@ export default function CommentInput({ type, commentInput, inputRef, handleInput
         return null;
     }
 
+    const textError = (inputRef?.current?.value === '' && error !== '');
+
     return(
         <Box className='flex-column' id='comment-input-container'>
             { renderPrompt() }
             <Box className='flex-row' id='comment-input-wrapper' style={(isComment) ? { width: '100%'} : { width: '95%', borderLeft: 'solid'}}>
                 <Textarea
                     id='comment-input'
-                    color='white'
+                    color={(textError) ? 'danger' : 'white'}
                     minRows={1}
                     maxRows={2}
                     variant='soft'
@@ -56,7 +58,6 @@ export default function CommentInput({ type, commentInput, inputRef, handleInput
                     sx={{ width: '100%', '& input': { padding: '0' } }}
                     slotProps={{ textarea: { ref: inputRef } }}
                     onChange={handleInputChange}
-                    // color={(!content && missingContent) ? 'danger' : 'neutral'}
                     endDecorator={
                         <Box
                             sx={{
@@ -69,9 +70,16 @@ export default function CommentInput({ type, commentInput, inputRef, handleInput
                                 alignItems: 'center'
                             }}
                         >
-                            <Typography level='body-xs' sx={{ ml: '1vw' }}>
-                                {(commentInput) ? commentInput?.length : 0} character(s)
-                            </Typography>
+                            {
+                                (textError) ?
+                                    <Typography level='body-xs' sx={{ ml: '1vw', color: 'black', fontWeight: 'bold' }}>
+                                        {error}
+                                    </Typography> :
+                                    <Typography level='body-xs' sx={{ ml: '1vw' }}>
+                                        {(commentInput) ? commentInput?.length : 0} character(s)
+                                    </Typography>
+                            }
+                            
                             <Button
                                 variant="contained" id="comment-submit-btn"
                                 sx={{ ml: 'auto' }}
@@ -79,7 +87,7 @@ export default function CommentInput({ type, commentInput, inputRef, handleInput
                             >
                                 Submit
                             </Button>
-                        </Box>
+                        </Box>                            
                     }
                 />
             </Box>

@@ -5,6 +5,7 @@ import PostInput from "./input/PostInput";
 import CommentInput from "./input/CommentInput";
 import CommentCard from "./CommentCard";
 import LoadingOverlay from "./LoadingOverlay";
+import CreatePrompt from "./createPrompt/CreatePrompt";
 
 export { 
     Tag,
@@ -13,5 +14,6 @@ export {
     PostInput,
     CommentInput,
     CommentCard,
-    LoadingOverlay
+    LoadingOverlay,
+    CreatePrompt
 }

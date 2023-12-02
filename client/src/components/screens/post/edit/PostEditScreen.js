@@ -16,6 +16,7 @@ export default function PostEditScreen() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [tags, setTags] = useState([]);
+    const [isEditingTag, setIsEditingTag] = useState(false);
 
     // set up error flags for these input
     const [missingTitle, setMissingTitle] = useState(false);
@@ -96,7 +97,7 @@ export default function PostEditScreen() {
                         missingContent={missingContent}
                     />
 
-                    <Tags tags={tags} setTags={setTags}/>
+                    <Tags tags={tags} setTags={setTags} isEditingTag={isEditingTag} setIsEditingTag={setIsEditingTag}/>
 
                     <ButtonSet prompt='Save Edit' handleClear={handleClear} handleUpload={handleEdit}/>
                 </Box>

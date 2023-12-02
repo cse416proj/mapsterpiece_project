@@ -18,6 +18,7 @@ export default function MapCommentSideBar({ toggleCommentBox }){
 
     const inputRef = useRef(null);
     const [commentInput, setCommentInput] = useState('');
+    const [error, setError] = useState('');
 
     const handleInputChange = (event) => {
         setCommentInput(event.target.value);
@@ -26,18 +27,22 @@ export default function MapCommentSideBar({ toggleCommentBox }){
     const handleSubmitComment = () => {
         const mapId = mapInfo.currentMap._id;
 
-        if (mapId && auth?.user?.userName && commentInput !== '') {
-            mapInfo.createMapComment(mapId, auth?.user?.userName, commentInput);
-            setCommentInput('');
+        if (mapId && auth?.user?.userName) {
+            const trimmedComment = commentInput.replace(/(\s|\r\n|\n|\r)/gm, '');
 
+            if(trimmedComment.length > 0){
+                setError('');
+                mapInfo.createMapComment(mapId, auth?.user?.userName, commentInput);
+            }
+            else{
+                setError('Cannot submit blank text!');
+            }
+            
             // Reset the input value using the ref
+            setCommentInput('');
             if(inputRef.current){
                 inputRef.current.value = '';
             }
-        }
-        else
-        {
-            console.log('no map / no user / no comment');
         }
     }
 
@@ -52,7 +57,7 @@ export default function MapCommentSideBar({ toggleCommentBox }){
     return (
         <Box className='flex-column' id='comment-sidebar-container'>
             <Box className='flex-row' id='close-comment-sidebar'>
-                <Typography style={{ fontWeight: 'bolder' }} onClick={toggleCommentBox}>
+                <Typography style={{ fontWeight: 'bolder' }}>
                     Close Comment Box
                 </Typography>
                 <CloseIcon id='close-comment-btn' onClick={toggleCommentBox}/>
@@ -66,6 +71,7 @@ export default function MapCommentSideBar({ toggleCommentBox }){
                         type='comment'
                         commentInput={commentInput} 
                         inputRef={inputRef}
+                        error={error}
                         handleInputChange={handleInputChange}
                         handleSubmitComment={handleSubmitComment}
                     /> :

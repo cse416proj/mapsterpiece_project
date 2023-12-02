@@ -12,7 +12,8 @@ import AuthContext from "../../../../contexts/auth";
 
 import PostSubComment from './PostSubComment';
 import PostCommentInput from "./PostCommentInput";
-import { DeleteCommentModal } from "../../../index";
+
+import { Modals } from "../../../index";
 
 export default function PostComment({payload, index}) {
   const { postInfo } = useContext(PostContext);
@@ -112,7 +113,7 @@ export default function PostComment({payload, index}) {
           {renderAccordionDetails()}
           {renderCommentInput()}
         </AccordionDetails>
-        <DeleteCommentModal type='post'/>
+        <Modals/>
       </Accordion>
     </div>
   );

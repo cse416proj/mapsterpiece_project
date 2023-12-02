@@ -107,11 +107,11 @@ export function MapContextProvider({ children }) {
   mapInfo.createMap = async function (newMap) {
     const { title, fileFormat, mapContent, tags } = newMap;
 
-    if (!title || !fileFormat || !mapContent || !tags) {
-      store.uploadError(
-        "Please enter all fields: title/ fileFormat/ fileContent/ tags."
-      );
-    }
+    // if (!title || !fileFormat || !mapContent || !tags) {
+    //   store.setError(
+    //     "Please enter all fields: title/ fileFormat/ fileContent/ tags."
+    //   );
+    // }
 
     // create map for user
     const user = auth.user;
@@ -127,9 +127,7 @@ export function MapContextProvider({ children }) {
         }
       }
       catch (error) {
-        if (error.response) {
-          console.log((error.response.status === 400) ? error.response.data.errorMessage : error);
-        }
+        store.setError((error.response?.data?.errorMessage) ? error.response?.data?.errorMessage : "Error creating a new map.");
       }
     }
   };

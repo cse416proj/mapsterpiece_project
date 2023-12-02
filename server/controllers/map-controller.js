@@ -22,18 +22,24 @@ createMap = async (req, res) => {
   if (!ownerUserName || !title || !fileFormat || !mapContent || !tags) {
     return res
       .status(400)
-      .json({ errorMessage: "Please enter all required fields." });
+      .json({ errorMessage: "Please enter all required fields!" });
+  }
+
+  const trimmedTitle = title.replace(/(\s|\r\n|\n|\r)/gm, '');
+  if(trimmedTitle.length === 0) {
+    return res
+      .status(400)
+      .json({ errorMessage: "Title must be entered with at least one non-space characters!" });
   }
 
   const features = mapContent.features;
-  let featuresFiltered = [];
-
-  // use regex to parse properties we want
-  const nameRegex = /^NAME(_[0-3])?$/i;
-
   if (!features) {
     return res.status(400).json({ errorMessage: "Feature does not exist." });
   }
+
+  // use regex to parse properties we want
+  let featuresFiltered = [];
+  const nameRegex = /^NAME(_[0-3])?$/i;
 
   for (let i = 0; i < features.length; i++) {
     const currFeature = features[i];
@@ -223,6 +229,8 @@ deleteMapById = async (req, res) => {
 // };
 
 getMapsByMapIds = async (req, res) => {
+  console.log('getMapsByMapIds');
+  
   let idList = req.params.idLists;
   idList = idList.split(",");
   if (!idList) {
@@ -285,6 +293,12 @@ updateMapPublishStatusById = async (req, res, newPublishStatus) => {
       }
 
       map.isPublished = newPublishStatus;
+      if (newPublishStatus) {
+        map.datePublished = new Date();
+      } else {
+        map.datePublished = null;
+      }
+      
       map
         .save()
         .then(() => {
@@ -397,6 +411,7 @@ updateMapById = async (req, res) => {
       map.tags = tags;
       map.mapType = mapType;
       map.heatmapData = heatmapData;
+      map.dateEdited = new Date();
 
       map
         .save()

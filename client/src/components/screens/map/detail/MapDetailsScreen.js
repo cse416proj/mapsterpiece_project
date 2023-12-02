@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 
 import { MapCommentSideBox, MapDetailTopBar, MapScreen } from "../../../index";
-import { DeleteMapModal, UnpublishMapModal, Warning, SuccessAlert } from "../../../index";
+import { Modals, Warning, SuccessAlert } from "../../../index";
 
 import MapContext from "../../../../contexts/map";
 import GlobalStoreContext from "../../../../contexts/store";
@@ -38,7 +38,7 @@ export default function MapDetailsScreen() {
 
   // update & redirect if map got successfully deleted
   useEffect(() => {
-    if((store?.deleteSuccess === true)){
+    if(store?.deleteSuccess === true){
       setDeleteSuccess(true);
     }
     else{
@@ -88,8 +88,7 @@ export default function MapDetailsScreen() {
             <Box className="map-screen-container">
               <MapScreen/>
               <MapCommentSideBox/>
-              <DeleteMapModal/>
-              <UnpublishMapModal/>
+              <Modals/>
             </Box>
           </>
       }
