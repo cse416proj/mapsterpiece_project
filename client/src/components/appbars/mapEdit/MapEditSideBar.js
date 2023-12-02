@@ -7,6 +7,7 @@ import {
   MenuItem,
   Input,
   Toolbar,
+  Stack,
 } from "@mui/material";
 
 import { Tags } from "../../index";
@@ -18,7 +19,7 @@ function MapEditSideBar() {
 
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState([]);
-  const [selectedColor, setSelectedColor] = useState('#ffffff');
+  const [selectedColor, setSelectedColor] = useState("#ffffff");
   const [mapType, setMapType] = useState(mapInfo?.currentMap?.mapType);
 
   useEffect(() => {
@@ -53,7 +54,7 @@ function MapEditSideBar() {
   const handleSetMapType = (e) => {
     setMapType(e);
     mapInfo?.setCurrentMapEditType(e);
-  }
+  };
 
   return (
     <Sidebar style={sideBarStyle}>
@@ -63,7 +64,11 @@ function MapEditSideBar() {
         </Typography>
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Map Type</Typography>
-          <Select defaultValue={mapType} onChange={(e) => handleSetMapType(e.target.value)} className="sidebar-block-content">
+          <Select
+            defaultValue={mapType}
+            onChange={(e) => handleSetMapType(e.target.value)}
+            className="sidebar-block-content"
+          >
             <MenuItem value={"REGULAR"}>Regular</MenuItem>
             <MenuItem value={"BINMAP"}>Bin Map</MenuItem>
             <MenuItem value={"CHOROPLETH"}>Choropleth Map</MenuItem>
@@ -104,7 +109,19 @@ function MapEditSideBar() {
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Map Data</Typography>
           <Box className="sidebar-block-content data-block"></Box>
-          <CompactPicker color={selectedColor} onChange={handleColorChange}/>
+          {mapType === "REGULAR" ? (
+            <CompactPicker color={selectedColor} onChange={handleColorChange} />
+          ) : null}
+          {mapType === "HEATMAP" ? (
+            <Stack spacing={2}>
+              {mapInfo?.currentMap?.heatmapData?.data?.map((props) => (
+                <Stack direction="row" spacing={2}>
+                  <Typography>{props.regionName}</Typography>
+                  <Typography>{props.value}</Typography>
+                </Stack>
+              ))}
+            </Stack>
+          ) : null}
         </Box>
       </Toolbar>
     </Sidebar>
