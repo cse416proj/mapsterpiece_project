@@ -35,7 +35,9 @@ function SearchScreen(){
         if(userInfo && userInfo?.currentUser){
             const userMaps = userInfo.currentUser?.maps;
             const userPosts = userInfo.currentUser?.posts;
-            store.getAllMapsPosts(userMaps, userPosts, userInfo.currentUser);
+            const user = userInfo?.currentUser;
+            // console.log(userMaps, userPosts, user);
+            store.getAllMapsPosts(userMaps, userPosts, user);
         }
     }, [userInfo?.currentUser])
 
@@ -59,7 +61,6 @@ function SearchScreen(){
     useEffect(() => {
         if(store){
             var data = store.getData(currScreen);
-
             switch(currScreen){
                 case "ALL_MAPS_POSTS":
                     setListCard(<MapsPostsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);

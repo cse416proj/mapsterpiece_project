@@ -502,7 +502,8 @@ function GlobalStoreContextProvider(props) {
   //getAllMapsPosts from given user
   store.getAllMapsPosts = function(userMaps, userPosts, user){
     // console.log(user?.userName, auth?.user?.userName);
-    if(typeof userMaps[0] ==='object' && typeof userPosts[0] ==='object'){
+    // console.log(typeof userMaps[0], typeof userPosts[0]);
+    if(typeof userMaps[0] !=='string' && typeof userPosts[0] !=='string'){
       let tmpMaps = [];
       if(!auth?.user || !auth?.user?.userName || auth?.user?.userName !== user?.userName){
         tmpMaps = userMaps.filter((pair)=>{return pair.isPublished});
