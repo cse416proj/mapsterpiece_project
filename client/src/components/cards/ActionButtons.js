@@ -15,7 +15,7 @@ import {
   EmailShareButton,
   FacebookShareButton,
   RedditShareButton,
-  RedditIcon, InstapaperIcon, InstapaperShareButton
+  RedditIcon, TwitterShareButton, TwitterIcon
 } from "react-share";
 
 import AuthContext from "../../contexts/auth";
@@ -26,7 +26,9 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
   // const { userInfo } = useContext(UserContext);
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorShareEl, setAnchorShareEl] = useState(null);
   const open = Boolean(anchorEl);
+  const openShare = Boolean(anchorShareEl)
 
   const isLoggedInUser = auth.user && auth.user.userName === currentUserName;
 
@@ -106,10 +108,14 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
   const openShareMenu = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    setAnchorEl(event.currentTarget);
+    setAnchorShareEl(event.currentTarget);
   };
 
-  document.addEventListener('mousedown',closeMenu)
+  const closeShareMenu = () => {
+    setAnchorShareEl(null)
+  }
+
+  document.addEventListener('mousedown',closeShareMenu)
 
   return (
     <CardActions className="cardActions">
@@ -127,9 +133,9 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
         <ShareIcon id={`${type}-action-icon`}/>
         <Typography id={`${type}-action-button-text`}>share {type}</Typography>
         <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={closeMenu}
+            anchorEl={anchorShareEl}
+            open={openShare}
+            onClose={closeShareMenu}
             MenuListProps={{
               "aria-labelledby": "basic-button",
             }}
@@ -138,7 +144,7 @@ function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHa
             <EmailShareButton url={window.location.href} onShareWindowClose={closeMenu}><EmailIcon><Typography id='action-button-text'>E-Mail</Typography></EmailIcon></EmailShareButton>
             <FacebookShareButton url={window.location.href} hashtag={"#Mapsterpiece"} onShareWindowClose={closeMenu}><FacebookIcon>Facebook</FacebookIcon></FacebookShareButton>
             <RedditShareButton url={window.location.href} onShareWindowClose={closeMenu}><RedditIcon>Reddit</RedditIcon></RedditShareButton>
-            <InstapaperShareButton url={window.location.href} onShareWindowClose={closeMenu}><InstapaperIcon>Instapaper</InstapaperIcon></InstapaperShareButton>
+            <TwitterShareButton url={window.location.href} onShareWindowClose={closeMenu}><TwitterIcon>Reddit</TwitterIcon></TwitterShareButton>
           </MenuItem>
         </Menu>
       </Box>

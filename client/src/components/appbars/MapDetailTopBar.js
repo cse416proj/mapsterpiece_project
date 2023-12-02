@@ -12,6 +12,14 @@ import { Tag } from "../index";
 import AuthContext from '../../contexts/auth';
 import MapContext from '../../contexts/map';
 import GlobalStoreContext from '../../contexts/store';
+import {
+    EmailIcon,
+    EmailShareButton,
+    FacebookIcon,
+    FacebookShareButton,
+    RedditIcon,
+    RedditShareButton, TwitterIcon, TwitterShareButton
+} from "react-share";
 
 export default function MapDetailTopBar(){
     const BackButtonStyle = {
@@ -65,13 +73,12 @@ export default function MapDetailTopBar(){
         console.log("fork this map");
     }
 
-    function handleShareMap(){
+    function handleShareMap(event){
+        event.stopPropagation();
+        event.preventDefault();
         console.log("share this map");
-    }
-
-    const openMenu = (event) => {
         setAnchorEl(event.currentTarget);
-    };
+    }
 
     const closeMenu = () => {
         setAnchorEl(null);
@@ -133,10 +140,10 @@ export default function MapDetailTopBar(){
             { text: 'Delete', handler: handleDeleteMap },
             { text: 'Unpublish', handler: handleUnpublishMap },
             { text: 'Fork', handler: handleForkMap },
-            { text: 'Share Link', handler:handleShareMap },
+            { text: 'Share Link', handler:handleShareMap},
             { text: 'Export/Download', handler: handleExportJPG}
         ]
-        
+
         if(mapId && auth?.user){
             // logged in but non-owner
             if(!auth.user.maps?.includes(mapId)){
@@ -154,7 +161,7 @@ export default function MapDetailTopBar(){
     return (
         <AppBar position='static'>
             <Toolbar className="map-screen-topbar">
-                {auth.user? 
+                {auth.user?
                  <Button
                     style = {BackButtonStyle}
                     onClick={handleMyMaps}>
@@ -166,7 +173,6 @@ export default function MapDetailTopBar(){
                     &lt;&lt; Back to Community
                 </Button>
             }
-               
                 <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>{title}</Typography>
                 <Box className='flex-row' id='tags-container'>
                     {
@@ -191,6 +197,20 @@ export default function MapDetailTopBar(){
                         <ThumbDownOffAltIcon style={{color:"black"}}></ThumbDownOffAltIcon>
                         <t style={{color:"black"}}>{dislikes}</t>
                     </IconButton> */}
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={closeMenu}
+                        MenuListProps={{
+                            "aria-labelledby": "basic-button",
+                        }}>
+                        <MenuItem>
+                            <EmailShareButton url={window.location.href} onShareWindowClose={closeMenu}><EmailIcon><Typography id='action-button-text'>E-Mail</Typography></EmailIcon></EmailShareButton>
+                            <FacebookShareButton url={window.location.href} hashtag={"#Mapsterpiece"} onShareWindowClose={closeMenu}><FacebookIcon>Facebook</FacebookIcon></FacebookShareButton>
+                            <RedditShareButton url={window.location.href} onShareWindowClose={closeMenu}><RedditIcon>Reddit</RedditIcon></RedditShareButton>
+                            <TwitterShareButton url={window.location.href} onShareWindowClose={closeMenu}><TwitterIcon>Reddit</TwitterIcon></TwitterShareButton>
+                        </MenuItem>
+                    </Menu>
                     { renderLikeButtons() }
                     { renderActionButtons() }
                 </Box>
