@@ -32,21 +32,22 @@ function MapScreen() {
   const [map, setMap] = useState(null);
   const [selectedRegionProps, setSelectedRegionProps] = useState(null);
 
-  console.log(`mapInfo?.currentMap?.mapType: ${mapInfo?.currentMap?.mapType}`);
-  console.log(`mapInfo?.currentMapEditType: ${mapInfo?.currentMapEditType}`);
-
+  // determine if we are on map-edit screen or map-detail screen
   useEffect(() => {
     setEditMode(location.pathname.includes("map-detail") ? false : true);
   }, [location]);
 
+  // color region
   useEffect(() => {
     colorRef.current = mapInfo?.currentRegionColor;
   }, [mapInfo?.currentRegionColor]);
 
+  // update map when currentMap changes
   useEffect(() => {
     setMap(mapInfo.currentMap);
   }, [mapInfo?.currentMap]);
 
+  // clear color fill, update map type in map object & determine if this map type suppoesd to edit by data when map type changes in edit screen
   useEffect(() => {
     if (geoJsonRef?.current) {
       geoJsonRef.current.setStyle({
@@ -55,6 +56,11 @@ function MapScreen() {
       });
     }
 
+    setMap((prevMap) => ({
+      ...prevMap,
+      mapType: mapInfo?.currentMapEditType
+    }))
+
     if (mapInfo?.currentMapEditType === "REGULAR") {
       dataEditModeRef.current = false;
     } else {
@@ -62,6 +68,7 @@ function MapScreen() {
     }
   }, [mapInfo?.currentMapEditType]);
 
+  // update map region names when map changes
   useEffect(() => {
     mapContentRef.current = map?.mapContent;
 
@@ -89,6 +96,7 @@ function MapScreen() {
     setRegionNameLevel(name);
   }, [map]);
 
+  // auto zoom when load map content into geojson
   useEffect(() => {
     if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
       if (Object.values(geoJsonRef.current._layers).length <= 0) {
@@ -102,6 +110,8 @@ function MapScreen() {
     }
   }, [initialLoad && mapContainerRef?.current && geoJsonRef?.current]);
 
+
+  // render when map type changes
   useEffect(() => {
     if (!mapContainerRef?.current || !geoJsonRef?.current || !map) {
       return;
@@ -135,9 +145,11 @@ function MapScreen() {
     return null;
   }
 
+  // when map region is clicked
   const handleFeatureClick = (event) => {
     const layer = event.sourceTarget;
 
+    // region will be colored if map is in edit mode & not belongs to 5 map type
     if (editMode && !dataEditModeRef.current) {
       event.target.setStyle({
         fillColor: colorRef.current,
@@ -169,6 +181,7 @@ function MapScreen() {
     }
   };
 
+  // edit data value for region on click
   const editValue = (value) => {
     const newDataObj = {
       lat: selectedRegionProps.position.lat,
@@ -179,12 +192,11 @@ function MapScreen() {
 
     if (map.mapType === "HEATMAP") {
       heatMapLayer.addData(newDataObj);
-
       mapInfo.updateHeatmapData(newDataObj);
     }
-    
   };
 
+  // render color and show text for each regions
   const onEachFeature = (feature, layer) => {
     if (!layer.feature) {
       return;
