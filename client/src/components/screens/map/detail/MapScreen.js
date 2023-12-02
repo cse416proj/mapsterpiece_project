@@ -4,6 +4,7 @@ import { DataEntryModal } from "../../../index";
 // import html2canvas from 'html2canvas';
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
+import Alert from "@mui/material/Alert";
 
 import MapContext from "../../../../contexts/map";
 import { MapContainer, GeoJSON } from "react-leaflet";
@@ -20,17 +21,18 @@ function MapScreen() {
 
   const colorRef = useRef();
   const [editMode, setEditMode] = useState(false);
-  const [dataEditMode, setDataEditMode] = useState(
-    mapInfo?.currentMap?.mapType !== "REGULAR"
-  );
   const [dataEntryModalOpen, setDataEntryModalOpen] = useState(false);
-  const dataEditModeRef = useRef(dataEditMode);
+  const dataEditModeRef = useRef();
+  dataEditModeRef.current = mapInfo?.currentMapEditType !== "REGULAR";
+  const heatmapDataRef = useRef();
+  heatmapDataRef.current = mapInfo?.currentMap?.heatmapData;
   const [initialLoad, setInitialLoad] = useState(true);
   const [regionNameLevel, setRegionNameLevel] = useState("");
   const [heatMapLayer, setHeatMapLayer] = useState(null);
 
   const [map, setMap] = useState(null);
   const [selectedRegionProps, setSelectedRegionProps] = useState(null);
+  const [warningAlertOpen, setWarningAlertOpen] = useState(false);
 
   useEffect(() => {
     setEditMode(location.pathname.includes("map-detail") ? false : true);
@@ -82,6 +84,7 @@ function MapScreen() {
       mapContainerRef.current.fitBounds(featureGroup.getBounds());
       setInitialLoad(false);
     }
+    mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
   }, [initialLoad && mapContainerRef?.current && geoJsonRef?.current]);
 
   useEffect(() => {
@@ -99,7 +102,7 @@ function MapScreen() {
 
     if (map.mapType === "HEATMAP") {
       const initialHeatMapLayer = new HeatmapOverlay({
-        radius: 3,
+        radius: regionNameLevel === "name" ? 7 : 0.5,
         maxOpacity: 1,
         scaleRadius: true,
         useLocalExtrema: true,
@@ -107,19 +110,23 @@ function MapScreen() {
         lngField: "lng",
         valueField: "value",
       });
-  
+
       const heatMapdata = map?.heatmapData
         ? map?.heatmapData
         : {
             max: 0,
             data: [],
           };
-  
+
       initialHeatMapLayer.setData(heatMapdata);
       mapContainerRef.current.addLayer(initialHeatMapLayer);
       setHeatMapLayer(initialHeatMapLayer);
     }
   }, [mapContainerRef?.current && geoJsonRef?.current, map?.mapType]);
+
+  useEffect(() => {
+    heatmapDataRef.current = mapInfo?.currentMap?.heatmapData;
+  }, [mapInfo?.currentMap?.heatmapData]);
 
   if (!mapInfo || !mapContentRef?.current) {
     return null;
@@ -127,7 +134,6 @@ function MapScreen() {
 
   const handleFeatureClick = (event) => {
     const layer = event.sourceTarget;
-
     if (editMode && !dataEditModeRef.current) {
       event.target.setStyle({
         fillColor: colorRef.current,
@@ -136,7 +142,8 @@ function MapScreen() {
     }
 
     const position = layer.getBounds().getCenter();
-    const regionName = layer.feature.properties[regionNameLevel];
+    const regionName = layer.feature.properties[regionNameLevel].replace(/\0/g, '');
+    
     setSelectedRegionProps({ position, regionName });
 
     if (!layer.feature) {
@@ -155,6 +162,13 @@ function MapScreen() {
     }
 
     if (dataEditModeRef.current) {
+      const index = heatmapDataRef?.current?.data?.findIndex(
+        (data) => data.regionName === regionName
+      );
+      if (index >= 0) {
+        setWarningAlertOpen(true);
+        return;
+      }
       setDataEntryModalOpen(true);
     }
   };
@@ -165,14 +179,13 @@ function MapScreen() {
       lng: selectedRegionProps.position.lng,
       value: value,
       regionName: selectedRegionProps.regionName,
-    }
+    };
 
     if (map.mapType === "HEATMAP") {
       heatMapLayer.addData(newDataObj);
 
       mapInfo.updateHeatmapData(newDataObj);
     }
-    
   };
 
   const onEachFeature = (feature, layer) => {
@@ -216,6 +229,16 @@ function MapScreen() {
         handleClose={() => setDataEntryModalOpen(false)}
         setData={editValue}
       />
+      {warningAlertOpen && (
+        <Alert
+          severity="warning"
+          onClose={() => {
+            setWarningAlertOpen(false);
+          }}
+        >
+          You have already entered a data point for this region
+        </Alert>
+      )}
       <MapContainer
         ref={mapContainerRef}
         id="map-viewer"
