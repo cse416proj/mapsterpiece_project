@@ -11,6 +11,7 @@ const PostSchema = new Schema(
     likedUsers: [{ type: ObjectId, ref: "User" }],
     dislikedUsers: [{ type: ObjectId, ref: "User" }],
     comments: [{ type: ObjectId, ref: "Comment" }],
+    dateCreated: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );

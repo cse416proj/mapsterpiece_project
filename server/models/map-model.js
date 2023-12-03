@@ -13,7 +13,8 @@ const MapSchema = new Schema(
     comments: [{ type: ObjectId, ref: "Comment" }],
     likedUsers: [{ type: ObjectId, ref: "User" }],
     dislikedUsers: [{ type: ObjectId, ref: "User" }],
-    dateEdited: { type: Date, default: Date.now },
+    dateCreated: { type: Date, default: Date.now },
+    dateEdited: { type: Date },
     datePublished: { type: Date }
   },
   { timestamps: true }

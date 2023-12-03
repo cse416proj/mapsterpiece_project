@@ -22,10 +22,18 @@ export default function MapCard({mapData, clickHandler, editHandler, deleteHandl
     };
 
     function getTimestamp(){
-        const time = (mapData?.isPublished) ? mapData.datePublished : mapData.dateEdited;
-        const parsedDate = new Date(time);
-        const timeFromNow = formatDistanceToNow(parsedDate);
-        return ` ${timeFromNow} ago`;
+        try{
+            const time = (mapData?.isPublished) ?
+                        mapData.datePublished :
+                        ((mapData.dateEdited) ? mapData.dateEdited : mapData.dateCreated);
+
+            const parsedDate = new Date(time);
+            const timeFromNow = formatDistanceToNow(parsedDate);
+            return ` ${timeFromNow} ago`;
+        }
+        catch(error){
+            console.log(`error: ${error}`)
+        }
     }
 
     if(!mapData){
@@ -52,7 +60,7 @@ export default function MapCard({mapData, clickHandler, editHandler, deleteHandl
                         color="white"
                         gutterBottom
                     >
-                        { (mapData.isPublished) ? 'Published' : 'Created' } by @{mapData.ownerUserName}
+                        { (mapData.isPublished) ? 'Published' : (mapData.dateEdited ? 'Edited' : 'Created') } by @{mapData.ownerUserName}
                         { getTimestamp() }
                     </Typography>
                 </Box>

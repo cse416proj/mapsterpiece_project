@@ -6,9 +6,14 @@ import ActionButtons from "./ActionButtons";
 
 function PostCard({postData, clickHandler, editHandler, deleteHandler}){
     function getTimestamp(){
-        const parsedDate = new Date(postData.createdAt);
-        const timeFromNow = formatDistanceToNow(parsedDate);
-        return ` ${timeFromNow} ago`;
+        try{
+            const parsedDate = new Date(postData.dateCreated);
+            const timeFromNow = formatDistanceToNow(parsedDate);
+            return ` ${timeFromNow} ago`;
+        }
+        catch(error){
+            console.log(`error: ${error}`)
+        }
     }
 
     if(!postData){
@@ -34,7 +39,7 @@ function PostCard({postData, clickHandler, editHandler, deleteHandler}){
                         gutterBottom
                     >
                         Posted by @{postData.ownerUserName}
-                        {getTimestamp()}
+                        { getTimestamp() }
                     </Typography>
                 </Box>
                 <Typography
