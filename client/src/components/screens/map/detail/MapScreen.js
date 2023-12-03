@@ -74,10 +74,6 @@ function MapScreen() {
   }, [map]);
 
   useEffect(() => {
-    mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
-  }, [initialLoad && mapContainerRef?.current && geoJsonRef?.current]);
-
-  useEffect(() => {
     if (mapInfo?.currentMapEditType === "REGULAR") {
       dataEditModeRef.current = false;
     } else {
@@ -241,6 +237,7 @@ function MapScreen() {
   )
 
   if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
+    mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
     if (Object.values(geoJsonRef.current._layers).length <= 0) {
       return;
     }
