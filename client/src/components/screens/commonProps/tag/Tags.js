@@ -62,7 +62,7 @@ function Tags({tags, setTags}){
     return(
         <Box className='flex-row' id='tags'>
             {
-                (tags.length > 0) ? 
+                (tags?.length > 0) ? 
                     tags.map((tag, index) => {
                         return <Tag key={index} index={index} tag={tag} removeTag={handleRemoveTag}/>;
                     }) : 

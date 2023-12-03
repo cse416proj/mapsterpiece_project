@@ -32,7 +32,7 @@ function MapScreen() {
 
   const [map, setMap] = useState(null);
   const [selectedRegionProps, setSelectedRegionProps] = useState(null);
-  const [warningAlertOpen, setWarningAlertOpen] = useState(false);
+  const [indexElementTobeChanged, setIndexElementTobeChanged] = useState(-1);
 
   useEffect(() => {
     setEditMode(location.pathname.includes("map-detail") ? false : true);
@@ -166,8 +166,7 @@ function MapScreen() {
         (data) => data.regionName === regionName
       );
       if (index >= 0) {
-        setWarningAlertOpen(true);
-        return;
+        setIndexElementTobeChanged(index);
       }
       setDataEntryModalOpen(true);
     }
@@ -182,9 +181,15 @@ function MapScreen() {
     };
 
     if (map.mapType === "HEATMAP") {
-      heatMapLayer.addData(newDataObj);
-
-      mapInfo.updateHeatmapData(newDataObj);
+      if (indexElementTobeChanged >= 0) {
+        heatmapDataRef.current.data[indexElementTobeChanged] = newDataObj;
+        heatMapLayer.setData(heatmapDataRef.current);
+      } else {
+        heatMapLayer.addData(newDataObj);
+      }
+      
+      mapInfo.updateHeatmapData(newDataObj, indexElementTobeChanged);
+      setIndexElementTobeChanged(-1);
     }
   };
 
@@ -229,16 +234,6 @@ function MapScreen() {
         handleClose={() => setDataEntryModalOpen(false)}
         setData={editValue}
       />
-      {warningAlertOpen && (
-        <Alert
-          severity="warning"
-          onClose={() => {
-            setWarningAlertOpen(false);
-          }}
-        >
-          You have already entered a data point for this region
-        </Alert>
-      )}
       <MapContainer
         ref={mapContainerRef}
         id="map-viewer"

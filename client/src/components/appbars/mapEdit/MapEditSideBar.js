@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Sidebar } from "react-pro-sidebar";
 import {
   Select,
@@ -21,9 +21,17 @@ function MapEditSideBar() {
   const [tags, setTags] = useState(mapInfo?.currentMap?.tags);
   const [selectedColor, setSelectedColor] = useState("#ffffff");
   const [mapType, setMapType] = useState(mapInfo?.currentMap?.mapType);
+  const titleRef = useRef();
+  const tagsRef = useRef();
+  const mapTypeRef = useRef();
+  titleRef.current = mapInfo?.currentMap?.title;
+  tagsRef.current = mapInfo?.currentMap?.tags;
+  mapTypeRef.current = mapInfo?.currentMap?.mapType;
 
   useEffect(() => {
-    mapInfo?.updateMapGeneralInfo(title, tags, mapType);
+    if(title && tags && mapType) {
+      mapInfo?.updateMapGeneralInfo(title, tags, mapType);
+    }
   }, [title, tags, mapType]);
 
   const sideBarStyle = {
@@ -77,13 +85,13 @@ function MapEditSideBar() {
             aria-label="title input"
             placeholder="type new title"
             onChange={(e) => setTitle(e.target.value)}
-            value={title}
+            value={title ? title : titleRef.current}
           />
         </Box>
 
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Tags</Typography>
-          <Tags tags={tags} setTags={setTags} />
+          <Tags tags={tags ? tags : tagsRef.current} setTags={setTags} />
         </Box>
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Legend</Typography>
