@@ -107,6 +107,7 @@ export default function MapDetailsScreen() {
           <>
             { deleteSuccess && <SuccessAlert type='map-delete'/> }
             { unpublishSuccess && <SuccessAlert type='map-unpublish'/> }
+            { duplicateSuccess && <SuccessAlert type='map-duplicate'/>}
             <MapDetailTopBar/>
             <Box className="map-screen-container">
               <MapScreen/>

@@ -102,6 +102,7 @@ export default function MapEditScreen() {
       <MapEditTopBar/>
       { deleteSuccess && <SuccessAlert type='map-delete'/> }
       { publishSuccess && <SuccessAlert type='map-publish'/> }
+      { duplicateSuccess && <SuccessAlert type='map-duplicate'/>}
       <Box
         className="map-screen-container"
         style={{ 
