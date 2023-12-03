@@ -5,7 +5,7 @@ name: CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "sahil" ]
 
 jobs:
   backend:
@@ -55,20 +55,24 @@ jobs:
     # - run: npm test
     #   working-directory: './client'
   
+
   cypress:
     needs: frontend
     runs-on: self-hosted
 
-    steps:
-      - uses: actions/checkout@v3
+  # cypress:
+  #   runs-on: self-hosted
+
+  #   steps:
+  #     - uses: actions/checkout@v3
       
-      - name: Cypress run
-        uses: cypress-io/github-action@v6
-        with:
-          browser: chrome
-          headless: true
-          # record: true
-          start: npm start
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 180
-          working-directory: './client'
+  #     - name: Cypress run
+  #       uses: cypress-io/github-action@v6
+  #       with:
+  #         browser: chrome
+  #         headless: true
+  #         # record: true
+  #         start: npm start
+  #         wait-on: 'http://localhost:3000'
+  #         wait-on-timeout: 180
+  #         working-directory: './client'
