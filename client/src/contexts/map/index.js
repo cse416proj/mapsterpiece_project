@@ -337,7 +337,7 @@ export function MapContextProvider({ children }) {
     }));
   };
 
-  mapInfo.updateHeatmapData = function (heatmapDataIndividualObj) {
+  mapInfo.updateHeatmapData = function (heatmapDataIndividualObj, indexElementTobeChanged) {
     if (!mapInfo.currentMap) {
       return;
     }
@@ -346,7 +346,12 @@ export function MapContextProvider({ children }) {
     if (heatmapDataIndividualObj.value > originalHeatmapData.max) {
       originalHeatmapData.max = heatmapDataIndividualObj.value;
     }
-    originalHeatmapData.data.push(heatmapDataIndividualObj);
+    if (indexElementTobeChanged >= 0) {
+      originalHeatmapData.data[indexElementTobeChanged] = heatmapDataIndividualObj;
+    } else {
+      originalHeatmapData.data.push(heatmapDataIndividualObj);
+    }
+    
     oldMap.heatmapData = originalHeatmapData;
     console.log(oldMap.heatmapData)
     setMapInfo((prevMapInfo) => ({
@@ -370,7 +375,6 @@ export function MapContextProvider({ children }) {
   };
 
   mapInfo.updateMapById = async function (mapId) {
-    console.log(mapInfo.currentMap)
     const response = await api.updateMapById(mapId, mapInfo.currentMap);
     if (response.status === 200) {
       await mapInfo.getMapsByMapIds(auth.user.maps);

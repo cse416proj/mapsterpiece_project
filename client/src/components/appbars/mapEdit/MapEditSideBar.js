@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Sidebar } from "react-pro-sidebar";
 import {
   Select,
@@ -17,24 +17,22 @@ import { CompactPicker } from "react-color";
 function MapEditSideBar() {
   const { mapInfo } = useContext(MapContext);
 
-  const [title, setTitle] = useState("");
-  const [tags, setTags] = useState([]);
+  const [title, setTitle] = useState(mapInfo?.currentMap?.title);
+  const [tags, setTags] = useState(mapInfo?.currentMap?.tags);
   const [selectedColor, setSelectedColor] = useState("#ffffff");
   const [mapType, setMapType] = useState("REGULAR");
   const [isEditingTag, setIsEditingTag] = useState(false);
+  const titleRef = useRef();
+  const tagsRef = useRef();
+  const mapTypeRef = useRef();
+  titleRef.current = mapInfo?.currentMap?.title;
+  tagsRef.current = mapInfo?.currentMap?.tags;
+  mapTypeRef.current = mapInfo?.currentMap?.mapType;
 
   useEffect(() => {
-    if (mapInfo) {
-      if (mapInfo.currentMap) {
-        setTitle(mapInfo.currentMap.title);
-        setTags(mapInfo.currentMap.tags);
-        setMapType(mapInfo.currentMap.mapType);
-      }
+    if(title && tags && mapType) {
+      mapInfo?.updateMapGeneralInfo(title, tags, mapType);
     }
-  }, []);
-
-  useEffect(() => {
-    mapInfo?.updateMapGeneralInfo(title, tags, mapType);
   }, [title, tags, mapType]);
 
   const sideBarStyle = {
@@ -99,13 +97,13 @@ function MapEditSideBar() {
             aria-label="title input"
             placeholder="type new title"
             onChange={(e) => setTitle(e.target.value)}
-            value={title}
+            value={title ? title : titleRef.current}
           />
         </Box>
 
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Tags</Typography>
-          <Tags tags={tags} setTags={setTags} isEditingTag={isEditingTag} setIsEditingTag={setIsEditingTag}/>
+          <Tags tags={tags ? tags : tagsRef.current} setTags={setTags} isEditingTag={isEditingTag} setIsEditingTag={setIsEditingTag}/>
         </Box>
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Legend</Typography>

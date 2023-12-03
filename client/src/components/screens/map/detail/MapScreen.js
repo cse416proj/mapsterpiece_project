@@ -4,6 +4,7 @@ import { Modals, DataEntryModal } from "../../../index";
 // import html2canvas from 'html2canvas';
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
+import Alert from "@mui/material/Alert";
 
 import { DataInfoControl, LegendControl } from "../index";
 import MapContext from "../../../../contexts/map";
@@ -21,17 +22,18 @@ function MapScreen() {
 
   const colorRef = useRef();
   const [editMode, setEditMode] = useState(false);
-  const [dataEditMode, setDataEditMode] = useState(
-    mapInfo?.currentMap?.mapType !== "REGULAR"
-  );
-  const dataEditModeRef = useRef(dataEditMode);
   const [dataEntryModalOpen, setDataEntryModalOpen] = useState(false);
+  const dataEditModeRef = useRef();
+  dataEditModeRef.current = mapInfo?.currentMapEditType !== "REGULAR";
+  const heatmapDataRef = useRef();
+  heatmapDataRef.current = mapInfo?.currentMap?.heatmapData;
   const [initialLoad, setInitialLoad] = useState(true);
   const [regionNameLevel, setRegionNameLevel] = useState("");
   const [heatMapLayer, setHeatMapLayer] = useState(null);
 
   const [map, setMap] = useState(null);
   const [selectedRegionProps, setSelectedRegionProps] = useState(null);
+  const [indexElementTobeChanged, setIndexElementTobeChanged] = useState(-1);
 
   const [currProp, setCurrProp] = useState('gdp_md');
   const [currData, setcurrData] = useState(null);
@@ -148,23 +150,22 @@ function MapScreen() {
     setRegionNameLevel(name);
   }, [map]);
 
-  // auto zoom when load map content into geojson
-  useEffect(() => {
-    if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
-      if (Object.values(geoJsonRef.current._layers).length <= 0) {
-        return;
-      }
-      let featureGroup = L.featureGroup(
-        Object.values(geoJsonRef.current._layers)
-      );
+  // // auto zoom when load map content into geojson
+  // useEffect(() => {
+  //   if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
+  //     if (Object.values(geoJsonRef.current._layers).length <= 0) {
+  //       return;
+  //     }
+  //     let featureGroup = L.featureGroup(
+  //       Object.values(geoJsonRef.current._layers)
+  //     );
 
-      console.log(featureGroup);
+  //     console.log(featureGroup);
 
-      mapContainerRef.current.fitBounds(featureGroup.getBounds());
-      setInitialLoad(false);
-    }
-  }, [initialLoad && mapContainerRef?.current && geoJsonRef?.current]);
-
+  //     mapContainerRef.current.fitBounds(featureGroup.getBounds());
+  //     setInitialLoad(false);
+  //   }
+  // }, [initialLoad && mapContainerRef?.current && geoJsonRef?.current]);
 
   // render when map type changes
   useEffect(() => {
@@ -174,7 +175,7 @@ function MapScreen() {
 
     if (map.mapType === "HEATMAP") {
       const initialHeatMapLayer = new HeatmapOverlay({
-        radius: 3,
+        radius: regionNameLevel === "name" ? 7 : 0.5,
         maxOpacity: 1,
         scaleRadius: true,
         useLocalExtrema: true,
@@ -182,19 +183,37 @@ function MapScreen() {
         lngField: "lng",
         valueField: "value",
       });
-  
+
       const heatMapdata = map?.heatmapData
         ? map?.heatmapData
         : {
             max: 0,
             data: [],
           };
-  
+
       initialHeatMapLayer.setData(heatMapdata);
       mapContainerRef.current.addLayer(initialHeatMapLayer);
       setHeatMapLayer(initialHeatMapLayer);
     }
   }, [mapContainerRef?.current && geoJsonRef?.current, map?.mapType]);
+
+  useEffect(() => {
+    heatmapDataRef.current = mapInfo?.currentMap?.heatmapData;
+  }, [mapInfo?.currentMap?.heatmapData]);
+
+  useEffect(() => {
+    if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
+      mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
+      if (Object.values(geoJsonRef.current._layers).length <= 0) {
+        return;
+      }
+      let featureGroup = L.featureGroup(
+        Object.values(geoJsonRef.current._layers)
+      );
+      mapContainerRef.current.fitBounds(featureGroup.getBounds());
+      setInitialLoad(false);
+    }
+  }, [initialLoad && mapContainerRef?.current && geoJsonRef?.current]);
 
   if (!mapInfo || !mapContentRef?.current) {
     return null;
@@ -203,22 +222,19 @@ function MapScreen() {
   // when map region is clicked
   const handleFeatureClick = (event) => {
     const layer = event.sourceTarget;
-
-    // region will be colored if map is in edit mode & not belongs to 5 map type
-    if (editMode) {
-      if(!dataEditModeRef.current){
-        event.target.setStyle({
-          fillColor: colorRef.current,
-          fillOpacity: 1,
-        });
-      }
-      else{
-        console.log(map.mapType);
-      }
+    if (editMode && !dataEditModeRef.current) {
+      event.target.setStyle({
+        fillColor: colorRef.current,
+        fillOpacity: 1,
+      });
     }
 
-    const position = layer?.getBounds().getCenter();
-    const regionName = layer?.feature.properties[regionNameLevel];
+    const position = layer.getBounds().getCenter();
+    const regionName = layer.feature.properties[regionNameLevel].replace(
+      /\0/g,
+      ""
+    );
+
     setSelectedRegionProps({ position, regionName });
 
     if (!layer.feature) {
@@ -237,6 +253,12 @@ function MapScreen() {
     }
 
     if (dataEditModeRef.current) {
+      const index = heatmapDataRef?.current?.data?.findIndex(
+        (data) => data.regionName === regionName
+      );
+      if (index >= 0) {
+        setIndexElementTobeChanged(index);
+      }
       setDataEntryModalOpen(true);
     }
   };
@@ -248,11 +270,18 @@ function MapScreen() {
       lng: selectedRegionProps.position.lng,
       value: value,
       regionName: selectedRegionProps.regionName,
-    }
+    };
 
     if (map.mapType === "HEATMAP") {
-      heatMapLayer.addData(newDataObj);
-      mapInfo.updateHeatmapData(newDataObj);
+      if (indexElementTobeChanged >= 0) {
+        heatmapDataRef.current.data[indexElementTobeChanged] = newDataObj;
+        heatMapLayer.setData(heatmapDataRef.current);
+      } else {
+        heatMapLayer.addData(newDataObj);
+      }
+
+      mapInfo.updateHeatmapData(newDataObj, indexElementTobeChanged);
+      setIndexElementTobeChanged(-1);
     }
   };
 
@@ -314,7 +343,7 @@ function MapScreen() {
     });
   };
 
-  return (
+  const mapContent = (
     <>
       <Modals/>
       <DataEntryModal
@@ -365,6 +394,8 @@ function MapScreen() {
       </MapContainer>
     </>
   );
+
+  return <>{mapContent}</>;
 }
 
 export default MapScreen;

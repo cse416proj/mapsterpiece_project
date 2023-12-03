@@ -255,12 +255,12 @@ export default function MapDetailTopBar() {
         </Typography>
 
         <Box className="flex-row" id="tags-container">
-          {tags.length === 0 ? null : (
+          {tags?.length === 0 ? null : (
             <>
               <Typography id="post-tags-text" style={{ color: "black" }}>
                 Tags:
               </Typography>
-              {tags.map((tag, index) => {
+              {tags?.map((tag, index) => {
                 return (
                   <Tag key={index} index={index} tag={tag} removeTag={null} />
                 );
