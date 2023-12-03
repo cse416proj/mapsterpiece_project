@@ -74,16 +74,6 @@ function MapScreen() {
   }, [map]);
 
   useEffect(() => {
-    if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
-      if (Object.values(geoJsonRef.current._layers).length <= 0) {
-        return;
-      }
-      let featureGroup = L.featureGroup(
-        Object.values(geoJsonRef.current._layers)
-      );
-      mapContainerRef.current.fitBounds(featureGroup.getBounds());
-      setInitialLoad(false);
-    }
     mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
   }, [initialLoad && mapContainerRef?.current && geoJsonRef?.current]);
 
@@ -227,7 +217,7 @@ function MapScreen() {
     });
   };
 
-  return (
+  const mapContent = (
     <>
       <DataEntryModal
         isOpen={dataEntryModalOpen}
@@ -248,7 +238,20 @@ function MapScreen() {
         />
       </MapContainer>
     </>
-  );
+  )
+
+  if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
+    if (Object.values(geoJsonRef.current._layers).length <= 0) {
+      return;
+    }
+    let featureGroup = L.featureGroup(
+      Object.values(geoJsonRef.current._layers)
+    );
+    mapContainerRef.current.fitBounds(featureGroup.getBounds());
+    setInitialLoad(false);
+  }
+
+  return <>{mapContent}</>;
 }
 
 export default MapScreen;
