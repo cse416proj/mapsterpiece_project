@@ -10,7 +10,7 @@ import {
   sidebarClasses,
 } from "react-pro-sidebar";
 
-export default function SideNavBar() {
+export default function SideNavBar(props) {
   const location = useLocation();
   const { store } = useContext(GlobalStoreContext);
 
@@ -19,6 +19,7 @@ export default function SideNavBar() {
     event.preventDefault();
     console.log(`handleSelectView: ${viewType}`);
     store.setCurrentView(viewType);
+    props.setSearch('');
   }
 
   const handleSelectViewAll = (event, allScreen, ownScreen) => {

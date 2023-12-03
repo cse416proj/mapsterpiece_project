@@ -1,16 +1,23 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { AppBar, Toolbar, Box, Typography, Paper, InputBase, Menu, MenuItem } from "@mui/material";
 import { GlobalStoreContext } from "../../../contexts/store";
+import UserContext from "../../../contexts/user";
+import AuthContext from "../../../contexts/auth";
 
 import SearchIcon from "@mui/icons-material/Search";
 import SortIcon from '@mui/icons-material/Sort';
+import ClearIcon from '@mui/icons-material/Clear';
 
 export default function SearchBar(props) {
   const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
+  const { userInfo } = useContext(UserContext);
 
   const [currScreen, setCurrScreen] = useState("HOME");
   const [placeholder, setPlaceholder] = useState('Select a category first...');
+  const [searchInput, setSearchInput] = useState('');
   const [menuItems, setMenuItems] = useState([]);
+  const inputRef = useRef(null);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -106,15 +113,25 @@ export default function SearchBar(props) {
   const handleSortBothA2Z = (event) =>{
     event.stopPropagation();
     event.preventDefault();
-    console.log("current screen: ",currScreen);
     props.setSortBy('A2Z-both');
     setAnchorEl(null);
   }
-
   const handleSortBothZ2A = (event)=>{
     event.stopPropagation();
     event.preventDefault();
-    props.setSortBy('Z2A-Both');
+    props.setSortBy('Z2A-both');
+    setAnchorEl(null);
+  }
+  const handleSortBothMR = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('MostRecent-both');
+    setAnchorEl(null);
+  }
+  const handleSortBothLR = (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    props.setSortBy('LeastRecent-both');
     setAnchorEl(null);
   }
 
@@ -128,7 +145,7 @@ export default function SearchBar(props) {
   // Now update placeholder & menu items; reason: currScreen changes in SearchBar
   useEffect(() => {
     if(currScreen.includes("USERS")){
-      setPlaceholder('Search by userName/email/id...');
+      setPlaceholder('Search by userName...');
       setMenuItems(
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortUserA2Z },
@@ -137,16 +154,18 @@ export default function SearchBar(props) {
       )
     }
     else if(currScreen==='ALL_MAPS_POSTS'){
-      setPlaceholder('Search by userName/email/id...');
+      setPlaceholder('Search by map title/tag or post title/tag...');
       setMenuItems(
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortBothA2Z },
           { sortBy: 'Alphabet (Z-A)', handler: handleSortBothZ2A },
+          { sortBy: 'Most recent maps & post', handler: handleSortBothMR },
+          { sortBy: 'Least recent maps & post', handler: handleSortBothLR },
         ]
       )
     }
-    else if(currScreen.includes("MAPS")){
-      setPlaceholder('Search by title/tag...');
+    else if(currScreen==='USER_OWNED_MAPS' && auth?.user?.userName===userInfo?.currentUser?.userName){
+      setPlaceholder('Search by map title/tag...');
       setMenuItems(
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortMapA2Z },
@@ -155,12 +174,23 @@ export default function SearchBar(props) {
           { sortBy: 'Least recent edit', handler: handleSortMapLREdit },
           { sortBy: 'Most recent publish', handler: handleSortMapMRPublish },
           { sortBy: 'Least recent publish', handler: handleSortMapLRPublish },
+        ]
+      )
+    }
+    else if(currScreen.includes("MAPS")){
+      setPlaceholder('Search by map title/tag...');
+      setMenuItems(
+        [
+          { sortBy: 'Alphabet (A-Z)', handler: handleSortMapA2Z },
+          { sortBy: 'Alphabet (Z-A)', handler: handleSortMapZ2A },
+          { sortBy: 'Most recent publish', handler: handleSortMapMRPublish },
+          { sortBy: 'Least recent publish', handler: handleSortMapLRPublish },
           
         ]
       )
     }
     else if(currScreen.includes("POSTS")){
-      setPlaceholder('Search by title/tag/context...');
+      setPlaceholder('Search by post title/tag/content...');
       setMenuItems(
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortPostA2Z },
@@ -176,10 +206,39 @@ export default function SearchBar(props) {
     }
   }, [currScreen]);
 
+  // update search input when user enter something
+  const updateSearchInput = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    setSearchInput(event.target.value);
+    inputRef.current.value = event.target.value;
+  }
+
+  // search when user hits enter key
+  const handleSearch = (event) => {
+    if(event.key !== 'Enter'){
+      return;
+    }
+    // do not search when input is empty
+    const trimmedInputWithoutSpace = searchInput.replace(/(\s|\r\n|\n|\r)/gm, '');
+    if(trimmedInputWithoutSpace.length === 0){
+      return;
+    }
+    props.setSearch(searchInput);
+  }
+
+  const handleClearSearch = (event)=> {
+    if (inputRef.current) {
+      setSearchInput('');
+      inputRef.current.value = '';
+      inputRef.focus();
+    }
+  }
+
   // render menuitems based on menuItems array
   function renderDynamicMenuItems(){
     return menuItems.map((item) => {
-      return <MenuItem key={item.sortBy} onClick={item.handler}>{item.sortBy}</MenuItem>;
+      return <MenuItem key={item.sortBy} onClick={item.handler} id={item.sortBy}>{item.sortBy}</MenuItem>;
     });
   }
 
@@ -214,19 +273,43 @@ export default function SearchBar(props) {
               display: "flex",
               alignItems: "center",
               marginLeft: "10px",
-              width: (currScreen.includes("HOME")) ? "72.5vw" : "62.5vw",
+              width: (currScreen.includes("HOME") || placeholder === 'Select a category first...') ? "72.5vw" : "62.5vw",
             }}
             onSubmit={(event) => {event.preventDefault();}}
           >
-            <InputBase 
-              onChange={(event)=>props.setSearch(event.target.value)}
+            <InputBase
+              disabled={placeholder === 'Select a category first...'}
+              onChange={updateSearchInput}
+              onKeyDown={handleSearch}
+              value={searchInput}
               sx={{ ml: 1, flex: 1 }}
-              placeholder={placeholder} // to be replace with what to actually search for
+              placeholder={placeholder}
+              inputRef={inputRef}
+              endAdornment={
+                (String(inputRef?.current?.value)?.replace(/(\s|\r\n|\n|\r)/gm, '').length > 0) ?
+                  <ClearIcon onClick={handleClearSearch} 
+                  sx={{
+                    cursor: "pointer",
+                    backgroundColor: "white",
+                    ":hover": {
+                      backgroundColor: "#aaa", 
+                      transition: "background-color 0.5s", 
+                    },
+                    borderRadius: "50%", 
+                    marginLeft: "8px",
+                    transition: "background-color 1s", 
+                    "&:active": {
+                      backgroundColor: "#ccc", 
+                    },
+                  }}
+                  /> :
+                  null
+                }
             />
           </Paper>
         </Box>
         {
-          (currScreen.includes("HOME")) ?
+          (currScreen.includes("HOME") || placeholder === 'Select a category first...') ?
             null :
             (
               <Box className="flex-row" id='sort-prompt' onClick={openMenu}>

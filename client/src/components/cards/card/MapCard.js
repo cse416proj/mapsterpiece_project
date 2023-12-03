@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import { Box, Card, CardContent, Typography, Chip, Stack } from "@mui/material";
 
+import { formatDistanceToNow } from 'date-fns';
+
 import ActionButtons from "./ActionButtons";
 import GlobalStoreContext from "../../../contexts/store";
 
@@ -18,6 +20,17 @@ export default function MapCard({mapData, clickHandler, editHandler, deleteHandl
         event.preventDefault();
         store.markMapForUnpublish(mapData);
     };
+
+    function getTimestamp(){
+        const time = (mapData?.isPublished) ? mapData.datePublished : mapData.dateEdited;
+        const parsedDate = new Date(time);
+        const timeFromNow = formatDistanceToNow(parsedDate);
+        return ` ${timeFromNow} ago`;
+    }
+
+    if(!mapData){
+        return null;
+    }
 
     return(
         <Card className="individualDynamicCard">
@@ -40,6 +53,7 @@ export default function MapCard({mapData, clickHandler, editHandler, deleteHandl
                         gutterBottom
                     >
                         { (mapData.isPublished) ? 'Published' : 'Created' } by @{mapData.ownerUserName}
+                        { getTimestamp() }
                     </Typography>
                 </Box>
                 <Stack direction="row" spacing={1}>

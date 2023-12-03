@@ -5,7 +5,7 @@ import api from "./map-request-api";
 import AuthContext from "../auth";
 import GlobalStoreContext from "../store";
 
-const MapContext = createContext();
+const MapContext = createContext({});
 
 export function MapContextProvider({ children }) {
   const { auth } = useContext(AuthContext);
