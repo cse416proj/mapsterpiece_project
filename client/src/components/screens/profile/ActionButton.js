@@ -2,8 +2,11 @@ import { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { SpeedDial, SpeedDialIcon, SpeedDialAction } from '@mui/material';
-import CreateIcon from '@mui/icons-material/Create';
-import SearchIcon from '@mui/icons-material/Search';
+// import CreateIcon from '@mui/icons-material/Create';
+
+import ExploreRoundedIcon from '@mui/icons-material/ExploreRounded';
+import PostAddRoundedIcon from '@mui/icons-material/PostAddRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
 import GlobalStoreContext from '../../../contexts/store';
 
@@ -13,9 +16,15 @@ function ActionButton({isLoggedInUser}){
 
     const navigate = useNavigate();
 
-    function handleCreate(event){
+    function handleCreateMap(event){
         console.log('handleCreateMap');
         store.setCurrentView('CREATE_MAP');
+        navigate('/create');
+    }
+
+    function handleCreatePost(event){
+        console.log('handleCreatePost');
+        store.setCurrentView('CREATE_POST');
         navigate('/create');
     }
 
@@ -26,11 +35,12 @@ function ActionButton({isLoggedInUser}){
 
     const actions = (isLoggedInUser) ?
         [
-            { icon: <SearchIcon/>, name: 'Search Map/ Post', handler: handleSearch },
-            { icon: <CreateIcon/>, name: 'Create Map/ Post', handler: handleCreate },
+            { icon: <SearchRoundedIcon/>, name: 'Search Map/ Post', handler: handleSearch },
+            { icon: <PostAddRoundedIcon/>, name: 'Create Post', handler: handleCreatePost },
+            { icon: <ExploreRoundedIcon/>, name: 'Create Map', handler: handleCreateMap },
         ] :
         [
-            { icon: <SearchIcon/>, name: 'Search Map/ Post', handler: handleSearch },
+            { icon: <SearchRoundedIcon/>, name: 'Search Map/ Post', handler: handleSearch },
         ]
     ;
 

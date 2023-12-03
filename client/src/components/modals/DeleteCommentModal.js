@@ -38,7 +38,7 @@ export default function DeleteCommentModal() {
   }
 
   return (
-    <Modal open={store.currentModal === 'DELETE_COMMENT_MODAL'} id='modal-overlay'>
+    <Modal id='modal-overlay' open={store.currentModal === 'DELETE_COMMENT_MODAL'}>
       <Box
         severity='warning'
         className='popUpBox'
