@@ -7,7 +7,7 @@ import MapContext from "../../../contexts/map";
 import UserContext from "../../../contexts/user";
 import AuthContext from "../../../contexts/auth";
 
-import { SideNavBar, SearchBar, MapsCardSection, PostsCardSection, MapsPostsCardSection, DeletePostModal, DeleteMapModal, PublishMapModal, UnpublishMapModal } from "../../index";
+import { SideNavBar, SearchBar, MapsCardSection, PostsCardSection, MapsPostsCardSection, DeletePostModal, DeleteMapModal, PublishMapModal, UnpublishMapModal, DuplicateMapModal } from "../../index";
 
 function SearchScreen(){
     const { store } = useContext(GlobalStoreContext);
@@ -111,6 +111,7 @@ function SearchScreen(){
                 <DeleteMapModal/>
                 <PublishMapModal/>
                 <UnpublishMapModal/>
+                <DuplicateMapModal/>
             </Box>
         </Box>
     )

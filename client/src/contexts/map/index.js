@@ -397,30 +397,54 @@ export function MapContextProvider({ children }) {
     console.log(`delete map comment by id: ${commentId}`);
   };
 
-  store.duplicateMapById = async function (mapId){
+  mapInfo.duplicateMapById = async function (mapId){
     console.log("forking/duplicating this map: ",mapId);
     if(!mapId){
       console.log("no map Id");
       return;
     }
 
-    const response = await api.duplicateMapById(mapId);
-    if(response.status === 201){
-        
-      const newMap = response?.data?.map._id;
-      const newMaps = [...auth.user.maps,newMap];
-      await mapInfo.getMapsByMapIds(newMaps); 
-      await auth.userUpdateMaps(newMaps);
+    try{
+      const response = await api.duplicateMapById(mapId);
+      console.log(response.data);
 
-      // get all user maps to refresh page
-      // some transactions
-      await mapInfo.getMapById(newMap);
-      navigate(`/map-edit/${newMap}`);
-      
-    }else{
-      console.log(response);
+      if(response.status === 201){
+        store.closeModalAfterDuplicate();
+
+        const newMap = response?.data?.map._id;
+        const newMaps = [...auth.user.maps,newMap];
+
+        store.markDuplicatedMap(response?.data?.map);
+
+        if(newMaps.length > 0){
+          await mapInfo.getMapsByMapIds(newMaps); 
+          await auth.userUpdateMaps(newMaps);
+        } 
+        else {
+          auth.userUpdateMaps([]);
+            mapReducer({
+              type: MapActionType.LOAD_ALL_MAPS_FROM_USER,
+              payload: {
+                currentMap: null,
+                allMaps: []
+              }
+            });
+        }
+      }
+    }catch(error){
+      if (error.response) {
+        console.log((error.response.status === 400) ? error.response.data.errorMessage : 'Unable to duplicate current map.');
+      }
     }
-  };
+
+    //   // get all user maps to refresh page
+    //   // some transactions
+    //   await mapInfo.getMapById(newMap);
+    //   navigate(`/map-edit/${newMap}`);
+      
+    // }else{
+    //   console.log(response);
+    };
 
   return (
     <MapContext.Provider value={{ mapInfo }}>{children}</MapContext.Provider>

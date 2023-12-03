@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 
 import { MapEditTopBar, MapEditSideBar, MapScreen } from "../../../index";
-import { DeleteMapModal, PublishMapModal, Warning, SuccessAlert } from "../../../index";
+import { DeleteMapModal, PublishMapModal, Warning, SuccessAlert, DuplicateMapModal } from "../../../index";
 
 import MapContext from "../../../../contexts/map";
 import AuthContext from "../../../../contexts/auth";
@@ -20,10 +20,12 @@ export default function MapEditScreen() {
 
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [publishSuccess, setPublishSuccess] = useState(false);
+  const [duplicateSuccess, setDuplicateSuccess] = useState(false);
 
   useEffect(() => {
     setDeleteSuccess(false);
     setPublishSuccess(false);
+    setDuplicateSuccess(false);
 
     if(mapId){
       mapInfo?.getMapById(mapId);
@@ -70,6 +72,27 @@ export default function MapEditScreen() {
     }
   }, [publishSuccess]);
 
+  // duplicate & redirect if map got successfully duplicated
+  useEffect(() => {
+    if((store?.duplicateSuccess === true)){
+      setDuplicateSuccess(true);
+    }
+    else{
+      setDuplicateSuccess(false);
+    }
+  }, [store?.duplicateSuccess]);
+
+  useEffect(() => {
+    console.log(`duplicateSuccess: ${duplicateSuccess}`);
+    if(duplicateSuccess === true){
+      setTimeout(() => {
+        console.log(store.mapMarked);
+        navigate(`/map-edit/${store.mapMarked._id}`);
+        store.clearDuplicateSuccess();
+      }, 2250);
+    }
+  }, [duplicateSuccess]);
+
   if(!auth.user){
     return <Warning message='You have no permission to access this page. Please login first if you think you are the owner!'/>
   }
@@ -93,6 +116,7 @@ export default function MapEditScreen() {
       </Box>
       <DeleteMapModal/>
       <PublishMapModal/>
+      <DuplicateMapModal/>
     </Box>
   );
 }

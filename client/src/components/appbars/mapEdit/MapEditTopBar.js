@@ -114,7 +114,7 @@ export default function MapEditTopBar() {
         event.stopPropagation();
         event.preventDefault();
         console.log('duplicate map');
-        store.duplicateMapById(mapInfo?.currentMap?._id);
+        store.markMapForDuplicate(mapInfo.currentMap);
     }
 
   return (

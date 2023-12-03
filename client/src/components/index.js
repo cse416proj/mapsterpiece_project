@@ -33,6 +33,7 @@ export {
     DeleteCommentModal,
     DeleteSubCommModal,
     UploadMapErrorModal,
+    DuplicateMapModal,
     SuccessAlert
 } from './modals';
 

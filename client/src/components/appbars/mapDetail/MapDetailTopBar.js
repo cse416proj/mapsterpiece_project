@@ -114,7 +114,7 @@ export default function MapDetailTopBar(){
     if(!auth.user){
       console.log('user not loggedin, cannot fork');
     }else{
-      store.duplicateMapById(mapInfo?.currentMap?._id);
+      store.markMapForDuplicate(mapInfo.currentMap);
     }
   }
 

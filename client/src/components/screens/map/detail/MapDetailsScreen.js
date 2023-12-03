@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 
 import { MapCommentSideBox, MapDetailTopBar, MapScreen, DeleteCommentModal } from "../../../index";
-import { DeleteMapModal, UnpublishMapModal, Warning, SuccessAlert } from "../../../index";
+import { DeleteMapModal, UnpublishMapModal, Warning, SuccessAlert, DuplicateMapModal } from "../../../index";
 
 import MapContext from "../../../../contexts/map";
 import GlobalStoreContext from "../../../../contexts/store";
@@ -18,10 +18,12 @@ export default function MapDetailsScreen() {
 
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [unpublishSuccess, setUnpublishSuccess] = useState(false);
+  const [duplicateSuccess, setDuplicateSuccess] = useState(false);
 
   useEffect(() => {
     setDeleteSuccess(false);
     setUnpublishSuccess(false);
+    setDuplicateSuccess(false);
   }, []);
 
   useEffect(() => {
@@ -76,6 +78,27 @@ export default function MapDetailsScreen() {
     }
   }, [unpublishSuccess]);
 
+  // duplicate & redirect if map got successfully duplicated
+  useEffect(() => {
+    if((store?.duplicateSuccess === true)){
+      setDuplicateSuccess(true);
+    }
+    else{
+      setDuplicateSuccess(false);
+    }
+  }, [store?.duplicateSuccess]);
+
+  useEffect(() => {
+    console.log(`duplicateSuccess: ${duplicateSuccess}`);
+    if(duplicateSuccess === true){
+      setTimeout(() => {
+        console.log(store.mapMarked);
+        navigate(`/map-edit/${store.mapMarked._id}`);
+        store.clearDuplicateSuccess();
+      }, 2250);
+    }
+  }, [duplicateSuccess]);
+
   return (
     <Box>
       {
@@ -91,6 +114,7 @@ export default function MapDetailsScreen() {
               <DeleteMapModal/>
               <UnpublishMapModal/>
               <DeleteCommentModal/>
+              <DuplicateMapModal/>
             </Box>
           </>
       }
