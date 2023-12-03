@@ -6,7 +6,7 @@ import { PostContext } from "../../contexts/post";
 import { UserContext } from "../../contexts/user";
 import AuthContext from "../../contexts/auth";
 
-export default function DeletePostModal() {
+export default function DeleteAccountModal() {
   const { store } = useContext(GlobalStoreContext);
   const { postInfo } = useContext(PostContext);
   const { userInfo } = useContext(UserContext);

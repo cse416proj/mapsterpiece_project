@@ -21,13 +21,17 @@ export const deleteMapById = (mapId) => {
   return api.delete(`/delete/${mapId}`)
 }
 
-export const getAllUserMaps = () => {
-  return api.get(`/allMaps`);
-}
+// export const getAllUserMaps = () => {
+//   return api.get(`/allMaps`);
+// }
 
 export const getMapById = (mapId) =>{
   return api.get(`/get/${mapId}`);
 }
+
+export const getMapsByMapIds = (idList) => {
+  return api.get(`/userMaps/${idList}`)
+};
 
 export const publishMapById = (mapId) =>{
   return api.put(`/publishMap/${mapId}`);
@@ -45,6 +49,12 @@ export const updateMapById = (mapId, map) => {
   return api.put(`/updateMap/${mapId}`, map);
 }
 
+export const likeDislikeMapById = (mapId, isLike) => {
+  return api.put(`/likeDislikeMap/${mapId}`, {
+    isLike: isLike
+  });
+}
+
 export const getAllCommentsFromPublishedMap = (mapId) => {
   return api.get(`/allMapComments/${mapId}`);
 }
@@ -59,14 +69,16 @@ export const createMapComment = (mapId, commenterUserName, content) => {
 const apis = {
   createMap,
   deleteMapById,
-  getAllUserMaps,
+  // getAllUserMaps,
   getMapById,
+  getMapsByMapIds,
   publishMapById,
   unpublishMapById,
   getAllPublishedMapsFromGivenUser,
   updateMapById, 
   getAllCommentsFromPublishedMap,
   createMapComment,
+  likeDislikeMapById
 };
 
 export default apis;

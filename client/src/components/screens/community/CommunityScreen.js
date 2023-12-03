@@ -3,7 +3,7 @@ import { Typography, Box } from "@mui/material";
 
 import { GlobalStoreContext } from "../../../contexts/store";
 import { PostContext } from "../../../contexts/post";
-import { SideNavBar, SearchBar, UsersCardSection, MapsCardSection, PostsCardSection, DeletePostModal, DeleteMapModal } from "../../index";
+import { SideNavBar, SearchBar, UsersCardSection, MapsCardSection, PostsCardSection, DeletePostModal, DeleteMapModal, PublishMapModal, UnpublishMapModal } from "../../index";
 
 export default function CommunityScreen() {
   const { store } = useContext(GlobalStoreContext);
@@ -12,6 +12,7 @@ export default function CommunityScreen() {
   const [search, setSearch] = useState('');
   const [listCard, setListCard] = useState(null);
   const [currScreen, setCurrScreen] = useState('');
+  const [sortBy, setSortBy] = useState('');
 
   useEffect(() => {
     store.getAllMaps();
@@ -33,8 +34,8 @@ export default function CommunityScreen() {
 
       var data = store.getData(currScreen);
 
-      console.log(currScreen);
-      console.log(data);
+      // console.log(currScreen);
+      // console.log(data);
 
       if(!data){
         setListCard(null);
@@ -43,7 +44,7 @@ export default function CommunityScreen() {
 
       switch(currScreen){
         case "ALL_USERS":
-          setListCard(<UsersCardSection data={data} search={search}/>);
+          setListCard(<UsersCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
           break;
         case "ALL_MAPS":
         case "BIN_MAPS":
@@ -51,7 +52,7 @@ export default function CommunityScreen() {
         case "DOT_MAPS":
         case "GRAD_MAPS":
         case "HEAT_MAPS":
-          setListCard(<MapsCardSection data={data} search={search}/>);
+          setListCard(<MapsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
           break;
         case "ALL_POSTS":
         case "BIN_POSTS":
@@ -59,27 +60,29 @@ export default function CommunityScreen() {
         case "DOT_POSTS":
         case "GRAD_POSTS":
         case "HEAT_POSTS":
-          setListCard(<PostsCardSection data={data} search={search}/>);
+          setListCard(<PostsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
           break;
         default:
           setListCard(null);
           break;
       }
     }
-  }, [currScreen, search, store]);
+  }, [currScreen, search, store, sortBy]);
 
   function renderCard(){
     if(listCard){
       return listCard;
     }
-    return <Typography variant='h5' style={{ marginTop: '1.5vh' }}>Select Maps/Posts/Users on the left.</Typography>
+
+    return <Typography variant='h5' style={{ marginTop: '1.5vh' }}>You can search for everyone's maps and posts on this page.<br /><br />Select Maps/Posts/Users on the right.</Typography>
+
   }
 
   return (
     <Box className="queryScreenWrapper">
       <SideNavBar />
       <Box className="queryScreenContent">
-        <SearchBar setSearch={setSearch}/>
+        <SearchBar setSearch={setSearch} setSortBy = {setSortBy}/>
         <Box className="listsDisplay">
           {
             renderCard()
@@ -87,6 +90,8 @@ export default function CommunityScreen() {
         </Box>
         <DeletePostModal/>
         <DeleteMapModal/>
+        <PublishMapModal/>
+        <UnpublishMapModal/>
       </Box>
     </Box>
   );

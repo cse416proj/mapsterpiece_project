@@ -22,7 +22,7 @@
     height: 70vh;
     display: flex;
     flex-direction: column;
-    overflow: scroll;
+    overflow: auto;
 }
 
 #home-navigation-card{

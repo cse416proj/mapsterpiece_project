@@ -16,8 +16,7 @@ export default function DeleteMapModal() {
   function handleDeleteModal(event) {
     event.stopPropagation();
     event.preventDefault();
-    mapInfo.deleteMapById(store.mapMarkedForDeletion._id);
-    store.closeModal();
+    mapInfo.deleteMapById(store.mapMarked._id);
   }
 
   function handleCloseModal(event) {

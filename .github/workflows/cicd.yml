@@ -32,7 +32,7 @@ jobs:
       working-directory: './server'
 
   frontend:
-    needs: backend
+    needs: cypress
     runs-on: self-hosted
 
     strategy:
@@ -57,7 +57,7 @@ jobs:
   
 
   cypress:
-    needs: frontend
+    needs: backend
     runs-on: self-hosted
 
   # cypress:

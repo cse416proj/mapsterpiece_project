@@ -3,7 +3,7 @@ import { Box, Tabs, Tab } from "@mui/material";
 import { useParams } from "react-router-dom";
 
 import ProfileCard from "./ProfileCard";
-import { DynamicCard, DeletePostModal, DeleteMapModal } from "../../index";
+import { DynamicCard, DeletePostModal, DeleteMapModal, PublishMapModal, UnpublishMapModal } from "../../index";
 import ActionButton from "./ActionButton";
 import UserContext from "../../../contexts/user";
 import AuthContext from "../../../contexts/auth";
@@ -25,14 +25,14 @@ function Profile() {
 
   useEffect(() => {
     // only load other user's publish map
-    async function loadUserMapInfo(userId){
-      await mapInfo.getAllPublishedMapsFromGivenUser(userId);
-    }
     if(userInfo.currentUser){
       if(auth && auth.user && auth.user._id === userInfo.currentUser._id){
-        mapInfo.getAllUserMaps();
+        mapInfo.getMapsByMapIds(auth.user.maps);
       }
       else{
+        async function loadUserMapInfo(userId){
+          await mapInfo.getAllPublishedMapsFromGivenUser(userId);
+        }
         loadUserMapInfo(userInfo.currentUser._id);
       }
     }
@@ -95,7 +95,9 @@ function Profile() {
               value="post"
             />
           </Tabs>
-          <Box> {fetchContent()} </Box>
+          <Box id='profile-cards'>
+            {fetchContent()}
+          </Box>
         </Box>
         <ProfileCard
           initials={userInfo.getUserInitials().toUpperCase()}
@@ -105,8 +107,10 @@ function Profile() {
           numPosts={userInfo && userInfo.currentUser && userInfo.currentUser?.posts.length}
           isLoggedInUser={isLoggedInUser}
         />
-        <DeletePostModal />
+        <DeletePostModal/>
         <DeleteMapModal/>
+        <PublishMapModal/>
+        <UnpublishMapModal/>
       </Box>
       <ActionButton isLoggedInUser={isLoggedInUser}/>
     </Box>
