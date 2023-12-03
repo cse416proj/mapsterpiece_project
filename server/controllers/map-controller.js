@@ -286,13 +286,15 @@ updateMapPublishStatusById = async (req, res, newPublishStatus) => {
         }
       }
 
+      const currTime = new Date();
       map.isPublished = newPublishStatus;
       if (newPublishStatus) {
-        map.datePublished = new Date();
+        map.datePublished = currTime;
       } else {
         map.datePublished = null;
+        map.dateEdited = currTime;
       }
-      
+
       map
         .save()
         .then(() => {
