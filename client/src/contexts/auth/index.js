@@ -324,6 +324,7 @@ function AuthContextProvider(props) {
 
   // when map got created/deleted, update user's maps as well
   auth.userUpdateMaps = function(newMaps){
+    console.log(newMaps);
     setAuth((prevAuth) => ({
       ...prevAuth,
       user: {
@@ -331,6 +332,7 @@ function AuthContextProvider(props) {
         maps: newMaps
       }
     }));
+    console.log(auth.user.maps);
   }
 
   return (

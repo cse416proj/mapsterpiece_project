@@ -110,7 +110,12 @@ export default function MapEditTopBar() {
         }
     }
 
-    
+    function handleDuplicateMap(event){
+        event.stopPropagation();
+        event.preventDefault();
+        console.log('duplicate map');
+        store.duplicateMapById(mapInfo?.currentMap?._id);
+    }
 
   return (
     <AppBar position='static'>
@@ -133,6 +138,7 @@ export default function MapEditTopBar() {
                 <Button variant="contained" style = {toolButtonStyle} onClick={handleDeleteMap}>Delete Map</Button>
                 <Button variant="contained" style = {toolButtonStyle} onClick={handleSaveMap}>Save Edit</Button>
                 <Button variant="contained" style = {toolButtonStyle} onClick={handlePublishMap}>Publish</Button>
+                <Button variant="contained" style = {toolButtonStyle} onClick={handleDuplicateMap}>Duplicate</Button>
                 <Button variant="contained" style = {toolButtonStyle} onClick={openMenu}>Export/Download</Button>
             </Box>
             { getDropDownMenu(auth?.loggedIn, auth?.user) }
