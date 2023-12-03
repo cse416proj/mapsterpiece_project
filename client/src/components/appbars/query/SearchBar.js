@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { AppBar, Toolbar, Box, Typography, Paper, InputBase, Menu, MenuItem } from "@mui/material";
 import { GlobalStoreContext } from "../../../contexts/store";
 import UserContext from "../../../contexts/user";
@@ -6,6 +6,7 @@ import AuthContext from "../../../contexts/auth";
 
 import SearchIcon from "@mui/icons-material/Search";
 import SortIcon from '@mui/icons-material/Sort';
+import ClearIcon from '@mui/icons-material/Clear';
 
 export default function SearchBar(props) {
   const { store } = useContext(GlobalStoreContext);
@@ -16,6 +17,7 @@ export default function SearchBar(props) {
   const [placeholder, setPlaceholder] = useState('Select a category first...');
   const [searchInput, setSearchInput] = useState('');
   const [menuItems, setMenuItems] = useState([]);
+  const inputRef = useRef(null);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -208,7 +210,8 @@ export default function SearchBar(props) {
   const updateSearchInput = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    setSearchInput(event.target.value)
+    setSearchInput(event.target.value);
+    inputRef.current.value = event.target.value;
   }
 
   // search when user hits enter key
@@ -216,13 +219,19 @@ export default function SearchBar(props) {
     if(event.key !== 'Enter'){
       return;
     }
-
+    // do not search when input is empty
     const trimmedInputWithoutSpace = searchInput.replace(/(\s|\r\n|\n|\r)/gm, '');
     if(trimmedInputWithoutSpace.length === 0){
       return;
     }
-    
     props.setSearch(searchInput);
+  }
+
+  const handleClearSearch = (event)=> {
+    if (inputRef.current) {
+      setSearchInput('');
+      inputRef.current.value = '';
+    }
   }
 
   // render menuitems based on menuItems array
@@ -267,11 +276,34 @@ export default function SearchBar(props) {
             }}
             onSubmit={(event) => {event.preventDefault();}}
           >
-            <InputBase 
+            <InputBase
+              disabled={placeholder === 'Select a category first...'}
               onChange={updateSearchInput}
               onKeyDown={handleSearch}
+              value={searchInput}
               sx={{ ml: 1, flex: 1 }}
               placeholder={placeholder}
+              inputRef={inputRef}
+              endAdornment={
+                (String(inputRef?.current?.value)?.replace(/(\s|\r\n|\n|\r)/gm, '').length > 0) ?
+                  <ClearIcon onClick={handleClearSearch} 
+                  sx={{
+                    cursor: "pointer",
+                    backgroundColor: "white",
+                    ":hover": {
+                      backgroundColor: "#aaa", 
+                      transition: "background-color 0.5s", 
+                    },
+                    borderRadius: "50%", 
+                    marginLeft: "8px",
+                    transition: "background-color 1s", 
+                    "&:active": {
+                      backgroundColor: "#ccc", 
+                    },
+                  }}
+                  /> :
+                  null
+                }
             />
           </Paper>
         </Box>

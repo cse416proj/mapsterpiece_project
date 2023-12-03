@@ -36,7 +36,6 @@ function SearchScreen(){
             const userMaps = userInfo.currentUser?.maps;
             const userPosts = userInfo.currentUser?.posts;
             const user = userInfo?.currentUser;
-            // console.log(userMaps, userPosts, user);
             store.getAllMapsPosts(userMaps, userPosts, user);
         }
     }, [userInfo?.currentUser])
@@ -102,7 +101,7 @@ function SearchScreen(){
 
     return (
         <Box className='queryScreenWrapper'>
-            <SideNavBar/>
+            <SideNavBar setSearch={setSearch}/>
             <Box className="queryScreenContent">
                 <SearchBar setSearch={setSearch} setSortBy = {setSortBy}/>
                 <Box className="listsDisplay">
