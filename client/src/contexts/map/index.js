@@ -375,12 +375,16 @@ export function MapContextProvider({ children }) {
   };
 
   mapInfo.updateMapById = async function (mapId) {
-    const response = await api.updateMapById(mapId, mapInfo.currentMap);
-    if (response.status === 200) {
-      await mapInfo.getMapsByMapIds(auth.user.maps);
-      navigate("/");
-    } else {
-      console.log(response);
+    try {
+      const response = await api.updateMapById(mapId, mapInfo.currentMap);
+      if (response.status === 200) {
+        await mapInfo.getMapsByMapIds(auth.user.maps);
+        navigate("/");
+      }
+    }
+    catch (error) {
+      console.log(error.response?.data?.errorMessage ? error.response?.data?.errorMessage : "Error updating map.")
+      store.setError((error.response?.data?.errorMessage) ? error.response?.data?.errorMessage : "Error updating map.");
     }
   };
 

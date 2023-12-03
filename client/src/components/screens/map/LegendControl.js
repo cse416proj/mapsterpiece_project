@@ -1,6 +1,10 @@
 import { Box, Typography } from "@mui/material";
 
-export default function LegendInfoControl({ legendTitle, max, palette, getColor }) {
+export default function LegendInfoControl({ legendTitle, type, max, getColor }) {
+    if(!type || type === "REGULAR"){
+        return null;
+    }
+
     const levels = 5;
 
     const levelArray = Array.from({ length: levels }, (_, index) => {
@@ -15,24 +19,15 @@ export default function LegendInfoControl({ legendTitle, max, palette, getColor 
                 <Box key={index}>
                     <Box style={{ background: getColor(range.start + 1), width: '20px', height: '20px', display: 'inline-block' }}></Box>
                     {
-                        `${range.start}-${range.end}`
-                        // (index < levelArray.length - 1)?
-                        //     (
-                        //         <Typography>{grade}&ndash;{levelArray[index + 1]}<br /></Typography>
-                        //     ) :
-                        //     (
-                        //         <Typography>{grade}+</Typography>
-                        //     )
+                        (index < levelArray.length - 1)?
+                            (
+                                `${range.start}-${range.end}`
+                            ) :
+                            (
+                                `${range.start}+`
+                            )
                     }
                 </Box>
-                // <div >
-                //   <div ></div>
-                //   {index < levelArray.length - 1 ? (
-                //     <span>{grade}&ndash;{levelArray[index + 1]}<br /></span>
-                //   ) : (
-                //     <span>{grade}+</span>
-                //   )}
-                // </div>
             ))
         )
     }

@@ -36,7 +36,8 @@ function MapScreen() {
   const [indexElementTobeChanged, setIndexElementTobeChanged] = useState(-1);
 
   const [currProp, setCurrProp] = useState('gdp_md');
-  const [currData, setcurrData] = useState(null);
+  const [currLayer, setCurrLayer] = useState(null);
+  const [coloredRegion, setColoredRegion] = useState({});
   const [currMaxData, setCurrMaxData] = useState([]);
   const [palette, setpalette] = useState([]);
 
@@ -76,38 +77,89 @@ function MapScreen() {
     return palette[index];
   }
 
-  // custom style for geojson layer
-  function style(feature){
+  // get region name from each feature
+  function getRegionName(feature){
+    if(!feature){
+      return '';
+    }
+    return(
+      feature.properties[regionNameLevel]
+        ? feature.properties[regionNameLevel]
+        : feature.properties["name_0"]
+        ? feature.properties["name_0"]
+        : feature.properties["name"]
+    )
+  }
+
+  // get style for each feature
+  const getFeatureStyle = (feature) => {
+    // REGULAR MAP
+    if (editMode && !dataEditModeRef.current) {
+      const colorKey = getRegionName(feature);
+      const color = (coloredRegion[colorKey]) ? coloredRegion[colorKey] : feature.properties.fillColor;
+      if(color){
+        return {
+          fillColor: color,
+          color: color,
+          fillOpacity: 1,
+          dashArray: ''
+        }
+      }
+      else if(JSON.stringify(currLayer?.feature) === JSON.stringify(feature)){
+        console.log('hovering');
+        return {
+          weight: 5,
+          color: '#86C9B5',
+          dashArray: '',
+          fillOpacity: 0.7
+        };
+      }
+      else{
+        return {
+          color: 'white',
+          weight: 2,
+          opacity: 1,
+          dashArray: '3',
+          fillOpacity: 0.7
+        }
+      }
+    }
+
+    // 5 MAP TYPES
+    if(JSON.stringify(currLayer?.feature) === JSON.stringify(feature)){
+      console.log('hovering');
+      return {
+        weight: 5,
+        color: '#86C9B5',
+        dashArray: '',
+        fillOpacity: 0.7
+      };
+    }
+
+    if(mapInfo?.currentMapEditType === "CHOROPLETH"){
+      return {
+        fillColor: getColor(feature.properties[currProp]),
+        color: 'white',
+        weight: 2,
+        opacity: 1,
+        dashArray: '3',
+        fillOpacity: 0.7
+      }
+    }
+
     return {
-      fillColor: getColor(feature.properties[currProp]),
       color: 'white',
       weight: 2,
       opacity: 1,
       dashArray: '3',
       fillOpacity: 0.7
     }
-    // if(map?.mapType !== 'REGULAR'){
-    //   return {
-    //     fillColor: "transparent",
-    //     fillOpacity: 0,
-    //   };
-    // }
-    // else{
-    //   return {
-    //     fillColor: getColor(feature.properties[currProp]),
-    //     color: 'white',
-    //     weight: 2,
-    //     opacity: 1,
-    //     dashArray: '3',
-    //     fillOpacity: 0.7
-    //   }
-    // }
   }
 
   // clear color fill, update map type in map object & determine if this map type suppoesd to edit by data when map type changes in edit screen
   useEffect(() => {
     if (geoJsonRef?.current) {
-      geoJsonRef.current.setStyle(style);
+      geoJsonRef?.current?.resetStyle();
     }
 
     setMap((prevMap) => ({
@@ -197,10 +249,12 @@ function MapScreen() {
     }
   }, [mapContainerRef?.current && geoJsonRef?.current, map?.mapType]);
 
+  // set current heatmap data
   useEffect(() => {
     heatmapDataRef.current = mapInfo?.currentMap?.heatmapData;
   }, [mapInfo?.currentMap?.heatmapData]);
 
+  // auto zoom when load map content into geojson
   useEffect(() => {
     if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
       mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
@@ -222,10 +276,16 @@ function MapScreen() {
   // when map region is clicked
   const handleFeatureClick = (event) => {
     const layer = event.sourceTarget;
-    if (editMode && !dataEditModeRef.current) {
-      event.target.setStyle({
-        fillColor: colorRef.current,
-        fillOpacity: 1,
+
+    const regularMode = (editMode && !dataEditModeRef.current);
+
+    // REGULAR MAP DISPLAY
+    if(regularMode && layer?.feature) {
+      setColoredRegion((prevColoredRegion) => {
+        const newColoredRegion = { ...prevColoredRegion };
+        const colorKey = getRegionName(layer.feature);
+        newColoredRegion[colorKey] = colorRef.current;
+        return newColoredRegion;
       });
     }
 
@@ -247,7 +307,7 @@ function MapScreen() {
         region.properties[regionNameLevel] ===
         layer.feature.properties[regionNameLevel]
     );
-    if (index !== -1 && editMode && !dataEditModeRef.current) {
+    if (index !== -1 && regularMode) {
       mapContentRef.current[index].properties.fillColor = colorRef.current;
       mapInfo.updateMapContent(index, colorRef.current);
     }
@@ -287,22 +347,18 @@ function MapScreen() {
 
   // highlight region when hover
   const highlightFeature = (event) => {
+    console.log('highlightFeature');
     const layer = event.sourceTarget;
-    layer?.setStyle(({
-      weight: 5,
-      color: '#86C9B5',
-      dashArray: '',
-      fillOpacity: 0.7
-    }))
     layer.bringToFront();
-    setcurrData(layer.feature.properties);
+    setCurrLayer(layer);
   }
 
   // reset style when not hover
   const resetHighlight = (event) => {
+    console.log('resetHighlight');
     const layer = event.sourceTarget;
     geoJsonRef?.current?.resetStyle(layer);
-    setcurrData(null);
+    setCurrLayer(null);
   }
 
   // render color and show text for each regions
@@ -312,11 +368,7 @@ function MapScreen() {
     }
 
     // // come back later
-    // const name = layer.feature.properties[regionNameLevel]
-    //   ? layer.feature.properties[regionNameLevel]
-    //   : layer.feature.properties["name_0"]
-    //   ? layer.feature.properties["name_0"]
-    //   : layer.feature.properties["name"];
+    // const name = getRegionName(layer);
 
     // layer
     //   .bindTooltip(name, {
@@ -376,18 +428,23 @@ function MapScreen() {
 
         <ZoomControl position='topleft'/>
 
-        <DataInfoControl property={currProp} data={currData}/>
+        <DataInfoControl
+          type={mapInfo?.currentMapEditType}
+          property={currProp}
+          regionName={getRegionName(currLayer?.feature)}
+          data={currLayer?.feature?.properties}
+        />
 
         <LegendControl
           legendTitle='legend'
+          type={mapInfo?.currentMapEditType}
           max={currMaxData}
-          palette={palette}
           getColor={getColor}
         />
 
         <GeoJSON
           data={mapContentRef?.current}
-          style={style}
+          style={getFeatureStyle}
           onEachFeature={onEachFeature}
           ref={geoJsonRef}
         />
