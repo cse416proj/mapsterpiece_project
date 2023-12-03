@@ -46,11 +46,6 @@ export default function PostDetailScreen() {
     }
   }, [postInfo.currentPost]);
 
-  function handleAllPosts() {
-    store.setCurrentView("ALL_POSTS");
-    navigate("/community");
-  }
-
   function handleSpeeddialClick() {
     setAddActive(true);
   }
@@ -137,7 +132,7 @@ export default function PostDetailScreen() {
       {deleteSuccess && <Alert severity="success">Post has been deleted! Redirecting...</Alert>}
 
       <Box className='flex-row' id='post-detail-bar'>
-        <Typography id='redirect-all-posts'onClick={handleAllPosts}>{"<< All Posts"}</Typography>
+        <Typography id='redirect-all-posts' onClick={() => navigate(-1)}>{"<< Go back"}</Typography>
         {renderButton()}
       </Box>
       <Box className="postScreenContent">
