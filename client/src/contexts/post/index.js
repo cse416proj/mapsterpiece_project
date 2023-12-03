@@ -7,6 +7,7 @@ export const PostContext = createContext({});
 
 export const PostActionType = {
   SET_CURRENT_POST: "SET_CURRENT_POST",
+  SET_ALL_POSTS_FROM_USER: "SET_ALL_POSTS_FROM_USER",
   SET_CURRENT_COMMENT: "SET_CURRENT_COMMENT",
   SET_CURRENT_SUBCOMMENT: "SET_CURRENT_SUBCOMMENT",
   UPDATE_ALL_COMMENTS: "UPDATE_ALL_COMMENTS",
@@ -35,6 +36,13 @@ function PostContextProvider(props) {
           errorMessage: null,
           allPostsByUser: [],
           allCommentsForPost: [],
+        });
+      }
+      case PostActionType.SET_ALL_POSTS_FROM_USER: {
+        return setPostInfo({
+          ...postInfo,
+          allPostsByUser: payload,
+          errorMessage: null
         });
       }
       case PostActionType.SET_CURRENT_COMMENT: {
@@ -295,6 +303,13 @@ function PostContextProvider(props) {
     );
     postInfo.getPostById(postInfo.currentPost._id);
   };
+
+  postInfo.setAllPosts = function(posts){
+    postReducer({
+      type: PostActionType.SET_ALL_POSTS_FROM_USER,
+      payload: posts
+    });
+  }
 
   return (
     <PostContext.Provider

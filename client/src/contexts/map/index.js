@@ -36,6 +36,7 @@ export function MapContextProvider({ children }) {
 
   const MapActionType = {
     SET_CURRENT_MAP: "SET_CURRENT_MAP",
+    SET_ALL_MAPS_FROM_USER: "SET_ALL_MAPS_FROM_USER",
     LOAD_ALL_MAPS_FROM_USER: "LOAD_ALL_MAPS_FROM_USER",
     SET_CURRENT_REGION_COLOR: "SET_CURRENT_REGION_COLOR",
     SET_CURRENT_COMMENT: "SET_CURRENT_COMMENT",
@@ -55,6 +56,12 @@ export function MapContextProvider({ children }) {
         return setMapInfo((prevMapInfo) => ({
           ...prevMapInfo,
           currentMap: payload,
+          errorMessage: null
+        }));
+      case MapActionType.SET_ALL_MAPS_FROM_USER:
+        return setMapInfo((prevMapInfo) => ({
+          ...prevMapInfo,
+          allMapsByUser: payload,
           errorMessage: null
         }));
       case MapActionType.LOAD_ALL_MAPS_FROM_USER:
@@ -441,6 +448,13 @@ export function MapContextProvider({ children }) {
   mapInfo.deleteCommentById = async function (commentId) {
     console.log(`delete map comment by id: ${commentId}`);
   };
+
+  mapInfo.setAllMaps = function(maps){
+    mapReducer({
+      type: MapActionType.SET_ALL_MAPS_FROM_USER,
+      payload: maps
+    });
+  }
 
   return (
     <MapContext.Provider value={{ mapInfo }}>{children}</MapContext.Provider>

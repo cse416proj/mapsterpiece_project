@@ -2,9 +2,8 @@ import { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { SpeedDial, SpeedDialIcon, SpeedDialAction } from '@mui/material';
-// import CreateIcon from '@mui/icons-material/Create';
 
-import ExploreRoundedIcon from '@mui/icons-material/ExploreRounded';
+import AddLocationAltRoundedIcon from '@mui/icons-material/AddLocationAltRounded';
 import PostAddRoundedIcon from '@mui/icons-material/PostAddRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
@@ -37,7 +36,7 @@ function ActionButton({isLoggedInUser}){
         [
             { icon: <SearchRoundedIcon/>, name: 'Search Map/ Post', handler: handleSearch },
             { icon: <PostAddRoundedIcon/>, name: 'Create Post', handler: handleCreatePost },
-            { icon: <ExploreRoundedIcon/>, name: 'Create Map', handler: handleCreateMap },
+            { icon: <AddLocationAltRoundedIcon/>, name: 'Create Map', handler: handleCreateMap },
         ] :
         [
             { icon: <SearchRoundedIcon/>, name: 'Search Map/ Post', handler: handleSearch },

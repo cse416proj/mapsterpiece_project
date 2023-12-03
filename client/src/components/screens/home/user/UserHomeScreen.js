@@ -51,33 +51,31 @@ function UserHomeScreen() {
 
   // reload maps when current allMaps array changed
   useEffect(() => {
+    setLoadingMaps(false);
+
     console.log(mapInfo?.allMapsByUser);
     console.log(auth.user.maps);
     if(mapInfo?.allMapsByUser?.length > 0 && auth?.user.maps?.length === mapInfo?.allMapsByUser?.length){
       console.log(`length: ${mapInfo?.allMapsByUser?.length}`)
-      setLoadingMaps(false);
       setMapCards(mapInfo?.allMapsByUser.map((pair, index) => (
         <DynamicCard key={index} userData={null} mapData={pair} postData={null}/>
       )));
-      return;
     }
     else{
-      setLoadingMaps(false);
       setMapCards(<CreatePrompt type='map'/>);
     }
-  }, [mapInfo?.allMapsByUser]);
+    }, [mapInfo?.allMapsByUser]);
 
   // reload post when current allPosts array changed
   useEffect(() => {
+    setLoadingPosts(false);
+
     if(postInfo?.allPostsByUser?.length > 0 && auth.user.posts?.length === postInfo?.allPostsByUser?.length){
-      setLoadingPosts(false);
       setPostCards(postInfo?.allPostsByUser?.map((pair, index) => (
         <DynamicCard key={index} userData={null} mapData={null} postData={pair}/>
       )));
-      return;
     }
     else{
-      setLoadingPosts(false);
       setPostCards(<CreatePrompt type='post'/>);
     }
   }, [postInfo?.allPostsByUser]);

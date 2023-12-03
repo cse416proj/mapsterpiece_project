@@ -4,13 +4,11 @@ import { Box, Button, Avatar, Typography } from '@mui/material';
 import { Modals } from "../../index";
 
 import AuthContext from '../../../contexts/auth';
-import UserContext from '../../../contexts/user';
 import { GlobalStoreContext } from "../../../contexts/store";
 
 function ProfileCard({ initials, name, userName, numMaps, numPosts, isLoggedInUser }){
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
-    // const { userInfo } = useContext(UserContext);
 
     function markAccountForDeletion(){
         store.markAccountForDeletion(auth.user._id);
@@ -33,8 +31,8 @@ function ProfileCard({ initials, name, userName, numMaps, numPosts, isLoggedInUs
                         <Typography variant='p' id='user-name'>{ userName }</Typography>
                     </Box>
                     <Box className='flex-row' id='user-stats'>
-                        <Typography variant='p' className='stats'>{ numMaps } Map(s)</Typography>
-                        <Typography variant='p' className='stats'>{ numPosts } Post(s)</Typography>
+                        <Typography variant='p' className='stats'>{ numMaps } {(numMaps > 1) ? 'Maps' : 'Map'}</Typography>
+                        <Typography variant='p' className='stats'>{ numPosts } {(numPosts > 1) ? 'Posts' : 'Post'}</Typography>
                     </Box>
                     { renderDeleteAccountButton() }
                 </Box>

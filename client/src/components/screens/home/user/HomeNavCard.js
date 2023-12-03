@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Box, Button } from '@mui/material';
 
-import ExploreRoundedIcon from '@mui/icons-material/ExploreRounded';
+import AddLocationAltRoundedIcon from '@mui/icons-material/AddLocationAltRounded';
 import PostAddRoundedIcon from '@mui/icons-material/PostAddRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import AssignmentIndRoundedIcon from '@mui/icons-material/AssignmentIndRounded';
@@ -48,7 +48,7 @@ function HomeNavCard(){
     }
 
     const buttonInfo = [
-        { text: 'CREATE MAP', icon: <ExploreRoundedIcon/>, handler: handleCreateMap },
+        { text: 'CREATE MAP', icon: <AddLocationAltRoundedIcon/>, handler: handleCreateMap },
         { text: 'CREATE POST', icon: <PostAddRoundedIcon/>, handler: handleCreatePost },
         { text: 'SEARCH', icon: <SearchRoundedIcon/>, handler: handleSearch },
         { text: 'MY PROFILE', icon: <AssignmentIndRoundedIcon/>, handler: handleViewProfile },
