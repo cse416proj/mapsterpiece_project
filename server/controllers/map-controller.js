@@ -62,7 +62,7 @@ createMap = async (req, res) => {
     fileFormat,
     mapType: "REGULAR",
     mapContent: featuresFiltered,
-    heatmapData: {max: 0, data: []},
+    mapTypeData: {max: 0, data: []},
     tags,
     isPublished: false,
   });
@@ -396,13 +396,13 @@ updateMapById = async (req, res) => {
         return res.status(404).json({ errorMessage: "Map is not found." });
       }
 
-      const { title, mapContent, tags, mapType, heatmapData } = req.body;
+      const { title, mapContent, tags, mapType, mapTypeData } = req.body;
 
       map.title = title;
       map.mapContent = mapContent;
       map.tags = tags;
       map.mapType = mapType;
-      map.heatmapData = heatmapData;
+      map.mapTypeData = mapTypeData;
       map.dateEdited = new Date();
 
       map

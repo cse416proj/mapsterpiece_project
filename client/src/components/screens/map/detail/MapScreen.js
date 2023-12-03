@@ -7,7 +7,7 @@ import * as L from "leaflet";
 import Alert from "@mui/material/Alert";
 
 import MapContext from "../../../../contexts/map";
-import { MapContainer, GeoJSON } from "react-leaflet";
+import { MapContainer, GeoJSON, CircleMarker } from "react-leaflet";
 import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
 
 function MapScreen() {
@@ -24,8 +24,8 @@ function MapScreen() {
   const [dataEntryModalOpen, setDataEntryModalOpen] = useState(false);
   const dataEditModeRef = useRef();
   dataEditModeRef.current = mapInfo?.currentMapEditType !== "REGULAR";
-  const heatmapDataRef = useRef();
-  heatmapDataRef.current = mapInfo?.currentMap?.heatmapData;
+  const mapTypeDataRef = useRef();
+  mapTypeDataRef.current = mapInfo?.currentMap?.mapTypeData;
   const [initialLoad, setInitialLoad] = useState(true);
   const [regionNameLevel, setRegionNameLevel] = useState("");
   const [heatMapLayer, setHeatMapLayer] = useState(null);
@@ -33,6 +33,8 @@ function MapScreen() {
   const [map, setMap] = useState(null);
   const [selectedRegionProps, setSelectedRegionProps] = useState(null);
   const [indexElementTobeChanged, setIndexElementTobeChanged] = useState(-1);
+  const [geoJsonKey, setGeoJsonKey] = useState(1);
+  const [mapContainterKey, setMapContainterKey] = useState(1);
 
   useEffect(() => {
     setEditMode(location.pathname.includes("map-detail") ? false : true);
@@ -79,6 +81,11 @@ function MapScreen() {
     } else {
       dataEditModeRef.current = true;
     }
+    setGeoJsonKey(geoJsonKey + 1);
+    if (mapInfo?.currentMapEditType !== "HEATMAP" && mapContainerRef?.current && heatMapLayer) {
+      mapContainerRef.current.removeLayer(heatMapLayer);
+      setMapContainterKey(mapContainterKey + 1);
+    }
   }, [mapInfo?.currentMapEditType]);
 
   useEffect(() => {
@@ -97,8 +104,8 @@ function MapScreen() {
         valueField: "value",
       });
 
-      const heatMapdata = map?.heatmapData
-        ? map?.heatmapData
+      const heatMapdata = map?.mapTypeData
+        ? map?.mapTypeData
         : {
             max: 0,
             data: [],
@@ -111,8 +118,8 @@ function MapScreen() {
   }, [mapContainerRef?.current && geoJsonRef?.current, map?.mapType]);
 
   useEffect(() => {
-    heatmapDataRef.current = mapInfo?.currentMap?.heatmapData;
-  }, [mapInfo?.currentMap?.heatmapData]);
+    mapTypeDataRef.current = mapInfo?.currentMap?.mapTypeData;
+  }, [mapInfo?.currentMap?.mapTypeData]);
 
   useEffect(() => {
     if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
@@ -165,7 +172,7 @@ function MapScreen() {
     }
 
     if (dataEditModeRef.current) {
-      const index = heatmapDataRef?.current?.data?.findIndex(
+      const index = mapTypeDataRef?.current?.data?.findIndex(
         (data) => data.regionName === regionName
       );
       if (index >= 0) {
@@ -176,24 +183,31 @@ function MapScreen() {
   };
 
   const editValue = (value) => {
+    const mini = 10;
+    const factor = 10;
+    const radius = Math.floor(Math.log(value) * factor) + mini;
+    
     const newDataObj = {
       lat: selectedRegionProps.position.lat,
       lng: selectedRegionProps.position.lng,
       value: value,
       regionName: selectedRegionProps.regionName,
+      radius: radius,
     };
 
-    if (map.mapType === "HEATMAP") {
-      if (indexElementTobeChanged >= 0) {
-        heatmapDataRef.current.data[indexElementTobeChanged] = newDataObj;
-        heatMapLayer.setData(heatmapDataRef.current);
-      } else {
+    if (indexElementTobeChanged >= 0) {
+      mapTypeDataRef.current.data[indexElementTobeChanged] = newDataObj;
+      if (map.mapType === "HEATMAP") {
+        heatMapLayer.setData(mapTypeDataRef.current);
+      }
+    } else {
+      if (map.mapType === "HEATMAP") {
         heatMapLayer.addData(newDataObj);
       }
-
-      mapInfo.updateHeatmapData(newDataObj, indexElementTobeChanged);
-      setIndexElementTobeChanged(-1);
     }
+
+    mapInfo.updateMapTypeData(newDataObj, indexElementTobeChanged);
+    setIndexElementTobeChanged(-1);
   };
 
   const onEachFeature = (feature, layer) => {
@@ -213,7 +227,7 @@ function MapScreen() {
       })
       .openTooltip();
 
-    if (layer.feature.properties.fillColor) {
+    if (layer.feature.properties.fillColor && !dataEditModeRef.current) {
       layer.setStyle({
         fillColor: layer.feature.properties.fillColor,
         fillOpacity: 1,
@@ -239,16 +253,33 @@ function MapScreen() {
       />
       <MapContainer
         ref={mapContainerRef}
+        key={mapContainterKey}
         id="map-viewer"
         style={{ width: editMode ? "70vw" : "100vw", zIndex: 0 }}
         center={[0, 0]}
         zoom={2}
       >
         <GeoJSON
+          key={geoJsonKey}
           data={mapContentRef?.current}
           onEachFeature={onEachFeature}
           ref={geoJsonRef}
         />
+        {map?.mapType === "GRADUATED_SYMBOL" && (
+          <>
+            {mapTypeDataRef?.current?.data?.map((prop) => {
+              return (
+                <CircleMarker
+                  center={[prop.lat, prop.lng]}
+                  radius={prop.radius}
+                  fillOpacity={0.5}
+                  stroke={false}
+                  color={"red"}
+                />
+              );
+            })}
+          </>
+        )}
       </MapContainer>
     </>
   );

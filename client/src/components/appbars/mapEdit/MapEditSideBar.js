@@ -110,9 +110,9 @@ function MapEditSideBar() {
           {mapType === "REGULAR" ? (
             <CompactPicker color={selectedColor} onChange={handleColorChange} />
           ) : null}
-          {mapType === "HEATMAP" ? (
+          {mapType !== "REGULAR" ? (
             <Stack spacing={2}>
-              {mapInfo?.currentMap?.heatmapData?.data?.map((props) => (
+              {mapInfo?.currentMap?.mapTypeData?.data?.map((props) => (
                 <Stack direction="row" spacing={2}>
                   <Typography>{props.regionName}</Typography>
                   <Typography>{props.value}</Typography>
