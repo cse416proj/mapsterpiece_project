@@ -285,6 +285,12 @@ updateMapPublishStatusById = async (req, res, newPublishStatus) => {
       }
 
       map.isPublished = newPublishStatus;
+      if (newPublishStatus) {
+        map.datePublished = new Date();
+      } else {
+        map.datePublished = null;
+      }
+      
       map
         .save()
         .then(() => {
@@ -397,6 +403,7 @@ updateMapById = async (req, res) => {
       map.tags = tags;
       map.mapType = mapType;
       map.heatmapData = heatmapData;
+      map.dateEdited = new Date();
 
       map
         .save()

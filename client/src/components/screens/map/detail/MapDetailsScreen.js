@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import { Box } from "@mui/material";
 
-import { MapCommentSideBox, MapDetailTopBar, MapScreen } from "../../../index";
+import { MapCommentSideBox, MapDetailTopBar, MapScreen, DeleteCommentModal } from "../../../index";
 import { DeleteMapModal, UnpublishMapModal, Warning, SuccessAlert } from "../../../index";
 
 import MapContext from "../../../../contexts/map";
@@ -90,6 +90,7 @@ export default function MapDetailsScreen() {
               <MapCommentSideBox/>
               <DeleteMapModal/>
               <UnpublishMapModal/>
+              <DeleteCommentModal/>
             </Box>
           </>
       }
