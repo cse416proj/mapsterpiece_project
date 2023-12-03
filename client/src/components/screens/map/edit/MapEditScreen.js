@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import { Box } from "@mui/material";
@@ -88,6 +88,7 @@ export default function MapEditScreen() {
       setTimeout(() => {
         console.log(store.mapMarked);
         navigate(`/map-edit/${store.mapMarked._id}`);
+        window.location.reload();
         store.clearDuplicateSuccess();
       }, 2250);
     }

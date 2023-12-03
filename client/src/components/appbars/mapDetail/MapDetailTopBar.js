@@ -89,16 +89,6 @@ export default function MapDetailTopBar(){
     store.markMapForUnpublish(mapInfo.currentMap);
   };
 
-  // redirect user to view community / their own profile
-  function handleCommunity() {
-    navigate("/community");
-  }
-
-  function handleMyMaps(){
-    userInfo.setCurrentUser(auth.user);
-    navigate(`/profile/${auth.user._id}`);
-  }
-
   function handleExportPNG() {
     console.log("export PNG file");
   }
@@ -238,18 +228,8 @@ export default function MapDetailTopBar(){
   return(
     <AppBar position='static'>
       <Toolbar className="map-screen-topbar">
-        {
-          (auth.user) ? 
-            <Button style = {BackButtonStyle} onClick={handleMyMaps}>
-              &lt;&lt; My Maps
-            </Button> :
-            <Button style = {BackButtonStyle} onClick = {handleCommunity}>
-              &lt;&lt; Back to Community
-            </Button>
-        }
-
+        <Button style = {BackButtonStyle} id ="back" onClick={() => navigate(-1)}> &lt;&lt; go back</Button>
         <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>{title}</Typography>
-
         <Box className='flex-row' id='tags-container'>
           {
             (tags.length === 0) ?

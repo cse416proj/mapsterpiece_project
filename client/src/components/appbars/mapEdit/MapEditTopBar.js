@@ -50,10 +50,6 @@ export default function MapEditTopBar() {
         }
     }, [hasPublished])
 
-    function handleMyMaps(){
-        userInfo.setCurrentUser(auth.user);
-        navigate(`/profile/${auth.user._id}`);
-    }
     function handleExportPNG(){
         console.log("export PNG file");
     }
@@ -127,12 +123,7 @@ export default function MapEditTopBar() {
                     null
         }
         <Toolbar className='map-screen-topbar'>
-            <Button 
-                style = {BackButtonStyle}
-                onClick={handleMyMaps}
-                id ="back">
-                &lt;&lt; My Maps
-            </Button>
+            <Button style = {BackButtonStyle} id ="back" onClick={() => navigate(-1)}> &lt;&lt; go back</Button>
             <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>{title}</Typography>
             <Box className="map-button-container">
                 <Button variant="contained" style = {toolButtonStyle} onClick={handleDeleteMap}>Delete Map</Button>
