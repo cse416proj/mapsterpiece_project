@@ -55,24 +55,20 @@ jobs:
     # - run: npm test
     #   working-directory: './client'
   
-
   cypress:
     needs: backend
     runs-on: self-hosted
 
-  # cypress:
-  #   runs-on: self-hosted
-
-  #   steps:
-  #     - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
       
-  #     - name: Cypress run
-  #       uses: cypress-io/github-action@v6
-  #       with:
-  #         browser: chrome
-  #         headless: true
-  #         # record: true
-  #         start: npm start
-  #         wait-on: 'http://localhost:3000'
-  #         wait-on-timeout: 180
-  #         working-directory: './client'
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          headless: true
+          # record: true
+          start: npm start
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 180
+          working-directory: './client'
