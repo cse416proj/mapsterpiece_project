@@ -413,7 +413,8 @@ export function MapContextProvider({ children }) {
       await auth.userUpdateMaps(newMaps);
 
       // get all user maps to refresh page
-      // some transactions??
+      // some transactions
+      await mapInfo.getMapById(newMap);
       navigate(`/map-edit/${newMap}`);
       
     }else{
