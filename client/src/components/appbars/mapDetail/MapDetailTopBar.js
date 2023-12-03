@@ -106,8 +106,16 @@ export default function MapDetailTopBar(){
     console.log("export JPG file.");
   }
 
-  function handleForkMap() {
+  function handleForkMap(event) {
+    event.stopPropagation();
+    event.preventDefault();
     console.log("fork this map");
+
+    if(!auth.user){
+      console.log('user not loggedin, cannot fork');
+    }else{
+      store.duplicateMapById(mapInfo?.currentMap?._id);
+    }
   }
 
   function handleShareMap() {

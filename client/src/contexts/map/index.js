@@ -397,6 +397,30 @@ export function MapContextProvider({ children }) {
     console.log(`delete map comment by id: ${commentId}`);
   };
 
+  store.duplicateMapById = async function (mapId){
+    console.log("forking/duplicating this map: ",mapId);
+    if(!mapId){
+      console.log("no map Id");
+      return;
+    }
+
+    const response = await api.duplicateMapById(mapId);
+    if(response.status === 201){
+        
+      const newMap = response?.data?.map._id;
+      const newMaps = [...auth.user.maps,newMap];
+      await mapInfo.getMapsByMapIds(newMaps); 
+      await auth.userUpdateMaps(newMaps);
+
+      // get all user maps to refresh page
+      // some transactions??
+      navigate(`/map-edit/${newMap}`);
+      
+    }else{
+      console.log(response);
+    }
+  };
+
   return (
     <MapContext.Provider value={{ mapInfo }}>{children}</MapContext.Provider>
   );
