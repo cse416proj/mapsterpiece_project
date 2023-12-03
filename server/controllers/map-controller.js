@@ -625,6 +625,58 @@ likeDislikeMapById = async (req, res) => {
   });
 };
 
+duplicateMap = async (req, res) => {
+  if (auth.verifyUser(req) === null) {
+    return res.status(401).json({
+      errorMessage: "Unauthorized",
+    });
+  }
+
+  const userId = req.userId;
+  const mapId = req.params.mapId;
+
+  if (!userId || !mapId) {
+    return res.status(400).json({ errorMessage: "Invalid request parameters." });
+  }
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ errorMessage: "User not found." });
+    }
+
+    const mapToDuplicate = await Map.findById(mapId);
+    if (!mapToDuplicate) {
+      return res.status(404).json({ errorMessage: "Map not found." });
+    }
+
+    const duplicatedMap = new Map({
+      ownerUserName: user.userName,
+      title: `Copy of ${mapToDuplicate.title}`,
+      fileFormat: mapToDuplicate.fileFormat,
+      mapContent: mapToDuplicate.mapContent,
+      tags: mapToDuplicate.tags,
+      isPublished: false,
+    });
+
+    user.maps.push(duplicatedMap);
+    await user.save();
+
+    await duplicatedMap.save();
+
+    return res.status(201).json({
+      success: true,
+      map: duplicatedMap,
+      message: "Map duplicated successfully!",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error,
+      errorMessage: "Failed to duplicate map, please try again.",
+    });
+  }
+};
+
 module.exports = {
   createMap,
   getMapById,
@@ -639,4 +691,5 @@ module.exports = {
   getAllCommentsFromPublishedMap,
   deleteMapCommentById,
   likeDislikeMapById,
+  duplicateMap
 };

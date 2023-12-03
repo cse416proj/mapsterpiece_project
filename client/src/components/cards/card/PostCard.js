@@ -1,8 +1,20 @@
 import { Box, Card, CardContent, Typography } from "@mui/material";
 
+import { formatDistanceToNow } from 'date-fns';
+
 import ActionButtons from "./ActionButtons";
 
 function PostCard({postData, clickHandler, editHandler, deleteHandler}){
+    function getTimestamp(){
+        const parsedDate = new Date(postData.createdAt);
+        const timeFromNow = formatDistanceToNow(parsedDate);
+        return ` ${timeFromNow} ago`;
+    }
+
+    if(!postData){
+        return null;
+    }
+
     return(
         <Card className="individualDynamicCard" id='PostDynamicCard'>
             <CardContent style={{ height: `100%` }} className="cardContent">
@@ -22,6 +34,7 @@ function PostCard({postData, clickHandler, editHandler, deleteHandler}){
                         gutterBottom
                     >
                         Posted by @{postData.ownerUserName}
+                        {getTimestamp()}
                     </Typography>
                 </Box>
                 <Typography

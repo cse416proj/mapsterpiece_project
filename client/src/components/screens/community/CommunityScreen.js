@@ -31,11 +31,7 @@ export default function CommunityScreen() {
   useEffect(() => {
     if(store){
       console.log(`currScreen: ${currScreen}`);
-
       var data = store.getData(currScreen);
-
-      // console.log(currScreen);
-      // console.log(data);
 
       if(!data){
         setListCard(null);
@@ -80,7 +76,7 @@ export default function CommunityScreen() {
 
   return (
     <Box className="queryScreenWrapper">
-      <SideNavBar />
+      <SideNavBar setSearch={setSearch}/>
       <Box className="queryScreenContent">
         <SearchBar setSearch={setSearch} setSortBy = {setSortBy}/>
         <Box className="listsDisplay">
