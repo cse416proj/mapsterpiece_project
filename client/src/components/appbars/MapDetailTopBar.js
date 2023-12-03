@@ -53,6 +53,13 @@ export default function MapDetailTopBar(){
         }
     }, []);
 
+
+    useEffect(() => {
+        console.log(`anchorEl:${anchorEl}`);
+        console.log(`open:${open}`);
+    }, [anchorEl]);
+
+
     let dislikes = 0
     let likes = 0
 
@@ -76,8 +83,8 @@ export default function MapDetailTopBar(){
     function handleShareMap(event){
         event.stopPropagation();
         event.preventDefault();
-        console.log("share this map");
-        setAnchorEl(event.currentTarget);
+        console.log(`event.currentTarget: ${event.currentTarget}`);
+        // setAnchorEl(event.currentTarget);
     }
 
     const closeMenu = () => {
