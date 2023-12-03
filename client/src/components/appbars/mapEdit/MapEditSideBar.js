@@ -17,20 +17,10 @@ import { CompactPicker } from "react-color";
 function MapEditSideBar() {
   const { mapInfo } = useContext(MapContext);
 
-  const [title, setTitle] = useState("");
-  const [tags, setTags] = useState([]);
+  const [title, setTitle] = useState(mapInfo?.currentMap?.title);
+  const [tags, setTags] = useState(mapInfo?.currentMap?.tags);
   const [selectedColor, setSelectedColor] = useState("#ffffff");
   const [mapType, setMapType] = useState(mapInfo?.currentMap?.mapType);
-
-  useEffect(() => {
-    if (mapInfo) {
-      if (mapInfo.currentMap) {
-        setTitle(mapInfo.currentMap.title);
-        setTags(mapInfo.currentMap.tags);
-        setMapType(mapInfo.currentMap.mapType);
-      }
-    }
-  }, []);
 
   useEffect(() => {
     mapInfo?.updateMapGeneralInfo(title, tags, mapType);

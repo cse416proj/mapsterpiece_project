@@ -362,7 +362,6 @@ export function MapContextProvider({ children }) {
   };
 
   mapInfo.updateMapById = async function (mapId) {
-    console.log(mapInfo.currentMap)
     const response = await api.updateMapById(mapId, mapInfo.currentMap);
     if (response.status === 200) {
       await mapInfo.getMapsByMapIds(auth.user.maps);
