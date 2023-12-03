@@ -114,6 +114,20 @@ function MapScreen() {
     heatmapDataRef.current = mapInfo?.currentMap?.heatmapData;
   }, [mapInfo?.currentMap?.heatmapData]);
 
+  useEffect(() => {
+    if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
+      mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
+      if (Object.values(geoJsonRef.current._layers).length <= 0) {
+        return;
+      }
+      let featureGroup = L.featureGroup(
+        Object.values(geoJsonRef.current._layers)
+      );
+      mapContainerRef.current.fitBounds(featureGroup.getBounds());
+      setInitialLoad(false);
+    }
+  }, [initialLoad && mapContainerRef?.current && geoJsonRef?.current]);
+
   if (!mapInfo || !mapContentRef?.current) {
     return null;
   }
@@ -128,8 +142,11 @@ function MapScreen() {
     }
 
     const position = layer.getBounds().getCenter();
-    const regionName = layer.feature.properties[regionNameLevel].replace(/\0/g, '');
-    
+    const regionName = layer.feature.properties[regionNameLevel].replace(
+      /\0/g,
+      ""
+    );
+
     setSelectedRegionProps({ position, regionName });
 
     if (!layer.feature) {
@@ -173,7 +190,7 @@ function MapScreen() {
       } else {
         heatMapLayer.addData(newDataObj);
       }
-      
+
       mapInfo.updateHeatmapData(newDataObj, indexElementTobeChanged);
       setIndexElementTobeChanged(-1);
     }
@@ -234,19 +251,7 @@ function MapScreen() {
         />
       </MapContainer>
     </>
-  )
-
-  if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
-    mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
-    if (Object.values(geoJsonRef.current._layers).length <= 0) {
-      return;
-    }
-    let featureGroup = L.featureGroup(
-      Object.values(geoJsonRef.current._layers)
-    );
-    mapContainerRef.current.fitBounds(featureGroup.getBounds());
-    setInitialLoad(false);
-  }
+  );
 
   return <>{mapContent}</>;
 }
