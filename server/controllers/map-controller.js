@@ -649,9 +649,6 @@ duplicateMap = async (req, res) => {
     if (!mapToDuplicate) {
       return res.status(404).json({ errorMessage: "Map not found." });
     }
-    else if(!mapToDuplicate.isPublished){
-      return res.status(404).json({ errorMessage: "Map not published." });
-    }
 
     const duplicatedMap = new Map({
       ownerUserName: user.userName,
