@@ -38,7 +38,7 @@ function UserHomeScreen() {
       if(auth.user.maps?.length > 0){
         console.log('now load maps')
         setLoadingMaps(true);
-        mapInfo.getMapsByMapIds(auth.user.maps)
+        mapInfo.getMapsByMapIds(auth.user.maps);
       }
 
       if(auth.user.posts?.length > 0){
@@ -51,14 +51,20 @@ function UserHomeScreen() {
 
   // reload maps when current allMaps array changed
   useEffect(() => {
-    if(mapInfo?.allMapsByUser?.length > 0 && auth.user.maps?.length === mapInfo?.allMapsByUser?.length){
+    console.log(mapInfo?.allMapsByUser);
+    console.log(auth.user.maps);
+    if(mapInfo?.allMapsByUser?.length > 0 && auth?.user.maps?.length === mapInfo?.allMapsByUser?.length){
+      console.log(`length: ${mapInfo?.allMapsByUser?.length}`)
       setLoadingMaps(false);
       setMapCards(mapInfo?.allMapsByUser.map((pair, index) => (
         <DynamicCard key={index} userData={null} mapData={pair} postData={null}/>
       )));
       return;
     }
-    setMapCards(<CreatePrompt type='map'/>);
+    else{
+      setLoadingMaps(false);
+      setMapCards(<CreatePrompt type='map'/>);
+    }
   }, [mapInfo?.allMapsByUser]);
 
   // reload post when current allPosts array changed
@@ -70,7 +76,10 @@ function UserHomeScreen() {
       )));
       return;
     }
-    setPostCards(<CreatePrompt type='post'/>);
+    else{
+      setLoadingPosts(false);
+      setPostCards(<CreatePrompt type='post'/>);
+    }
   }, [postInfo?.allPostsByUser]);
 
   // function to render all map cards

@@ -259,8 +259,11 @@ export function MapContextProvider({ children }) {
         const currMapId = (mapInfo.currentMap) ? mapInfo.currentMap._id : null;
 
         if(currMapId){
-          currMap = response.data?.find((map) => map._id === currMapId);
+          currMap = response.data?.find((map) => (map._id === currMapId));
         }
+
+        console.log(response.data);
+
         mapReducer({
           type: MapActionType.LOAD_ALL_MAPS_FROM_USER,
           payload: {

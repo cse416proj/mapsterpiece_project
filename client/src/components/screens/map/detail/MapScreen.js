@@ -331,10 +331,16 @@ function MapScreen() {
         zoomControl={false}
       >
         <LayersControl position='topleft'>
-          <LayersControl.Overlay name="Show Tile Layer">
+          <LayersControl.Overlay name="Show Tile Layer (Light Mode)">
             <TileLayer
               attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+          </LayersControl.Overlay>
+          <LayersControl.Overlay name="Show Tile Layer (Dark Mode)">
+            <TileLayer
+              attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
             />
           </LayersControl.Overlay>
         </LayersControl>
