@@ -35,9 +35,22 @@ function MapsPostsCardSection({ data, search, sortBy, currScreen }) {
           return 0;
         });
       }
+      else if (sortBy.includes('Recent')) {
+        result.sort((a, b) => {
+          const timeA = a.fileFormat ? new Date(a.dateEdited).getTime() : new Date(a.updatedAt).getTime();
+          const timeB = b.fileFormat ? new Date(b.dateEdited).getTime() : new Date(b.updatedAt).getTime();
+
+          if (sortBy === 'MostRecent-both') {
+            return timeB - timeA;
+          } else if (sortBy === 'LeastRecent-both') {
+            return timeA - timeB;
+          }
+          return 0;
+        });
+      }
     }
     setFilteredData(result);
-  }, [data, search]);
+  }, [data, search, sortBy]);
 
   return (
     <Box sx={{ width: '97.5%' }}>
