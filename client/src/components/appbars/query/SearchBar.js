@@ -145,7 +145,7 @@ export default function SearchBar(props) {
   // Now update placeholder & menu items; reason: currScreen changes in SearchBar
   useEffect(() => {
     if(currScreen.includes("USERS")){
-      setPlaceholder('Search by userName/id...');
+      setPlaceholder('Search by userName...');
       setMenuItems(
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortUserA2Z },
@@ -231,6 +231,7 @@ export default function SearchBar(props) {
     if (inputRef.current) {
       setSearchInput('');
       inputRef.current.value = '';
+      inputRef.focus();
     }
   }
 
@@ -272,7 +273,7 @@ export default function SearchBar(props) {
               display: "flex",
               alignItems: "center",
               marginLeft: "10px",
-              width: (currScreen.includes("HOME")) ? "72.5vw" : "62.5vw",
+              width: (currScreen.includes("HOME") || placeholder === 'Select a category first...') ? "72.5vw" : "62.5vw",
             }}
             onSubmit={(event) => {event.preventDefault();}}
           >
@@ -308,7 +309,7 @@ export default function SearchBar(props) {
           </Paper>
         </Box>
         {
-          (currScreen.includes("HOME")) ?
+          (currScreen.includes("HOME") || placeholder === 'Select a category first...') ?
             null :
             (
               <Box className="flex-row" id='sort-prompt' onClick={openMenu}>
