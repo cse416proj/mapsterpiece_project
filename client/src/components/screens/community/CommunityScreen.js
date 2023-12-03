@@ -69,7 +69,9 @@ export default function CommunityScreen() {
     if(listCard){
       return listCard;
     }
+
     return <Typography variant='h5' style={{ marginTop: '1.5vh' }}>You can search for everyone's maps and posts on this page.<br /><br />Select Maps/Posts/Users on the right.</Typography>
+
   }
 
   return (

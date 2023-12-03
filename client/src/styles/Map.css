@@ -226,3 +226,7 @@
 #account-signup:hover, #account-login:hover{
     background-color: var(--secondary-color-hover);
 }
+
+.share-menu{
+    position: relative;
+}
