@@ -66,6 +66,10 @@ export const createMapComment = (mapId, commenterUserName, content) => {
   })
 }
 
+export const duplicateMapById = (mapId)=>{
+  return api.post(`/duplicate/${mapId}`);
+}
+
 const apis = {
   createMap,
   deleteMapById,
@@ -78,7 +82,8 @@ const apis = {
   updateMapById, 
   getAllCommentsFromPublishedMap,
   createMapComment,
-  likeDislikeMapById
+  likeDislikeMapById, 
+  duplicateMapById
 };
 
 export default apis;
