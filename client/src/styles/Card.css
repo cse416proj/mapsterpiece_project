@@ -1,4 +1,5 @@
 .individualDynamicCard{
+    width: 97.5%;
     border: 1px solid var(--primary-color);
     height: 20vh;
     margin-bottom: 2%;

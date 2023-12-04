@@ -112,7 +112,7 @@ export default function ActionButtons({ type, cardId, currentUserName, comments,
   const openShareMenu = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    setAnchorShareEl(event.currentTarget);
+    // setAnchorShareEl(event.currentTarget);
   };
 
   const closeShareMenu = () => {

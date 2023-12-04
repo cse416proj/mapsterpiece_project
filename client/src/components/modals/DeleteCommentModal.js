@@ -22,7 +22,6 @@ export default function DeleteCommentModal() {
     event.stopPropagation();
     event.preventDefault();
     console.log("on click confirm delete comment");
-    console.log()
     // if(isMap){
     //   mapInfo.deleteCommentById(store.commentMarkedForDeletion._id);
     // }
@@ -39,7 +38,7 @@ export default function DeleteCommentModal() {
   }
 
   return (
-    <Modal open={store.currentModal === 'DELETE_COMMENT_MODAL'} id='modal-overlay'>
+    <Modal id='modal-overlay' open={store.currentModal === 'DELETE_COMMENT_MODAL'}>
       <Box
         severity='warning'
         className='popUpBox'

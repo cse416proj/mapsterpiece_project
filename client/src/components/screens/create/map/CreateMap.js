@@ -1,15 +1,16 @@
 import { useState, useRef, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, TextField, Typography, Alert } from '@mui/material';
+
+import { Box, TextField} from '@mui/material';
 
 import JSZip from "jszip";
 import * as shapefile from "shapefile";
 import { kml } from "@tmcw/togeojson";
 
 import FileUpload from './FileUpload';
-import FileDropdown from './FileDropdown';
+import SelectFileFormat from './SelectFileFormat';
 import { Tags, ButtonSet } from '../../commonProps';
-import { UploadMapErrorModal } from "../../../index";
+import { Modals, SuccessAlert } from "../../../index";
 
 import MapContext from '../../../../contexts/map';
 import { GlobalStoreContext } from "../../../../contexts/store";
@@ -37,8 +38,8 @@ function CreateMap(){
     // set up input variables
     const [title, setTitle] = useState('');
     const [fileFormat, setFileFormat] = useState('');
-    const [map, setMap] = useState(null);
     const [tags, setTags] = useState([]);
+    const [isEditingTag, setIsEditingTag] = useState(false);
     const [shpBuffer, setShpBuffer] = useState(null);
     const [dbfBuffer, setDbfBuffer] = useState(null);
     const [fileContent, setFileContent] = useState(null);
@@ -47,16 +48,18 @@ function CreateMap(){
     const [isLoading, setIsLoading] = useState(false);
 
     // success alert
-    const [openSuccess, setOpenSuccess] = useState(false);
+    const [createSuccess, setCreateSuccess] = useState(false);
 
     // set up error flags for these input
     const [missingTitle, setMissingTitle] = useState(false);
     const [missingFileFormat, setMissingFileFormat] = useState(false);
 
+    console.log(fileFormat);
 
     // reset success alert when first enter
     useEffect(() => {
-        setOpenSuccess(false);
+        handleClear();
+        setCreateSuccess(false);
     }, []);
 
     // re-run effect when buffers change
@@ -94,27 +97,28 @@ function CreateMap(){
     // clear input file when file format changes
     useEffect(() => {
         clearInputFile();
+        setFileContent(null);
     }, [fileFormat]);
 
-    // set open success true & open alert when map get created
+    // update map create success status
     useEffect(() => {
-        const currMap = mapInfo.currentMap;
-        if(currMap && currMap._id && mapInfo.errorMessage === null){
-            const newMaps = [...auth.user?.maps, currMap._id];
-            auth.userUpdateMaps(newMaps);
-            setOpenSuccess(true);
+        if((store?.createSuccess === true)){
+            setCreateSuccess(true);
         }
-    }, [mapInfo?.currentMap]);
+        else{
+            setCreateSuccess(false);
+        }
+    }, [store?.createSuccess]);
 
     // turn off open success & close alert after 1 sec
     useEffect(() => {
-        if(openSuccess && mapInfo?.currentMap){
+        if(createSuccess && mapInfo?.currentMap){
             setTimeout(() => {
-                setOpenSuccess(false);
                 navigate(`/map-edit/${mapInfo?.currentMap._id}`);
-            }, 1000);
+                store.clearCreateSuccess();
+            }, 2250);
         }
-    }, [openSuccess])
+    }, [createSuccess, mapInfo.currentMap])
 
     // handle title change
     const handleTitleChange = (event) => {
@@ -133,13 +137,11 @@ function CreateMap(){
     }
 
     // handle clear all input
-    const handleClear = (event) => {
-        event.stopPropagation();
-        event.preventDefault();
+    const handleClear = () => {
         setTitle('');
         setFileFormat('');
-        setMap(null);
         setTags([]);
+        setIsEditingTag(false);
         setShpBuffer(null);
         setDbfBuffer(null);
         setFileContent(null);
@@ -278,9 +280,15 @@ function CreateMap(){
 
     // handle selected file input
     const handleSelectFile = (files) => {
+        if(!fileFormat){
+            setMissingFileFormat(true);
+            store.setError('Please select a file format first!');
+            clearInputFile();
+            return;
+        }
         const processSuccess = processFile(files);
         if(!processSuccess){
-            store.uploadError('Unmatch upload file format.')
+            store.setError('Unmatch upload file format.')
             clearInputFile();
             return;
         }
@@ -298,7 +306,7 @@ function CreateMap(){
             return;
         }
         else if(!fileContent){
-            store.uploadError('Please upload a map file (geojson/shapefile/kml).')
+            store.setError('Please upload a map file (geojson/shapefile/kml).')
         }
         else if(mapInfo){
             let mapContent = null;
@@ -326,26 +334,9 @@ function CreateMap(){
         }
     };
 
-    function renderLoading(){
-        if(isLoading){
-            return (
-                <Box className="popUpBoxOverlay">
-                    <Box className="popUpBox">
-                        <Typography variant="h4">Currently loading map content...</Typography>
-                        <Box className="loadingCircle"></Box>
-                    </Box>
-                </Box>
-            );
-        }
-        return null;
-    }
-
     return (
         <Box className='flex-column' id='create-container'>
-            {openSuccess && <Alert severity="success">Map created! Redirecting...</Alert>}
-            {
-               renderLoading()
-            }
+            {createSuccess && <SuccessAlert type='map-create'/>}
             <TextField
                 id='title-input'
                 label='Map Title'
@@ -356,20 +347,24 @@ function CreateMap(){
                 helperText={!title && missingTitle && 'Required to enter map title'}
                 onChange={handleTitleChange}
             />
-            <FileDropdown
+            <SelectFileFormat
+                isLoading={isLoading}
                 fileFormat={fileFormat}
+                fileContent={fileContent}
                 setFileFormat={setFileFormat}
                 missingFileFormat={missingFileFormat}
                 tags={tags}
                 setTags={setTags}
             />
             <FileUpload
+                isLoading={isLoading}
                 inputFile={inputFile}
+                fileContent={fileContent}
                 handleSelectFile={handleSelectFile}
             />
-            <Tags tags={tags} setTags={setTags}/>
-            <ButtonSet prompt='upload' handleClear={handleClear} handleUpload={handleUpload}/>
-            <UploadMapErrorModal/>
+            <Tags tags={tags} setTags={setTags} isEditingTag={isEditingTag} setIsEditingTag={setIsEditingTag}/>
+            <ButtonSet prompt='upload' isLoading={isLoading && fileContent} handleClear={handleClear} handleUpload={handleUpload}/>
+            <Modals/>
         </Box>
     )
 }
