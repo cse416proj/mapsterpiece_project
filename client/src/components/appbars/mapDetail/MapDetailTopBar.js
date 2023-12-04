@@ -274,12 +274,11 @@ export default function MapDetailTopBar(){
               anchorEl={anchorEl}
               open={open}
               onClose={closeMenu}
-              onMouseLeave={closeMenu}
               MenuListProps={{
                 "aria-labelledby": "basic-button",
               }}
           >
-            <MenuItem>
+            <MenuItem onMouseLeave={closeMenu}>
               <EmailShareButton url={window.location.href} onShareWindowClose={closeMenu}><EmailIcon>E-Mail</EmailIcon></EmailShareButton>
               <FacebookShareButton url={window.location.href} hashtag={"#Mapsterpiece"} onShareWindowClose={closeMenu}><FacebookIcon>Facebook</FacebookIcon></FacebookShareButton>
               <RedditShareButton url={window.location.href} onShareWindowClose={closeMenu}><RedditIcon>Reddit</RedditIcon></RedditShareButton>

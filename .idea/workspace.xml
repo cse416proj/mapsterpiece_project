@@ -6,16 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="07c3f21b-ec0d-4bc4-a794-ba71584c343e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/appbars/mapDetail/MapDetailTopBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/appbars/mapDetail/MapDetailTopBar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/modals/DeleteCommentModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/modals/DeleteCommentModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/screens/map/detail/MapComment.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/screens/map/detail/MapComment.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/screens/map/detail/MapScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/screens/map/detail/MapScreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/screens/map/detail/MapSubComment.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/screens/map/detail/MapSubComment.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/contexts/map/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/contexts/map/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/contexts/map/map-request-api/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/contexts/map/map-request-api/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/contexts/store/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/contexts/store/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/map-controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/map-controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/routes/map-router.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/routes/map-router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/cards/card/ActionButtons.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/cards/card/ActionButtons.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,7 +75,7 @@
       <workItem from="1701486931619" duration="555000" />
       <workItem from="1701554316274" duration="5693000" />
       <workItem from="1701563894029" duration="2791000" />
-      <workItem from="1701620631346" duration="12135000" />
+      <workItem from="1701620631346" duration="13103000" />
     </task>
     <servers />
   </component>

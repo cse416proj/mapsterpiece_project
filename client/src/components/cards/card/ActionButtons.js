@@ -135,11 +135,11 @@ export default function ActionButtons({ type, cardId, currentUserName, comments,
               "aria-labelledby": "basic-button",
             }}
           >
-            <MenuItem>
-              <EmailShareButton url={url} onShareWindowClose={closeMenu}><EmailIcon><Typography id='action-button-text'>E-Mail</Typography></EmailIcon></EmailShareButton>
-              <FacebookShareButton url={url} hashtag={"#Mapsterpiece"} onShareWindowClose={closeMenu}><FacebookIcon>Facebook</FacebookIcon></FacebookShareButton>
-              <RedditShareButton url={url} onShareWindowClose={closeMenu}><RedditIcon>Reddit</RedditIcon></RedditShareButton>
-              <TwitterShareButton url={url} onShareWindowClose={closeMenu}><TwitterIcon>Reddit</TwitterIcon></TwitterShareButton>
+            <MenuItem onMouseLeave={closeShareMenu}>
+              <EmailShareButton url={url} onShareWindowClose={closeShareMenu}><EmailIcon><Typography id='action-button-text'>E-Mail</Typography></EmailIcon></EmailShareButton>
+              <FacebookShareButton url={url} hashtag={"#Mapsterpiece"} onShareWindowClose={closeShareMenu}><FacebookIcon>Facebook</FacebookIcon></FacebookShareButton>
+              <RedditShareButton url={url} onShareWindowClose={closeShareMenu}><RedditIcon>Reddit</RedditIcon></RedditShareButton>
+              <TwitterShareButton url={url} onShareWindowClose={closeShareMenu}><TwitterIcon>Reddit</TwitterIcon></TwitterShareButton>
             </MenuItem>
           </Menu>
         </Box>
