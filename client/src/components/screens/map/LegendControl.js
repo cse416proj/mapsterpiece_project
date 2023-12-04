@@ -14,6 +14,26 @@ export default function LegendInfoControl({ legendTitle, type, max, getColor }) 
         return { start, end };
     });
 
+    function getRadius(index){
+        return(
+            (index === 4) ? 12 :
+                (index === 3) ? 9 :
+                    (index === 2) ? 6 :
+                        (index === 1) ? 4 :
+                            2
+        )
+    }
+
+    function getHeatColor(index){
+        return(
+            (index === 4) ? '#FF1D1A' :
+                (index === 3) ? '#FCA915' :
+                    (index === 2) ? '#EFF925' :
+                        (index === 1) ? '#87F34B' :
+                        '#9FA6DF'
+        )
+    }
+
     function renderLegend(){
         if(type === 'CHOROPLETH'){
             if(!max){
@@ -57,6 +77,62 @@ export default function LegendInfoControl({ legendTitle, type, max, getColor }) 
                     <Typography>Pin marker</Typography>
                 </Box>
             );
+        }
+        else if(type === 'GRADUATED_SYMBOL'){
+            if(!max){
+                return <Typography>No data has been provided.</Typography>;
+            }
+            return(
+                <>
+                    {
+                        levelArray.map((range, index) => {
+                            const radius = getRadius(index) * 2;
+                            return(
+                                <Box key={index} className='flex-row' id='legend-row'>
+                                    <Box id='legend-color-box' style={{ borderRadius: '100%', backgroundColor: 'red', width: `${radius}px`, height: `${radius}px` }}></Box>
+                                    {
+                                        (index < levelArray.length - 1)?
+                                            (
+                                                `${range.start}-${range.end}`
+                                            ) :
+                                            (
+                                                `${range.start}+`
+                                            )
+                                    }
+                                </Box>
+                            )
+                        })
+                    }
+                </>
+            )
+        }
+        else if(type === 'HEATMAP'){
+            if(!max){
+                return <Typography>No data has been provided.</Typography>;
+            }
+            return(
+                <>
+                    {
+                        levelArray.map((range, index) => {
+                            // const radius = getRadius(index) * 2;
+                            return(
+                                <Box key={index} className='flex-row' id='legend-row'>
+                                    <Box id='legend-color-box' style={{ backgroundColor: getHeatColor(index) }}></Box>
+                                    {
+                                        (index < levelArray.length - 1)?
+                                            (
+                                                `${range.start}-${range.end}`
+                                            ) :
+                                            (
+                                                `${range.start}+`
+                                            )
+                                    }
+                                </Box>
+                            )
+                        })
+                    }
+                </>
+            )
         }
         return;
     }

@@ -48,7 +48,7 @@ function CreateMap(){
     const [isLoading, setIsLoading] = useState(false);
 
     // success alert
-    const [openSuccess, setOpenSuccess] = useState(false);
+    const [createSuccess, setCreateSuccess] = useState(false);
 
     // set up error flags for these input
     const [missingTitle, setMissingTitle] = useState(false);
@@ -59,6 +59,7 @@ function CreateMap(){
     // reset success alert when first enter
     useEffect(() => {
         handleClear();
+        setCreateSuccess(false);
     }, []);
 
     // re-run effect when buffers change
@@ -99,28 +100,25 @@ function CreateMap(){
         setFileContent(null);
     }, [fileFormat]);
 
-    // set open success true & open alert when map get created
+    // update map create success status
     useEffect(() => {
-        if(mapInfo.errorMessage){
-            return;
+        if((store?.createSuccess === true)){
+            setCreateSuccess(true);
         }
-        const currMap = mapInfo.currentMap;
-        if(currMap && currMap._id){
-            const newMaps = [...auth.user?.maps, currMap._id];
-            auth.userUpdateMaps(newMaps);
-            setOpenSuccess(true);
+        else{
+            setCreateSuccess(false);
         }
-    }, [mapInfo?.currentMap]);
+    }, [store?.createSuccess]);
 
     // turn off open success & close alert after 1 sec
     useEffect(() => {
-        if(openSuccess && mapInfo?.currentMap){
+        if(createSuccess && mapInfo?.currentMap){
             setTimeout(() => {
-                setOpenSuccess(false);
                 navigate(`/map-edit/${mapInfo?.currentMap._id}`);
-            }, 1000);
+                store.clearCreateSuccess();
+            }, 2250);
         }
-    }, [openSuccess])
+    }, [createSuccess, mapInfo.currentMap])
 
     // handle title change
     const handleTitleChange = (event) => {
@@ -338,7 +336,7 @@ function CreateMap(){
 
     return (
         <Box className='flex-column' id='create-container'>
-            {openSuccess && <SuccessAlert type='map-create'/>}
+            {createSuccess && <SuccessAlert type='map-create'/>}
             <TextField
                 id='title-input'
                 label='Map Title'

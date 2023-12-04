@@ -227,6 +227,10 @@
     background-color: var(--secondary-color-hover);
 }
 
+.share-menu{
+    position: relative;
+}
+
 #data-info-control, #legend-control {
     z-index: 1500;
     position: absolute;

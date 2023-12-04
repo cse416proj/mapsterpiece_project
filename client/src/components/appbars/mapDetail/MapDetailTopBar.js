@@ -19,10 +19,18 @@ import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 
 import { Tag } from "../../index";
 
-import AuthContext from "../../../contexts/auth";
-import MapContext from "../../../contexts/map";
-import UserContext from "../../../contexts/user";
-import GlobalStoreContext from "../../../contexts/store";
+import AuthContext from '../../../contexts/auth';
+import MapContext from '../../../contexts/map';
+import UserContext from '../../../contexts/user';
+import GlobalStoreContext from '../../../contexts/store';
+import {
+  EmailIcon,
+  EmailShareButton,
+  FacebookIcon,
+  FacebookShareButton,
+  RedditIcon,
+  RedditShareButton, TwitterIcon, TwitterShareButton
+} from "react-share";
 
 export default function MapDetailTopBar() {
   const BackButtonStyle = {
@@ -112,8 +120,11 @@ export default function MapDetailTopBar() {
     console.log("fork this map");
   }
 
-  function handleShareMap() {
+  function handleShareMap(event) {
     console.log("share this map");
+    event.stopPropagation();
+    event.preventDefault();
+    // setAnchorEl(event.currentTarget);
   }
 
   const openMenu = (event) => {
@@ -270,8 +281,26 @@ export default function MapDetailTopBar() {
         </Box>
 
         <Box className="map-button-container">
-          {renderLikeButtons()}
-          {renderActionButtons()}
+          <Menu
+            id = "share-menu"
+            style={{ zIndex: '2500' }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={closeMenu}
+            onmouseleave={closeMenu}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem>
+              <EmailShareButton url={window.location.href} onShareWindowClose={closeMenu}><EmailIcon>E-Mail</EmailIcon></EmailShareButton>
+              <FacebookShareButton url={window.location.href} hashtag={"#Mapsterpiece"} onShareWindowClose={closeMenu}><FacebookIcon>Facebook</FacebookIcon></FacebookShareButton>
+              <RedditShareButton url={window.location.href} onShareWindowClose={closeMenu}><RedditIcon>Reddit</RedditIcon></RedditShareButton>
+              <TwitterShareButton url={window.location.href} onShareWindowClose={closeMenu}><TwitterIcon>Twitter</TwitterIcon></TwitterShareButton>
+            </MenuItem>
+          </Menu>
+          { renderLikeButtons() }
+          { renderActionButtons() }
         </Box>
       </Toolbar>
     </AppBar>

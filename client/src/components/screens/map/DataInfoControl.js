@@ -71,6 +71,28 @@ export default function DataInfoControl({ type, regionName, property, data, mapT
               </Box>
         )
       }
+      else{
+        console.log(result)
+
+        return(
+          (mapTypeData?.length === 0) ?
+            <Typography variant='p'>No property value has added</Typography> :
+              <Box className='flex-column' id='data-info-container'>
+                <Typography variant='h6'>Property Value{(regionName)? ` @ ${regionName}` : ' @ regions'}</Typography>
+                {
+                  (!data) ?
+                    <Typography>Hover over a region</Typography> : 
+                    <Box>
+                        {
+                          (!result && regionName) ?
+                            `No data has been added for ${regionName} yet.` :
+                            <Typography>{result?.value}</Typography>
+                        }
+                    </Box>
+                }
+              </Box>
+        )
+      }
     }
   }
 

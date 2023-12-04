@@ -82,7 +82,8 @@ function MapEditSideBar() {
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Map Type</Typography>
           <Select
-            defaultValue={(mapType) ? mapType : 'REGULAR'}
+            defaultValue='REGULAR'
+            value={mapType ? mapType : 'REGULAR'}
             onChange={(e) => handleSetMapType(e.target.value)}
             className="sidebar-block-content"
           >

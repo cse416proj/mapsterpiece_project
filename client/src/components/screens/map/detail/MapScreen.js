@@ -167,8 +167,13 @@ function MapScreen() {
 
   // get style for each feature
   const getFeatureStyle = (feature) => {
+    if(!feature){
+      return defaultRegionStyle;
+    }
+
     // REGULAR MAP
     if (editMode && !dataEditModeRef.current) {
+      console.log('regular');
       const colorKey = getRegionName(feature);
       const color = (coloredRegion[colorKey]) ? coloredRegion[colorKey] : feature.properties.fillColor;
       if(color){
@@ -183,11 +188,10 @@ function MapScreen() {
       else if(JSON.stringify(currLayer?.feature) === JSON.stringify(feature)){
         return hoverRegionStyle;
       }
-      else{
-        return defaultRegionStyle;
-      }
+      return defaultRegionStyle;
     }
 
+    console.log('five map types');
     // 5 MAP TYPES
     if(JSON.stringify(currLayer?.feature) === JSON.stringify(feature)){
       return hoverRegionStyle;
@@ -296,11 +300,6 @@ function MapScreen() {
     }
     else if(map.mapType === "PINMAP"){
       console.log(map?.mapTypeData);
-      const pinMapData = map?.mapTypeData
-        ? map?.mapTypeData
-        : {
-            data: []
-          };
     }
   }, [mapContainerRef?.current && geoJsonRef?.current, map?.mapType]);
 
@@ -309,20 +308,43 @@ function MapScreen() {
     mapTypeDataRef.current = mapInfo?.currentMap?.mapTypeData;
   }, [mapInfo?.currentMap?.mapTypeData]);
 
-  // auto zoom when load map content into geojson
-  useEffect(() => {
-    if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
-      mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
-      if (Object.values(geoJsonRef.current._layers).length <= 0) {
-        return;
-      }
-      let featureGroup = L.featureGroup(
-        Object.values(geoJsonRef.current._layers)
-      );
-      mapContainerRef.current.fitBounds(featureGroup.getBounds());
-      setInitialLoad(false);
+  if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
+    console.log(initialLoad);
+    console.log(mapContainerRef?.current);
+    console.log(geoJsonRef?.current);
+    mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
+    if (Object.values(geoJsonRef.current._layers).length <= 0) {
+      return;
     }
-  }, [initialLoad && mapContainerRef?.current && geoJsonRef?.current]);
+    let featureGroup = L.featureGroup(
+      Object.values(geoJsonRef.current._layers)
+    );
+    mapContainerRef.current.fitBounds(featureGroup.getBounds());
+    setInitialLoad(false);
+  }
+
+  // // auto zoom when load map content into geojson
+  // useEffect(() => {
+  //   console.log(initialLoad);
+  //   console.log(mapContainerRef?.current);
+  //   console.log(geoJsonRef?.current);
+  //   mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
+
+  //   if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
+  //     console.log(initialLoad);
+  //     console.log(mapContainerRef?.current);
+  //     console.log(geoJsonRef?.current);
+  //     mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
+  //     if (Object.values(geoJsonRef.current._layers).length <= 0) {
+  //       return;
+  //     }
+  //     let featureGroup = L.featureGroup(
+  //       Object.values(geoJsonRef.current._layers)
+  //     );
+  //     mapContainerRef.current.fitBounds(featureGroup.getBounds());
+  //     setInitialLoad(false);
+  //   }
+  // }, [initialLoad && mapContainerRef?.current && geoJsonRef?.current]);
 
   if (!mapInfo) {
     return null;
@@ -334,54 +356,56 @@ function MapScreen() {
 
     const regularMap = (editMode && !dataEditModeRef.current);
 
-    // REGULAR MAP DISPLAY
-    if(regularMap && layer?.feature) {
-      setColoredRegion((prevColoredRegion) => {
-        const newColoredRegion = { ...prevColoredRegion };
-        const colorKey = getRegionName(layer.feature);
-        newColoredRegion[colorKey] = colorRef.current;
-        return newColoredRegion;
-      });
-    }
+    if(layer){
+      // REGULAR MAP DISPLAY
+      if(regularMap && layer?.feature) {
+        setColoredRegion((prevColoredRegion) => {
+          const newColoredRegion = { ...prevColoredRegion };
+          const colorKey = getRegionName(layer?.feature);
+          newColoredRegion[colorKey] = colorRef.current;
+          return newColoredRegion;
+        });
+      }
 
-    const position = layer.getBounds().getCenter();
-    const regionName = layer.feature.properties[regionNameLevel].replace(
-      /\0/g,
-      ""
-    );
-
-    setSelectedRegionProps({ position, regionName });
-
-    if (!layer.feature) {
-      return;
-    }
-
-    // update mapcontent ref
-    const index = mapContentRef.current.findIndex(
-      (region) =>
-        region.properties[regionNameLevel] ===
-        layer.feature.properties[regionNameLevel]
-    );
-    if (index !== -1 && regularMap) {
-      mapContentRef.current[index].properties.fillColor = colorRef.current;
-      mapInfo.updateMapContent(index, colorRef.current);
-    }
-
-    if (editMode && dataEditModeRef.current) {
-      const index = mapTypeDataRef?.current?.data?.findIndex(
-        (data) => data.regionName === regionName
+      const position = layer?.getBounds().getCenter();
+      const regionName = layer?.feature.properties[regionNameLevel].replace(
+        /\0/g,
+        ""
       );
-      if (index >= 0) {
-        console.log(`index: ${index}`);
-        setIndexElementTobeChanged(index);
+
+      setSelectedRegionProps({ position, regionName });
+
+      if (!layer?.feature) {
+        return;
       }
 
-      if(map?.mapType === "PINMAP"){
-        setPinDataEntryModal(true);
-        setLatLng([position.lat, position.lng]);
+      // update mapcontent ref
+      const index = mapContentRef.current.findIndex(
+        (region) =>
+          region.properties[regionNameLevel] ===
+          layer?.feature.properties[regionNameLevel]
+      );
+      if (index !== -1 && regularMap) {
+        mapContentRef.current[index].properties.fillColor = colorRef.current;
+        mapInfo.updateMapContent(index, colorRef.current);
       }
-      else{
-        setDataEntryModalOpen(true);
+
+      if (editMode && dataEditModeRef.current) {
+        const index = mapTypeDataRef?.current?.data?.findIndex(
+          (data) => data.regionName === regionName
+        );
+        if (index >= 0) {
+          console.log(`index: ${index}`);
+          setIndexElementTobeChanged(index);
+        }
+
+        if(map?.mapType === "PINMAP"){
+          setPinDataEntryModal(true);
+          setLatLng([position.lat, position.lng]);
+        }
+        else{
+          setDataEntryModalOpen(true);
+        }
       }
     }
   };
@@ -468,7 +492,7 @@ function MapScreen() {
 
   // render color and show text for each regions
   const onEachFeature = (feature, layer) => {
-    if (!layer.feature) {
+    if (!layer?.feature) {
       return;
     }
 
@@ -481,9 +505,9 @@ function MapScreen() {
     //   })
     //   .openTooltip();
     
-    // if (layer.feature.properties.fillColor && !dataEditModeRef.current) {
+    // if (layer?.feature.properties.fillColor && !dataEditModeRef.current) {
     //   layer.setStyle({
-    //     fillColor: layer.feature.properties.fillColor,
+    //     fillColor: layer?.feature.properties.fillColor,
     //     fillOpacity: 1,
     //   });
     // } else {

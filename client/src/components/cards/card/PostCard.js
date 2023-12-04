@@ -6,9 +6,14 @@ import ActionButtons from "./ActionButtons";
 
 function PostCard({postData, clickHandler, editHandler, deleteHandler}){
     function getTimestamp(){
-        const parsedDate = new Date(postData.createdAt);
-        const timeFromNow = formatDistanceToNow(parsedDate);
-        return ` ${timeFromNow} ago`;
+        try{
+            const parsedDate = new Date(postData?.createdAt);
+            const timeFromNow = formatDistanceToNow(parsedDate);
+            return ` ${timeFromNow} ago`;
+        }
+        catch(error){
+            console.log(error);
+        }
     }
 
     if(!postData){
@@ -51,6 +56,7 @@ function PostCard({postData, clickHandler, editHandler, deleteHandler}){
 
                 <ActionButtons
                     type='post'
+                    cardId={postData._id}
                     currentUserName={postData.ownerUserName}
                     comments={postData.comments}
                     clickHandler={clickHandler}

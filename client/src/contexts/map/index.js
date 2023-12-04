@@ -120,6 +120,8 @@ export function MapContextProvider({ children }) {
       try{
         const response = await api.createMap(user.userName, title, fileFormat, mapContent, tags);
         if (response.status === 201) {
+          // close error modal & open create success alert first
+          store.createSuccessAlert();
           console.log(response.data);
           mapReducer({
             type: MapActionType.SET_CURRENT_MAP,
