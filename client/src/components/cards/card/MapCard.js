@@ -22,10 +22,15 @@ export default function MapCard({mapData, clickHandler, editHandler, deleteHandl
     };
 
     function getTimestamp(){
-        const time = (mapData?.isPublished) ? mapData.datePublished : mapData.dateEdited;
-        const parsedDate = new Date(time);
-        const timeFromNow = formatDistanceToNow(parsedDate);
-        return ` ${timeFromNow} ago`;
+        try{
+            const time = (mapData?.isPublished) ? mapData.datePublished : mapData.dateEdited;
+            const parsedDate = new Date(time);
+            const timeFromNow = formatDistanceToNow(parsedDate);
+            return ` ${timeFromNow} ago`;
+        }
+        catch(error){
+            console.log(error);
+        }
     }
 
     if(!mapData){

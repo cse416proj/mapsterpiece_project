@@ -28,9 +28,9 @@ export default function MapCommentSideBar({ toggleCommentBox }){
         const mapId = mapInfo.currentMap._id;
 
         if (mapId && auth?.user?.userName) {
-            const trimmedInputWithoutSpace = commentInput.replace(/(\s|\r\n|\n|\r)/gm, '');
+            const trimmedComment = commentInput.replace(/(\s|\r\n|\n|\r)/gm, '');
 
-            if(trimmedInputWithoutSpace.length > 0){
+            if(trimmedComment.length > 0){
                 setError('');
                 mapInfo.createMapComment(mapId, auth?.user?.userName, commentInput);
             }

@@ -21,17 +21,29 @@ export function MapContextProvider({ children }) {
     allCommentsForMap: [],
     currentComment: null,
     errorMessage: null,
+    currentMapEditType: "REGULAR",
     // download: false,
     // downloadFormat: ''
   });
 
+  const curMapEditType = {
+    REGULAR: "REGULAR",
+    HEATMAP: "HEATMAP",
+    CHOROPLETH: "CHOROPLETH",
+    DOT_DISTRIBUTION: "DOT_DISTRIBUTION",
+    GRADUATED_SYMBOL: "GRADUATED_SYMBOL",
+    PINMAP: "PINMAP",
+  }
+
   const MapActionType = {
     SET_CURRENT_MAP: "SET_CURRENT_MAP",
+    SET_ALL_MAPS_FROM_USER: "SET_ALL_MAPS_FROM_USER",
     LOAD_ALL_MAPS_FROM_USER: "LOAD_ALL_MAPS_FROM_USER",
     SET_CURRENT_REGION_COLOR: "SET_CURRENT_REGION_COLOR",
     SET_CURRENT_COMMENT: "SET_CURRENT_COMMENT",
     SET_CURRENT_SUBCOMMENT: "SET_CURRENT_SUBCOMMENT",
-    SET_ERROR_MSG: "SET_ERROR_MSG"
+    SET_ERROR_MSG: "SET_ERROR_MSG",
+    SET_CURRENT_MAP_EDIT_TYPE: "SET_CURRENT_MAP_EDIT_TYPE",
     // SET_DOWNLOAD_FORMAT: 'SET_DOWNLOAD_FORMAT',
     // CANCEL_DOWNLOAD: 'CANCEL_DOWNLOAD',
   };
@@ -46,6 +58,12 @@ export function MapContextProvider({ children }) {
         return setMapInfo((prevMapInfo) => ({
           ...prevMapInfo,
           currentMap: payload,
+          errorMessage: null
+        }));
+      case MapActionType.SET_ALL_MAPS_FROM_USER:
+        return setMapInfo((prevMapInfo) => ({
+          ...prevMapInfo,
+          allMapsByUser: payload,
           errorMessage: null
         }));
       case MapActionType.LOAD_ALL_MAPS_FROM_USER:
@@ -77,26 +95,32 @@ export function MapContextProvider({ children }) {
           ...prevMapInfo,
           errorMessage: payload
         }));
+      case MapActionType.SET_CURRENT_MAP_EDIT_TYPE:
+        return setMapInfo((prevMapInfo) => ({
+          ...prevMapInfo,
+          currentMapEditType: payload
+        }));
       default:
         return mapInfo;
     }
   };
 
-  mapInfo.setCurrentRegionColor = (color) => {
+  mapInfo.setCurrentRegionColor = function (color) {
     mapReducer({
       type: MapActionType.SET_CURRENT_REGION_COLOR,
       payload: color,
     });
   };
 
+  mapInfo.setCurrentMapEditType = function (mapTypeForEdit) {
+    mapReducer({
+      type: MapActionType.SET_CURRENT_MAP_EDIT_TYPE,
+      payload: mapTypeForEdit,
+    });
+  };
+
   mapInfo.createMap = async function (newMap) {
     const { title, fileFormat, mapContent, tags } = newMap;
-
-    if (!title || !fileFormat || !mapContent || !tags) {
-      store.uploadError(
-        "Please enter all fields: title/ fileFormat/ fileContent/ tags."
-      );
-    }
 
     // create map for user
     const user = auth.user;
@@ -104,6 +128,8 @@ export function MapContextProvider({ children }) {
       try{
         const response = await api.createMap(user.userName, title, fileFormat, mapContent, tags);
         if (response.status === 201) {
+          // close error modal & open create success alert first
+          store.createSuccessAlert();
           console.log(response.data);
           mapReducer({
             type: MapActionType.SET_CURRENT_MAP,
@@ -112,9 +138,8 @@ export function MapContextProvider({ children }) {
         }
       }
       catch (error) {
-        if (error.response) {
-          console.log((error.response.status === 400) ? error.response.data.errorMessage : error);
-        }
+        console.log((error.response?.data?.errorMessage) ? error.response?.data?.errorMessage : "Error creating a new map.");
+        store.setError((error.response?.data?.errorMessage) ? error.response?.data?.errorMessage : "Error creating a new map.");
       }
     }
   };
@@ -246,8 +271,11 @@ export function MapContextProvider({ children }) {
         const currMapId = (mapInfo.currentMap) ? mapInfo.currentMap._id : null;
 
         if(currMapId){
-          currMap = response.data?.find((map) => map._id === currMapId);
+          currMap = response.data?.find((map) => (map._id === currMapId));
         }
+
+        console.log(response.data);
+
         mapReducer({
           type: MapActionType.LOAD_ALL_MAPS_FROM_USER,
           payload: {
@@ -291,7 +319,7 @@ export function MapContextProvider({ children }) {
     }));
   };
 
-  mapInfo.updateMapGeneralInfo = function (title, tags) {
+  mapInfo.updateMapGeneralInfo = function (title, tags, mapType, legendTitle) {
     if (!mapInfo.currentMap) {
       return;
     }
@@ -303,6 +331,12 @@ export function MapContextProvider({ children }) {
       oldMap.tags = tags;
     }
 
+    oldMap.mapType = mapType;
+
+    if (legendTitle) {
+      oldMap.mapTypeData.legendTitle = legendTitle;
+    }
+
     if (!title && !tags) {
       return;
     }
@@ -310,6 +344,39 @@ export function MapContextProvider({ children }) {
       ...prevMapInfo,
       currentMap: oldMap,
     }));
+  };
+
+  mapInfo.updateMapTypeData = function (mapDataIndividualObj, indexElementTobeChanged) {
+    try{
+      if (!mapInfo.currentMap) {
+        return;
+      }
+
+      console.log('mapInfo.updateMapTypeData');
+      console.log('mapDataIndividualObj');
+      console.log(mapDataIndividualObj);
+      console.log(`indexElementTobeChanged: ${indexElementTobeChanged}`);
+
+      let oldMap = mapInfo.currentMap;
+      let originalMapTypeData = oldMap.mapTypeData ? oldMap.mapTypeData : {max: 0, data: []};
+      if (mapDataIndividualObj.value > originalMapTypeData.max) {
+        originalMapTypeData.max = mapDataIndividualObj.value;
+      }
+      if (indexElementTobeChanged >= 0) {
+        originalMapTypeData.data[indexElementTobeChanged] = mapDataIndividualObj;
+      } else {
+        originalMapTypeData.data.push(mapDataIndividualObj);
+      }
+      
+      oldMap.mapTypeData = originalMapTypeData;
+      setMapInfo((prevMapInfo) => ({
+        ...prevMapInfo,
+        currentMap: oldMap,
+      }));
+    }
+    catch(error){
+      console.log((error.response?.data?.errorMessage) ? error.response?.data?.errorMessage : "Error updating map type data.");
+    }
   };
 
   mapInfo.updateMapLikeDislike = async function (mapId, isLike) {
@@ -327,12 +394,18 @@ export function MapContextProvider({ children }) {
   };
 
   mapInfo.updateMapById = async function (mapId) {
-    const response = await api.updateMapById(mapId, mapInfo.currentMap);
-    if (response.status === 200) {
-      await mapInfo.getMapsByMapIds(auth.user.maps);
-      navigate("/");
-    } else {
-      console.log(response);
+    try {
+      const response = await api.updateMapById(mapId, mapInfo.currentMap);
+      if (response.status === 200) {
+        console.log('start saving');
+        store.saveSuccessAlert();
+        await mapInfo.getMapsByMapIds(auth.user.maps);
+        // navigate("/");
+      }
+    }
+    catch (error) {
+      console.log(error.response?.data?.errorMessage ? error.response?.data?.errorMessage : "Error updating map.")
+      store.setError((error.response?.data?.errorMessage) ? error.response?.data?.errorMessage : "Error updating map.");
     }
   };
 
@@ -492,6 +565,20 @@ export function MapContextProvider({ children }) {
       });
     }
   };
+
+  mapInfo.setAllMaps = function(maps){
+    mapReducer({
+      type: MapActionType.SET_ALL_MAPS_FROM_USER,
+      payload: maps
+    });
+  }
+
+  mapInfo.setErrorMsg = function(msg){
+    mapReducer({
+      type: MapActionType.SET_ERROR_MSG,
+      payload: msg
+    });
+  }
 
   return (
     <MapContext.Provider value={{ mapInfo }}>{children}</MapContext.Provider>

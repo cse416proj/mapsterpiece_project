@@ -105,7 +105,7 @@ export default function DynamicCard({ userData, mapData, postData }) {
   }
 
   return (
-    <Box>
+    <Box style={{ width: '100%' }}>
       {cardElement}
     </Box>
   );

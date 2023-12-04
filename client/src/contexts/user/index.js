@@ -14,10 +14,10 @@ function UserContextProvider(props) {
     currentPosts: null
   });
 
-  // to be removed: print when userInfo update
-  useEffect(() => {
-    console.log(userInfo);
-  }, [userInfo])
+  // // to be removed: print when userInfo update
+  // useEffect(() => {
+  //   console.log(userInfo);
+  // }, [userInfo])
 
   const userReducer = (action) => {
     const { type, payload } = action;
@@ -58,11 +58,13 @@ function UserContextProvider(props) {
   }
 
   userInfo.getNumMaps = function(){
-    return `${userInfo.currentMaps.length} maps`;
+    const count = userInfo.currentMaps.length;
+    return `${count} ${(count > 1) ? 'maps' : 'map'}`;
   }
 
   userInfo.getNumPosts = function(){
-    return `${userInfo.currentPosts.length} posts`;
+    const count = userInfo.currentPosts.length;
+    return `${count} ${(count > 1) ? 'posts' : 'post'}`;
   }
 
   userInfo.getUserById = async function (userId) {
@@ -76,6 +78,26 @@ function UserContextProvider(props) {
   userInfo.deleteUserById = async function (userId) {
     const response = await api.deleteUserById(userId);
   };
+
+  userInfo.updateMaps = function (newMaps) {
+    return setUserInfo((prevUserInfo) => ({
+      ...prevUserInfo,
+      currentUser: {
+        ...prevUserInfo.currentUser,
+        maps: newMaps
+      }
+    }));
+  }
+
+  userInfo.updatePosts = function (newPosts) {
+    return setUserInfo((prevUserInfo) => ({
+      ...prevUserInfo,
+      currentUser: {
+        ...prevUserInfo.currentUser,
+        posts: newPosts
+      }
+    }));
+  }
 
   return (
     <UserContext.Provider value={{ userInfo }}>

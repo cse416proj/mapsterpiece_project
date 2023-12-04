@@ -27,7 +27,7 @@ function PostInput({ title, updateTitle, missingTitle, content, updateContent, m
                 style={{ marginBottom: '1.5%' }}
             />
             <Textarea
-                minRows={8}
+                minRows={7}
                 variant='plain'
                 placeholder='Type post content here...'
                 value={content}

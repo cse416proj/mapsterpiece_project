@@ -1,21 +1,29 @@
-import { useEffect } from 'react';
+import { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { SpeedDial, SpeedDialIcon, SpeedDialAction } from '@mui/material';
-import CreateIcon from '@mui/icons-material/Create';
-import SearchIcon from '@mui/icons-material/Search';
+
+import AddLocationAltRoundedIcon from '@mui/icons-material/AddLocationAltRounded';
+import PostAddRoundedIcon from '@mui/icons-material/PostAddRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+
+import GlobalStoreContext from '../../../contexts/store';
 
 function ActionButton({isLoggedInUser}){
-    const navigate = useNavigate();
+    const { store } = useContext(GlobalStoreContext);
     const { userId } = useParams();
 
-    useEffect(() => {
-        console.log(`userId: ${userId}`)
-        // userInfo.getUserById(userId);
-    }, [userId]);
+    const navigate = useNavigate();
 
-    function handleCreate(event){
+    function handleCreateMap(event){
         console.log('handleCreateMap');
+        store.setCurrentView('CREATE_MAP');
+        navigate('/create');
+    }
+
+    function handleCreatePost(event){
+        console.log('handleCreatePost');
+        store.setCurrentView('CREATE_POST');
         navigate('/create');
     }
 
@@ -26,11 +34,12 @@ function ActionButton({isLoggedInUser}){
 
     const actions = (isLoggedInUser) ?
         [
-            { icon: <SearchIcon/>, name: 'Search Map/ Post', handler: handleSearch },
-            { icon: <CreateIcon/>, name: 'Create Map/ Post', handler: handleCreate },
+            { icon: <SearchRoundedIcon/>, name: 'Search Map/ Post', handler: handleSearch },
+            { icon: <PostAddRoundedIcon/>, name: 'Create Post', handler: handleCreatePost },
+            { icon: <AddLocationAltRoundedIcon/>, name: 'Create Map', handler: handleCreateMap },
         ] :
         [
-            { icon: <SearchIcon/>, name: 'Search Map/ Post', handler: handleSearch },
+            { icon: <SearchRoundedIcon/>, name: 'Search Map/ Post', handler: handleSearch },
         ]
     ;
 

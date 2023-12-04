@@ -5,7 +5,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { GlobalStoreContext } from "../../../../contexts/store";
-import { DeleteSubCommModal } from "../../../index";
+import { Modals } from "../../../index";
 
 export default function PostSubComment({parentComment, subcomment}) {
     const { store } = useContext(GlobalStoreContext);
@@ -46,7 +46,7 @@ export default function PostSubComment({parentComment, subcomment}) {
         >
           {subcomment.content}
         </Typography>
-        <DeleteSubCommModal/>
+        <Modals/>
       </Box>
     );
 }  

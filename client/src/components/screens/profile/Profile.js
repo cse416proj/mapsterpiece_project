@@ -1,10 +1,13 @@
 import { useContext, useState, useEffect } from "react";
-import { Box, Tabs, Tab } from "@mui/material";
 import { useParams } from "react-router-dom";
 
+import { Box, Tabs, Tab, Typography } from "@mui/material";
+import PriorityHighRoundedIcon from '@mui/icons-material/PriorityHighRounded';
+
 import ProfileCard from "./ProfileCard";
-import { DynamicCard, DeletePostModal, DeleteMapModal, PublishMapModal, UnpublishMapModal } from "../../index";
 import ActionButton from "./ActionButton";
+import { DynamicCard, Modals } from "../../index";
+
 import UserContext from "../../../contexts/user";
 import AuthContext from "../../../contexts/auth";
 import PostContext from "../../../contexts/post";
@@ -19,37 +22,46 @@ function Profile() {
   const { userId } = useParams();
   const [tab, setTab] = useState("map");
 
+  const isLoggedInUser = (auth && auth.user !== null && auth.user.userName === userInfo?.currentUser?.userName);
+
+  // fetch user info based on id
   useEffect(() => {
     userInfo.getUserById(userId);
   }, [userId]);
 
+  // only load other user's publish map
   useEffect(() => {
-    // only load other user's publish map
-    if(userInfo.currentUser){
-      if(auth && auth.user && auth.user._id === userInfo.currentUser._id){
-        mapInfo.getMapsByMapIds(auth.user.maps);
+    if(!isLoggedInUser && userId){
+      async function loadUserMapInfo(userId){
+        await mapInfo.getAllPublishedMapsFromGivenUser(userId);
       }
-      else{
-        async function loadUserMapInfo(userId){
-          await mapInfo.getAllPublishedMapsFromGivenUser(userId);
-        }
-        loadUserMapInfo(userInfo.currentUser._id);
-      }
+      loadUserMapInfo(userId);
     }
-  }, [userInfo.currentUser]);
+  }, [userInfo?.currentUser]);
 
+  // change tab when clicked
   const handleChangeTab = (event, newTab) => {
     setTab(newTab);
   };
 
-  if (!userInfo.currentUser) {
-    return null;
+  function getNotice(ownerNotice, nonOwnerNotice){
+    return (
+      <Box className='flex-column' id='no-maps'>
+        <PriorityHighRoundedIcon style={{ width: '15vw', height: '15vw', color: 'var(--icon)' }}/>
+        <Typography variant="h3" style={{ marginTop: '2.5vh', width: '75%' }}>
+          {
+            (isLoggedInUser) ? ownerNotice : nonOwnerNotice
+          }
+        </Typography>
+      </Box>
+    )
   }
 
+  // fetch content based on current tab view
   function fetchContent() {
     if (tab === "map") {
-      if(mapInfo && mapInfo.allMapsByUser){
-        return mapInfo.allMapsByUser?.map((map, index) => (
+      if(userInfo?.currentUser?.maps.length > 0){
+        return userInfo?.currentUser?.maps?.map((map, index) => (
           <DynamicCard
             key={`map-${index}`}
             userData={null}
@@ -58,9 +70,13 @@ function Profile() {
           />
         ));
       }
-    } else {
-      if(postInfo && postInfo.allPostsByUser){
-        return userInfo.currentUser?.posts?.map((post, index) => (
+      else{
+        return getNotice('Seems like you have not created any map yet.', 'Seems like this user has not published any map yet.')
+      }
+    }
+    else {
+      if(userInfo?.currentUser?.posts.length > 0){
+        return userInfo?.currentUser?.posts?.map((post, index) => (
           <DynamicCard
             key={`post-${index}`}
             userData={null}
@@ -69,10 +85,15 @@ function Profile() {
           />
         ));
       }
+      else{
+        return getNotice('Seems like you have not created any post yet.', 'Seems like this user has not created any post yet.')
+      }
     }
   }
 
-  const isLoggedInUser = (auth && auth.user !== null && auth.user.userName === userInfo.currentUser.userName);
+  if (!userInfo?.currentUser) {
+    return null;
+  }
 
   return (
     <Box className="content" id="user-info-content">
@@ -85,12 +106,12 @@ function Profile() {
             value={tab}
           >
             <Tab
-              id={tab === "map" ? "profile-tab-selected" : "profile-tab"}
+              id={(tab === "map") ? "profile-tab-selected" : "profile-tab"}
               label="All Maps"
               value="map"
             />
             <Tab
-              id={tab === "post" ? "profile-tab-selected" : "profile-tab"}
+              id={(tab === "post") ? "profile-tab-selected" : "profile-tab"}
               label="All Posts"
               value="post"
             />
@@ -103,14 +124,11 @@ function Profile() {
           initials={userInfo.getUserInitials().toUpperCase()}
           name={userInfo.getUserFullName()}
           userName={userInfo.getUserName()}
-          numMaps={mapInfo && mapInfo.allMapsByUser && mapInfo.allMapsByUser.length}
-          numPosts={userInfo && userInfo.currentUser && userInfo.currentUser?.posts.length}
+          numMaps={(userInfo?.currentUser?.maps) ? userInfo?.currentUser?.maps.length : 0}
+          numPosts={(userInfo?.currentUser?.posts) ? userInfo?.currentUser?.posts.length : 0}
           isLoggedInUser={isLoggedInUser}
         />
-        <DeletePostModal/>
-        <DeleteMapModal/>
-        <PublishMapModal/>
-        <UnpublishMapModal/>
+        <Modals/>
       </Box>
       <ActionButton isLoggedInUser={isLoggedInUser}/>
     </Box>
