@@ -57,17 +57,17 @@ describe('Mapsterpiece local tests', () => {
   // })
 
   // pass
-  it('dropdown menu test', ()=>{
-    cy.visit('http://localhost:3000');
-    cy.get('#icon').click();
-    cy.get('li[tabindex="-1"]').click();
-    cy.url().should('include', '/login');
-    cy.get('#icon').click();
-    cy.get('li[tabindex="0"]').click();
-    cy.url().should('include', '/register');
-    cy.get('#logo').click();
-    cy.url().should('include', '/');
-  })
+  // it('dropdown menu test', ()=>{
+  //   cy.visit('http://localhost:3000');
+  //   cy.get('#icon').click();
+  //   cy.get('li[tabindex="-1"]').click();
+  //   cy.url().should('include', '/login');
+  //   cy.get('#icon').click();
+  //   cy.get('li[tabindex="0"]').click();
+  //   cy.url().should('include', '/register');
+  //   cy.get('#logo').click();
+  //   cy.url().should('include', '/');
+  // })
   
   // // pass
   // it('user create map fail - no file format', ()=>{
@@ -215,7 +215,136 @@ describe('Mapsterpiece local tests', () => {
   //   cy.get('#back').click();
   // })
 
+  // // ====================build 5 tests====================
 
-  //  ====================build 5 tests====================
+  // // pass
+  // it('user view own search screen', ()=>{
+  //   // user login
+  //   cy.visit('http://localhost:3000');
+  //   cy.get('.login').click();
+  //   cy.url().should('include', '/login');
 
+  //   cy.get('input[name = "email"]').clear('bobDD@gmail.com');
+  //   cy.get('input[name = "email"]').type('bobDD@gmail.com');
+  //   cy.get('input[name = "password').clear('ThisIsAPassword');
+  //   cy.get('input[name = "password').type('ThisIsAPassword');
+  //   cy.get('button[type = "submit"]').click();
+  //   cy.wait(1000);
+
+  //   cy.get('.SEARCH').click();
+  //   cy.url().should('include', '/search');
+  //   cy.get('#owner-search-text');
+
+  //   cy.get('#ALL_MAPS_POSTS').click();
+  //   cy.get('#AllMaps').click();
+  //   cy.get('#AllPosts').click();
+  // })
+
+  // // pass
+  // it('user view other search screen', ()=>{
+  //   // user login
+  //   cy.visit('http://localhost:3000');
+  //   cy.get('.login').click();
+  //   cy.url().should('include', '/login');
+
+  //   cy.get('input[name = "email"]').clear('bobDD@gmail.com');
+  //   cy.get('input[name = "email"]').type('bobDD@gmail.com');
+  //   cy.get('input[name = "password').clear('ThisIsAPassword');
+  //   cy.get('input[name = "password').type('ThisIsAPassword');
+  //   cy.get('button[type = "submit"]').click();
+  //   cy.wait(1000);
+
+  //   cy.get('.COMMUNITY').click();
+  //   cy.url().should('include', '/community');
+  //   cy.get('#community-text');
+  //   cy.get('#ALL_USERS').click();
+  //   cy.get(':nth-child(1) > #UserDynamicCard > .MuiCardContent-root').click();
+  //   cy.get('[data-testid="AddIcon"]').click();
+  //   cy.get('[data-testid="SearchIcon"]').click();
+  //   cy.get('#user-search-text');
+
+  //   cy.get('#ALL_MAPS_POSTS').click();
+  //   cy.get('#AllMaps').click();
+  //   cy.get('#AllPosts').click();
+  // })
+
+  // // pass
+  // it('user search for own maps & posts', ()=>{
+  //   // user login
+  //   cy.visit('http://localhost:3000');
+  //   cy.get('.login').click();
+  //   cy.url().should('include', '/login');
+
+  //   cy.get('input[name = "email"]').clear('bobDD@gmail.com');
+  //   cy.get('input[name = "email"]').type('bobDD@gmail.com');
+  //   cy.get('input[name = "password').clear('ThisIsAPassword');
+  //   cy.get('input[name = "password').type('ThisIsAPassword');
+  //   cy.get('button[type = "submit"]').click();
+  //   cy.wait(1000);
+
+  //   cy.get('.SEARCH').click();
+  //   cy.url().should('include', '/search');
+  //   cy.get('#owner-search-text');
+
+  //   cy.get('#AllMaps').click();
+  //   cy.get('input[placeholder="Search by map title/tag..."]'). type("unpublished").type('{enter}');
+  //   cy.get('input[placeholder="Search by map title/tag..."]'). clear("unpublished");
+
+  //   cy.get('#AllPosts').click();
+  //   cy.get('input[placeholder="Search by post title/tag/content..."]'). type("sample").type('{enter}');
+  //   cy.get('input[placeholder="Search by post title/tag/content..."]'). clear("sample");
+  // })
+
+  // // pass
+  // it('user view community screen', ()=>{
+  //   // user login
+  //   cy.visit('http://localhost:3000');
+  //   cy.get('.login').click();
+  //   cy.url().should('include', '/login');
+
+  //   cy.get('input[name = "email"]').clear('bobDD@gmail.com');
+  //   cy.get('input[name = "email"]').type('bobDD@gmail.com');
+  //   cy.get('input[name = "password').clear('ThisIsAPassword');
+  //   cy.get('input[name = "password').type('ThisIsAPassword');
+  //   cy.get('button[type = "submit"]').click();
+  //   cy.wait(1000);
+
+  //   cy.get('.COMMUNITY').click();
+  //   cy.url().should('include', '/community');
+  //   cy.get('#community-text');
+  //   cy.get('#ALL_USERS').click();
+  //   cy.get('#AllMaps').click();
+  //   cy.get('#AllPosts').click();
+  // })
+
+  it('user sort maps & posts community screen', ()=>{
+    // user login
+    cy.visit('http://localhost:3000');
+    cy.get('.login').click();
+    cy.url().should('include', '/login');
+
+    cy.get('input[name = "email"]').clear('bobDD@gmail.com');
+    cy.get('input[name = "email"]').type('bobDD@gmail.com');
+    cy.get('input[name = "password').clear('ThisIsAPassword');
+    cy.get('input[name = "password').type('ThisIsAPassword');
+    cy.get('button[type = "submit"]').click();
+    cy.wait(1000);
+
+    cy.get('.COMMUNITY').click();
+    cy.url().should('include', '/community');
+    cy.get('#community-text');
+
+    cy.get('#AllMaps').click();
+    cy.get('[data-testid="SortIcon"]').click();
+    cy.get('#Alphabet\\ \\(A-Z\\)').click();
+    cy.get('[data-testid="SortIcon"] > path').click();
+    cy.get('#Most\\ recent\\ publish').click();
+
+//   cy.get('#AllPosts').click();
+
+  })
+
+  // it('user search for other user, maps, posts', ()=>{
+  
+  // })
 })
