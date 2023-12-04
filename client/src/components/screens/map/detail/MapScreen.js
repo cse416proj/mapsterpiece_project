@@ -264,11 +264,12 @@ function MapScreen() {
     }
 
     setGeoJsonKey(geoJsonKey + 1);
-    if (mapInfo?.currentMapEditType !== "HEATMAP" && mapContainerRef?.current && heatMapLayer) {
+    if ((mapInfo?.currentMapEditType !== "HEATMAP" && map?.mapType !== "HEATMAP") && mapContainerRef?.current && heatMapLayer) {
+      console.log('remove layer')
       mapContainerRef.current.removeLayer(heatMapLayer);
       setMapContainterKey(mapContainterKey + 1);
     }
-  }, [mapInfo?.currentMapEditType]);
+  }, [mapInfo?.currentMapEditType, map?.mapType]);
 
   // render when map type changes
   useEffect(() => {
@@ -277,6 +278,7 @@ function MapScreen() {
     }
 
     if (map.mapType === "HEATMAP") {
+      console.log('on heatmap overlay');
       const initialHeatMapLayer = new HeatmapOverlay({
         radius: regionNameLevel === "name" ? 7 : 0.5,
         maxOpacity: 1,
@@ -426,6 +428,8 @@ function MapScreen() {
     };
 
     setCurrMaxData(Math.max(currMaxData, value));
+
+    console.log(map.mapType);
     
     // update existing data or add data to region
     if (indexElementTobeChanged >= 0) {
@@ -433,10 +437,13 @@ function MapScreen() {
       mapTypeDataRef.current.data[indexElementTobeChanged] = newDataObj;
       if (map.mapType === "HEATMAP") {
         heatMapLayer.setData(mapTypeDataRef.current);
+        console.log('set heatmap overlay');
+        console.log(heatMapLayer);
       }
     } else {
       if (map.mapType === "HEATMAP") {
         heatMapLayer.addData(newDataObj);
+        console.log('add heatmap overlay');
       }
     }
 
