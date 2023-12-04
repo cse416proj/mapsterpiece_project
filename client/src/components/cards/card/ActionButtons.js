@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+import { useLocation } from 'react-router-dom';
 import { Box, CardActions, Typography, Menu, MenuItem } from "@mui/material";
 
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
@@ -7,17 +8,31 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+
+import {
+  EmailIcon,
+  FacebookIcon,
+  EmailShareButton,
+  FacebookShareButton,
+  RedditShareButton,
+  RedditIcon, TwitterShareButton, TwitterIcon
+} from "react-share";
 
 import AuthContext from "../../../contexts/auth";
+import { client_base_url } from '../../../config';
+
 // import UserContext from "../../contexts/user";
 
-export default function ActionButtons({ type, currentUserName, comments, clickHandler, deleteHandler, editHandler, isPublished=false, publishHandler=null, unpublishHandler=null }) {
+export default function ActionButtons({ type, cardId, currentUserName, comments, clickHandler, deleteHandler, editHandler, isPublished=false, publishHandler=null, unpublishHandler=null }) {
   const { auth } = useContext(AuthContext);
+  const location = useLocation();
   // const { userInfo } = useContext(UserContext);
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorShareEl, setAnchorShareEl] = useState(null);
   const open = Boolean(anchorEl);
+  const openShare = Boolean(anchorShareEl)
 
   const isLoggedInUser = auth.user && auth.user.userName === currentUserName;
 
@@ -94,6 +109,47 @@ export default function ActionButtons({ type, currentUserName, comments, clickHa
     });
   }
 
+  const openShareMenu = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    setAnchorShareEl(event.currentTarget);
+  };
+
+  const closeShareMenu = () => {
+    setAnchorShareEl(null)
+  }
+
+  const url = `${client_base_url}/${(type === 'map') ? 'map-detail' : 'post-detail'}/${cardId}`;
+  
+  function renderShare(){
+    if(type === 'post' || (type === 'map' && isPublished)){
+      return(
+        <Box className="flex-row" id="action-button-container" onClick={openShareMenu}>
+          <ShareIcon id={`${type}-action-icon`}/>
+          <Typography id={`${type}-action-button-text`}>share {type}</Typography>
+          <Menu
+            anchorEl={anchorShareEl}
+            open={openShare}
+            onClose={closeShareMenu}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem>
+              <EmailShareButton url={url} onShareWindowClose={closeMenu}><EmailIcon><Typography id='action-button-text'>E-Mail</Typography></EmailIcon></EmailShareButton>
+              <FacebookShareButton url={url} hashtag={"#Mapsterpiece"} onShareWindowClose={closeMenu}><FacebookIcon>Facebook</FacebookIcon></FacebookShareButton>
+              <RedditShareButton url={url} onShareWindowClose={closeMenu}><RedditIcon>Reddit</RedditIcon></RedditShareButton>
+              <TwitterShareButton url={url} onShareWindowClose={closeMenu}><TwitterIcon>Reddit</TwitterIcon></TwitterShareButton>
+            </MenuItem>
+          </Menu>
+        </Box>
+      )
+    }
+    return null;
+  }
+
+  // document.addEventListener('mousedown',closeShareMenu)
+
   return (
     <CardActions className="cardActions">
       <Box
@@ -106,10 +162,7 @@ export default function ActionButtons({ type, currentUserName, comments, clickHa
           {comments && comments.length} comments
         </Typography>
       </Box>
-      <Box className="flex-row" id="action-button-container">
-        <ShareIcon id={`${type}-action-icon`} />
-        <Typography id={`${type}-action-button-text`}>share {type}</Typography>
-      </Box>
+      { renderShare() }
       {
         (!isLoggedInUser) ?
           null :

@@ -23,7 +23,7 @@ export default function DuplicateMapModal() {
   }
 
   return (
-    <Modal open={store.currentModal === 'DUPLICATE_MAP_MODAL'}>
+    <Modal open={store.currentModal === 'DUPLICATE_MAP_MODAL'} id = "duplicate-modal">
         <Box
             severity='warning'
             className='popUpBox'
@@ -50,14 +50,14 @@ export default function DuplicateMapModal() {
             <Box className='flex-row' id='modal-buttons'>
                 <Button
                     variant='contained'
-                    id='modal-contained-button'
+                    id='modal-confirm-button'
                     onClick={handleDuplicateMap}
                 >
                     Confirm
                 </Button>
                 <Button
                     variant='outlined'
-                    id='modal-outline-button'
+                    id='modal-close-button'
                     onClick={handleCloseModal}
                 >
                     Cancel

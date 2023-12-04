@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="07c3f21b-ec0d-4bc4-a794-ba71584c343e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/client/src/components/modals/UploadMapErrorModal.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/screens/create/map/CreateMap.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/screens/create/map/CreateMap.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/contexts/store/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/contexts/store/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/appbars/mapDetail/MapDetailTopBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/appbars/mapDetail/MapDetailTopBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/styles/Map.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/styles/Map.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,21 +37,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;sahil&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "sahil",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/client/src/components/screens/home" />
@@ -71,6 +70,12 @@
       <workItem from="1699326425812" duration="1270000" />
       <workItem from="1699735808414" duration="3528000" />
       <workItem from="1699882869108" duration="10439000" />
+      <workItem from="1700860045215" duration="5817000" />
+      <workItem from="1700961778751" duration="3559000" />
+      <workItem from="1701108927405" duration="7438000" />
+      <workItem from="1701486931619" duration="555000" />
+      <workItem from="1701554316274" duration="5693000" />
+      <workItem from="1701563894029" duration="2791000" />
     </task>
     <servers />
   </component>

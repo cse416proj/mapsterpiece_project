@@ -57,6 +57,7 @@ function PostCard({postData, clickHandler, editHandler, deleteHandler}){
 
                 <ActionButtons
                     type='post'
+                    cardId={postData._id}
                     currentUserName={postData.ownerUserName}
                     comments={postData.comments}
                     clickHandler={clickHandler}
