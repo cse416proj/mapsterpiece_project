@@ -65,6 +65,7 @@ export default function MapCard({mapData, clickHandler, editHandler, deleteHandl
                 </Stack>
                 <ActionButtons
                     type='map'
+                    cardId={mapData._id}
                     currentUserName={mapData.ownerUserName}
                     comments={mapData.comments}
                     deleteHandler = {deleteHandler}
