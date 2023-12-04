@@ -50,21 +50,26 @@ function MapEditSideBar() {
     setSelectedColor(color.hex);
   };
 
-  useEffect(() => {
-    console.log(`mapType: ${mapType}`);
-  }, [mapType])
+  const handleSetMapType = (e) => {
+    setMapType(e);
+    mapInfo?.setCurrentMapEditType(e);
+  };
 
-  useEffect(() => {
-    const newType = mapInfo?.currentMap?.mapType;
-    if(newType){
-      setMapType(newType);
-    }
-  }, [mapInfo?.currentMap?.mapType])
+  // useEffect(() => {
+  //   console.log(`mapType: ${mapType}`);
+  // }, [mapType])
 
-  const handleMapTypeChange = (event) => {
-    console.log(`event.target.value: ${event.target.value}`)
-    mapInfo?.setCurrentMapEditType(event.target.value);
-  }
+  // useEffect(() => {
+  //   const newType = mapInfo?.currentMap?.mapType;
+  //   if(newType){
+  //     setMapType(newType);
+  //   }
+  // }, [mapInfo?.currentMap?.mapType])
+
+  // const handleMapTypeChange = (event) => {
+  //   console.log(`event.target.value: ${event.target.value}`)
+  //   mapInfo?.setCurrentMapEditType(event.target.value);
+  // }
 
   return (
     <Sidebar style={sideBarStyle}>
@@ -76,7 +81,8 @@ function MapEditSideBar() {
           <Typography className="sidebar-block-title">Map Type</Typography>
           <Select
             defaultValue={mapType}
-            onChange={handleMapTypeChange}
+            onChange={(e) => handleSetMapType(e.target.value)}
+            // onChange={handleMapTypeChange}
             className="sidebar-block-content"
           >
             <MenuItem value={"REGULAR"}>Regular</MenuItem>
@@ -122,9 +128,9 @@ function MapEditSideBar() {
           {mapType === "REGULAR" ? (
             <CompactPicker color={selectedColor} onChange={handleColorChange} />
           ) : null}
-          {mapType === "HEATMAP" ? (
+          {mapType !== "REGULAR" ? (
             <Stack spacing={2}>
-              {mapInfo?.currentMap?.heatmapData?.data?.map((props) => (
+              {mapInfo?.currentMap?.mapTypeData?.data?.map((props) => (
                 <Stack direction="row" spacing={2}>
                   <Typography>{props.regionName}</Typography>
                   <Typography>{props.value}</Typography>

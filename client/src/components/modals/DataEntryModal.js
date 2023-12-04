@@ -29,8 +29,8 @@ export default function DataEntryModal(props) {
               label="value"
               name="value"
               variant="outlined"
-              error={isNaN(inputValue)}
-              helperText={"Please enter numeric value only"}
+              error={isNaN(inputValue) || inputValue < 0}
+              helperText={"Please enter numeric value that's greater than or equal to 0"}
               fullWidth
               onChange={(e) => setInputValue(e.target.value)}
             />
@@ -43,7 +43,7 @@ export default function DataEntryModal(props) {
               variant="contained"
               style={buttonStyle}
               onClick={handleSubmit}
-              disabled={isNaN(inputValue)} 
+              disabled={isNaN(inputValue) || inputValue < 0} 
             >
               Confirm
             </Button>

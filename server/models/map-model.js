@@ -9,7 +9,7 @@ const MapSchema = new Schema(
     fileFormat: { type: String, required: true },
     mapType: { type: String, required: true },
     mapContent: [{ type: Object, required: true }],
-    heatmapData: {
+    mapTypeData: {
       max: { type: Number, required: true },
       data: [
         {
@@ -17,6 +17,7 @@ const MapSchema = new Schema(
           lng: { type: Number, required: true },
           value: { type: Number, required: true },
           regionName: { type: String, required: true },
+          radius: { type: Number },
         },
       ],
     },

@@ -5,7 +5,7 @@ import api from "./map-request-api";
 import AuthContext from "../auth";
 import GlobalStoreContext from "../store";
 
-const MapContext = createContext();
+const MapContext = createContext({});
 
 export function MapContextProvider({ children }) {
   const { auth } = useContext(AuthContext);
@@ -337,23 +337,22 @@ export function MapContextProvider({ children }) {
     }));
   };
 
-  mapInfo.updateHeatmapData = function (heatmapDataIndividualObj, indexElementTobeChanged) {
+  mapInfo.updateMapTypeData = function (mapDataIndividualObj, indexElementTobeChanged) {
     if (!mapInfo.currentMap) {
       return;
     }
     let oldMap = mapInfo.currentMap;
-    let originalHeatmapData = oldMap.heatmapData ? oldMap.heatmapData : {max: 0, data: []};
-    if (heatmapDataIndividualObj.value > originalHeatmapData.max) {
-      originalHeatmapData.max = heatmapDataIndividualObj.value;
+    let originalMapTypeData = oldMap.mapTypeData ? oldMap.mapTypeData : {max: 0, data: []};
+    if (mapDataIndividualObj.value > originalMapTypeData.max) {
+      originalMapTypeData.max = mapDataIndividualObj.value;
     }
     if (indexElementTobeChanged >= 0) {
-      originalHeatmapData.data[indexElementTobeChanged] = heatmapDataIndividualObj;
+      originalMapTypeData.data[indexElementTobeChanged] = mapDataIndividualObj;
     } else {
-      originalHeatmapData.data.push(heatmapDataIndividualObj);
+      originalMapTypeData.data.push(mapDataIndividualObj);
     }
     
-    oldMap.heatmapData = originalHeatmapData;
-    console.log(oldMap.heatmapData)
+    oldMap.mapTypeData = originalMapTypeData;
     setMapInfo((prevMapInfo) => ({
       ...prevMapInfo,
       currentMap: oldMap,

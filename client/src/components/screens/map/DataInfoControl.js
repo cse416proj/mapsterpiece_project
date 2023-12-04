@@ -25,7 +25,7 @@ export default function DataInfoControl({ type, regionName, property, data }) {
 
   return (
     <Box id="data-info-control">
-      <Typography>{property}</Typography>
+      <Typography>{property}{(regionName)? ` @ ${regionName}` : ''}</Typography>
       {
         (data && data[property]) &&
         <Typography>{data[property]}</Typography>

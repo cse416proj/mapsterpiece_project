@@ -22,4 +22,6 @@ router.delete('/deleteMapComment/:commentId', auth.verify, MapController.deleteM
 // no auth needed because public can view comments
 router.get('/allMapComments/:mapId', MapController.getAllCommentsFromPublishedMap);
 
+router.post('/duplicate/:mapId', auth.verify, MapController.duplicateMap);
+
 module.exports = router;

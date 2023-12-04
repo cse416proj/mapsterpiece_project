@@ -8,7 +8,7 @@ import Alert from "@mui/material/Alert";
 
 import { DataInfoControl, LegendControl } from "../index";
 import MapContext from "../../../../contexts/map";
-import { MapContainer, GeoJSON, ZoomControl,  LayersControl, TileLayer } from "react-leaflet";
+import { MapContainer, GeoJSON, ZoomControl,  LayersControl, TileLayer, CircleMarker } from "react-leaflet";
 import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
 
 function MapScreen() {
@@ -25,8 +25,8 @@ function MapScreen() {
   const [dataEntryModalOpen, setDataEntryModalOpen] = useState(false);
   const dataEditModeRef = useRef();
   dataEditModeRef.current = mapInfo?.currentMapEditType !== "REGULAR";
-  const heatmapDataRef = useRef();
-  heatmapDataRef.current = mapInfo?.currentMap?.heatmapData;
+  const mapTypeDataRef = useRef();
+  mapTypeDataRef.current = mapInfo?.currentMap?.mapTypeData;
   const [initialLoad, setInitialLoad] = useState(true);
   const [regionNameLevel, setRegionNameLevel] = useState("");
   const [heatMapLayer, setHeatMapLayer] = useState(null);
@@ -34,12 +34,29 @@ function MapScreen() {
   const [map, setMap] = useState(null);
   const [selectedRegionProps, setSelectedRegionProps] = useState(null);
   const [indexElementTobeChanged, setIndexElementTobeChanged] = useState(-1);
+  const [geoJsonKey, setGeoJsonKey] = useState(1);
+  const [mapContainterKey, setMapContainterKey] = useState(1);
 
   const [currProp, setCurrProp] = useState('gdp_md');
   const [currLayer, setCurrLayer] = useState(null);
   const [coloredRegion, setColoredRegion] = useState({});
   const [currMaxData, setCurrMaxData] = useState([]);
   const [palette, setpalette] = useState([]);
+
+  const hoverRegionStyle = {
+    color: '#86C9B5',
+    fillOpacity: 0.7,
+    dashArray: '',
+    weight: 5,
+  };
+
+  const defaultRegionStyle = {
+    fillColor: "#FFFFFF",
+    fillOpacity: 0.1,
+    opacity: 1,
+    dashArray: '3',
+    weight: 2
+  };
 
   // determine if we are on map-edit screen or map-detail screen
   useEffect(() => {
@@ -100,79 +117,40 @@ function MapScreen() {
       if(color){
         return {
           fillColor: color,
-          color: color,
-          fillOpacity: 1,
-          dashArray: ''
-        }
+          fillOpacity: 0.7,
+          color: ((JSON.stringify(currLayer?.feature) === JSON.stringify(feature))) ? '#86C9B5' : color,
+          weight: ((JSON.stringify(currLayer?.feature) === JSON.stringify(feature))) ? 5 : 2,
+          dashArray: '',
+        };
       }
       else if(JSON.stringify(currLayer?.feature) === JSON.stringify(feature)){
         console.log('hovering');
-        return {
-          weight: 5,
-          color: '#86C9B5',
-          dashArray: '',
-          fillOpacity: 0.7
-        };
+        return hoverRegionStyle;
       }
       else{
-        return {
-          color: 'white',
-          weight: 2,
-          opacity: 1,
-          dashArray: '3',
-          fillOpacity: 0.7
-        }
+        return defaultRegionStyle;
       }
     }
 
     // 5 MAP TYPES
     if(JSON.stringify(currLayer?.feature) === JSON.stringify(feature)){
       console.log('hovering');
-      return {
-        weight: 5,
-        color: '#86C9B5',
-        dashArray: '',
-        fillOpacity: 0.7
-      };
+      return hoverRegionStyle;
     }
 
     if(mapInfo?.currentMapEditType === "CHOROPLETH"){
       return {
         fillColor: getColor(feature.properties[currProp]),
+        fillOpacity: 0.7,
         color: 'white',
-        weight: 2,
         opacity: 1,
-        dashArray: '3',
-        fillOpacity: 0.7
+        dashArray: '2',
+        weight: 2
       }
     }
 
-    return {
-      color: 'white',
-      weight: 2,
-      opacity: 1,
-      dashArray: '3',
-      fillOpacity: 0.7
-    }
+    return defaultRegionStyle;
   }
-
-  // clear color fill, update map type in map object & determine if this map type suppoesd to edit by data when map type changes in edit screen
-  useEffect(() => {
-    if (geoJsonRef?.current) {
-      geoJsonRef?.current?.resetStyle();
-    }
-
-    setMap((prevMap) => ({
-      ...prevMap,
-      mapType: mapInfo?.currentMapEditType
-    }))
-
-    if (mapInfo?.currentMapEditType === "REGULAR") {
-      dataEditModeRef.current = false;
-    } else {
-      dataEditModeRef.current = true;
-    }
-  }, [mapInfo?.currentMapEditType]);
 
   // update map region names when map changes
   useEffect(() => {
@@ -202,22 +180,24 @@ function MapScreen() {
     setRegionNameLevel(name);
   }, [map]);
 
-  // // auto zoom when load map content into geojson
-  // useEffect(() => {
-  //   if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
-  //     if (Object.values(geoJsonRef.current._layers).length <= 0) {
-  //       return;
-  //     }
-  //     let featureGroup = L.featureGroup(
-  //       Object.values(geoJsonRef.current._layers)
-  //     );
+  // clear color fill, update map type in map object & determine if this map type suppoesd to edit by data when map type changes in edit screen
+  useEffect(() => {
+    if (geoJsonRef?.current) {
+      geoJsonRef?.current?.resetStyle();
+    }
 
-  //     console.log(featureGroup);
+    if (mapInfo?.currentMapEditType === "REGULAR") {
+      dataEditModeRef.current = false;
+    } else {
+      dataEditModeRef.current = true;
+    }
 
-  //     mapContainerRef.current.fitBounds(featureGroup.getBounds());
-  //     setInitialLoad(false);
-  //   }
-  // }, [initialLoad && mapContainerRef?.current && geoJsonRef?.current]);
+    setGeoJsonKey(geoJsonKey + 1);
+    if (mapInfo?.currentMapEditType !== "HEATMAP" && mapContainerRef?.current && heatMapLayer) {
+      mapContainerRef.current.removeLayer(heatMapLayer);
+      setMapContainterKey(mapContainterKey + 1);
+    }
+  }, [mapInfo?.currentMapEditType]);
 
   // render when map type changes
   useEffect(() => {
@@ -236,8 +216,8 @@ function MapScreen() {
         valueField: "value",
       });
 
-      const heatMapdata = map?.heatmapData
-        ? map?.heatmapData
+      const heatMapdata = map?.mapTypeData
+        ? map?.mapTypeData
         : {
             max: 0,
             data: [],
@@ -251,8 +231,8 @@ function MapScreen() {
 
   // set current heatmap data
   useEffect(() => {
-    heatmapDataRef.current = mapInfo?.currentMap?.heatmapData;
-  }, [mapInfo?.currentMap?.heatmapData]);
+    mapTypeDataRef.current = mapInfo?.currentMap?.mapTypeData;
+  }, [mapInfo?.currentMap?.mapTypeData]);
 
   // auto zoom when load map content into geojson
   useEffect(() => {
@@ -277,10 +257,10 @@ function MapScreen() {
   const handleFeatureClick = (event) => {
     const layer = event.sourceTarget;
 
-    const regularMode = (editMode && !dataEditModeRef.current);
+    const regularMap = (editMode && !dataEditModeRef.current);
 
     // REGULAR MAP DISPLAY
-    if(regularMode && layer?.feature) {
+    if(regularMap && layer?.feature) {
       setColoredRegion((prevColoredRegion) => {
         const newColoredRegion = { ...prevColoredRegion };
         const colorKey = getRegionName(layer.feature);
@@ -307,16 +287,19 @@ function MapScreen() {
         region.properties[regionNameLevel] ===
         layer.feature.properties[regionNameLevel]
     );
-    if (index !== -1 && regularMode) {
+    if (index !== -1 && regularMap) {
       mapContentRef.current[index].properties.fillColor = colorRef.current;
       mapInfo.updateMapContent(index, colorRef.current);
     }
 
+    console.log(dataEditModeRef.current);
+
     if (dataEditModeRef.current) {
-      const index = heatmapDataRef?.current?.data?.findIndex(
+      const index = mapTypeDataRef?.current?.data?.findIndex(
         (data) => data.regionName === regionName
       );
       if (index >= 0) {
+        console.log(`index: ${index}`);
         setIndexElementTobeChanged(index);
       }
       setDataEntryModalOpen(true);
@@ -325,24 +308,34 @@ function MapScreen() {
 
   // edit data value for region on click
   const editValue = (value) => {
+    console.log('editValue');
+    console.log(`map.mapType: ${map.mapType}`);
+
+    const mini = 10;
+    const factor = 10;
+    const radius = Math.floor(Math.log(value) * factor) + mini;
+    
     const newDataObj = {
       lat: selectedRegionProps.position.lat,
       lng: selectedRegionProps.position.lng,
       value: value,
       regionName: selectedRegionProps.regionName,
+      radius: radius,
     };
-
-    if (map.mapType === "HEATMAP") {
-      if (indexElementTobeChanged >= 0) {
-        heatmapDataRef.current.data[indexElementTobeChanged] = newDataObj;
-        heatMapLayer.setData(heatmapDataRef.current);
-      } else {
+    
+    if (indexElementTobeChanged >= 0) {
+      mapTypeDataRef.current.data[indexElementTobeChanged] = newDataObj;
+      if (map.mapType === "HEATMAP") {
+        heatMapLayer.setData(mapTypeDataRef.current);
+      }
+    } else {
+      if (map.mapType === "HEATMAP") {
         heatMapLayer.addData(newDataObj);
       }
-
-      mapInfo.updateHeatmapData(newDataObj, indexElementTobeChanged);
-      setIndexElementTobeChanged(-1);
     }
+
+    mapInfo.updateMapTypeData(newDataObj, indexElementTobeChanged);
+    setIndexElementTobeChanged(-1);
   };
 
   // highlight region when hover
@@ -375,8 +368,8 @@ function MapScreen() {
     //     permanent: true,
     //   })
     //   .openTooltip();
-
-    // if (layer.feature.properties.fillColor) {
+    
+    // if (layer.feature.properties.fillColor && !dataEditModeRef.current) {
     //   layer.setStyle({
     //     fillColor: layer.feature.properties.fillColor,
     //     fillOpacity: 1,
@@ -405,6 +398,7 @@ function MapScreen() {
       />
       <MapContainer
         ref={mapContainerRef}
+        key={mapContainterKey}
         id="map-viewer"
         style={{ width: editMode ? "70vw" : "100vw", zIndex: 0 }}
         center={[0, 0]}
@@ -422,6 +416,14 @@ function MapScreen() {
             <TileLayer
               attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+            />
+          </LayersControl.Overlay>
+          <LayersControl.Overlay name="Show Tile Layer (Printing Mode)">
+            <TileLayer
+              attribution='&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.png"
+              minZoom={0}
+              maxZoom={20}
             />
           </LayersControl.Overlay>
         </LayersControl>
@@ -443,11 +445,27 @@ function MapScreen() {
         />
 
         <GeoJSON
+          key={geoJsonKey}
           data={mapContentRef?.current}
           style={getFeatureStyle}
           onEachFeature={onEachFeature}
           ref={geoJsonRef}
         />
+        {map?.mapType === "GRADUATED_SYMBOL" && (
+          <>
+            {mapTypeDataRef?.current?.data?.map((prop) => {
+              return (
+                <CircleMarker
+                  center={[prop.lat, prop.lng]}
+                  radius={prop.radius}
+                  fillOpacity={0.5}
+                  stroke={false}
+                  color={"red"}
+                />
+              );
+            })}
+          </>
+        )}
       </MapContainer>
     </>
   );
