@@ -63,7 +63,7 @@ function MapsCardSection({ data, search, sortBy, currScreen }) {
   }
 
   return (
-    <Box sx={{ width: '97.5%' }}>
+    <Box sx={{ width: '97.5%' }} id="maps-cards">
       {
         filterData?.map((pair, index) => {
           return <DynamicCard key={`map-${index}`} userData={null} mapData={pair} postData={null}/>;

@@ -250,11 +250,11 @@ export default function MapDetailTopBar() {
     <AppBar position="static">
       <Toolbar className="map-screen-topbar">
         {auth.user ? (
-          <Button style={BackButtonStyle} onClick={handleMyMaps}>
+          <Button style={BackButtonStyle} onClick={handleMyMaps} id ="back">
             &lt;&lt; My Maps
           </Button>
         ) : (
-          <Button style={BackButtonStyle} onClick={handleCommunity}>
+          <Button style={BackButtonStyle} onClick={handleCommunity} id ="back">
             &lt;&lt; Back to Community
           </Button>
         )}
