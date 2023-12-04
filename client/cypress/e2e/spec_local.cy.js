@@ -57,17 +57,17 @@ describe('Mapsterpiece local tests', () => {
   // })
 
   // pass
-  // it('dropdown menu test', ()=>{
-  //   cy.visit('http://localhost:3000');
-  //   cy.get('#icon').click();
-  //   cy.get('li[tabindex="-1"]').click();
-  //   cy.url().should('include', '/login');
-  //   cy.get('#icon').click();
-  //   cy.get('li[tabindex="0"]').click();
-  //   cy.url().should('include', '/register');
-  //   cy.get('#logo').click();
-  //   cy.url().should('include', '/');
-  // })
+  it('dropdown menu test', ()=>{
+    cy.visit('http://localhost:3000');
+    cy.get('#icon').click();
+    cy.get('li[tabindex="-1"]').click();
+    cy.url().should('include', '/login');
+    cy.get('#icon').click();
+    cy.get('li[tabindex="0"]').click();
+    cy.url().should('include', '/register');
+    cy.get('#logo').click();
+    cy.url().should('include', '/');
+  })
   
   // // pass
   // it('user create map fail - no file format', ()=>{
@@ -317,34 +317,76 @@ describe('Mapsterpiece local tests', () => {
   //   cy.get('#AllPosts').click();
   // })
 
-  it('user sort maps & posts community screen', ()=>{
-    // user login
-    cy.visit('http://localhost:3000');
-    cy.get('.login').click();
-    cy.url().should('include', '/login');
+  // // pass
+  // it('user sort maps', ()=>{
+  //   // user login
+  //   cy.visit('http://localhost:3000');
+  //   cy.get('.login').click();
+  //   cy.url().should('include', '/login');
 
-    cy.get('input[name = "email"]').clear('bobDD@gmail.com');
-    cy.get('input[name = "email"]').type('bobDD@gmail.com');
-    cy.get('input[name = "password').clear('ThisIsAPassword');
-    cy.get('input[name = "password').type('ThisIsAPassword');
-    cy.get('button[type = "submit"]').click();
-    cy.wait(1000);
+  //   cy.get('input[name = "email"]').clear('bobDD@gmail.com');
+  //   cy.get('input[name = "email"]').type('bobDD@gmail.com');
+  //   cy.get('input[name = "password').clear('ThisIsAPassword');
+  //   cy.get('input[name = "password').type('ThisIsAPassword');
+  //   cy.get('button[type = "submit"]').click();
+  //   cy.wait(1000);
 
-    cy.get('.COMMUNITY').click();
-    cy.url().should('include', '/community');
-    cy.get('#community-text');
+  //   cy.get('.COMMUNITY').click();
+  //   cy.url().should('include', '/community');
+  //   cy.get('#community-text');
 
-    cy.get('#AllMaps').click();
-    cy.get('[data-testid="SortIcon"]').click();
-    cy.get('#Alphabet\\ \\(A-Z\\)').click();
-    cy.get('[data-testid="SortIcon"] > path').click();
-    cy.get('#Most\\ recent\\ publish').click();
+  //   cy.get('#AllMaps').click();
+  //   cy.get('[data-testid="SortIcon"]').click();
+  //   cy.get('#Alphabet\\ \\(A-Z\\)').click();
+  //   cy.wait(1000); 
+  //   cy.get('#maps-cards .map-title').invoke('text').then((mapTitles) => {
+  //     const sortedTitles = mapTitles.split('\n').sort();
+  //     expect(mapTitles).to.equal(sortedTitles.join('\n'));
+  //   });
 
-//   cy.get('#AllPosts').click();
-
-  })
-
-  // it('user search for other user, maps, posts', ()=>{
-  
+  //   cy.get('[data-testid="SortIcon"]').click();
+  //   cy.get('#Alphabet\\ \\(Z-A\\)').click();
+  //   cy.wait(1000); 
+  //   cy.get('#maps-cards .map-title').invoke('text').then((mapTitles) => {
+  //     const sortedTitlesDesc = mapTitles.split('\n').sort().reverse();
+  //     expect(mapTitles).to.equal(sortedTitlesDesc.join('\n'));
+  //   });
   // })
+
+  // pass
+  // it('user sort posts', ()=>{
+  //   // user login
+  //   cy.visit('http://localhost:3000');
+  //   cy.get('.login').click();
+  //   cy.url().should('include', '/login');
+
+  //   cy.get('input[name = "email"]').clear('bobDD@gmail.com');
+  //   cy.get('input[name = "email"]').type('bobDD@gmail.com');
+  //   cy.get('input[name = "password').clear('ThisIsAPassword');
+  //   cy.get('input[name = "password').type('ThisIsAPassword');
+  //   cy.get('button[type = "submit"]').click();
+  //   cy.wait(1000);
+
+  //   cy.get('.COMMUNITY').click();
+  //   cy.url().should('include', '/community');
+  //   cy.get('#community-text');
+
+  //   cy.get('#AllPosts').click();
+  //   cy.get('[data-testid="SortIcon"]').click();
+  //   cy.get('#Alphabet\\ \\(A-Z\\)').click();
+  //   cy.wait(1000); 
+  //   cy.get('#posts-cards .post-title').invoke('text').then((postTitles) => {
+  //     const sortedTitles = postTitles.split('\n').sort();
+  //     expect(postTitles).to.equal(sortedTitles.join('\n'));
+  //   });
+
+  //   cy.get('[data-testid="SortIcon"]').click();
+  //   cy.get('#Alphabet\\ \\(Z-A\\)').click();
+  //   cy.wait(1000); 
+  //   cy.get('#posts-cards .post-title').invoke('text').then((postTitles) => {
+  //     const sortedTitlesDesc = postTitles.split('\n').sort().reverse();
+  //     expect(postTitles).to.equal(sortedTitlesDesc.join('\n'));
+  //   });
+  // })
+
 })

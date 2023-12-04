@@ -52,6 +52,7 @@ export default function MapCard({mapData, clickHandler, editHandler, deleteHandl
                         sx={{ fontSize: 16, fontWeight: `bold` }}
                         color="black"
                         gutterBottom
+                        className="map-title"
                     >
                         {mapData.title}
                     </Typography>

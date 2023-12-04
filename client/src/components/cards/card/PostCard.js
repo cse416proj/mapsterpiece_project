@@ -30,6 +30,7 @@ function PostCard({postData, clickHandler, editHandler, deleteHandler}){
                         sx={{ fontSize: 16, fontWeight: `bold` }}
                         color="black"
                         gutterBottom
+                        className="post-title"
                     >
                         {postData.title}
                     </Typography>

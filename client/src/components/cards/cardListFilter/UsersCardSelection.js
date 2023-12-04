@@ -38,7 +38,7 @@ function UsersCardSection({ data, search, sortBy, currScreen }) {
   }, [data, search, sortBy]);
 
   return (
-    <Box sx={{ width: "97.5%" }}>
+    <Box sx={{ width: "97.5%" }} id="users-cards">
       {filterData.map((pair) => (
         <DynamicCard key={`${pair.userName}`} userData={pair} mapData={null} postData={null} />
       ))}

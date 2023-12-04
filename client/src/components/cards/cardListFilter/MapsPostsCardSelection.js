@@ -53,7 +53,7 @@ function MapsPostsCardSection({ data, search, sortBy, currScreen }) {
   }, [data, search, sortBy]);
 
   return (
-    <Box sx={{ width: '97.5%' }}>
+    <Box sx={{ width: '97.5%' }} id="maps-posts-cards">
       {
         filterData.map((pair, index) => {
           if(pair.hasOwnProperty('fileFormat')){
