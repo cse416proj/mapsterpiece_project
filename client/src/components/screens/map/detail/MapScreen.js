@@ -10,6 +10,7 @@ import { DataInfoControl, LegendControl } from "../index";
 import MapContext from "../../../../contexts/map";
 import { MapContainer, GeoJSON, ZoomControl,  LayersControl, TileLayer, CircleMarker } from "react-leaflet";
 import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
+import tinycolor from "tinycolor2";
 
 function MapScreen() {
   const location = useLocation();
@@ -37,11 +38,14 @@ function MapScreen() {
   const [geoJsonKey, setGeoJsonKey] = useState(1);
   const [mapContainterKey, setMapContainterKey] = useState(1);
 
+  // to be replaced with currentMap.property, currentMap.mapTypeData.max, currentMap.mapTypeData.color later
   const [currProp, setCurrProp] = useState('gdp_md');
+  const [currMaxData, setCurrMaxData] = useState(0);
+  const [currColor, setCurrColor] = useState('#86C9B5');
+
+  const [palette, setPalette] = useState([]);
   const [currLayer, setCurrLayer] = useState(null);
   const [coloredRegion, setColoredRegion] = useState({});
-  const [currMaxData, setCurrMaxData] = useState([]);
-  const [palette, setpalette] = useState([]);
 
   const hoverRegionStyle = {
     color: '#86C9B5',
@@ -73,22 +77,41 @@ function MapScreen() {
     setMap(mapInfo.currentMap);
   }, [mapInfo?.currentMap]);
 
+  // come back later: do sth when color changes
+  useEffect(() => {
+    if(map.mapType === "CHOROPLETH"){
+      const minLight = 0.35;
+      const maxLight = 0.65;
+      
+      // calculate 4 steps away from current color
+      const colorObj = tinycolor(currColor);
+      const palette = new Array(5);
+      const steps = 4;
+      const calcLight = (i) => (i * (maxLight - minLight)) / steps + minLight;
+
+      // generate palette from darkest and lightest
+      for(let i = 0; i < palette.length; i++) {
+        const baseColor = colorObj.clone().toHsl();
+        const outputColor = { ...baseColor, l: calcLight(i) };
+        palette[i] = tinycolor(outputColor).toHexString();
+      }
+
+      // rank from lightest to darkesst
+      setPalette(palette.reverse());
+    }
+  }, [currColor]);
+
   // come back later: do sth when mapContent changes
   useEffect(() => {
     if(mapContentRef?.current){
-      console.log(`mapContentRef?.current start`);
-      console.log(mapContentRef?.current);
-      console.log(`mapContentRef?.current end`);
-
       setCurrMaxData(Math.max(...mapContentRef?.current?.map((feature) => feature.properties[currProp])));
-      setpalette(['#FF0000', '#FF8800', '#FFFF00', '#88FF00', '#00FF00']);
     }
   }, [mapContentRef?.current]);
 
   // get color for corresponding data from each feature
   function getColor(data){
     const levels = 5
-    const step = 14342903 / levels;
+    const step = currMaxData / levels;
 
     const index = Math.min(Math.floor(data / step), levels-1);
     return palette[index];
@@ -292,14 +315,11 @@ function MapScreen() {
       mapInfo.updateMapContent(index, colorRef.current);
     }
 
-    console.log(dataEditModeRef.current);
-
     if (dataEditModeRef.current) {
       const index = mapTypeDataRef?.current?.data?.findIndex(
         (data) => data.regionName === regionName
       );
       if (index >= 0) {
-        console.log(`index: ${index}`);
         setIndexElementTobeChanged(index);
       }
       setDataEntryModalOpen(true);
@@ -308,9 +328,6 @@ function MapScreen() {
 
   // edit data value for region on click
   const editValue = (value) => {
-    console.log('editValue');
-    console.log(`map.mapType: ${map.mapType}`);
-
     const mini = 10;
     const factor = 10;
     const radius = Math.floor(Math.log(value) * factor) + mini;
@@ -323,7 +340,9 @@ function MapScreen() {
       radius: radius,
     };
     
+    // update existing data or add data to region
     if (indexElementTobeChanged >= 0) {
+      console.log(mapTypeDataRef.current.data[indexElementTobeChanged]);
       mapTypeDataRef.current.data[indexElementTobeChanged] = newDataObj;
       if (map.mapType === "HEATMAP") {
         heatMapLayer.setData(mapTypeDataRef.current);
