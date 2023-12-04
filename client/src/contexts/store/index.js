@@ -25,6 +25,7 @@ export const GlobalStoreActionType = {
   SET_DELETE_STATUS: "SET_DELETE_STATUS",
   SET_PUBLISH_STATUS: "SET_PUBLISH_STATUS",
   SET_UNPUBLISH_STATUS: "SET_UNPUBLISH_STATUS",
+  SET_SAVE_STATUS: "SET_SAVE_STATUS",
 };
 
 const CurrentView = {
@@ -44,13 +45,13 @@ const CurrentView = {
   USER_OWNED_MAPS: "USER_OWNED_MAPS",
   USER_OWNED_POSTS: "USER_OWNED_POSTS",
 
-  BIN_MAPS: "BIN_MAPS",
+  PIN_MAPS: "PIN_MAPS",
   CHOROPLETH_MAPS: "CHOROPLETH_MAPS",
   DOT_MAPS: "DOT_MAPS",
   GRAD_MAPS: "GRAD_MAPS",
   HEAT_MAPS: "HEAT_MAPS",
 
-  BIN_POSTS: "BIN_POSTS",
+  PIN_POSTS: "PIN_POSTS",
   CHOROPLETH_POSTS: "CHOROPLETH_POSTS",
   DOT_POSTS: "DOT_POSTS",
   GRAD_POSTS: "GRAD_POSTS",
@@ -78,6 +79,7 @@ function GlobalStoreContextProvider(props) {
     deleteSuccess: false,
     publishSuccess: false,
     unpublishSuccess: false,
+    saveSuccess: false,
 
     currentModal: CurrentModal.NONE,
     currentView: CurrentView.USER_HOME,
@@ -87,13 +89,13 @@ function GlobalStoreContextProvider(props) {
     allMapsPosts: [],
     // allMapsPosts: fakeAllMapsPosts,
 
-    binMaps: null,
+    pinMaps: null,
     choroplethMaps: null,
     dotMaps: null,
     gradMaps: null,
     heatMaps: null,
 
-    binPosts: null,
+    pinPosts: null,
     choroplethPosts: null,
     dotPosts: null,
     gradPosts: null,
@@ -121,6 +123,7 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
           allMaps: payload,
         }));
       case GlobalStoreActionType.LOAD_ALL_POSTS:
@@ -130,6 +133,7 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
           allPosts: payload,
         }));
       case GlobalStoreActionType.LOAD_ALL_USERS:
@@ -139,6 +143,7 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
           allUsers: payload.users,
           allMaps: payload.maps.filter((map) => map.isPublished),
           allPosts: payload.posts
@@ -150,6 +155,7 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
           currentModal: CurrentModal.NONE,
           currentView: payload,
           mapMarked: null,
@@ -165,6 +171,7 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
           currentModal: CurrentModal.DELETE_MAP_MODAL,
           mapMarked: payload,
         }));
@@ -195,6 +202,7 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
           currentModal: CurrentModal.DELETE_ACCOUNT_MODAL,
           accountMarkedForDeletion: payload,
         }));
@@ -205,6 +213,7 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
           currentModal: CurrentModal.DELETE_SUBCOMMENT_MODAL, 
           subcommentMarkedForDeletion: payload,
         }));
@@ -216,6 +225,7 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
           currentModal: CurrentModal.PUBLISH_MAP_MODAL,
           mapMarked: payload,
         }));
@@ -227,6 +237,7 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
           currentModal: CurrentModal.UNPUBLISH_MAP_MODAL,
           mapMarked: payload,
         }));
@@ -237,6 +248,7 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
           currentModal: CurrentModal.ERROR_MODAL,
           errorMsg: payload
         }));
@@ -247,6 +259,7 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
           currentModal: CurrentModal.NONE,
           errorMsg: null
         }));
@@ -257,6 +270,7 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
           currentModal: CurrentModal.NONE,
           mapMarked: null,
           postMarkedForDeletion: null,
@@ -273,6 +287,7 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
           currentModal: CurrentModal.NONE,
         }));
       case GlobalStoreActionType.SET_DELETE_STATUS:
@@ -293,6 +308,7 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: payload,
           unpublishSuccess: false,
+          saveSuccess: false,
           currentModal: CurrentModal.NONE,
         }));
       case GlobalStoreActionType.SET_UNPUBLISH_STATUS:
@@ -303,6 +319,18 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: payload,
+          saveSuccess: false,
+          currentModal: CurrentModal.NONE,
+        }));
+      case GlobalStoreActionType.SET_SAVE_STATUS:
+        console.log(`SET_SAVE_STATUS: ${payload}`)
+        return setStore((prevStore) => ({
+          ...prevStore,
+          createSuccess: false,
+          deleteSuccess: false,
+          publishSuccess: false,
+          unpublishSuccess: false,
+          saveSuccess: payload,
           currentModal: CurrentModal.NONE,
         }));
       default:
@@ -420,6 +448,13 @@ function GlobalStoreContextProvider(props) {
       payload: false
     });
   }
+
+  store.clearSaveSuccess = function(){
+    storeReducer({
+      type: GlobalStoreActionType.SET_SAVE_STATUS,
+      payload: false
+    });
+  }
   
   store.getData = function (currScreen) {
     const  screenDataDict = {
@@ -427,14 +462,14 @@ function GlobalStoreContextProvider(props) {
         ALL_MAPS: store.allMaps,
         USER_OWNED_MAPS: store.allMaps,
         ALL_MAPS_POSTS: store.allMapsPosts,
-        BIN_MAPS: store.binMaps,
+        PIN_MAPS: store.pinMaps,
         CHOROPLETH_MAPS: store.choroplethMaps,
         DOT_MAPS: store.dotMaps,
         GRAD_MAPS: store.gradMaps,
         HEAT_MAPS: store.heatMaps,
         ALL_POSTS: store.allPosts,
         USER_OWNED_POSTS: store.allPosts,
-        BIN_POSTS: store.binPosts,
+        PIN_POSTS: store.pinPosts,
         CHOROPLETH_POSTS: store.choroplethPosts,
         DOT_POSTS: store.dotPosts,
         GRAD_POSTS: store.gradPosts,
@@ -446,7 +481,7 @@ function GlobalStoreContextProvider(props) {
   };
 
   const updateMaps = (allMaps) => ({
-    binMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Bin Map"}),
+    PinMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Pin Map"}),
     choroplethMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Choropleth Map"}),
     dotMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Dot Distribution Map"}),
     gradMaps:allMaps.filter((pair)=>{return pair?.tags[0]==="Graduated Symbol Map"}),
@@ -454,7 +489,7 @@ function GlobalStoreContextProvider(props) {
   });
   
   const updatePosts = (allPosts) => ({
-    binPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Bin Map"}),
+    PinPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Pin Map"}),
     choroplethPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Choropleth Map"}),
     dotPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Dot Distribution Map"}),
     gradPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Graduated Symbol Map"}),
@@ -528,6 +563,7 @@ function GlobalStoreContextProvider(props) {
         deleteSuccess: true,
         publishSuccess: false,
         unpublishSuccess: false,
+        saveSuccess: false,
         currentModal: CurrentModal.NONE,
         allMaps: response.data.maps,
       }));
@@ -541,6 +577,7 @@ function GlobalStoreContextProvider(props) {
       deleteSuccess: false,
       publishSuccess: false,
       unpublishSuccess: false,
+      saveSuccess: false,
       currentModal: CurrentModal.NONE,
       errorMsg: null
     }));
@@ -553,6 +590,7 @@ function GlobalStoreContextProvider(props) {
       deleteSuccess: false,
       publishSuccess: true,
       unpublishSuccess: false,
+      saveSuccess: false,
       currentModal: CurrentModal.NONE,
     }));
   }
@@ -564,9 +602,25 @@ function GlobalStoreContextProvider(props) {
       deleteSuccess: false,
       publishSuccess: false,
       unpublishSuccess: true,
+      saveSuccess: false,
       currentModal: CurrentModal.NONE,
     }));
   }
+  
+  store.saveSuccessAlert = function(){
+    console.log('store.saveSuccessAlert');
+    return setStore((prevStore) => ({
+      ...prevStore,
+      createSuccess: false,
+      deleteSuccess: false,
+      publishSuccess: false,
+      unpublishSuccess: false,
+      saveSuccess: true,
+      currentModal: CurrentModal.NONE,
+      errorMsg: null
+    }));
+  }
+
   //getAllMapsPosts from given user
   store.getAllMapsPosts = function(userMaps, userPosts, user){
     // console.log(user?.userName, auth?.user?.userName);

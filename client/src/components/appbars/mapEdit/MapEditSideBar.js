@@ -12,28 +12,34 @@ import {
 
 import { Tags } from "../../index";
 import MapContext from "../../../contexts/map";
+import GlobalStoreContext from "../../../contexts/store";
 import { CompactPicker } from "react-color";
 
 function MapEditSideBar() {
   const { mapInfo } = useContext(MapContext);
+  const { store } = useContext(GlobalStoreContext);
 
   const [title, setTitle] = useState(mapInfo?.currentMap?.title);
   const [tags, setTags] = useState(mapInfo?.currentMap?.tags);
   const [selectedColor, setSelectedColor] = useState("#ffffff");
-  const [mapType, setMapType] = useState("REGULAR");
+  const [mapType, setMapType] = useState(mapInfo?.currentMap?.mapType ? mapInfo?.currentMap?.mapType : "REGULAR");
   const [isEditingTag, setIsEditingTag] = useState(false);
+  const [legendTitle, setLegendTitle] = useState(mapInfo?.currentMap?.mapTypeData?.legendTitle);
+
   const titleRef = useRef();
   const tagsRef = useRef();
   const mapTypeRef = useRef();
+  const legendTitleRef = useRef();
   titleRef.current = mapInfo?.currentMap?.title;
   tagsRef.current = mapInfo?.currentMap?.tags;
   mapTypeRef.current = mapInfo?.currentMap?.mapType;
+  legendTitleRef.current = mapInfo?.currentMap?.mapTypeData?.legendTitle;
 
   useEffect(() => {
     if(title && tags && mapType) {
-      mapInfo?.updateMapGeneralInfo(title, tags, mapType);
+      mapInfo?.updateMapGeneralInfo(title, tags, mapType, legendTitle);
     }
-  }, [title, tags, mapType]);
+  }, [title, tags, mapType, legendTitle]);
 
   const sideBarStyle = {
     height: "74.5vh",
@@ -53,23 +59,19 @@ function MapEditSideBar() {
   const handleSetMapType = (e) => {
     setMapType(e);
     mapInfo?.setCurrentMapEditType(e);
+
+    const mapTypeList = ["REGULAR", "HEATMAP", "CHOROPLETH", "DOT_DISTRIBUTION", "GRADUATED_SYMBOL", "PINMAP"];
+    const newtags = tags?.filter((tag) => !mapTypeList.includes(tag));
+    if(newtags){
+      setTags([...newtags, e]);
+    }
+    else{
+      setTags([e]);
+    }
   };
 
-  // useEffect(() => {
-  //   console.log(`mapType: ${mapType}`);
-  // }, [mapType])
-
-  // useEffect(() => {
-  //   const newType = mapInfo?.currentMap?.mapType;
-  //   if(newType){
-  //     setMapType(newType);
-  //   }
-  // }, [mapInfo?.currentMap?.mapType])
-
-  // const handleMapTypeChange = (event) => {
-  //   console.log(`event.target.value: ${event.target.value}`)
-  //   mapInfo?.setCurrentMapEditType(event.target.value);
-  // }
+  console.log(mapType);
+  console.log(mapInfo?.currentMapEditType);
 
   return (
     <Sidebar style={sideBarStyle}>
@@ -80,13 +82,12 @@ function MapEditSideBar() {
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Map Type</Typography>
           <Select
-            defaultValue={mapType}
+            defaultValue={(mapType) ? mapType : 'REGULAR'}
             onChange={(e) => handleSetMapType(e.target.value)}
-            // onChange={handleMapTypeChange}
             className="sidebar-block-content"
           >
             <MenuItem value={"REGULAR"}>Regular</MenuItem>
-            <MenuItem value={"BINMAP"}>Bin Map</MenuItem>
+            <MenuItem value={"PINMAP"}>Pin Map</MenuItem>
             <MenuItem value={"CHOROPLETH"}>Choropleth Map</MenuItem>
             <MenuItem value={"DOT_DISTRIBUTION"}>Dot Distribution Map</MenuItem>
             <MenuItem value={"GRADUATED_SYMBOL"}>Graduated Symbol Map</MenuItem>
@@ -101,7 +102,7 @@ function MapEditSideBar() {
           <Input
             className="sidebar-block-content sidebar-input"
             aria-label="title input"
-            placeholder="type new title"
+            placeholder="Type new title"
             onChange={(e) => setTitle(e.target.value)}
             value={title ? title : titleRef.current}
           />
@@ -109,16 +110,18 @@ function MapEditSideBar() {
 
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Tags</Typography>
-          <Tags tags={tags ? tags : tagsRef.current} setTags={setTags} isEditingTag={isEditingTag} setIsEditingTag={setIsEditingTag}/>
+          <Tags style={{ width: '5vw' }} tags={tags ? tags : tagsRef.current} setTags={setTags} isEditingTag={isEditingTag} setIsEditingTag={setIsEditingTag}/>
         </Box>
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Legend</Typography>
           <Box className="legend-title-container sidebar-block-content">
             <Typography>Title: </Typography>
             <Input
-              className="sidebar-input"
-              aria-label="legend-title input"
-              placeholder="enter legend title"
+              className="sidebar-block-content sidebar-input"
+              aria-label="title input"
+              placeholder="Type new title"
+              onChange={(e) => setLegendTitle(e.target.value)}
+              value={legendTitle ? legendTitle : legendTitleRef.current}
             />
           </Box>
         </Box>
@@ -126,12 +129,12 @@ function MapEditSideBar() {
           <Typography className="sidebar-block-title">Map Data</Typography>
           <Box className="sidebar-block-content data-block"></Box>
           {mapType === "REGULAR" ? (
-            <CompactPicker color={selectedColor} onChange={handleColorChange} />
+            <CompactPicker color={selectedColor} onChange={handleColorChange}/>
           ) : null}
           {mapType !== "REGULAR" ? (
             <Stack spacing={2}>
-              {mapInfo?.currentMap?.mapTypeData?.data?.map((props) => (
-                <Stack direction="row" spacing={2}>
+              {mapInfo?.currentMap?.mapTypeData?.data?.map((props, index) => (
+                <Stack key={index} direction="row" spacing={2}>
                   <Typography>{props.regionName}</Typography>
                   <Typography>{props.value}</Typography>
                 </Stack>

@@ -10,6 +10,7 @@ const MapSchema = new Schema(
     mapType: { type: String, required: true },
     mapContent: [{ type: Object, required: true }],
     mapTypeData: {
+      legendTitle: { type: String, required: true },
       max: { type: Number, required: true },
       data: [
         {
@@ -18,6 +19,12 @@ const MapSchema = new Schema(
           value: { type: Number, required: true },
           regionName: { type: String, required: true },
           radius: { type: Number },
+          properties: [
+            {
+              property: { type: String, required: true },
+              value: { type: Schema.Types.Mixed, required: true },
+            }
+          ]
         },
       ],
     },

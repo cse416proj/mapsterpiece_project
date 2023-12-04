@@ -49,7 +49,8 @@ createMap = async (req, res) => {
 
       // come back later, to be removed
       const newPropKeys = propKeys.filter((property) =>
-        (nameRegex.test(property) || property === 'gdp_md')
+        nameRegex.test(property)
+        // (nameRegex.test(property) || property === 'gdp_md')
       );
 
       // keep properties we want
@@ -63,6 +64,8 @@ createMap = async (req, res) => {
     featuresFiltered[i] = currFeature;
   }
 
+  console.log('trying to create map');
+
   // create map
   const newMap = new Map({
     ownerUserName,
@@ -70,7 +73,11 @@ createMap = async (req, res) => {
     fileFormat,
     mapType: "REGULAR",
     mapContent: featuresFiltered,
-    mapTypeData: {max: 0, data: []},
+    mapTypeData: {
+      legendTitle: 'Default legend title',
+      max: 0,
+      data: []
+    },
     tags,
     isPublished: false,
   });
@@ -80,6 +87,8 @@ createMap = async (req, res) => {
       errorMessage: "Create Map failed, please try again.",
     });
   }
+
+  console.log('map is created');
 
   // find user by id & add new map to their map collection
   User.findById(userId, (err, user) => {
@@ -91,31 +100,34 @@ createMap = async (req, res) => {
       return res.status(500).json({ errorMessage: "Username does not match" });
     }
 
+    console.log('user found');
     user.maps.push(newMap);
-    user
+
+    newMap
       .save()
       .then(() => {
-        newMap
-          .save()
-          .then(() => {
-            console.log("success");
-            return res.status(201).json({
-              success: true,
-              map: newMap,
-              message: "A new map has been created successfully!",
+        user
+        .save()
+        .then(() => {
+          console.log("success");
+          return res.status(201).json({
+            success: true,
+            map: newMap,
+            message: "A new map has been created successfully!",
             });
-          })
-          .catch((error) => {
-            return res.status(400).json({
-              error,
-              errorMessage: "Failed to create map, please try again.",
-            });
-          });
+        })
+      })
+      .catch((error) => {
+        console.log(error);
+        return res.status(400).json({
+          error,
+          errorMessage: "Failed to create map, please try again.",
+        });
       })
       .catch((error) => {
         return res.status(400).json({
           error,
-          errorMessage: "Failed to save user's map, please try again.",
+          errorMessage: "Failed to create user's map, please try again.",
         });
       });
   });
@@ -425,12 +437,14 @@ updateMapById = async (req, res) => {
           });
         })
         .catch((error) => {
+          console.log(error);
           return res.status(400).json({
             error,
             errorMessage: "Failed to update user's map, please try again.",
           });
         });
     }).catch((error) => {
+      console.log(error);
       return res.status(400).json({
         error,
         errorMessage: "Failed to update user's map, please try again.",

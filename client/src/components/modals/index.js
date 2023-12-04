@@ -6,6 +6,7 @@ import DeleteAccountModal from './DeleteAccountModal';
 import DeleteCommentModal from './DeleteCommentModal';
 import DeleteSubCommModal from './DeleteSubCommModal';
 import DataEntryModal from './DataEntryModal';
+import PinDataEntryModal from './PinDataEntryModal';
 import SuccessAlert from './SuccessAlert';
 
 const Modals = () => (
@@ -20,4 +21,4 @@ const Modals = () => (
     </>
 );
   
-export { Modals, DataEntryModal, SuccessAlert };
+export { Modals, DataEntryModal, PinDataEntryModal, SuccessAlert };

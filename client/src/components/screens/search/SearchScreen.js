@@ -64,7 +64,7 @@ function SearchScreen(){
                     setListCard(<MapsPostsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
                     break;
                 case "USER_OWNED_MAPS":
-                case "BIN_MAPS":
+                case "PIN_MAPS":
                 case "CHOROPLETH_MAPS":
                 case "DOT_MAPS":
                 case "GRAD_MAPS":
@@ -72,7 +72,7 @@ function SearchScreen(){
                     setListCard(<MapsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
                     break;
                 case "USER_OWNED_POSTS":
-                case "BIN_POSTS":
+                case "PIN_POSTS":
                 case "CHOROPLETH_POSTS":
                 case "DOT_POSTS":
                 case "GRAD_POSTS":

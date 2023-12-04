@@ -238,13 +238,73 @@
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     border-radius: 5px;
 }
-    
-#data-info-control {
-    top: 10px;
-    right: 10px;
-}
 
 #legend-control{
-    bottom: 10px;
-    right: 10px;
+    width: 15vw;
+    min-height: 8vh;
+    bottom: 1vh;
+    right: 1vh;
+    justify-content: center;
+    align-items: center;
+}
+
+#legend-row{
+    width: 80%;
+    justify-content: flex-start;
+    margin: auto;
+}
+
+#legend-color-box{
+    width: 3.5vh;
+    height: 3.5vh;
+    display: inline-block;
+    margin-right: 1.5vw;
+}
+
+#data-info-container{
+    width: 15vw;
+    min-height: 8vh;
+}
+
+#data-entry-box{
+    z-index: 2550;
+    height: 60vh;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+
+#pin-icon{
+    height: 5vh;
+    width: 5vh;
+    color: var(--secondary-color);
+}
+
+#data-entry-title{
+    width: 15vw;
+    justify-content: space-around;
+}
+
+#data-entry-divider{
+    width: 97.5%;
+    margin: 2vh auto 0 auto;
+    border: 0.1vh solid var(--secondary-color);
+}
+
+#data-entry-container{
+    height: 25vh;
+    width: 90%;
+    justify-content: space-between;
+}
+
+#data-entry{
+    width: 90%;
+    justify-content: space-around;
+}
+
+#data-entry-buttons{
+    height: 6.5vh;
+    width: 62.5%;
+    justify-content: space-around;
 }

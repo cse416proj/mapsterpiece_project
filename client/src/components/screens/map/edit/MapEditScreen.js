@@ -20,6 +20,7 @@ export default function MapEditScreen() {
 
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [publishSuccess, setPublishSuccess] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   useEffect(() => {
     store.closeModal();
@@ -69,6 +70,29 @@ export default function MapEditScreen() {
     }
   }, [publishSuccess]);
 
+  // update & redirect if map got successfully published
+  useEffect(() => {
+    console.log(`saveSuccess: ${store?.saveSuccess}`)
+    if((store?.saveSuccess === true)){
+      setSaveSuccess(true);
+    }
+    else{
+      setSaveSuccess(false);
+    }
+  }, [store?.saveSuccess]);
+
+  useEffect(() => {
+    console.log(`saveSuccess: ${saveSuccess}`);
+    if(saveSuccess === true){
+        console.log('done saving');
+        setTimeout(() => {
+          store.clearSaveSuccess();
+          navigate('/');
+          // mapInfo?.getMapById(mapId);
+        }, 2250);
+    }
+  }, [saveSuccess]);
+
   if(!auth.user){
     return <Warning message='You have no permission to access this page. Please login first if you think you are the owner!'/>
   }
@@ -78,6 +102,7 @@ export default function MapEditScreen() {
       <MapEditTopBar/>
       { deleteSuccess && <SuccessAlert type='map-delete'/> }
       { publishSuccess && <SuccessAlert type='map-publish'/> }
+      { saveSuccess && <SuccessAlert type='map-save'/> }
       <Box
         className="map-screen-container"
         style={{ 

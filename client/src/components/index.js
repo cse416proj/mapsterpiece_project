@@ -27,6 +27,7 @@ export {
 export {
     Modals,
     DataEntryModal,
+    PinDataEntryModal,
     SuccessAlert
 } from './modals';
 

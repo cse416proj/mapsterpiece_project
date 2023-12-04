@@ -24,6 +24,10 @@ export default function SuccessAlert({type}){
                 setMsg(`${typeName} has been created successfully!`)
                 setIcon(<DoneRoundedIcon style={iconStyle}/>)
                 break;
+            case 'map-save':
+                setMsg('Map has been saved successfully!')
+                setIcon(<DoneRoundedIcon style={iconStyle}/>)
+                break;
             case 'map-delete':
                 setMsg('Map has been deleted successfully!')
                 setIcon(<DeleteForeverIcon style={iconStyle}/>)
@@ -52,7 +56,9 @@ export default function SuccessAlert({type}){
                 }}
             >
                 <AlertTitle style={{ fontSize: '2.25vw' }}>{ msg }</AlertTitle>
-                <Typography variant='h6' style={{ fontSize: '1.5vw' }}>Redirecting...</Typography>
+                <Typography variant='h6' style={{ fontSize: '1.5vw' }}>
+                    {(type === 'map-save') ? 'Refreshing...' : 'Redirecting...'}
+                </Typography>
             </Alert>
         </Box>
     );

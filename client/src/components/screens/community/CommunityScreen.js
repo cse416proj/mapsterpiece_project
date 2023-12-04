@@ -43,7 +43,7 @@ export default function CommunityScreen() {
           setListCard(<UsersCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
           break;
         case "ALL_MAPS":
-        case "BIN_MAPS":
+        case "PIN_MAPS":
         case "CHOROPLETH_MAPS":
         case "DOT_MAPS":
         case "GRAD_MAPS":
@@ -51,7 +51,7 @@ export default function CommunityScreen() {
           setListCard(<MapsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
           break;
         case "ALL_POSTS":
-        case "BIN_POSTS":
+        case "PIN_POSTS":
         case "CHOROPLETH_POSTS":
         case "DOT_POSTS":
         case "GRAD_POSTS":

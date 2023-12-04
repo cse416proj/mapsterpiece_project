@@ -1,16 +1,17 @@
 import { useState, useContext, useEffect, useRef } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import { Modals, DataEntryModal } from "../../../index";
+import { Modals, DataEntryModal, PinDataEntryModal } from "../../../index";
 // import html2canvas from 'html2canvas';
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
-import Alert from "@mui/material/Alert";
 
 import { DataInfoControl, LegendControl } from "../index";
 import MapContext from "../../../../contexts/map";
-import { MapContainer, GeoJSON, ZoomControl,  LayersControl, TileLayer, CircleMarker } from "react-leaflet";
+import { MapContainer, GeoJSON, ZoomControl,  LayersControl, TileLayer, CircleMarker, Marker, Popup } from "react-leaflet";
 import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
 import tinycolor from "tinycolor2";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import { Typography, Box } from "@mui/material";
 
 function MapScreen() {
   const location = useLocation();
@@ -24,6 +25,7 @@ function MapScreen() {
   const colorRef = useRef();
   const [editMode, setEditMode] = useState(false);
   const [dataEntryModalOpen, setDataEntryModalOpen] = useState(false);
+  const [pinDataEntryModal, setPinDataEntryModal] = useState(false);
   const dataEditModeRef = useRef();
   dataEditModeRef.current = mapInfo?.currentMapEditType !== "REGULAR";
   const mapTypeDataRef = useRef();
@@ -39,11 +41,18 @@ function MapScreen() {
   const [mapContainterKey, setMapContainterKey] = useState(1);
 
   // to be replaced with currentMap.property, currentMap.mapTypeData.max, currentMap.mapTypeData.color later
-  const [currProp, setCurrProp] = useState('gdp_md');
-  const [currMaxData, setCurrMaxData] = useState(0);
+  // const [currProp, setCurrProp] = useState('gdp_md');
+  const [currProp, setCurrProp] = useState('property');
+  const [currMaxData, setCurrMaxData] = useState(mapInfo?.currentMap?.mapTypeData?.max);
   const [currColor, setCurrColor] = useState('#86C9B5');
+  const [latLng, setLatLng] = useState(null);
+  const [pinMapTypeData, setPinMapTypeData] = useState({
+    property1: '',
+    property2: '',
+    property3: '',
+  });
 
-  const [palette, setPalette] = useState([]);
+  // const [palette, setPalette] = useState([]);
   const [currLayer, setCurrLayer] = useState(null);
   const [coloredRegion, setColoredRegion] = useState({});
 
@@ -77,43 +86,68 @@ function MapScreen() {
     setMap(mapInfo.currentMap);
   }, [mapInfo?.currentMap]);
 
-  // come back later: do sth when color changes
-  useEffect(() => {
-    if(map.mapType === "CHOROPLETH"){
-      const minLight = 0.35;
-      const maxLight = 0.65;
+  // // if map type changes & it is choropleth map, find the palette
+  // useEffect(() => {
+  //   if(map?.mapType === "CHOROPLETH" || mapInfo?.currentMapEditType === "CHOROPLETH"){
+  //     const minLight = 0.35;
+  //     const maxLight = 0.65;
       
-      // calculate 4 steps away from current color
-      const colorObj = tinycolor(currColor);
-      const palette = new Array(5);
-      const steps = 4;
-      const calcLight = (i) => (i * (maxLight - minLight)) / steps + minLight;
+  //     // calculate 4 steps away from current color
+  //     const colorObj = tinycolor('#86C9B5');
+  //     const palette = new Array(5);
+  //     const steps = 4;
+  //     const calcLight = (i) => (i * (maxLight - minLight)) / steps + minLight;
 
-      // generate palette from darkest and lightest
-      for(let i = 0; i < palette.length; i++) {
-        const baseColor = colorObj.clone().toHsl();
-        const outputColor = { ...baseColor, l: calcLight(i) };
-        palette[i] = tinycolor(outputColor).toHexString();
-      }
+  //     // generate palette from darkest and lightest
+  //     for(let i = 0; i < palette.length; i++) {
+  //       const baseColor = colorObj.clone().toHsl();
+  //       const outputColor = { ...baseColor, l: calcLight(i) };
+  //       palette[i] = tinycolor(outputColor).toHexString();
+  //     }
 
-      // rank from lightest to darkesst
-      setPalette(palette.reverse());
+  //     // rank from lightest to darkesst
+  //     setPalette(palette.reverse());
+  //   }
+  // }, [map?.mapType]);
+
+  // // come back later: do sth when mapContent changes for choropleth
+  // useEffect(() => {
+  //   if(mapContentRef?.current){
+  //     setCurrMaxData(Math.max(...mapContentRef?.current?.map((feature) => feature.properties[currProp])));
+  //   }
+  // }, [mapContentRef?.current]);
+
+  function getPalette(){
+    const minLight = 0.35;
+    const maxLight = 0.65;
+    
+    // calculate 4 steps away from current color
+    const colorObj = tinycolor('#86C9B5');
+    const palette = new Array(5);
+    const steps = 4;
+    const calcLight = (i) => (i * (maxLight - minLight)) / steps + minLight;
+
+    // generate palette from darkest and lightest
+    for(let i = 0; i < palette.length; i++) {
+      const baseColor = colorObj.clone().toHsl();
+      const outputColor = { ...baseColor, l: calcLight(i) };
+      palette[i] = tinycolor(outputColor).toHexString();
     }
-  }, [currColor]);
 
-  // come back later: do sth when mapContent changes
-  useEffect(() => {
-    if(mapContentRef?.current){
-      setCurrMaxData(Math.max(...mapContentRef?.current?.map((feature) => feature.properties[currProp])));
-    }
-  }, [mapContentRef?.current]);
+    return palette.reverse();
+  }
 
   // get color for corresponding data from each feature
   function getColor(data){
+    const palette = getPalette();
+    console.log(palette)
+
     const levels = 5
-    const step = currMaxData / levels;
+    const max = (currMaxData) ? currMaxData : mapInfo?.currentMap?.mapTypeData?.max;
+    const step = max / levels;
 
     const index = Math.min(Math.floor(data / step), levels-1);
+    
     return palette[index];
   }
 
@@ -147,7 +181,6 @@ function MapScreen() {
         };
       }
       else if(JSON.stringify(currLayer?.feature) === JSON.stringify(feature)){
-        console.log('hovering');
         return hoverRegionStyle;
       }
       else{
@@ -157,13 +190,24 @@ function MapScreen() {
 
     // 5 MAP TYPES
     if(JSON.stringify(currLayer?.feature) === JSON.stringify(feature)){
-      console.log('hovering');
       return hoverRegionStyle;
     }
 
-    if(mapInfo?.currentMapEditType === "CHOROPLETH"){
+    // CHOROPLETH MAP HAS TO FILL COLORS BY INTENSITY
+    if(map?.mapType === "CHOROPLETH"){
+      let i = -1;
+      for(i = 0; i < map.mapTypeData?.data?.length; i++){
+        const currData = map.mapTypeData?.data[i];
+        if(currData.regionName === getRegionName(feature)){
+          break;
+        }
+      }
+
+      console.log(`index: ${i}`)
+
       return {
-        fillColor: getColor(feature.properties[currProp]),
+        // fillColor: (i > -1) ? getColor(feature.properties[currProp]) : 'white',
+        fillColor: (i>-1 && map.mapTypeData?.data[i]) ? getColor(map.mapTypeData?.data[i].value) : 'white',
         fillOpacity: 0.7,
         color: 'white',
         opacity: 1,
@@ -250,6 +294,14 @@ function MapScreen() {
       mapContainerRef.current.addLayer(initialHeatMapLayer);
       setHeatMapLayer(initialHeatMapLayer);
     }
+    else if(map.mapType === "PINMAP"){
+      console.log(map?.mapTypeData);
+      const pinMapData = map?.mapTypeData
+        ? map?.mapTypeData
+        : {
+            data: []
+          };
+    }
   }, [mapContainerRef?.current && geoJsonRef?.current, map?.mapType]);
 
   // set current heatmap data
@@ -272,7 +324,7 @@ function MapScreen() {
     }
   }, [initialLoad && mapContainerRef?.current && geoJsonRef?.current]);
 
-  if (!mapInfo || !mapContentRef?.current) {
+  if (!mapInfo) {
     return null;
   }
 
@@ -315,14 +367,22 @@ function MapScreen() {
       mapInfo.updateMapContent(index, colorRef.current);
     }
 
-    if (dataEditModeRef.current) {
+    if (editMode && dataEditModeRef.current) {
       const index = mapTypeDataRef?.current?.data?.findIndex(
         (data) => data.regionName === regionName
       );
       if (index >= 0) {
+        console.log(`index: ${index}`);
         setIndexElementTobeChanged(index);
       }
-      setDataEntryModalOpen(true);
+
+      if(map?.mapType === "PINMAP"){
+        setPinDataEntryModal(true);
+        setLatLng([position.lat, position.lng]);
+      }
+      else{
+        setDataEntryModalOpen(true);
+      }
     }
   };
 
@@ -338,7 +398,10 @@ function MapScreen() {
       value: value,
       regionName: selectedRegionProps.regionName,
       radius: radius,
+      properties: []
     };
+
+    setCurrMaxData(Math.max(currMaxData, value));
     
     // update existing data or add data to region
     if (indexElementTobeChanged >= 0) {
@@ -357,9 +420,40 @@ function MapScreen() {
     setIndexElementTobeChanged(-1);
   };
 
+  // add pin for region on cilck
+  const createPin = (newProperties) => {
+    console.log(newProperties);
+
+    const existingData = indexElementTobeChanged >= 0;
+
+    const value = (existingData && mapTypeDataRef.current?.data[indexElementTobeChanged]?.value) ?
+                    mapTypeDataRef.current.data[indexElementTobeChanged].value :
+                    0;
+
+    const radius = (existingData && mapTypeDataRef.current?.data[indexElementTobeChanged]?.radius) ?
+                    mapTypeDataRef.current.data[indexElementTobeChanged].radius :
+                    0;
+
+    const newDataObj = {
+      lat: selectedRegionProps.position.lat,
+      lng: selectedRegionProps.position.lng,
+      value: value,
+      regionName: selectedRegionProps.regionName,
+      radius: radius,
+      properties: newProperties
+    };
+
+    // update existing data
+    if(indexElementTobeChanged >= 0) {
+      mapTypeDataRef.current.data[indexElementTobeChanged] = newDataObj;
+    }
+
+    mapInfo.updateMapTypeData(newDataObj, indexElementTobeChanged);
+    setIndexElementTobeChanged(-1);
+  }
+
   // highlight region when hover
   const highlightFeature = (event) => {
-    console.log('highlightFeature');
     const layer = event.sourceTarget;
     layer.bringToFront();
     setCurrLayer(layer);
@@ -367,7 +461,6 @@ function MapScreen() {
 
   // reset style when not hover
   const resetHighlight = (event) => {
-    console.log('resetHighlight');
     const layer = event.sourceTarget;
     geoJsonRef?.current?.resetStyle(layer);
     setCurrLayer(null);
@@ -407,6 +500,16 @@ function MapScreen() {
     });
   };
 
+  const closePinDataEntryModal = () => {
+    setPinDataEntryModal(false);
+    setLatLng(null);
+    setPinMapTypeData({
+      property1: '',
+      property2: '',
+      property3: ''
+    });
+  }
+
   const mapContent = (
     <>
       <Modals/>
@@ -414,6 +517,14 @@ function MapScreen() {
         isOpen={dataEntryModalOpen}
         handleClose={() => setDataEntryModalOpen(false)}
         setData={editValue}
+      />
+      <PinDataEntryModal
+        isOpen={pinDataEntryModal}
+        createPin={createPin}
+        handleClose={closePinDataEntryModal}
+        latLng={latLng}
+        mapTypeData={pinMapTypeData}
+        setMapTypeData={setPinMapTypeData}
       />
       <MapContainer
         ref={mapContainerRef}
@@ -450,16 +561,17 @@ function MapScreen() {
         <ZoomControl position='topleft'/>
 
         <DataInfoControl
-          type={mapInfo?.currentMapEditType}
+          type={(map?.mapType) ? map?.mapType : mapInfo?.currentMapEditType}
           property={currProp}
           regionName={getRegionName(currLayer?.feature)}
           data={currLayer?.feature?.properties}
+          mapTypeData={mapTypeDataRef?.current?.data}
         />
 
         <LegendControl
-          legendTitle='legend'
-          type={mapInfo?.currentMapEditType}
-          max={currMaxData}
+          legendTitle={mapInfo?.currentMap?.mapTypeData?.legendTitle}
+          type={(map?.mapType) ? map?.mapType : mapInfo?.currentMapEditType}
+          max={(currMaxData) ? currMaxData : mapInfo?.currentMap?.mapTypeData?.max}
           getColor={getColor}
         />
 
@@ -481,6 +593,39 @@ function MapScreen() {
                   stroke={false}
                   color={"red"}
                 />
+              );
+            })}
+          </>
+        )}
+        {map?.mapType === "PINMAP" && (
+          <>
+            {mapTypeDataRef?.current?.data?.map((prop) => {
+              const icon = L.icon({
+                iconUrl: markerIcon,
+                iconSize: [25, 41],
+                iconAnchor: [12, 41]
+              })
+              return (
+                <Marker
+                  position={[prop.lat, prop.lng]}
+                  title={prop?.regionName}
+                  alt={`marker for ${prop?.regionName}`}
+                  icon={icon}
+                >
+                  <Popup>
+                    {
+                      (prop.properties.length === 0) ?
+                        `No properties has added for ${prop?.regionName} yet.` :
+                        <Box className='flex-column'>
+                          {
+                            prop.properties.map((property) => {
+                              return <Typography variant='p'>{property.property}: {property.value}</Typography>
+                            })
+                          }
+                        </Box>
+                    }
+                  </Popup>
+                </Marker>
               );
             })}
           </>

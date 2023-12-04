@@ -54,9 +54,11 @@ export default function MapEditTopBar() {
         userInfo.setCurrentUser(auth.user);
         navigate(`/profile/${auth.user._id}`);
     }
+    
     function handleExportPNG(){
         console.log("export PNG file");
     }
+
     function handleExportJPG(){
         console.log("export JPG file.");
     }
@@ -70,8 +72,25 @@ export default function MapEditTopBar() {
 
     function handleSaveMap(){
         console.log("save this map");
-        mapInfo.updateMapById(mapInfo.currentMap._id);
-        navigate('/');
+
+        if(mapInfo.currentMap){
+            const trimmedTitle = mapInfo.currentMap.title?.replace(/(\s|\r\n|\n|\r)/gm, '');
+            const trimmedLegendTitle = mapInfo.currentMap.mapTypeData?.legendTitle?.replace(/(\s|\r\n|\n|\r)/gm, '');
+
+            if(trimmedTitle.length <= 0){
+                mapInfo.setErrorMsg(`Cannot enter blank value for map's title!`);
+                return;
+            }
+            else if(trimmedLegendTitle.length <= 0){
+                mapInfo.setErrorMsg(`Cannot enter blank value for a map's legend title!`);
+                return;
+            }
+            else{
+                // setStartSaving(true);
+                mapInfo.updateMapById(mapInfo.currentMap._id);
+                // navigate('/');
+            }
+        }
     }
 
     function handleDeleteMap(event) {

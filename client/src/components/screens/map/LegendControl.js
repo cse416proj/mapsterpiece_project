@@ -1,7 +1,8 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography } from '@mui/material';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
 
 export default function LegendInfoControl({ legendTitle, type, max, getColor }) {
-    if(!type || type === "REGULAR"){
+    if(!type || type === 'REGULAR'){
         return null;
     }
 
@@ -14,27 +15,55 @@ export default function LegendInfoControl({ legendTitle, type, max, getColor }) 
     });
 
     function renderLegend(){
-        return(
-            levelArray.map((range, index) => (
-                <Box key={index}>
-                    <Box style={{ background: getColor(range.start + 1), width: '20px', height: '20px', display: 'inline-block' }}></Box>
+        if(type === 'CHOROPLETH'){
+            if(!max){
+                return <Typography>No data has been provided.</Typography>;
+            }
+            return(
+                <>
+                    <Box className='flex-row' id='legend-row'>
+                        <Box id='legend-color-box' style={{ background: 'white', borderColor: '#86C9B5' }}></Box>
+                        <Typography variant='p'>No data</Typography>
+                    </Box>
+
                     {
-                        (index < levelArray.length - 1)?
-                            (
-                                `${range.start}-${range.end}`
-                            ) :
-                            (
-                                `${range.start}+`
-                            )
+                        levelArray.map((range, index) => (
+                            <Box key={index} className='flex-row' id='legend-row'>
+                                <Box id='legend-color-box' style={{ background: getColor(range.start + 1) }}></Box>
+                                {
+                                    (index < levelArray.length - 1)?
+                                        (
+                                            `${range.start}-${range.end}`
+                                        ) :
+                                        (
+                                            `${range.start}+`
+                                        )
+                                }
+                            </Box>
+                        ))
                     }
+                </>
+            )
+        }
+        else if(type === 'PINMAP'){
+            return(
+                <Box className='flex-row' id='legend-row'>
+                    <Box
+                        component='img'
+                        alt='Pin marker'
+                        src={`${markerIcon}`}
+                        style={{ width: '1vw', marginRight: '1vw' }}
+                    />
+                    <Typography>Pin marker</Typography>
                 </Box>
-            ))
-        )
+            );
+        }
+        return;
     }
 
     return (
-      <Box id="legend-control">
-        <Typography>{legendTitle}</Typography>
+      <Box id='legend-control'>
+        <Typography variant='h6'>{legendTitle}</Typography>
         { renderLegend() }
       </Box>
     )

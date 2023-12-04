@@ -31,7 +31,7 @@ export function MapContextProvider({ children }) {
     CHOROPLETH: "CHOROPLETH",
     DOT_DISTRIBUTION: "DOT_DISTRIBUTION",
     GRADUATED_SYMBOL: "GRADUATED_SYMBOL",
-    BINMAP: "BINMAP",
+    PINMAP: "PINMAP",
   }
 
   const MapActionType = {
@@ -114,12 +114,6 @@ export function MapContextProvider({ children }) {
   mapInfo.createMap = async function (newMap) {
     const { title, fileFormat, mapContent, tags } = newMap;
 
-    // if (!title || !fileFormat || !mapContent || !tags) {
-    //   store.setError(
-    //     "Please enter all fields: title/ fileFormat/ fileContent/ tags."
-    //   );
-    // }
-
     // create map for user
     const user = auth.user;
     if (user) {
@@ -134,6 +128,7 @@ export function MapContextProvider({ children }) {
         }
       }
       catch (error) {
+        console.log((error.response?.data?.errorMessage) ? error.response?.data?.errorMessage : "Error creating a new map.");
         store.setError((error.response?.data?.errorMessage) ? error.response?.data?.errorMessage : "Error creating a new map.");
       }
     }
@@ -314,7 +309,7 @@ export function MapContextProvider({ children }) {
     }));
   };
 
-  mapInfo.updateMapGeneralInfo = function (title, tags, mapType) {
+  mapInfo.updateMapGeneralInfo = function (title, tags, mapType, legendTitle) {
     if (!mapInfo.currentMap) {
       return;
     }
@@ -328,6 +323,10 @@ export function MapContextProvider({ children }) {
 
     oldMap.mapType = mapType;
 
+    if (legendTitle) {
+      oldMap.mapTypeData.legendTitle = legendTitle;
+    }
+
     if (!title && !tags) {
       return;
     }
@@ -338,25 +337,36 @@ export function MapContextProvider({ children }) {
   };
 
   mapInfo.updateMapTypeData = function (mapDataIndividualObj, indexElementTobeChanged) {
-    if (!mapInfo.currentMap) {
-      return;
+    try{
+      if (!mapInfo.currentMap) {
+        return;
+      }
+
+      console.log('mapInfo.updateMapTypeData');
+      console.log('mapDataIndividualObj');
+      console.log(mapDataIndividualObj);
+      console.log(`indexElementTobeChanged: ${indexElementTobeChanged}`);
+
+      let oldMap = mapInfo.currentMap;
+      let originalMapTypeData = oldMap.mapTypeData ? oldMap.mapTypeData : {max: 0, data: []};
+      if (mapDataIndividualObj.value > originalMapTypeData.max) {
+        originalMapTypeData.max = mapDataIndividualObj.value;
+      }
+      if (indexElementTobeChanged >= 0) {
+        originalMapTypeData.data[indexElementTobeChanged] = mapDataIndividualObj;
+      } else {
+        originalMapTypeData.data.push(mapDataIndividualObj);
+      }
+      
+      oldMap.mapTypeData = originalMapTypeData;
+      setMapInfo((prevMapInfo) => ({
+        ...prevMapInfo,
+        currentMap: oldMap,
+      }));
     }
-    let oldMap = mapInfo.currentMap;
-    let originalMapTypeData = oldMap.mapTypeData ? oldMap.mapTypeData : {max: 0, data: []};
-    if (mapDataIndividualObj.value > originalMapTypeData.max) {
-      originalMapTypeData.max = mapDataIndividualObj.value;
+    catch(error){
+      console.log((error.response?.data?.errorMessage) ? error.response?.data?.errorMessage : "Error updating map type data.");
     }
-    if (indexElementTobeChanged >= 0) {
-      originalMapTypeData.data[indexElementTobeChanged] = mapDataIndividualObj;
-    } else {
-      originalMapTypeData.data.push(mapDataIndividualObj);
-    }
-    
-    oldMap.mapTypeData = originalMapTypeData;
-    setMapInfo((prevMapInfo) => ({
-      ...prevMapInfo,
-      currentMap: oldMap,
-    }));
   };
 
   mapInfo.updateMapLikeDislike = async function (mapId, isLike) {
@@ -377,8 +387,10 @@ export function MapContextProvider({ children }) {
     try {
       const response = await api.updateMapById(mapId, mapInfo.currentMap);
       if (response.status === 200) {
+        console.log('start saving');
+        store.saveSuccessAlert();
         await mapInfo.getMapsByMapIds(auth.user.maps);
-        navigate("/");
+        // navigate("/");
       }
     }
     catch (error) {
@@ -460,6 +472,13 @@ export function MapContextProvider({ children }) {
     mapReducer({
       type: MapActionType.SET_ALL_MAPS_FROM_USER,
       payload: maps
+    });
+  }
+
+  mapInfo.setErrorMsg = function(msg){
+    mapReducer({
+      type: MapActionType.SET_ERROR_MSG,
+      payload: msg
     });
   }
 
