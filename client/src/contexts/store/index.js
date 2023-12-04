@@ -323,6 +323,8 @@ function GlobalStoreContextProvider(props) {
   };
 
   store.markSubcommentForDeletion = function (subcommentData){
+    console.log('markSubcommentForDeletion');
+    console.log(subcommentData);
     storeReducer({
       type: GlobalStoreActionType.MARK_SUBCOMMENT_FOR_DELETION,
       payload: subcommentData,

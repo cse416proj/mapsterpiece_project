@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import api from "./map-request-api";
 import AuthContext from "../auth";
 import GlobalStoreContext from "../store";
+import {PostActionType} from "../post";
 
 const MapContext = createContext({});
 
@@ -29,6 +30,7 @@ export function MapContextProvider({ children }) {
     LOAD_ALL_MAPS_FROM_USER: "LOAD_ALL_MAPS_FROM_USER",
     SET_CURRENT_REGION_COLOR: "SET_CURRENT_REGION_COLOR",
     SET_CURRENT_COMMENT: "SET_CURRENT_COMMENT",
+    SET_CURRENT_SUBCOMMENT: "SET_CURRENT_SUBCOMMENT",
     SET_ERROR_MSG: "SET_ERROR_MSG"
     // SET_DOWNLOAD_FORMAT: 'SET_DOWNLOAD_FORMAT',
     // CANCEL_DOWNLOAD: 'CANCEL_DOWNLOAD',
@@ -64,6 +66,12 @@ export function MapContextProvider({ children }) {
           ...prevMapInfo,
           currentComment: payload,
         }));
+      case MapActionType.SET_CURRENT_SUBCOMMENT:
+        return setMapInfo({
+          ...mapInfo,
+          currentMap: mapInfo.currentMap,
+          currentCommentIndex: payload.comment,
+        });
       case MapActionType.SET_ERROR_MSG:
         return setMapInfo((prevMapInfo) => ({
           ...prevMapInfo,
@@ -393,8 +401,96 @@ export function MapContextProvider({ children }) {
     });
   };
 
+  mapInfo.setCurrentSubcomment = function(commentPayload, subcommentPayload) {
+    console.log("Setting subcomment: ", commentPayload, subcommentPayload)
+    mapReducer({
+      type: MapActionType.SET_CURRENT_SUBCOMMENT,
+      payload: {
+        comment: commentPayload,
+        subcomment: subcommentPayload
+      },
+    });
+  };
+
   mapInfo.deleteCommentById = async function (commentId) {
     console.log(`delete map comment by id: ${commentId}`);
+    const response = await api.deleteCommentById(commentId);
+    if (response.data.error){
+      setMapInfo({
+        ...mapInfo,
+        errorMessage: response.data.error,
+      });
+    }else{
+      let tempIds = mapInfo.currentMap.comments;
+      console.log(tempIds);
+      const index = tempIds.indexOf(commentId);
+      if (index > -1){
+        tempIds.splice(index, 1);
+      }
+      if (tempIds.length > 0) {
+        mapInfo.getCommentsByCommentIds(tempIds);
+      } else {
+        mapReducer({
+          type: MapActionType.UPDATE_ALL_COMMENTS,
+          payload: []
+        });
+      }
+    }
+  };
+
+  mapInfo.createSubcomment = async function (
+      commentId,
+      commenterUserName,
+      content
+  ) {
+    console.log(commentId, commenterUserName, content);
+    const response = await api.createSubcomment(
+        commentId,
+        commenterUserName,
+        content
+    );
+    console.log(response)
+    mapInfo.getMapById(mapInfo.currentMap._id);
+  };
+
+  mapInfo.deleteSubCommentById = async function (subId){
+    // delete current subcomment
+    const response = await api.deleteSubCommentById(subId);
+    if(response.status === 200){
+      const parentCommentId = mapInfo.currentCommentIndex?._id;
+      if(!parentCommentId){
+        return;
+      }
+
+      // obtain new subcomment list
+      const subcommentResponse = await api.getSubcommsByParentCommsId(parentCommentId);
+      if(subcommentResponse.status === 200){
+        const newSubcomments = subcommentResponse.data;
+
+        // reflect this update to allCommentsForPost
+        var newAllCommentsForPost = mapInfo.allCommentsForPost.slice().map((comment) => {
+          if(comment._id === parentCommentId){
+            comment.subComments = newSubcomments;
+          }
+          return comment;
+        });
+
+        mapReducer({
+          type: MapActionType.UPDATE_ALL_COMMENTS,
+          payload: newAllCommentsForPost
+        });
+
+        return;
+      }
+    }
+
+    // print error if exists
+    if (response.data.error){
+      setMapInfo({
+        ...mapInfo,
+        errorMessage: response.data.error,
+      });
+    }
   };
 
   return (

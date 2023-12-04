@@ -677,6 +677,71 @@ duplicateMap = async (req, res) => {
   }
 };
 
+createSubcomment = async (req, res) => {
+  console.log("Entered create subcomment server")
+  const commentId = req.params.commentId;
+  const { commenterUserName, content } = req.body;
+
+  Comment.findById(commentId, (err, comment) => {
+    if (err) {
+      return res.status(500).json({ errorMessage: err.message });
+    } else if (!comment) {
+      return res.status(404).json({ errorMessage: "Comment not found" });
+    }
+
+    const newSubcomment = new Subcomment({
+      commenterUserName: commenterUserName,
+      content: content,
+    });
+
+    comment.subComments.push(newSubcomment);
+    comment.save().then(() => {
+      newSubcomment.save().then(() => {
+        return res.status(201).json({
+          message: "Subcomment created successfully!",
+          subcomment: newSubcomment,
+        });
+      });
+    });
+  });
+};
+
+deleteSubCommentById = async (req, res) => {
+  const subId = req.params.subId;
+  if(!subId){
+    return res.status(400).json({ errorMessage: "No comment ID found." });
+  }
+
+  Subcomment.findById(subId, (err, subcomment) =>{
+    if (err) {
+      return res.status(500).json({ errorMessage: err.message });
+    }
+
+    async function findComment(){
+      try{
+        const comment = await Comment.findOne({subComments: subId});
+        if (!comment){
+          return res.status(404).json({ errorMessage: 'Comment not found.' });
+        }
+
+        comment.subComments.pull(subId);
+        await comment.save();
+        await subcomment.remove();
+
+        return res.status(200).json({
+          message: 'subcomment deleted successfully!',
+          comment: subcomment,
+        });
+
+      } catch(err) {
+        return res.status(500).json({errorMessage: err.message});
+      }
+    }
+
+    findComment();
+  })
+};
+
 module.exports = {
   createMap,
   getMapById,
@@ -691,5 +756,7 @@ module.exports = {
   getAllCommentsFromPublishedMap,
   deleteMapCommentById,
   likeDislikeMapById,
-  duplicateMap
+  duplicateMap,
+  createSubcomment,
+  deleteSubCommentById
 };

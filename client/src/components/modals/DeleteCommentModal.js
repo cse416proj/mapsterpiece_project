@@ -22,13 +22,14 @@ export default function DeleteCommentModal() {
     event.stopPropagation();
     event.preventDefault();
     console.log("on click confirm delete comment");
-    console.log()
-    // if(isMap){
-    //   mapInfo.deleteCommentById(store.commentMarkedForDeletion._id);
-    // }
-    // else{
-    //   postInfo.deleteCommentById(store.commentMarkedForDeletion._id);
-    // }
+    console.log(store.currentView);
+    // postInfo.deleteCommentById(store.commentMarkedForDeletion._id);
+    if(store.currentView==="MAP_VIEW"){
+      mapInfo.deleteCommentById(store.commentMarkedForDeletion._id);
+    }
+    else{
+      postInfo.deleteCommentById(store.commentMarkedForDeletion._id);
+    }
     store.closeModal();
   }
 

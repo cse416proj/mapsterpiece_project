@@ -274,7 +274,7 @@ export default function MapDetailTopBar(){
               anchorEl={anchorEl}
               open={open}
               onClose={closeMenu}
-              onmouseleave={closeMenu}
+              onMouseLeave={closeMenu}
               MenuListProps={{
                 "aria-labelledby": "basic-button",
               }}

@@ -66,6 +66,22 @@ export const createMapComment = (mapId, commenterUserName, content) => {
   })
 }
 
+export const createSubcomment = (commentId, commenterUserName, content) => {
+  console.log("API", content)
+  return api.post(`/createSubcomment/${commentId}`, {
+    commenterUserName: commenterUserName,
+    content: content,
+  });
+};
+
+export const deleteCommentById =(commentId) => {
+  return api.delete(`/deleteMapComment/${commentId}`);
+}
+
+export const getSubcommsByParentCommsId = (commentId) => {
+  return api.get(`/getSubComments/${commentId}`);
+}
+
 const apis = {
   createMap,
   deleteMapById,
@@ -78,7 +94,10 @@ const apis = {
   updateMapById, 
   getAllCommentsFromPublishedMap,
   createMapComment,
-  likeDislikeMapById
+  likeDislikeMapById,
+  createSubcomment,
+  deleteCommentById,
+  getSubcommsByParentCommsId
 };
 
 export default apis;

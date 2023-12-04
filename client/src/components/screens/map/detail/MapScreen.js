@@ -7,11 +7,14 @@ import * as L from "leaflet";
 
 import MapContext from "../../../../contexts/map";
 import { MapContainer, GeoJSON } from "react-leaflet";
+import GlobalStoreContext from "../../../../contexts/store";
 
 function MapScreen() {
   const location = useLocation();
   // const { mapId } = useParams();
   const { mapInfo } = useContext(MapContext);
+  // const { store } = useContext(GlobalStoreContext);
+  // store.setCurrentView("MAP_VIEW");
 
   const mapContainerRef = useRef(null);
   const mapContentRef = useRef(null);

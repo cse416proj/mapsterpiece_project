@@ -25,6 +25,8 @@ export default function MapComment({ payload }) {
   const [subcomment, setSubcomment] = useState('');
   const [expanded, setExpanded] = useState(false);
   const [addActive, setAddActive] = useState(false);
+  const [commentInput, setInput] = useState("");
+  const [expandSubcomments, setExpandSubcomments] = useState(false);
 
   // function handleVisitProfile(event){
   //   event.stopPropagation();
@@ -52,6 +54,7 @@ export default function MapComment({ payload }) {
     event.stopPropagation();
     console.log('handle delete comment');
     mapInfo.setCurrentComment(payload);
+    store.setCurrentView("MAP_VIEW");
     store.markCommentForDeletion(payload);
   };
 
@@ -59,18 +62,25 @@ export default function MapComment({ payload }) {
     event.preventDefault();
     event.stopPropagation();
     setSubcomment(event.target.value);
+    setInput(event.target.value);
   }
 
   const handleAddSubcomments = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    console.log('handle add subcomment');
+    console.log('handle add subcomment', commentInput, payload);
+    mapInfo.createSubcomment(payload._id, auth.user.userName, commentInput);
+    setAddActive(false);
+    setExpandSubcomments(expandSubcomments);
   };
 
   const handleDeleteSubcomment = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    console.log('handle delete subcomment');
+    console.log('handle delete subcomment', payload);
+    mapInfo.setCurrentSubcomment(payload, subcomment);
+    store.setCurrentView("MAP_VIEW");
+    store.markSubcommentForDeletion(subcomment);
   };
 
   function renderCardActions(){
@@ -93,7 +103,9 @@ export default function MapComment({ payload }) {
     )
   }
 
-  const fakeSubComments = [ { commenterUserName: 'me', content: 'bruh'  }, { commenterUserName: 'me', content: 'sadge'  } ]
+  //const fakeSubComments = [ { commenterUserName: 'me', content: 'bruh'  }, { commenterUserName: 'me', content: 'sadge'  } ]
+  const fakeSubComments = []
+  console.log(payload.subComments);
 
   return (
     <Card id='comment-card' style={ (expanded) ? { minHeight: '100%' } : { minHeight: '20vh' } }>
@@ -119,7 +131,7 @@ export default function MapComment({ payload }) {
             null
         }
        {
-        fakeSubComments.map((subcomm, index) => (
+        payload?.subComments?.map((subcomm, index) => (
           <>
             <MapSubComment key={index} subcomment={subcomm} deleteHandler={handleDeleteSubcomment}/>
             {/* {
