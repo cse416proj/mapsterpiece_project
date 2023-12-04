@@ -89,6 +89,13 @@ export default function MapDetailTopBar(){
     store.markMapForUnpublish(mapInfo.currentMap);
   };
 
+  function handleMyMaps(){
+    navigate(`/profile/${auth.user._id}`);
+}
+function handleCommunity(){
+    navigate('/community');
+}
+
   function handleExportPNG() {
     console.log("export PNG file");
   }
@@ -228,7 +235,21 @@ export default function MapDetailTopBar(){
   return(
     <AppBar position='static'>
       <Toolbar className="map-screen-topbar">
-        <Button style = {BackButtonStyle} id ="back" onClick={() => navigate(-1)}> &lt;&lt; go back</Button>
+      {auth.user?
+                 <Button
+                    style = {BackButtonStyle}
+                    onClick={handleMyMaps}
+                    id ="back"
+                    >
+                    &lt;&lt; My Maps
+                </Button>
+                : <Button
+                style = {BackButtonStyle}
+                onClick = {handleCommunity}
+                id ="back">
+                    &lt;&lt; Back to Community
+                </Button>
+            }
         <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>{title}</Typography>
         <Box className='flex-row' id='tags-container'>
           {
