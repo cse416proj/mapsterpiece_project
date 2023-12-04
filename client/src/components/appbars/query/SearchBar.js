@@ -235,7 +235,7 @@ export default function SearchBar(props) {
     if (inputRef.current) {
       setSearchInput('');
       inputRef.current.value = '';
-      inputRef.focus();
+      inputRef.current.focus();
     }
   }
 
