@@ -516,7 +516,8 @@ getAllCommentsFromPublishedMap = async (req, res) => {
       return res.status(400).json({ errorMessage: "Map is not published." });
     }
 
-    const comments = await Comment.find({ _id: { $in: map.comments } });
+    const comments = await Comment.find({ _id: { $in: map.comments } }).populate('subComments');
+
     return res.status(200).json({ comments });
   } catch (error) {
     // console.error(error);

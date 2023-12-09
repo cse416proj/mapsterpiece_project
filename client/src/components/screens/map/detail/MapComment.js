@@ -105,7 +105,7 @@ export default function MapComment({ payload }) {
 
   //const fakeSubComments = [ { commenterUserName: 'me', content: 'bruh'  }, { commenterUserName: 'me', content: 'sadge'  } ]
   const fakeSubComments = []
-  console.log(payload.subComments);
+  // console.log(payload.subComments);
 
   return (
     <Card id='comment-card' style={ (expanded) ? { minHeight: '100%' } : { minHeight: '20vh' } }>

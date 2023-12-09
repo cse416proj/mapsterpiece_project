@@ -33,7 +33,6 @@ export default function DataInfoControl({ type, regionName, property, data, mapT
       }
 
       const result = (i > -1 && mapTypeData) ? mapTypeData[i] : null;
-      console.log(result)
 
       if(type === 'CHOROPLETH'){
         return(
@@ -72,7 +71,6 @@ export default function DataInfoControl({ type, regionName, property, data, mapT
         )
       }
       else{
-        console.log(result)
 
         return(
           (mapTypeData?.length === 0) ?

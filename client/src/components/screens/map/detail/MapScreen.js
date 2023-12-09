@@ -195,7 +195,6 @@ function MapScreen() {
       return defaultRegionStyle;
     }
 
-    console.log('five map types');
     // 5 MAP TYPES
     if(JSON.stringify(currLayer?.feature) === JSON.stringify(feature)){
       return hoverRegionStyle;
