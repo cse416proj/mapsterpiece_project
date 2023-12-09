@@ -54,7 +54,7 @@ function CreateMap(){
     const [missingTitle, setMissingTitle] = useState(false);
     const [missingFileFormat, setMissingFileFormat] = useState(false);
 
-    console.log(fileFormat);
+    // console.log(fileFormat);
 
     // reset success alert when first enter
     useEffect(() => {

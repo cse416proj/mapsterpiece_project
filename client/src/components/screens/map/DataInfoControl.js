@@ -27,13 +27,13 @@ export default function DataInfoControl({ type, regionName, property, data, mapT
       for(i = 0; i < mapTypeData?.length; i++){
         const currData = mapTypeData[i];
         if(currData.regionName === regionName){
-          console.log(`matches ${regionName}`);
+          // console.log(`matches ${regionName}`);
           break;
         }
       }
 
       const result = (i > -1 && mapTypeData) ? mapTypeData[i] : null;
-      console.log(result)
+      // console.log(result)
 
       if(type === 'CHOROPLETH'){
         return(
@@ -72,7 +72,7 @@ export default function DataInfoControl({ type, regionName, property, data, mapT
         )
       }
       else{
-        console.log(result)
+        // console.log(result)
 
         return(
           (mapTypeData?.length === 0) ?

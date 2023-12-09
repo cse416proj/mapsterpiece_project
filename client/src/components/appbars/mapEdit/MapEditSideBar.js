@@ -8,6 +8,7 @@ import {
   Input,
   Toolbar,
   Stack,
+  Chip,
 } from "@mui/material";
 
 import { Tags } from "../../index";
@@ -22,9 +23,13 @@ function MapEditSideBar() {
   const [title, setTitle] = useState(mapInfo?.currentMap?.title);
   const [tags, setTags] = useState(mapInfo?.currentMap?.tags);
   const [selectedColor, setSelectedColor] = useState("#ffffff");
-  const [mapType, setMapType] = useState(mapInfo?.currentMap?.mapType ? mapInfo?.currentMap?.mapType : "REGULAR");
+  const [mapType, setMapType] = useState(
+    mapInfo?.currentMap?.mapType ? mapInfo?.currentMap?.mapType : "REGULAR"
+  );
   const [isEditingTag, setIsEditingTag] = useState(false);
-  const [legendTitle, setLegendTitle] = useState(mapInfo?.currentMap?.mapTypeData?.legendTitle);
+  const [legendTitle, setLegendTitle] = useState(
+    mapInfo?.currentMap?.mapTypeData?.legendTitle
+  );
 
   const titleRef = useRef();
   const tagsRef = useRef();
@@ -36,7 +41,7 @@ function MapEditSideBar() {
   legendTitleRef.current = mapInfo?.currentMap?.mapTypeData?.legendTitle;
 
   useEffect(() => {
-    if(title && tags && mapType) {
+    if (title && tags && mapType) {
       mapInfo?.updateMapGeneralInfo(title, tags, mapType, legendTitle);
     }
   }, [title, tags, mapType, legendTitle]);
@@ -60,18 +65,21 @@ function MapEditSideBar() {
     setMapType(e);
     mapInfo?.setCurrentMapEditType(e);
 
-    const mapTypeList = ["REGULAR", "HEATMAP", "CHOROPLETH", "DOT_DISTRIBUTION", "GRADUATED_SYMBOL", "PINMAP"];
+    const mapTypeList = [
+      "REGULAR",
+      "HEATMAP",
+      "CHOROPLETH",
+      "DOT_DISTRIBUTION",
+      "GRADUATED_SYMBOL",
+      "PINMAP",
+    ];
     const newtags = tags?.filter((tag) => !mapTypeList.includes(tag));
-    if(newtags){
+    if (newtags) {
       setTags([...newtags, e]);
-    }
-    else{
+    } else {
       setTags([e]);
     }
   };
-
-  console.log(mapType);
-  console.log(mapInfo?.currentMapEditType);
 
   return (
     <Sidebar style={sideBarStyle}>
@@ -82,8 +90,8 @@ function MapEditSideBar() {
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Map Type</Typography>
           <Select
-            defaultValue='REGULAR'
-            value={mapType ? mapType : 'REGULAR'}
+            defaultValue="REGULAR"
+            value={mapType ? mapType : "REGULAR"}
             onChange={(e) => handleSetMapType(e.target.value)}
             className="sidebar-block-content"
           >
@@ -111,7 +119,13 @@ function MapEditSideBar() {
 
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Tags</Typography>
-          <Tags style={{ width: '5vw' }} tags={tags ? tags : tagsRef.current} setTags={setTags} isEditingTag={isEditingTag} setIsEditingTag={setIsEditingTag}/>
+          <Tags
+            style={{ width: "5vw" }}
+            tags={tags ? tags : tagsRef.current}
+            setTags={setTags}
+            isEditingTag={isEditingTag}
+            setIsEditingTag={setIsEditingTag}
+          />
         </Box>
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Legend</Typography>
@@ -129,16 +143,20 @@ function MapEditSideBar() {
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Map Data</Typography>
           <Box className="sidebar-block-content data-block"></Box>
-          {mapType === "REGULAR" ? (
-            <CompactPicker color={selectedColor} onChange={handleColorChange}/>
+          {mapType === "REGULAR" || mapType === "GRADUATED_SYMBOL" ? (
+            <CompactPicker color={selectedColor} onChange={handleColorChange} />
           ) : null}
           {mapType !== "REGULAR" ? (
-            <Stack spacing={2}>
+            <Stack spacing={1} style={{marginTop: `10px`}}>
               {mapInfo?.currentMap?.mapTypeData?.data?.map((props, index) => (
-                <Stack key={index} direction="row" spacing={2}>
-                  <Typography>{props.regionName}</Typography>
-                  <Typography>{props.value}</Typography>
-                </Stack>
+                <Chip
+                  key={index}
+                  label={`${props.regionName}: ${props.value}`}
+                  style={{backgroundColor: `#dfe9eb`, width: `50%`}}
+                  onDelete={() => {
+                    mapInfo?.deleteMapTypeData(props.regionName);
+                  }}
+                />
               ))}
             </Stack>
           ) : null}
