@@ -1,7 +1,4 @@
 import React, { useContext, useState, useEffect } from "react";
-import AuthContext from "../../../../contexts/auth";
-import { PostContext } from "../../../../contexts/post";
-import { GlobalStoreContext } from "../../../../contexts/store";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -18,7 +15,11 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { PostComment, Tag, DeletePostModal } from "../../../index";
+import { PostComment, Tag, Modals, Warning } from "../../../index";
+
+import AuthContext from "../../../../contexts/auth";
+import { PostContext } from "../../../../contexts/post";
+import { GlobalStoreContext } from "../../../../contexts/store";
 
 export default function PostDetailScreen() {
   const navigate = useNavigate();
@@ -128,8 +129,16 @@ export default function PostDetailScreen() {
     }
   };
 
-  if (!postInfo || !postInfo.currentPost) {
+  if (!postInfo) {
     return null;
+  }
+
+  if(!postInfo.currentPost){
+    return <Warning message='Post not found'/>;
+  }
+
+  if(postInfo?.errorMessage){
+    return <Warning message={postInfo?.errorMessage}/>;
   }
 
   return (
@@ -203,7 +212,7 @@ export default function PostDetailScreen() {
           ) : null
         }
       </Box>
-      <DeletePostModal/>
+      <Modals/>
     </Box>
   );
 }

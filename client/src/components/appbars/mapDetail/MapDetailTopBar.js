@@ -10,7 +10,7 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Alert
+  Alert,
 } from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
@@ -32,17 +32,17 @@ import {
   RedditShareButton, TwitterIcon, TwitterShareButton
 } from "react-share";
 
-export default function MapDetailTopBar(){
+export default function MapDetailTopBar() {
   const BackButtonStyle = {
-    color: 'black',
-    fontSize: '15px',
-    fontWeight: 'bold',
-  }
-  const toolButtonStyle={
-    backgroundColor: '#E9E1FF',
-    color: 'black',
-    fontWeight: 'bold',
-  }
+    color: "black",
+    fontSize: "15px",
+    fontWeight: "bold",
+  };
+  const toolButtonStyle = {
+    backgroundColor: "#E9E1FF",
+    color: "black",
+    fontWeight: "bold",
+  };
 
   const { auth } = useContext(AuthContext);
   const { mapInfo } = useContext(MapContext);
@@ -52,7 +52,7 @@ export default function MapDetailTopBar(){
   const { mapId } = useParams();
   const navigate = useNavigate();
 
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
   const [tags, setTags] = useState([]);
   const [likes, setLikes] = useState([]);
   const [dislikes, setDislikes] = useState([]);
@@ -63,26 +63,28 @@ export default function MapDetailTopBar(){
 
   useEffect(() => {
     setHasUnpublished(false);
+    if(mapInfo?.currentMap?.likedUsers && mapInfo?.currentMap?.dislikedUsers){
+      setLikes(mapInfo.currentMap.likedUsers);
+      setDislikes(mapInfo.currentMap.dislikedUsers);
+    }
   }, []);
 
   useEffect(() => {
-    if(mapInfo?.currentMap){
+    if (mapInfo?.currentMap) {
       setTitle(mapInfo.currentMap.title);
       setTags(mapInfo.currentMap.tags);
-      setLikes(mapInfo.currentMap.likedUsers);
-      setDislikes(mapInfo.currentMap.dislikedUsers);
-      setHasUnpublished((!mapInfo?.currentMap?.isPublished) ? true : false);
+      setHasUnpublished(!mapInfo?.currentMap?.isPublished ? true : false);
     }
   }, [mapInfo?.currentMap]);
 
   // once unpublished, redirect
   useEffect(() => {
-    if(hasUnpublished){
-      console.log('hasUnpublished');
+    if (hasUnpublished) {
+      console.log("hasUnpublished");
       navigate(`/map-edit/${mapId}`);
     }
   }, [hasUnpublished]);
-  
+
   // mark map & open modal when user clicks on delete map
   function handleDeleteMap(event) {
     event.stopPropagation();
@@ -91,13 +93,19 @@ export default function MapDetailTopBar(){
   }
 
   // mark map & open modal when user clicks on unpublish map
-  function handleUnpublishMap(event){
+  function handleUnpublishMap(event) {
     event.stopPropagation();
     event.preventDefault();
     store.markMapForUnpublish(mapInfo.currentMap);
-  };
+  }
 
-  function handleMyMaps(){
+  // redirect user to view community / their own profile
+  function handleCommunity() {
+    navigate("/community");
+  }
+
+  function handleMyMaps() {
+    userInfo.setCurrentUser(auth.user);
     navigate(`/profile/${auth.user._id}`);
 }
 function handleCommunity(){
@@ -127,8 +135,7 @@ function handleCommunity(){
     console.log("share this map");
     event.stopPropagation();
     event.preventDefault();
-    // console.log(`event.currentTarget: ${event.currentTarget}`);
-    setAnchorEl(event.currentTarget);
+    // setAnchorEl(event.currentTarget);
   }
 
   const openMenu = (event) => {
@@ -142,7 +149,7 @@ function handleCommunity(){
   // update likedUsers array when user click on like
   function handleLikeMap() {
     if (!auth.user) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
     const userLikedMap = likes.find(
@@ -167,7 +174,7 @@ function handleCommunity(){
   // update dislikedUsers array when user click on like
   function handleDislikeMap() {
     if (!auth.user) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
@@ -204,7 +211,7 @@ function handleCommunity(){
           )}
           <t style={{ color: "black" }}> {likes.length} </t>
         </IconButton>
-        
+
         <IconButton id="dislike-button" onClick={handleDislikeMap}>
           {dislikes?.includes(auth?.user?._id) ? (
             <ThumbDownIcon style={{ color: "black" }}></ThumbDownIcon>
@@ -219,74 +226,82 @@ function handleCommunity(){
     );
   }
 
-  function renderActionButtons(){
+  function renderActionButtons() {
     let buttonSet = [
-      { text: 'Delete', handler: handleDeleteMap },
-      { text: 'Unpublish', handler: handleUnpublishMap },
-      { text: 'Fork', handler: handleForkMap },
-      { text: 'Share Link', handler:handleShareMap },
-      { text: 'Export/Download', handler: handleExportJPG}
-    ]
-    
-    if(mapId && auth?.user){
+      { text: "Delete", handler: handleDeleteMap },
+      { text: "Unpublish", handler: handleUnpublishMap },
+      { text: "Fork", handler: handleForkMap },
+      { text: "Share Link", handler: handleShareMap },
+      { text: "Export/Download", handler: handleExportJPG },
+    ];
+
+    if (mapId && auth?.user) {
       // logged in but non-owner
-      if(!auth.user.maps?.includes(mapId)){
+      if (!auth.user.maps?.includes(mapId)) {
         buttonSet = buttonSet.slice(2);
       }
-    }
-    else{
+    } else {
       // not logged in -> guest
       buttonSet = buttonSet.slice(3);
     }
 
     return buttonSet.map((btn, index) => (
-      <Button key={index} variant="contained" style={toolButtonStyle} onClick={btn.handler}>{btn.text}</Button>)
-    )
+      <Button
+        key={index}
+        variant="contained"
+        style={toolButtonStyle}
+        onClick={btn.handler}
+      >
+        {btn.text}
+      </Button>
+    ));
   }
 
-  return(
-    <AppBar position='static'>
+  return (
+    <AppBar position="static">
       <Toolbar className="map-screen-topbar">
-      {auth.user?
-                 <Button
-                    style = {BackButtonStyle}
-                    onClick={handleMyMaps}
-                    id ="back"
-                    >
-                    &lt;&lt; My Maps
-                </Button>
-                : <Button
-                style = {BackButtonStyle}
-                onClick = {handleCommunity}
-                id ="back">
-                    &lt;&lt; Back to Community
-                </Button>
-            }
-        <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>{title}</Typography>
-        <Box className='flex-row' id='tags-container'>
-          {
-            (tags.length === 0) ?
-                null :
-                <>
-                  <Typography id='post-tags-text' style={{ color: 'black' }}>Tags:</Typography>
-                  { tags.map((tag, index) => {
-                    return <Tag key={index} index={index} tag={tag} removeTag={null}/>;
-                  })}
-                </>
-          }
+        {auth.user ? (
+          <Button style={BackButtonStyle} onClick={handleMyMaps} id ="back">
+            &lt;&lt; My Maps
+          </Button>
+        ) : (
+          <Button style={BackButtonStyle} onClick={handleCommunity} id ="back">
+            &lt;&lt; Back to Community
+          </Button>
+        )}
+
+        <Typography
+          sx={{ fontWeight: `bold`, color: `black`, fontSize: `30px` }}
+        >
+          {title}
+        </Typography>
+
+        <Box className="flex-row" id="tags-container">
+          {tags?.length === 0 ? null : (
+            <>
+              <Typography id="post-tags-text" style={{ color: "black" }}>
+                Tags:
+              </Typography>
+              {tags?.map((tag, index) => {
+                return (
+                  <Tag key={index} index={index} tag={tag} removeTag={null} />
+                );
+              })}
+            </>
+          )}
         </Box>
 
         <Box className="map-button-container">
           <Menu
-              id = "share-menu"
-              style={{ zIndex: '2500' }}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={closeMenu}
-              onmouseleave={closeMenu}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
-              }}
+            id = "share-menu"
+            style={{ zIndex: '2500' }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={closeMenu}
+            onmouseleave={closeMenu}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
           >
             <MenuItem>
               <EmailShareButton url={window.location.href} onShareWindowClose={closeMenu}><EmailIcon>E-Mail</EmailIcon></EmailShareButton>

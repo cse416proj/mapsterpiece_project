@@ -76,8 +76,7 @@ export default function MapDetailTopBar(){
     function handleShareMap(event){
         event.stopPropagation();
         event.preventDefault();
-        console.log("share this map");
-        setAnchorEl(event.currentTarget);
+        // setAnchorEl(event.currentTarget);
     }
 
     const closeMenu = () => {

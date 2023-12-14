@@ -1,14 +1,13 @@
 import { useContext } from 'react';
 import { Box, Button, Avatar, Typography } from '@mui/material';
-import AuthContext from '../../../contexts/auth';
-import UserContext from '../../../contexts/user';
-import { GlobalStoreContext } from "../../../contexts/store";
-import { DeleteAccountModal } from "../../index";
 
+import { Modals } from "../../index";
+
+import AuthContext from '../../../contexts/auth';
+import { GlobalStoreContext } from "../../../contexts/store";
 
 function ProfileCard({ initials, name, userName, numMaps, numPosts, isLoggedInUser }){
     const { auth } = useContext(AuthContext);
-    const { userInfo } = useContext(UserContext);
     const { store } = useContext(GlobalStoreContext);
 
     function markAccountForDeletion(){
@@ -32,13 +31,13 @@ function ProfileCard({ initials, name, userName, numMaps, numPosts, isLoggedInUs
                         <Typography variant='p' id='user-name'>{ userName }</Typography>
                     </Box>
                     <Box className='flex-row' id='user-stats'>
-                        <Typography variant='p' className='stats'>{ numMaps } Maps</Typography>
-                        <Typography variant='p' className='stats'>{ numPosts } Posts</Typography>
+                        <Typography variant='p' className='stats'>{ numMaps } {(numMaps > 1) ? 'Maps' : 'Map'}</Typography>
+                        <Typography variant='p' className='stats'>{ numPosts } {(numPosts > 1) ? 'Posts' : 'Post'}</Typography>
                     </Box>
                     { renderDeleteAccountButton() }
                 </Box>
             </Box>
-            <DeleteAccountModal />
+            <Modals/>
         </Box>
     );
 }

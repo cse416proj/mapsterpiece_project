@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { Box, TextField, Button } from '@mui/material';
 import Tag from './Tag';
 
-function Tags({tags, setTags}){
+function Tags({tags, setTags, isEditingTag, setIsEditingTag}){
     const [tag, setTag] = useState('');
-    const [isEditing, setIsEditing] = useState(false);
-    const [tagError, setTagError] = useState(false);
+    const [tagError, setTagError] = useState('');
 
+    // handle adding tag
     const handleAddTag = () => {
-        setIsEditing(true);
+        setIsEditingTag(true);
     };
 
     const handleEditTag = (event) => {
@@ -22,16 +22,21 @@ function Tags({tags, setTags}){
     };
 
     const handleSaveTag = () => {
-        if(tag.length > 0){
+        const trimmedTag = tag.replace(/(\s|\r\n|\n|\r)/gm, '');
+
+        if(trimmedTag.length > 0){
             if(!tags.includes(tag)){
-                setIsEditing(false);
-                setTagError(false);
+                setIsEditingTag(false);
                 setTags([...tags, tag]);
                 setTag('');
+                setTagError('');
             }
             else{
-                setTagError(true);
+                setTagError('Cannot enter tag with same name!');
             }
+        }
+        else{
+            setTagError('Cannot submit blank text for a tag!');
         }
     }
 
@@ -42,11 +47,11 @@ function Tags({tags, setTags}){
     }
 
     let addTag = (
-        (isEditing) ?
+        (isEditingTag) ?
         <TextField
             id='tag-input' margin='none' size='small' placeholder='Enter tag here'
-            error={tagError}
-            helperText={tagError && 'Cannot enter tag with same name'}
+            error={tagError !== ''}
+            helperText={(tagError !== '') ? tagError : ''}
             onChange={handleEditTag}
             onKeyDown={handleEnterTag}
             onBlur={handleSaveTag}
@@ -62,7 +67,7 @@ function Tags({tags, setTags}){
     return(
         <Box className='flex-row' id='tags'>
             {
-                (tags.length > 0) ? 
+                (tags?.length > 0) ? 
                     tags.map((tag, index) => {
                         return <Tag key={index} index={index} tag={tag} removeTag={handleRemoveTag}/>;
                     }) : 

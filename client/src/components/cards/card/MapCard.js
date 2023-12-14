@@ -23,16 +23,13 @@ export default function MapCard({mapData, clickHandler, editHandler, deleteHandl
 
     function getTimestamp(){
         try{
-            const time = (mapData?.isPublished) ?
-                        mapData.datePublished :
-                        ((mapData.dateEdited) ? mapData.dateEdited : mapData.dateCreated);
-
+            const time = (mapData?.isPublished) ? mapData.datePublished : mapData.dateEdited;
             const parsedDate = new Date(time);
             const timeFromNow = formatDistanceToNow(parsedDate);
             return ` ${timeFromNow} ago`;
         }
         catch(error){
-            console.log(`error: ${error}`)
+            console.log(error);
         }
     }
 
@@ -52,7 +49,7 @@ export default function MapCard({mapData, clickHandler, editHandler, deleteHandl
                         sx={{ fontSize: 16, fontWeight: `bold` }}
                         color="black"
                         gutterBottom
-                        className="map-title"
+                        className = "map-title"
                     >
                         {mapData.title}
                     </Typography>

@@ -7,12 +7,12 @@ import ActionButtons from "./ActionButtons";
 function PostCard({postData, clickHandler, editHandler, deleteHandler}){
     function getTimestamp(){
         try{
-            const parsedDate = new Date(postData.dateCreated);
+            const parsedDate = new Date(postData?.createdAt);
             const timeFromNow = formatDistanceToNow(parsedDate);
             return ` ${timeFromNow} ago`;
         }
         catch(error){
-            console.log(`error: ${error}`)
+            console.log(error);
         }
     }
 

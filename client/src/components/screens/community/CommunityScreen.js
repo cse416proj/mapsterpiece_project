@@ -3,7 +3,7 @@ import { Typography, Box } from "@mui/material";
 
 import { GlobalStoreContext } from "../../../contexts/store";
 import { PostContext } from "../../../contexts/post";
-import { SideNavBar, SearchBar, UsersCardSection, MapsCardSection, PostsCardSection, DeletePostModal, DeleteMapModal, PublishMapModal, UnpublishMapModal, DuplicateMapModal } from "../../index";
+import { SideNavBar, SearchBar, UsersCardSection, MapsCardSection, PostsCardSection, Modals } from "../../index";
 
 export default function CommunityScreen() {
   const { store } = useContext(GlobalStoreContext);
@@ -43,7 +43,7 @@ export default function CommunityScreen() {
           setListCard(<UsersCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
           break;
         case "ALL_MAPS":
-        case "BIN_MAPS":
+        case "PIN_MAPS":
         case "CHOROPLETH_MAPS":
         case "DOT_MAPS":
         case "GRAD_MAPS":
@@ -51,7 +51,7 @@ export default function CommunityScreen() {
           setListCard(<MapsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
           break;
         case "ALL_POSTS":
-        case "BIN_POSTS":
+        case "PIN_POSTS":
         case "CHOROPLETH_POSTS":
         case "DOT_POSTS":
         case "GRAD_POSTS":
@@ -69,7 +69,9 @@ export default function CommunityScreen() {
     if(listCard){
       return listCard;
     }
-    return <Typography variant='h5' style={{ marginTop: '1.5vh' }} id ="community-text">You can search for everyone's maps and posts on this page.<br /><br />Select Maps/Posts/Users on the right.</Typography>
+
+    return <Typography variant='h5' style={{ marginTop: '1.5vh' }} id="community-text">You can search for everyone's maps and posts on this page.<br /><br />Select Maps/Posts/Users on the right.</Typography>
+
   }
 
   return (
@@ -82,11 +84,7 @@ export default function CommunityScreen() {
             renderCard()
           }
         </Box>
-        <DeletePostModal/>
-        <DeleteMapModal/>
-        <PublishMapModal/>
-        <UnpublishMapModal/>
-        <DuplicateMapModal/>
+        <Modals/>
       </Box>
     </Box>
   );

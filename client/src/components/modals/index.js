@@ -5,8 +5,22 @@ import DeletePostModal from './DeletePostModal';
 import DeleteAccountModal from './DeleteAccountModal';
 import DeleteCommentModal from './DeleteCommentModal';
 import DeleteSubCommModal from './DeleteSubCommModal';
-import UploadMapErrorModal from './UploadMapErrorModal';
+import DataEntryModal from './DataEntryModal';
+import PinDataEntryModal from './PinDataEntryModal';
 import DuplicateMapModal from './DuplicateMapModal';
 import SuccessAlert from './SuccessAlert';
 
-export { PublishMapModal, UnpublishMapModal, DeleteMapModal, DeletePostModal, DeleteAccountModal, DeleteCommentModal, DeleteSubCommModal, UploadMapErrorModal, DuplicateMapModal, SuccessAlert }
+const Modals = () => (
+    <>
+        <PublishMapModal/>
+        <UnpublishMapModal/>
+        <DeleteMapModal/>
+        <DeletePostModal/>
+        <DeleteAccountModal/>
+        <DeleteCommentModal/>
+        <DeleteSubCommModal/>
+        <DuplicateMapModal/>
+    </>
+);
+  
+export { Modals, DataEntryModal, PinDataEntryModal, SuccessAlert };

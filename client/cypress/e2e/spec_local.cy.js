@@ -49,14 +49,13 @@ describe('Mapsterpiece local tests', () => {
   //   cy.get('input[name = "password').type('ThisIsAPassword');
   //   cy.get('button[type = "submit"]').click();
   //   cy.wait(1000);
-  //   // cy.get('#auth-alert').should('contain', 'Login success! Now redirecting...')
-  //   // cy.wait(1000);
+
   //   cy.get('#initialsIcon').click();
   //   cy.get('.MuiList-root > [tabindex="-1"]').click();
   //   cy.get('#logo').click();
   // })
 
-  // pass
+  // // pass
   it('dropdown menu test', ()=>{
     cy.visit('http://localhost:3000');
     cy.get('#icon').click();
@@ -81,21 +80,17 @@ describe('Mapsterpiece local tests', () => {
   //   cy.get('input[name = "password').type('ThisIsAPassword');
   //   cy.get('button[type = "submit"]').click();
   //   cy.wait(1000);
-  //   // cy.get('#auth-alert').should('contain', 'Login success! Now redirecting...')
-  //   // cy.wait(1000);
 
-  //   cy.get('.CREATE').click();
-  //   cy.url().should('include', '/create');
+  //   cy.get('.MAP').click();
   //   cy.wait(1000);
-
-  //   cy.get('#title-input').clear('hello map');
-  //   cy.get('#title-input').type('hello map');
+  //   cy.url().should('include', '/create');
+  //   cy.get('#title-input').clear('BD post');
+  //   cy.get('#title-input').type('BD post');
   //   cy.get('#upload-button').click();
-  //   cy.get('.modal-box')
-  //   cy.get('#dialog-yes-button').click();
+  //   cy.url().should('include', '/create');
   // })
 
-  // pass
+  // // pass
   // it('user create map fail - no map title', ()=>{
   //   cy.visit('http://localhost:3000');
   //   cy.get('.login').click();
@@ -108,16 +103,15 @@ describe('Mapsterpiece local tests', () => {
   //   cy.get('button[type = "submit"]').click();
   //   cy.wait(1000);
 
-  //   cy.get('.CREATE').click();
-  //   cy.url().should('include', '/create');
+  //   cy.get('.MAP').click();
   //   cy.wait(1000);
+  //   cy.url().should('include', '/create');
 
-  //   cy.get('body').click();
-  //   cy.get('div[role="combobox"]').click();
-  //   cy.get('li[data-value="GeoJSON"]').click();
+  //   cy.get(':nth-child(1) > .MuiButtonBase-root > .PrivateSwitchBase-input').check();
+  //   cy.get('#add-tag-button').click();
+  //   cy.get('#tag-input').clear('h');
+  //   cy.get('#tag-input').type('hello{enter}');
   //   cy.get('#upload-button').click();
-  //   cy.get('.modal-box');
-  //   cy.get('#dialog-yes-button').click();
   //   cy.url().should('include', '/create');
   // })
 
@@ -134,11 +128,8 @@ describe('Mapsterpiece local tests', () => {
   //   cy.get('button[type = "submit"]').click();
   //   cy.wait(1000);
 
-  //   cy.get('.CREATE').click();
+  //   cy.get('.POST').click();
   //   cy.url().should('include', '/create');
-  //   cy.wait(1000);
-
-  //   cy.get('#tab').click();
   //   cy.get('#title-input').clear('BD post');
   //   cy.get('#title-input').type('BD post');
   //   cy.get('#upload-button').click();
@@ -158,13 +149,14 @@ describe('Mapsterpiece local tests', () => {
   //   cy.get('button[type = "submit"]').click();
   //   cy.wait(1000);
 
-  //   cy.get('.CREATE').click();
+  //   cy.get('.POST').click();
   //   cy.url().should('include', '/create');
-  //   cy.wait(1000);
 
-  //   cy.get('#tab').click();
-  //   cy.get('textarea[placeholder="Type post content here..."]').clear('BD post content');
-  //   cy.get('textarea[placeholder="Type post content here..."]').type('BD post content');
+  //   cy.get('[rows="7"]').clear("bp post content");
+  //   cy.get('[rows="7"]').type("bp post content");
+  //   cy.get('#add-tag-button').click();
+  //   cy.get('#tag-input').clear('hello');
+  //   cy.get('#tag-input').type('hello');
   //   cy.get('#upload-button').click();
   //   cy.url().should('include', '/create');
   // })
@@ -184,11 +176,16 @@ describe('Mapsterpiece local tests', () => {
   //   cy.get('button[type = "submit"]').click();
   //   cy.wait(1000);
 
-  //   cy.get(':nth-child(1) > .MuiPaper-root > .MuiCardContent-root').click();
-  //   cy.get('[title="#F44E3B"]').click();  // get red color
-  //   cy.get('[fill="#73d8ff"]').click();   // fill in blue region
-  //   cy.get('[title="#73D8FF"]').click();  // get blue color
-  //   cy.get('[fill="#f44e3b"]').click();   // fill in red region
+  //   cy.get(':nth-child(1) > :nth-child(2) > .MuiPaper-root > .MuiCardContent-root').click();
+  //   cy.get('[title="#F44E3B"]').click();
+  //   cy.get('[fill="#73d8ff"]').click();
+  //   cy.get('[title="#73D8FF"] > div').click();
+  //   cy.get('[fill="#f44e3b"]').click();
+
+  //   cy.get('.map-button-container > :nth-child(2)').click();
+  //   cy.wait(1000);
+
+  //   cy.url().should('include', '/');
   // })
 
   // // pass
@@ -205,13 +202,12 @@ describe('Mapsterpiece local tests', () => {
   //   cy.get('button[type = "submit"]').click();
   //   cy.wait(1000);
 
-  //   cy.get(':nth-child(2) > .MuiPaper-root > .MuiCardContent-root > .MuiStack-root').click();
+  //   cy.get(':nth-child(3) > .MuiPaper-root > .MuiCardContent-root > .MuiStack-root').click();
   //   cy.url().should('include', '/map-detail/');
   //   cy.get('#expand-comment-btn').click();
-  //   cy.get('[placeholder = "Enter your comment here..."]').clear("hi");
-  //   cy.get('[placeholder = "Enter your comment here..."]').type("hi");
+  //   cy.get('[rows="1"]').clear("hi");
+  //   cy.get('[rows="1"]').type("hi");
   //   cy.get('#comment-submit-btn').click();
-  //   cy.get('[data-testid="CloseIcon"]').click();
   //   cy.get('#back').click();
   // })
 })

@@ -1,6 +1,6 @@
 import { Box, Button } from '@mui/material';
 
-function ButtonSet({ handleClear, handleUpload, prompt }){
+function ButtonSet({ isLoading=false, handleClear, handleUpload, prompt }){
     return(
         <Box className='flex-row' id='button-container'>
             <Button
@@ -8,6 +8,7 @@ function ButtonSet({ handleClear, handleUpload, prompt }){
                 id='clear-button'
                 style={{ borderRadius: 50 }}
                 onClick={handleClear}
+                disabled={isLoading}
             >
                 Clear
             </Button>
@@ -16,6 +17,7 @@ function ButtonSet({ handleClear, handleUpload, prompt }){
                 id='upload-button'
                 style={{ borderRadius: 50 }}
                 onClick={handleUpload}
+                disabled={isLoading}
             >
                 {prompt}
             </Button>

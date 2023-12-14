@@ -6,14 +6,13 @@ import { GlobalStoreContext } from "../../../contexts/store";
 import MapContext from "../../../contexts/map";
 import UserContext from "../../../contexts/user";
 import AuthContext from "../../../contexts/auth";
-
-import { SideNavBar, SearchBar, MapsCardSection, PostsCardSection, MapsPostsCardSection, DeletePostModal, DeleteMapModal, PublishMapModal, UnpublishMapModal, DuplicateMapModal } from "../../index";
+import { SideNavBar, SearchBar, MapsCardSection, PostsCardSection, MapsPostsCardSection, Modals } from "../../index";
 
 function SearchScreen(){
     const { store } = useContext(GlobalStoreContext);
     const { userInfo } = useContext(UserContext);
     const { mapInfo } = useContext(MapContext);
-    const {auth} = useContext(AuthContext);
+    const { auth } = useContext(AuthContext);
 
     const { userId } = useParams();
 
@@ -65,7 +64,7 @@ function SearchScreen(){
                     setListCard(<MapsPostsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
                     break;
                 case "USER_OWNED_MAPS":
-                case "BIN_MAPS":
+                case "PIN_MAPS":
                 case "CHOROPLETH_MAPS":
                 case "DOT_MAPS":
                 case "GRAD_MAPS":
@@ -73,7 +72,7 @@ function SearchScreen(){
                     setListCard(<MapsCardSection data={data} search={search} sortBy={sortBy} currScreen={currScreen}/>);
                     break;
                 case "USER_OWNED_POSTS":
-                case "BIN_POSTS":
+                case "PIN_POSTS":
                 case "CHOROPLETH_POSTS":
                 case "DOT_POSTS":
                 case "GRAD_POSTS":
@@ -83,13 +82,13 @@ function SearchScreen(){
                 default:
                     if(auth?.user?.userName !== userInfo?.currentUser?.userName){
                         setListCard(
-                        <Typography variant='h5' style={{ marginTop: '1.5vh' }} id="user-search-text"> 
+                        <Typography variant='h5' style={{ marginTop: '1.5vh' }} id ="user-search-text"> 
                         You can search for maps and posts owned by {UsernameBox} on this page.
                         <br /><br />Please select Maps and/or Posts on the right.
                         </Typography>); 
                     }else{
                        setListCard(
-                       <Typography variant='h5' style={{ marginTop: '1.5vh' }} id="owner-search-text"> 
+                       <Typography variant='h5' style={{ marginTop: '1.5vh' }} id ="owner-search-text"> 
                        You can search for your own maps and posts on this page.
                        <br /><br />Please select Maps and/or Posts on the right.
                        </Typography>); 
@@ -107,11 +106,7 @@ function SearchScreen(){
                 <Box className="listsDisplay">
                     { listCard }
                 </Box>
-                <DeletePostModal/>
-                <DeleteMapModal/>
-                <PublishMapModal/>
-                <UnpublishMapModal/>
-                <DuplicateMapModal/>
+                <Modals/>
             </Box>
         </Box>
     )

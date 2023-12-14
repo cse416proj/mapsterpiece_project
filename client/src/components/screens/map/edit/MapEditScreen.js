@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 
 import { MapEditTopBar, MapEditSideBar, MapScreen } from "../../../index";
-import { DeleteMapModal, PublishMapModal, Warning, SuccessAlert, DuplicateMapModal } from "../../../index";
+import { Modals, Warning, SuccessAlert } from "../../../index";
 
 import MapContext from "../../../../contexts/map";
 import AuthContext from "../../../../contexts/auth";
@@ -20,12 +20,11 @@ export default function MapEditScreen() {
 
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [publishSuccess, setPublishSuccess] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const [duplicateSuccess, setDuplicateSuccess] = useState(false);
 
   useEffect(() => {
-    setDeleteSuccess(false);
-    setPublishSuccess(false);
-    setDuplicateSuccess(false);
+    store.closeModal();
 
     if(mapId){
       mapInfo?.getMapById(mapId);
@@ -72,8 +71,32 @@ export default function MapEditScreen() {
     }
   }, [publishSuccess]);
 
+  // update & redirect if map got successfully published
+  useEffect(() => {
+    console.log(`saveSuccess: ${store?.saveSuccess}`)
+    if((store?.saveSuccess === true)){
+      setSaveSuccess(true);
+    }
+    else{
+      setSaveSuccess(false);
+    }
+  }, [store?.saveSuccess]);
+
+  useEffect(() => {
+    console.log(`saveSuccess: ${saveSuccess}`);
+    if(saveSuccess === true){
+        console.log('done saving');
+        setTimeout(() => {
+          store.clearSaveSuccess();
+          navigate('/');
+          // mapInfo?.getMapById(mapId);
+        }, 2250);
+    }
+  }, [saveSuccess]);
+
   // duplicate & redirect if map got successfully duplicated
   useEffect(() => {
+    console.log(store.duplicateSuccess);
     if((store?.duplicateSuccess === true)){
       setDuplicateSuccess(true);
     }
@@ -86,8 +109,8 @@ export default function MapEditScreen() {
     console.log(`duplicateSuccess: ${duplicateSuccess}`);
     if(duplicateSuccess === true){
       setTimeout(() => {
-        console.log(store.mapMarked);
-        navigate(`/map-edit/${store.mapMarked._id}`);
+        console.log(store?.mapMarked?._id);
+        navigate(`/map-edit/${store?.mapMarked?._id}`);
         window.location.reload();
         store.clearDuplicateSuccess();
       }, 2250);
@@ -103,6 +126,7 @@ export default function MapEditScreen() {
       <MapEditTopBar/>
       { deleteSuccess && <SuccessAlert type='map-delete'/> }
       { publishSuccess && <SuccessAlert type='map-publish'/> }
+      { saveSuccess && <SuccessAlert type='map-save'/> }
       { duplicateSuccess && <SuccessAlert type='map-duplicate'/>}
       <Box
         className="map-screen-container"
@@ -116,9 +140,7 @@ export default function MapEditScreen() {
         <MapScreen/>
         <MapEditSideBar/>
       </Box>
-      <DeleteMapModal/>
-      <PublishMapModal/>
-      <DuplicateMapModal/>
+      <Modals/>
     </Box>
   );
 }
