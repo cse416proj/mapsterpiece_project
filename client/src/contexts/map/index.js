@@ -496,12 +496,11 @@ export function MapContextProvider({ children }) {
       // console.log(response.data);
 
       if(response.status === 201){
-        store.closeModalAfterDuplicate();
-
         const newMap = response?.data?.map._id;
         const newMaps = [...auth.user.maps,newMap];
 
         store.markDuplicatedMap(response?.data?.map);
+        store.closeModalAfterDuplicate();
 
         if(newMaps.length > 0){
           await mapInfo.getMapsByMapIds(newMaps); 
