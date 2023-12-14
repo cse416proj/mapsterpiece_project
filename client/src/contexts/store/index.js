@@ -201,6 +201,7 @@ function GlobalStoreContextProvider(props) {
         return setStore((prevStore) => ({
           ...prevStore,
           createSuccess: false,
+          createSuccess: false,
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
@@ -264,6 +265,7 @@ function GlobalStoreContextProvider(props) {
         console.log(payload);
         return setStore((prevStore) => ({
           ...prevStore,
+          createSuccess: false,
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
