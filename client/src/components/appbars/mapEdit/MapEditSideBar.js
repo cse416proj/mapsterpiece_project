@@ -143,7 +143,7 @@ function MapEditSideBar() {
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Map Data</Typography>
           <Box className="sidebar-block-content data-block"></Box>
-          {mapType === "REGULAR" || mapType === "GRADUATED_SYMBOL" ? (
+          {mapType === "REGULAR" ? (
             <CompactPicker color={selectedColor} onChange={handleColorChange} />
           ) : null}
           {mapType !== "REGULAR" ? (

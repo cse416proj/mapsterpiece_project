@@ -660,11 +660,7 @@ function MapScreen() {
                       layer.bringToBack();
                     },
                   }}
-                  color={
-                    !mapInfo?.colorPickerChanged
-                      ? mapTypeDataRef?.current?.bubbleMapColor
-                      : colorRef.current
-                  }
+                  color="red"
                 />
               );
             })}
