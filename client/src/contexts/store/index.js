@@ -549,19 +549,19 @@ function GlobalStoreContextProvider(props) {
   };
 
   const updateMaps = (allMaps) => ({
-    PinMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Pin Map"}),
-    choroplethMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Choropleth Map"}),
-    dotMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Dot Distribution Map"}),
-    gradMaps:allMaps.filter((pair)=>{return pair?.tags[0]==="Graduated Symbol Map"}),
-    heatMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Heat Map"}),
+    pinMaps: allMaps.filter((pair)=>{return pair?.tags?.includes("PINMAP")}),
+    choroplethMaps: allMaps.filter((pair)=>{return pair?.tags?.includes("CHOROPLETH")}),
+    dotMaps: allMaps.filter((pair)=>{return pair?.tags?.includes("DOT_DISTRIBUTION")}),
+    gradMaps:allMaps.filter((pair)=>{return pair?.tags?.includes("GRADUATED_SYMBOL")}),
+    heatMaps: allMaps.filter((pair)=>{return pair?.tags?.includes("HEATMAP")}),
   });
-  
+
   const updatePosts = (allPosts) => ({
-    PinPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Pin Map"}),
-    choroplethPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Choropleth Map"}),
-    dotPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Dot Distribution Map"}),
-    gradPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Graduated Symbol Map"}),
-    heatPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Heat Map"}),
+    pinPosts: allPosts.filter((pair) => pair?.tags?.some(tag => tag.toLowerCase().includes("pin"))),
+    choroplethPosts: allPosts.filter((pair) => pair?.tags?.some(tag => tag.toLowerCase().includes("choropleth"))),
+    dotPosts: allPosts.filter((pair) => pair?.tags?.some(tag => tag.toLowerCase().includes("dot"))),
+    gradPosts: allPosts.filter((pair) => pair?.tags?.some(tag => tag.toLowerCase().includes("graduated"))),
+    heatPosts: allPosts.filter((pair) => pair?.tags?.some(tag => tag.toLowerCase().includes("heatmap"))),
   });
 
   store.setData = function () {
