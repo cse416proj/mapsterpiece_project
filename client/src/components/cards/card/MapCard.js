@@ -58,7 +58,7 @@ export default function MapCard({mapData, clickHandler, editHandler, deleteHandl
                         color="white"
                         gutterBottom
                     >
-                        { (mapData.isPublished) ? 'Published' : 'Created' } by @{mapData.ownerUserName}
+                        { (mapData.isPublished) ? 'Published' : (mapData.dateEdited ? 'Edited' : 'Created') } by @{mapData.ownerUserName}
                         { getTimestamp() }
                     </Typography>
                 </Box>

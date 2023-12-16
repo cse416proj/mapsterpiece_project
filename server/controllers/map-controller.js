@@ -306,13 +306,15 @@ updateMapPublishStatusById = async (req, res, newPublishStatus) => {
         }
       }
 
+      const currTime = new Date();
       map.isPublished = newPublishStatus;
       if (newPublishStatus) {
-        map.datePublished = new Date();
+        map.datePublished = currTime;
       } else {
         map.datePublished = null;
+        map.dateEdited = currTime;
       }
-      
+
       map
         .save()
         .then(() => {
@@ -669,11 +671,13 @@ duplicateMap = async (req, res) => {
 
   try {
     const user = await User.findById(userId);
+    console.log("self: ",user);
     if (!user) {
       return res.status(404).json({ errorMessage: "User not found." });
     }
 
     const mapToDuplicate = await Map.findById(mapId);
+    console.log("target map to duplicate: ", mapToDuplicate);
     if (!mapToDuplicate) {
       return res.status(404).json({ errorMessage: "Map not found." });
     }
@@ -682,7 +686,9 @@ duplicateMap = async (req, res) => {
       ownerUserName: user.userName,
       title: `Copy of ${mapToDuplicate.title}`,
       fileFormat: mapToDuplicate.fileFormat,
+      mapType: mapToDuplicate.mapType,
       mapContent: mapToDuplicate.mapContent,
+      mapTypeData : mapToDuplicate.mapTypeData,
       tags: mapToDuplicate.tags,
       isPublished: false,
     });
@@ -698,6 +704,7 @@ duplicateMap = async (req, res) => {
       message: "Map duplicated successfully!",
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       error,
       errorMessage: "Failed to duplicate map, please try again.",

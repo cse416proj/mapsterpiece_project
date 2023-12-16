@@ -40,7 +40,7 @@ function PostCard({postData, clickHandler, editHandler, deleteHandler}){
                         gutterBottom
                     >
                         Posted by @{postData.ownerUserName}
-                        {getTimestamp()}
+                        { getTimestamp() }
                     </Typography>
                 </Box>
                 <Typography

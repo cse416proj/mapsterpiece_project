@@ -5,6 +5,7 @@ import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import PublicIcon from '@mui/icons-material/Public';
 import PublicOffIcon from '@mui/icons-material/PublicOff';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
 
 export default function SuccessAlert({type}){
     const [msg, setMsg] = useState('');
@@ -39,6 +40,10 @@ export default function SuccessAlert({type}){
             case 'map-unpublish':
                 setMsg('Map has been unpublished successfully!')
                 setIcon(<PublicOffIcon style={iconStyle}/>)
+                break;
+            case 'map-duplicate':
+                setMsg('Map has been duplicated successfully!')
+                setIcon(<FileCopyIcon  style={iconStyle}/>)
                 break;
             default:
                 break;

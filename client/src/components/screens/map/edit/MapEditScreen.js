@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import { Box } from "@mui/material";
@@ -21,6 +21,7 @@ export default function MapEditScreen() {
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [publishSuccess, setPublishSuccess] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [duplicateSuccess, setDuplicateSuccess] = useState(false);
 
   useEffect(() => {
     store.closeModal();
@@ -93,6 +94,29 @@ export default function MapEditScreen() {
     }
   }, [saveSuccess]);
 
+  // duplicate & redirect if map got successfully duplicated
+  useEffect(() => {
+    console.log(store.duplicateSuccess);
+    if((store?.duplicateSuccess === true)){
+      setDuplicateSuccess(true);
+    }
+    else{
+      setDuplicateSuccess(false);
+    }
+  }, [store?.duplicateSuccess]);
+
+  useEffect(() => {
+    console.log(`duplicateSuccess: ${duplicateSuccess}`);
+    if(duplicateSuccess === true){
+      setTimeout(() => {
+        console.log(store?.mapMarked?._id);
+        navigate(`/map-edit/${store?.mapMarked?._id}`);
+        window.location.reload();
+        store.clearDuplicateSuccess();
+      }, 2250);
+    }
+  }, [duplicateSuccess]);
+
   if(!auth.user){
     return <Warning message='You have no permission to access this page. Please login first if you think you are the owner!'/>
   }
@@ -103,6 +127,7 @@ export default function MapEditScreen() {
       { deleteSuccess && <SuccessAlert type='map-delete'/> }
       { publishSuccess && <SuccessAlert type='map-publish'/> }
       { saveSuccess && <SuccessAlert type='map-save'/> }
+      { duplicateSuccess && <SuccessAlert type='map-duplicate'/>}
       <Box
         className="map-screen-container"
         style={{ 
