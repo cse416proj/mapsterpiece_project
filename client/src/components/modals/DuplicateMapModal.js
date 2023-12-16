@@ -29,6 +29,7 @@ export default function DuplicateMapModal() {
             className='popUpBox'
             id='modal'
             icon='false'
+            style={{ height: '55vh' }}
         >
             <Box className='flex-column' id='modal-header'>
                 <FileCopyIcon id='modal-icon'/>
@@ -39,10 +40,10 @@ export default function DuplicateMapModal() {
 
             <Box className='flex-column' id='modal-text'>
                 <Typography variant='h6' id='modal-msg'>
-                    By clicking confirm, you will be redirected to the edit page of the duplicated map. <br/>
+                    By clicking confirm, your own copy of this current map will be created.<br/>
                 </Typography>
                 <Typography variant='p' id='modal-note'>
-                    (Note that you will be able to view the duplicated map on your home/profile screen.)
+                    (Note that your new copy is first unpublished by default.)
                 </Typography>
             </Box>
 
@@ -50,14 +51,14 @@ export default function DuplicateMapModal() {
             <Box className='flex-row' id='modal-buttons'>
                 <Button
                     variant='contained'
-                    id='modal-confirm-button'
+                    id='modal-contained-button'
                     onClick={handleDuplicateMap}
                 >
                     Confirm
                 </Button>
                 <Button
                     variant='outlined'
-                    id='modal-close-button'
+                        id='modal-outline-button'
                     onClick={handleCloseModal}
                 >
                     Cancel

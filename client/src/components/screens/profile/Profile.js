@@ -39,11 +39,32 @@ function Profile() {
     }
   }, [userInfo?.currentUser]);
 
+  // update curr user maps when we are viewing auth user's profile and auth maps updates
+  useEffect(() => {
+    if(isLoggedInUser) {
+      if(userInfo?.currentUser?.maps?.length !== auth?.user?.maps?.length){
+        const updatedMaps = userInfo.currentUser.maps.filter((map) => auth.user.maps.includes(map._id));
+        userInfo.updateMaps(updatedMaps);
+      }
+    }
+  }, [auth?.user?.maps]);
+
+  // update curr user posts when we are viewing auth user's profile and auth posts updates
+  useEffect(() => {
+    if(isLoggedInUser) {
+      if(userInfo?.currentUser?.posts?.length !== auth?.user?.posts?.length){
+        const updatedPosts = userInfo.currentUser.posts.filter((post) => auth.user.posts.includes(post._id));
+        userInfo.updatePosts(updatedPosts);
+      }
+    }
+  }, [auth?.user?.posts]);
+
   // change tab when clicked
   const handleChangeTab = (event, newTab) => {
     setTab(newTab);
   };
 
+  // create notice when there is not maps/posts created from user
   function getNotice(ownerNotice, nonOwnerNotice){
     return (
       <Box className='flex-column' id='no-maps'>
