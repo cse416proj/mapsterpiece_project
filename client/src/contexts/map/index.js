@@ -521,21 +521,7 @@ export function MapContextProvider({ children }) {
       console.log(response);
       if(response?.status === 200){
         console.log('delete comment success');
-        // let tempIds = mapInfo?.currentMap?.comments;
-        // console.log(`tempIds: ${JSON.stringify(tempIds)}`);
-        // const index = tempIds.indexOf(commentId);
-        // if (index > -1){
-        //   tempIds.splice(index, 1);
-        // }
-        // if (tempIds.length > 0) {
-        //   mapInfo.getCommentsByCommentIds(tempIds);
-        // }
-        // else {
-        //   mapReducer({
-        //     type: MapActionType.UPDATE_ALL_COMMENTS,
-        //     payload: []
-        //   });
-        // }
+        await mapInfo.getMapById(mapInfo.currentMap._id);
       }
     }
     catch(error){

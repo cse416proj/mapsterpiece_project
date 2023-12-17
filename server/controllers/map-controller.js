@@ -594,6 +594,9 @@ likeDislikeMapById = async (req, res) => {
       if (err) {
         return res.status(500).json({ errorMessage: err.message });
       }
+      else if(!map) {
+        return res.status(404).json({ errorMessage: "Map cannot be found." });
+      }
 
       const userLikedMap = map.likedUsers.find(
         (user) => String(user) === String(userId)
