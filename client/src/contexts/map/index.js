@@ -22,6 +22,7 @@ export function MapContextProvider({ children }) {
     currentComment: null,
     errorMessage: null,
     currentMapEditType: "REGULAR",
+    colorPickerChanged: false,
     // download: false,
     // downloadFormat: ''
   });
@@ -77,6 +78,7 @@ export function MapContextProvider({ children }) {
         return setMapInfo((prevMapInfo) => ({
           ...prevMapInfo,
           currentRegionColor: payload,
+          colorPickerChanged: true,
           errorMessage: null
         }));
       case MapActionType.SET_CURRENT_COMMENT:
@@ -274,8 +276,6 @@ export function MapContextProvider({ children }) {
           currMap = response.data?.find((map) => (map._id === currMapId));
         }
 
-        console.log(response.data);
-
         mapReducer({
           type: MapActionType.LOAD_ALL_MAPS_FROM_USER,
           payload: {
@@ -352,21 +352,16 @@ export function MapContextProvider({ children }) {
         return;
       }
 
-      console.log('mapInfo.updateMapTypeData');
-      console.log('mapDataIndividualObj');
-      console.log(mapDataIndividualObj);
-      console.log(`indexElementTobeChanged: ${indexElementTobeChanged}`);
-
       let oldMap = mapInfo.currentMap;
       let originalMapTypeData = oldMap.mapTypeData ? oldMap.mapTypeData : {max: 0, data: []};
-      if (mapDataIndividualObj.value > originalMapTypeData.max) {
-        originalMapTypeData.max = mapDataIndividualObj.value;
-      }
       if (indexElementTobeChanged >= 0) {
         originalMapTypeData.data[indexElementTobeChanged] = mapDataIndividualObj;
       } else {
         originalMapTypeData.data.push(mapDataIndividualObj);
       }
+
+      // reset max
+      originalMapTypeData.max = Math.max(...originalMapTypeData.data.map((data) => data.value));
       
       oldMap.mapTypeData = originalMapTypeData;
       setMapInfo((prevMapInfo) => ({
@@ -378,6 +373,37 @@ export function MapContextProvider({ children }) {
       console.log((error.response?.data?.errorMessage) ? error.response?.data?.errorMessage : "Error updating map type data.");
     }
   };
+
+  mapInfo.updateBubbleMapColor = function (color) {
+    if (!mapInfo.currentMap) {
+      return;
+    }
+    let oldMap = mapInfo.currentMap;
+    oldMap.mapTypeData.bubbleMapColor = color;
+    setMapInfo((prevMapInfo) => ({
+      ...prevMapInfo,
+      currentMap: oldMap,
+    }));
+  };
+
+  mapInfo.deleteMapTypeData = function (regionName) {
+    if (!mapInfo.currentMap) {
+      return;
+    }
+    let oldMap = mapInfo.currentMap;
+    let originalMapTypeData = oldMap.mapTypeData;
+    originalMapTypeData.data = originalMapTypeData.data.filter((data) => data.regionName !== regionName);
+    // reset max
+    originalMapTypeData.max = Math.max(...originalMapTypeData.data.map((data) => data.value));
+    if (originalMapTypeData.max === -Infinity) {
+      originalMapTypeData.max = 0;
+    }
+    oldMap.mapTypeData = originalMapTypeData;
+    setMapInfo((prevMapInfo) => ({
+      ...prevMapInfo,
+      currentMap: oldMap,
+    }));
+  }
 
   mapInfo.updateMapLikeDislike = async function (mapId, isLike) {
     try {
@@ -579,6 +605,54 @@ export function MapContextProvider({ children }) {
       payload: msg
     });
   }
+
+  mapInfo.duplicateMapById = async function (mapId){
+    console.log("forking/duplicating this map: ",mapId);
+    if(!mapId){
+      console.log("no map Id");
+      return;
+    }
+
+    try{
+      const response = await api.duplicateMapById(mapId);
+      // console.log(response.data);
+
+      if(response.status === 201){
+        const newMap = response?.data?.map._id;
+        const newMaps = [...auth.user.maps,newMap];
+
+        store.markDuplicatedMap(response?.data?.map);
+        store.closeModalAfterDuplicate();
+
+        if(newMaps.length > 0){
+          await mapInfo.getMapsByMapIds(newMaps); 
+          await auth.userUpdateMaps(newMaps);
+        } 
+        else {
+          auth.userUpdateMaps([]);
+            mapReducer({
+              type: MapActionType.LOAD_ALL_MAPS_FROM_USER,
+              payload: {
+                currentMap: null,
+                allMaps: []
+              }
+            });
+        }
+      }
+    }catch(error){
+      if (error.response) {
+        console.log((error.response.status === 400) ? error.response.data.errorMessage : 'Unable to duplicate current map.');
+      }
+    }
+
+    //   // get all user maps to refresh page
+    //   // some transactions
+    //   await mapInfo.getMapById(newMap);
+    //   navigate(`/map-edit/${newMap}`);
+      
+    // }else{
+    //   console.log(response);
+    };
 
   return (
     <MapContext.Provider value={{ mapInfo }}>{children}</MapContext.Provider>

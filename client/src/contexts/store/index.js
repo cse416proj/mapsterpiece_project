@@ -26,6 +26,9 @@ export const GlobalStoreActionType = {
   SET_PUBLISH_STATUS: "SET_PUBLISH_STATUS",
   SET_UNPUBLISH_STATUS: "SET_UNPUBLISH_STATUS",
   SET_SAVE_STATUS: "SET_SAVE_STATUS",
+  MARK_MAP_FOR_DUPLICATE: "MARK_MAP_FOR_DUPLICATE",
+  SET_DUPLICATE_STATUS: "SET_DUPLICATE_STATUS",
+  MARK_DUPLICATED_MAP: "MARK_DUPLICATED_MAP",
 };
 
 const CurrentView = {
@@ -68,6 +71,7 @@ const CurrentModal = {
   ERROR_MODAL: "ERROR_MODAL",
   PUBLISH_MAP_MODAL: "PUBLISH_MAP_MODAL",
   UNPUBLISH_MAP_MODAL: "UNPUBLISH_MAP_MODAL",
+  DUPLICATE_MAP_MODAL: "DUPLICATE_MAP_MODAL",
 };
 
 function GlobalStoreContextProvider(props) {
@@ -80,6 +84,7 @@ function GlobalStoreContextProvider(props) {
     publishSuccess: false,
     unpublishSuccess: false,
     saveSuccess: false,
+    duplicateSuccess: false, 
 
     currentModal: CurrentModal.NONE,
     currentView: CurrentView.USER_HOME,
@@ -124,6 +129,7 @@ function GlobalStoreContextProvider(props) {
           publishSuccess: false,
           unpublishSuccess: false,
           saveSuccess: false,
+          duplicateSuccess: false, 
           allMaps: payload,
         }));
       case GlobalStoreActionType.LOAD_ALL_POSTS:
@@ -134,6 +140,7 @@ function GlobalStoreContextProvider(props) {
           publishSuccess: false,
           unpublishSuccess: false,
           saveSuccess: false,
+          duplicateSuccess: false, 
           allPosts: payload,
         }));
       case GlobalStoreActionType.LOAD_ALL_USERS:
@@ -144,6 +151,7 @@ function GlobalStoreContextProvider(props) {
           publishSuccess: false,
           unpublishSuccess: false,
           saveSuccess: false,
+          duplicateSuccess: false, 
           allUsers: payload.users,
           allMaps: payload.maps.filter((map) => map.isPublished),
           allPosts: payload.posts
@@ -156,6 +164,7 @@ function GlobalStoreContextProvider(props) {
           publishSuccess: false,
           unpublishSuccess: false,
           saveSuccess: false,
+          duplicateSuccess: false, 
           currentModal: CurrentModal.NONE,
           currentView: payload,
           mapMarked: null,
@@ -172,6 +181,7 @@ function GlobalStoreContextProvider(props) {
           publishSuccess: false,
           unpublishSuccess: false,
           saveSuccess: false,
+          duplicateSuccess: false, 
           currentModal: CurrentModal.DELETE_MAP_MODAL,
           mapMarked: payload,
         }));
@@ -182,6 +192,8 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
+          duplicateSuccess: false, 
           currentModal: CurrentModal.DELETE_POST_MODAL,
           postMarkedForDeletion: payload,
         }));
@@ -189,9 +201,12 @@ function GlobalStoreContextProvider(props) {
         return setStore((prevStore) => ({
           ...prevStore,
           createSuccess: false,
+          createSuccess: false,
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
+          duplicateSuccess: false, 
           currentModal: CurrentModal.DELETE_COMMENT_MODAL,
           commentMarkedForDeletion: payload,
         })); 
@@ -203,6 +218,7 @@ function GlobalStoreContextProvider(props) {
           publishSuccess: false,
           unpublishSuccess: false,
           saveSuccess: false,
+          duplicateSuccess: false, 
           currentModal: CurrentModal.DELETE_ACCOUNT_MODAL,
           accountMarkedForDeletion: payload,
         }));
@@ -214,6 +230,7 @@ function GlobalStoreContextProvider(props) {
           publishSuccess: false,
           unpublishSuccess: false,
           saveSuccess: false,
+          duplicateSuccess: false, 
           currentModal: CurrentModal.DELETE_SUBCOMMENT_MODAL, 
           subcommentMarkedForDeletion: payload,
         }));
@@ -226,6 +243,7 @@ function GlobalStoreContextProvider(props) {
           publishSuccess: false,
           unpublishSuccess: false,
           saveSuccess: false,
+          duplicateSuccess: false, 
           currentModal: CurrentModal.PUBLISH_MAP_MODAL,
           mapMarked: payload,
         }));
@@ -238,7 +256,22 @@ function GlobalStoreContextProvider(props) {
           publishSuccess: false,
           unpublishSuccess: false,
           saveSuccess: false,
+          duplicateSuccess: false, 
           currentModal: CurrentModal.UNPUBLISH_MAP_MODAL,
+          mapMarked: payload,
+        }));
+        case GlobalStoreActionType.MARK_MAP_FOR_DUPLICATE:
+        console.log(`MARK_MAP_FOR_DUPLICATE: ${payload}`);
+        console.log(payload);
+        return setStore((prevStore) => ({
+          ...prevStore,
+          createSuccess: false,
+          deleteSuccess: false,
+          publishSuccess: false,
+          unpublishSuccess: false,
+          saveSuccess: false,
+          duplicateSuccess: false,
+          currentModal: CurrentModal.DUPLICATE_MAP_MODAL,
           mapMarked: payload,
         }));
       case GlobalStoreActionType.SET_ERROR:
@@ -249,6 +282,7 @@ function GlobalStoreContextProvider(props) {
           publishSuccess: false,
           unpublishSuccess: false,
           saveSuccess: false,
+          duplicateSuccess: false,
           currentModal: CurrentModal.ERROR_MODAL,
           errorMsg: payload
         }));
@@ -260,6 +294,7 @@ function GlobalStoreContextProvider(props) {
           publishSuccess: false,
           unpublishSuccess: false,
           saveSuccess: false,
+          duplicateSuccess: false,
           currentModal: CurrentModal.NONE,
           errorMsg: null
         }));
@@ -271,6 +306,7 @@ function GlobalStoreContextProvider(props) {
           publishSuccess: false,
           unpublishSuccess: false,
           saveSuccess: false,
+          duplicateSuccess: false, 
           currentModal: CurrentModal.NONE,
           mapMarked: null,
           postMarkedForDeletion: null,
@@ -288,6 +324,7 @@ function GlobalStoreContextProvider(props) {
           publishSuccess: false,
           unpublishSuccess: false,
           saveSuccess: false,
+          duplicateSuccess: false, 
           currentModal: CurrentModal.NONE,
         }));
       case GlobalStoreActionType.SET_DELETE_STATUS:
@@ -298,6 +335,8 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: payload,
           publishSuccess: false,
           unpublishSuccess: false,
+          saveSuccess: false,
+          duplicateSuccess: false, 
           currentModal: CurrentModal.NONE,
         }));
       case GlobalStoreActionType.SET_PUBLISH_STATUS:
@@ -309,6 +348,7 @@ function GlobalStoreContextProvider(props) {
           publishSuccess: payload,
           unpublishSuccess: false,
           saveSuccess: false,
+          duplicateSuccess: false, 
           currentModal: CurrentModal.NONE,
         }));
       case GlobalStoreActionType.SET_UNPUBLISH_STATUS:
@@ -319,6 +359,7 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: payload,
+          duplicateSuccess: false,
           saveSuccess: false,
           currentModal: CurrentModal.NONE,
         }));
@@ -330,9 +371,36 @@ function GlobalStoreContextProvider(props) {
           deleteSuccess: false,
           publishSuccess: false,
           unpublishSuccess: false,
+          duplicateSuccess: false,
           saveSuccess: payload,
           currentModal: CurrentModal.NONE,
         }));
+        case GlobalStoreActionType.SET_DUPLICATE_STATUS:
+          console.log(`SET_DUPLICATE_STATUS: ${payload}`)
+          return setStore((prevStore) => ({
+            ...prevStore,
+            createSuccess: false,
+            deleteSuccess: false,
+            publishSuccess: false,
+            unpublishSuccess: false,
+            saveSuccess: false,
+            duplicateSuccess: payload,
+            currentModal: CurrentModal.NONE,
+          }));
+          case GlobalStoreActionType.MARK_DUPLICATED_MAP:
+            console.log(`MARK_DUPLICATED_MAP: ${payload}`);
+            console.log(payload);
+            return setStore((prevStore) => ({
+              ...prevStore,
+              createSuccess: false,
+              deleteSuccess: false,
+              publishSuccess: false,
+              unpublishSuccess: false,
+              saveSuccess: false,
+              duplicateSuccess: false,
+              currentModal: CurrentModal.NONE,
+              mapMarked: payload,
+            }));  
       default:
         return store;
     }
@@ -566,6 +634,7 @@ function GlobalStoreContextProvider(props) {
         publishSuccess: false,
         unpublishSuccess: false,
         saveSuccess: false,
+        duplicateSuccess: false, 
         currentModal: CurrentModal.NONE,
         allMaps: response.data.maps,
       }));
@@ -593,6 +662,7 @@ function GlobalStoreContextProvider(props) {
       publishSuccess: true,
       unpublishSuccess: false,
       saveSuccess: false,
+      duplicateSuccess: false, 
       currentModal: CurrentModal.NONE,
     }));
   }
@@ -618,6 +688,7 @@ function GlobalStoreContextProvider(props) {
       publishSuccess: false,
       unpublishSuccess: false,
       saveSuccess: true,
+      duplicateSuccess: false, 
       currentModal: CurrentModal.NONE,
       errorMsg: null
     }));
@@ -654,6 +725,41 @@ function GlobalStoreContextProvider(props) {
       return;
     }
     
+  }
+
+  store.markMapForDuplicate = function(mapData){
+    console.log("map for duplicate: ", mapData);
+    storeReducer({
+      type: GlobalStoreActionType.MARK_MAP_FOR_DUPLICATE,
+      payload: mapData,
+    });
+  }
+
+  store.closeModalAfterDuplicate = function(){
+    return setStore((prevStore) => ({
+      ...prevStore,
+      createSuccess: false,
+      deleteSuccess: false,
+      publishSuccess: false,
+      unpublishSuccess: false,
+      saveSuccess: false,
+      duplicateSuccess: true,
+      currentModal: CurrentModal.NONE,
+    }));
+  }
+
+  store.clearDuplicateSuccess = function(){
+    storeReducer({
+      type: GlobalStoreActionType.SET_DUPLICATE_STATUS,
+      payload: false
+    });
+  }
+
+  store.markDuplicatedMap = function(mapData){
+    storeReducer({
+      type: GlobalStoreActionType.MARK_DUPLICATED_MAP,
+      payload: mapData,
+    });
   }
 
   return (

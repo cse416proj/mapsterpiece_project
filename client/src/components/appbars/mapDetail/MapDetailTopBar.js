@@ -107,7 +107,10 @@ export default function MapDetailTopBar() {
   function handleMyMaps() {
     userInfo.setCurrentUser(auth.user);
     navigate(`/profile/${auth.user._id}`);
-  }
+}
+function handleCommunity(){
+    navigate('/community');
+}
 
   function handleExportPNG() {
     console.log("export PNG file");
@@ -116,8 +119,16 @@ export default function MapDetailTopBar() {
     console.log("export JPG file.");
   }
 
-  function handleForkMap() {
+  function handleForkMap(event) {
+    event.stopPropagation();
+    event.preventDefault();
     console.log("fork this map");
+
+    if(!auth.user){
+      console.log('user not loggedin, cannot fork');
+    }else{
+      store.markMapForDuplicate(mapInfo.currentMap);
+    }
   }
 
   function handleShareMap(event) {
@@ -250,11 +261,11 @@ export default function MapDetailTopBar() {
     <AppBar position="static">
       <Toolbar className="map-screen-topbar">
         {auth.user ? (
-          <Button style={BackButtonStyle} onClick={handleMyMaps}>
+          <Button style={BackButtonStyle} onClick={handleMyMaps} id ="back">
             &lt;&lt; My Maps
           </Button>
         ) : (
-          <Button style={BackButtonStyle} onClick={handleCommunity}>
+          <Button style={BackButtonStyle} onClick={handleCommunity} id ="back">
             &lt;&lt; Back to Community
           </Button>
         )}

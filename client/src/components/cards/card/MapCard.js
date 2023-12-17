@@ -49,6 +49,7 @@ export default function MapCard({mapData, clickHandler, editHandler, deleteHandl
                         sx={{ fontSize: 16, fontWeight: `bold` }}
                         color="black"
                         gutterBottom
+                        className = "map-title"
                     >
                         {mapData.title}
                     </Typography>
@@ -57,7 +58,7 @@ export default function MapCard({mapData, clickHandler, editHandler, deleteHandl
                         color="white"
                         gutterBottom
                     >
-                        { (mapData.isPublished) ? 'Published' : 'Created' } by @{mapData.ownerUserName}
+                        { (mapData.isPublished) ? 'Published' : (mapData.dateEdited ? 'Edited' : 'Created') } by @{mapData.ownerUserName}
                         { getTimestamp() }
                     </Typography>
                 </Box>

@@ -82,6 +82,10 @@ export const getSubcommsByParentCommsId = (commentId) => {
   return api.get(`/getSubComments/${commentId}`);
 }
 
+export const duplicateMapById = (mapId)=>{
+  return api.post(`/duplicate/${mapId}`);
+}
+
 const apis = {
   createMap,
   deleteMapById,
@@ -97,7 +101,8 @@ const apis = {
   likeDislikeMapById,
   createSubcomment,
   deleteCommentById,
-  getSubcommsByParentCommsId
+  getSubcommsByParentCommsId,
+  duplicateMapById
 };
 
 export default apis;

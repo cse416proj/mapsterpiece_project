@@ -30,6 +30,7 @@ function PostCard({postData, clickHandler, editHandler, deleteHandler}){
                         sx={{ fontSize: 16, fontWeight: `bold` }}
                         color="black"
                         gutterBottom
+                        className="post-title"
                     >
                         {postData.title}
                     </Typography>
@@ -39,7 +40,7 @@ function PostCard({postData, clickHandler, editHandler, deleteHandler}){
                         gutterBottom
                     >
                         Posted by @{postData.ownerUserName}
-                        {getTimestamp()}
+                        { getTimestamp() }
                     </Typography>
                 </Box>
                 <Typography

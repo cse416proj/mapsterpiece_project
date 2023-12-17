@@ -82,13 +82,13 @@ function SearchScreen(){
                 default:
                     if(auth?.user?.userName !== userInfo?.currentUser?.userName){
                         setListCard(
-                        <Typography variant='h5' style={{ marginTop: '1.5vh' }}> 
+                        <Typography variant='h5' style={{ marginTop: '1.5vh' }} id ="user-search-text"> 
                         You can search for maps and posts owned by {UsernameBox} on this page.
                         <br /><br />Please select Maps and/or Posts on the right.
                         </Typography>); 
                     }else{
                        setListCard(
-                       <Typography variant='h5' style={{ marginTop: '1.5vh' }}> 
+                       <Typography variant='h5' style={{ marginTop: '1.5vh' }} id ="owner-search-text"> 
                        You can search for your own maps and posts on this page.
                        <br /><br />Please select Maps and/or Posts on the right.
                        </Typography>); 

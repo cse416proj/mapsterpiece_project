@@ -3,12 +3,15 @@ const app = require("./app");
 
 const mongoose = require('mongoose');
 
-beforeEach(async () => {
-  await mongoose.connect(process.env.DB_CONNECT);
-})
+jest.setTimeout(25000);
 
-afterEach(async () => {
+beforeAll(async () => {
+  await mongoose.connect(process.env.DB_CONNECT);
+});
+
+afterAll(async () => {
   await mongoose.connection.close();
+  await mongoose.disconnect();
 });
 
 // describe('POST /register success', () => {
@@ -35,7 +38,7 @@ afterEach(async () => {
 //   });
 // });
 
-describe("POST /register fail", () => {
+describe("Auth - Register fail", () => {
   it("responds with 400 on invalid email", async () => {
     const invalidRequestBody = {
       firstName: "user",
@@ -55,7 +58,7 @@ describe("POST /register fail", () => {
   });
 });
 
-describe("POST /login success", () => {
+describe("Auth - Register success", () => {
   it("responds with 200 on valid login email and password", async () => {
     const validRequestBody = {
       email: "user4@gmail.com",
@@ -70,7 +73,7 @@ describe("POST /login success", () => {
   });
 });
 
-describe("POST /login fail", () => {
+describe("Auth - Login fail", () => {
   it("responds with 401 on invalid email", async () => {
     const invalidRequestBody = {
       email: "user4",
@@ -137,7 +140,7 @@ describe("POST /login fail", () => {
   });
 });
 
-describe("POST /login success", () => {
+describe("Auth - Login success", () => {
   it("responds with 200 on valid login email and password", async () => {
     const validRequestBody = {
       email: "user4@gmail.com",
@@ -152,7 +155,7 @@ describe("POST /login success", () => {
   });
 });
 
-describe("POST/GET/PUT post success", () => {
+describe("Post create/view/update success", () => {
   let postId = null;
   const validRequestBody = {
     title: 'post title',
@@ -216,9 +219,17 @@ describe("POST/GET/PUT post success", () => {
     expect(response.body.post.tags).not.toBe(validRequestBody.tags);
     expect(response.body.post.content).not.toBe(validRequestBody.content);
   });
+
+  it("Delete post", async () => {
+    const response = await request(app)
+      .delete(`/post/deletePost/${postId}`)
+      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y')
+
+    expect(response.status).toBe(200);
+  });
 });
 
-describe("POST/GET/PUT post fail", () => {
+describe("Post create/view/update fail", () => {
   it("Create post with missing title", async () => {
     const validRequestBody = {
       title: null,
@@ -228,7 +239,7 @@ describe("POST/GET/PUT post fail", () => {
 
     const response = await request(app)
       .post('/post/createPost')
-      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y') // Replace with your actual token and cookie name
+      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y')
       .send(validRequestBody);
 
     expect(response.status).toBe(400);
@@ -244,7 +255,7 @@ describe("POST/GET/PUT post fail", () => {
 
     const response = await request(app)
       .post('/post/createPost')
-      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y') // Replace with your actual token and cookie name
+      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y')
       .send(validRequestBody);
 
     expect(response.status).toBe(400);
@@ -260,7 +271,7 @@ describe("POST/GET/PUT post fail", () => {
 
     const response = await request(app)
       .post('/post/createPost')
-      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y') // Replace with your actual token and cookie name
+      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y')
       .send(validRequestBody);
 
     expect(response.status).toBe(400);
@@ -274,5 +285,35 @@ describe("POST/GET/PUT post fail", () => {
 
     expect(response.status).toBe(404);
     expect(response.body.errorMessage).toBe("Post not found.");
+  });
+});
+
+describe('Iteract with Map succcess', () => {
+  it('Like map', async () => {
+    const mapId = '656e08e81c18925ee6de9387';
+    const validRequestBody = {
+      isLike: true
+    };
+
+    const response = await request(app)
+      .put(`/map/likeDislikeMap/${mapId}`)
+      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y')
+      .send(validRequestBody);
+
+    expect(response.status).toBe(201);
+  });
+
+  it('Dislike map', async () => {
+    const mapId = '656e08e81c18925ee6de9387';
+    const validRequestBody = {
+      isLike: false
+    };
+
+    const response = await request(app)
+      .put(`/map/likeDislikeMap/${mapId}`)
+      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y')
+      .send(validRequestBody);
+
+    expect(response.status).toBe(201);
   });
 });

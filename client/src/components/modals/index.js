@@ -7,6 +7,7 @@ import DeleteCommentModal from './DeleteCommentModal';
 import DeleteSubCommModal from './DeleteSubCommModal';
 import DataEntryModal from './DataEntryModal';
 import PinDataEntryModal from './PinDataEntryModal';
+import DuplicateMapModal from './DuplicateMapModal';
 import SuccessAlert from './SuccessAlert';
 
 const Modals = () => (
@@ -18,6 +19,7 @@ const Modals = () => (
         <DeleteAccountModal/>
         <DeleteCommentModal/>
         <DeleteSubCommModal/>
+        <DuplicateMapModal/>
     </>
 );
   
