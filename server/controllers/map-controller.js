@@ -64,8 +64,6 @@ createMap = async (req, res) => {
     featuresFiltered[i] = currFeature;
   }
 
-  console.log('trying to create map');
-
   // create map
   const newMap = new Map({
     ownerUserName,
@@ -74,6 +72,7 @@ createMap = async (req, res) => {
     mapType: "REGULAR",
     mapContent: featuresFiltered,
     mapTypeData: {
+      bubbleMapColor: '#FF0000',
       legendTitle: 'Default legend title',
       max: 0,
       data: []
@@ -421,7 +420,6 @@ updateMapById = async (req, res) => {
       }
 
       const { title, mapContent, tags, mapType, mapTypeData } = req.body;
-
       map.title = title;
       map.mapContent = mapContent;
       map.tags = tags;
