@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useContext, useRef, useState } from 'react';
+// import { useParams } from 'react-router-dom';
 import { Box, Typography, Card, CardContent, CardActions, Collapse, IconButton, Button, Divider } from '@mui/material';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -22,11 +22,15 @@ export default function MapComment({ payload }) {
 
   // const { mapId } = useParams();
 
-  const [subcomment, setSubcomment] = useState('');
   const [expanded, setExpanded] = useState(false);
   const [addActive, setAddActive] = useState(false);
-  const [commentInput, setInput] = useState("");
   const [expandSubcomments, setExpandSubcomments] = useState(false);
+
+  // const [commentInput, setInput] = useState("");
+  // const [subcomment, setSubcomment] = useState('');
+  const inputRef = useRef(null);
+  const [subCommentInput, setSubCommentInput] = useState('');
+  const [error, setError] = useState('');
 
   // function handleVisitProfile(event){
   //   event.stopPropagation();
@@ -47,6 +51,7 @@ export default function MapComment({ payload }) {
     event.stopPropagation();
     setExpanded(true);
     setAddActive(true);
+    setError('');
   }
 
   const handleDeleteComment = (event) => {
@@ -61,27 +66,37 @@ export default function MapComment({ payload }) {
   const handleSubcommentInputChange = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    setSubcomment(event.target.value);
-    setInput(event.target.value);
+    setSubCommentInput(event.target.value);
   }
 
   const handleAddSubcomments = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    console.log('handle add subcomment', commentInput, payload);
-    mapInfo.createSubcomment(payload._id, auth.user.userName, commentInput);
-    setAddActive(false);
-    setExpandSubcomments(expandSubcomments);
-  };
 
-  const handleDeleteSubcomment = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    console.log('handle delete subcomment', payload);
-    mapInfo.setCurrentSubcomment(payload, subcomment);
-    store.setCurrentView("MAP_VIEW");
-    store.markSubcommentForDeletion(subcomment);
-  };
+    const mapId = payload._id;
+
+    if(mapId && auth?.user?.userName) {
+      const trimmedComment = subCommentInput.replace(/(\s|\r\n|\n|\r)/gm, '');
+
+      console.log(trimmedComment.length);
+      if(trimmedComment.length > 0){
+        setError('');
+        mapInfo.createSubcomment(mapId, auth?.user?.userName, subCommentInput);
+        setAddActive(false);
+        setExpandSubcomments(expandSubcomments);
+      }
+      else{
+        console.log('Cannot submit blank text!');
+        setError('Cannot submit blank text!');
+      }
+      
+      // Reset the input value using the ref
+      setSubCommentInput('');
+      if(inputRef.current){
+        inputRef.current.value = '';
+      }
+    }
+  }
 
   function renderCardActions(){
     let expandIcon = (expanded) ? <ExpandLessIcon/> : <ExpandMoreIcon/>;
@@ -103,12 +118,27 @@ export default function MapComment({ payload }) {
     )
   }
 
-  //const fakeSubComments = [ { commenterUserName: 'me', content: 'bruh'  }, { commenterUserName: 'me', content: 'sadge'  } ]
-  const fakeSubComments = []
-  // console.log(payload.subComments);
-
   return (
-    <Card id='comment-card' style={ (expanded) ? { minHeight: '100%' } : { minHeight: '20vh' } }>
+    <Card
+      id='comment-card'
+      style={
+        (expanded) ?
+          (
+            (payload?.subComments?.length === 0) ?
+              { minHeight: '22.5vh' }
+              :
+              (payload?.subComments?.length === 1) ?
+                { minHeight: '35vh' }
+                :
+                (payload?.subComments?.length === 2) ?
+                  { minHeight: '47.5vh' }
+                  :
+                  { minHeight: '100%' }
+          )
+          :
+          { minHeight: '20vh' }
+      }
+    >
       <CommentCard
         type='comment'
         comment={payload}
@@ -124,22 +154,26 @@ export default function MapComment({ payload }) {
           (addActive) ? 
             <CommentInput
               type='subcomment'
-              commentInput={subcomment}
+              commentInput={subCommentInput}
+              inputRef={inputRef}
+              error={error}
               handleInputChange={handleSubcommentInputChange}
               handleSubmitComment={handleAddSubcomments}
             /> :
             null
         }
-       {
-        payload?.subComments?.map((subcomm, index) => (
-          <>
-            <MapSubComment key={index} subcomment={subcomm} deleteHandler={handleDeleteSubcomment}/>
-            {/* {
-              (index === fakeSubComments.length-1) ? null : <Divider sx={{ width: '97.5%', margin: '0 auto' , borderColor: '#1c1e1d' }} />
-            } */}
-          </>
-        ))
-      }
+        {
+          (payload?.subComments?.length === 0) ?
+            <Box id='empty-subcomment'>
+              <Typography style={{ alignItems: 'flex-start' }}>No comment has added yet.</Typography>
+            </Box>
+            :
+            payload?.subComments?.map((subcomment, index) => (
+              <>
+                <MapSubComment key={index} parentComment={payload} subcomment={subcomment}/>
+              </>
+            ))
+        }
       </Collapse>
     </Card>
   );

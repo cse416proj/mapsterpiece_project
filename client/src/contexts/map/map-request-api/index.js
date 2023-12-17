@@ -67,7 +67,6 @@ export const createMapComment = (mapId, commenterUserName, content) => {
 }
 
 export const createSubcomment = (commentId, commenterUserName, content) => {
-  console.log("API", content)
   return api.post(`/createSubcomment/${commentId}`, {
     commenterUserName: commenterUserName,
     content: content,
@@ -76,6 +75,10 @@ export const createSubcomment = (commentId, commenterUserName, content) => {
 
 export const deleteCommentById =(commentId) => {
   return api.delete(`/deleteMapComment/${commentId}`);
+}
+
+export const deleteSubCommentById = (subcommentId) => {
+  return api.delete(`/deleteMapSubcomment/${subcommentId}`);
 }
 
 export const getSubcommsByParentCommsId = (commentId) => {
@@ -101,6 +104,7 @@ const apis = {
   likeDislikeMapById,
   createSubcomment,
   deleteCommentById,
+  deleteSubCommentById,
   getSubcommsByParentCommsId,
   duplicateMapById
 };

@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import api from "./map-request-api";
 import AuthContext from "../auth";
 import GlobalStoreContext from "../store";
-import {PostActionType} from "../post";
-
 const MapContext = createContext({});
 
 export function MapContextProvider({ children }) {
@@ -472,25 +470,29 @@ export function MapContextProvider({ children }) {
         type: MapActionType.SET_ERROR_MSG,
         payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error fetching current map or its comments from database"
       });
-      return;
     }
   };
 
-  mapInfo.createMapComment = async function (
-    mapId,
-    commenterUserName,
-    content
-  ) {
+  mapInfo.createMapComment = async function (mapId, commenterUserName, content) {
     if (!mapId || !commenterUserName || !content) {
       return setMapInfo({
         ...mapInfo,
         allCommentsForMap: [],
       });
     }
-    const response = api.createMapComment(mapId, commenterUserName, content);
-    mapInfo.getMapById(mapId);
-
-    console.log(mapInfo.currentMap);
+    try{
+      const response = await api.createMapComment(mapId, commenterUserName, content);
+      if(response.status === 201){
+        console.log('create comment success');
+        mapInfo.getMapById(mapId);
+      }
+    }
+    catch(error){
+      mapReducer({
+        type: MapActionType.SET_ERROR_MSG,
+        payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error creating comment for current map"
+      });
+    }
   }
 
   mapInfo.setCurrentComment = function (commentPayload) {
@@ -513,81 +515,68 @@ export function MapContextProvider({ children }) {
 
   mapInfo.deleteCommentById = async function (commentId) {
     console.log(`delete map comment by id: ${commentId}`);
-    const response = await api.deleteCommentById(commentId);
-    if (response.data.error){
-      setMapInfo({
-        ...mapInfo,
-        errorMessage: response.data.error,
+
+    try{
+      const response = await api.deleteCommentById(commentId);
+      console.log(response);
+      if(response?.status === 200){
+        console.log('delete comment success');
+        // let tempIds = mapInfo?.currentMap?.comments;
+        // console.log(`tempIds: ${JSON.stringify(tempIds)}`);
+        // const index = tempIds.indexOf(commentId);
+        // if (index > -1){
+        //   tempIds.splice(index, 1);
+        // }
+        // if (tempIds.length > 0) {
+        //   mapInfo.getCommentsByCommentIds(tempIds);
+        // }
+        // else {
+        //   mapReducer({
+        //     type: MapActionType.UPDATE_ALL_COMMENTS,
+        //     payload: []
+        //   });
+        // }
+      }
+    }
+    catch(error){
+      console.log(error);
+      mapReducer({
+        type: MapActionType.SET_ERROR_MSG,
+        payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error deleting comment for current map"
       });
-    }else{
-      let tempIds = mapInfo.currentMap.comments;
-      console.log(tempIds);
-      const index = tempIds.indexOf(commentId);
-      if (index > -1){
-        tempIds.splice(index, 1);
-      }
-      if (tempIds.length > 0) {
-        mapInfo.getCommentsByCommentIds(tempIds);
-      } else {
-        mapReducer({
-          type: MapActionType.UPDATE_ALL_COMMENTS,
-          payload: []
-        });
-      }
     }
   };
 
-  mapInfo.createSubcomment = async function (
-      commentId,
-      commenterUserName,
-      content
-  ) {
-    console.log(commentId, commenterUserName, content);
-    const response = await api.createSubcomment(
-        commentId,
-        commenterUserName,
-        content
-    );
-    console.log(response)
-    mapInfo.getMapById(mapInfo.currentMap._id);
+  mapInfo.createSubcomment = async function (commentId, commenterUserName, content) {
+    try{
+      const response = await api.createSubcomment(commentId, commenterUserName,content);
+      if(response?.status === 201){
+        await mapInfo.getMapById(mapInfo.currentMap._id);
+      }
+    }
+    catch(error){
+      console.log(error);
+      mapReducer({
+        type: MapActionType.SET_ERROR_MSG,
+        payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error creating subcomment for current map"
+      });
+    }
   };
 
   mapInfo.deleteSubCommentById = async function (subId){
-    // delete current subcomment
-    const response = await api.deleteSubCommentById(subId);
-    if(response.status === 200){
-      const parentCommentId = mapInfo.currentCommentIndex?._id;
-      if(!parentCommentId){
-        return;
-      }
-
-      // obtain new subcomment list
-      const subcommentResponse = await api.getSubcommsByParentCommsId(parentCommentId);
-      if(subcommentResponse.status === 200){
-        const newSubcomments = subcommentResponse.data;
-
-        // reflect this update to allCommentsForPost
-        var newAllCommentsForPost = mapInfo.allCommentsForPost.slice().map((comment) => {
-          if(comment._id === parentCommentId){
-            comment.subComments = newSubcomments;
-          }
-          return comment;
-        });
-
-        mapReducer({
-          type: MapActionType.UPDATE_ALL_COMMENTS,
-          payload: newAllCommentsForPost
-        });
-
-        return;
+    try{
+      console.log('deleteSubCommentById');
+      const response = await api.deleteSubCommentById(subId);
+      console.log(response);
+      if(response.status === 200){
+        await mapInfo.getMapById(mapInfo.currentMap._id);
       }
     }
-
-    // print error if exists
-    if (response.data.error){
-      setMapInfo({
-        ...mapInfo,
-        errorMessage: response.data.error,
+    catch(error){
+      console.log(error);
+      mapReducer({
+        type: MapActionType.SET_ERROR_MSG,
+        payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error deleting subcomment for current map"
       });
     }
   };

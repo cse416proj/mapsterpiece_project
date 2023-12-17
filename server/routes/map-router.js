@@ -20,7 +20,7 @@ router.post('/createMapComment/:mapId', auth.verify, MapController.createMapComm
 router.delete('/deleteMapComment/:commentId', auth.verify, MapController.deleteMapCommentById);
 
 router.post('/createSubcomment/:commentId', auth.verify, MapController.createSubcomment);
-router.delete('/createMapSubcomment/:commentId', auth.verify, MapController.deleteSubCommentById);
+router.delete('/deleteMapSubcomment/:commentId', auth.verify, MapController.deleteSubCommentById);
 
 // no auth needed because public can view comments
 router.get('/allMapComments/:mapId', MapController.getAllCommentsFromPublishedMap);

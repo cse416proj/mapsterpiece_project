@@ -741,24 +741,27 @@ createSubcomment = async (req, res) => {
 };
 
 deleteSubCommentById = async (req, res) => {
-  const subId = req.params.subId;
-  if(!subId){
+  const subcommentId = req.params.commentId;
+  if(!subcommentId){
     return res.status(400).json({ errorMessage: "No comment ID found." });
   }
 
-  Subcomment.findById(subId, (err, subcomment) =>{
+  Subcomment.findById(subcommentId, (err, subcomment) =>{
     if (err) {
       return res.status(500).json({ errorMessage: err.message });
     }
 
+    console.log('subcomment');
+    console.log(subcomment);
+
     async function findComment(){
       try{
-        const comment = await Comment.findOne({subComments: subId});
+        const comment = await Comment.findOne({subComments: { $in: subcommentId }});
         if (!comment){
           return res.status(404).json({ errorMessage: 'Comment not found.' });
         }
 
-        comment.subComments.pull(subId);
+        comment.subComments.pull(subcomment);
         await comment.save();
         await subcomment.remove();
 
@@ -766,8 +769,11 @@ deleteSubCommentById = async (req, res) => {
           message: 'subcomment deleted successfully!',
           comment: subcomment,
         });
-
       } catch(err) {
+        console.log(err);
+        if(err.errorMessage){
+          return res.status(500).json({errorMessage: err.errorMessage});
+        }
         return res.status(500).json({errorMessage: err.message});
       }
     }
