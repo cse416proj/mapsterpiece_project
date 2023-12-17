@@ -23,10 +23,13 @@ import tinycolor from "tinycolor2";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import { Typography, Box } from "@mui/material";
 
+
 function MapScreen() {
   const location = useLocation();
   // const { mapId } = useParams();
   const { mapInfo } = useContext(MapContext);
+  // const { store } = useContext(GlobalStoreContext);
+  // store.setCurrentView("MAP_VIEW");
 
   const mapContainerRef = useRef(null);
   const mapContentRef = useRef(null);
@@ -217,6 +220,7 @@ function MapScreen() {
       }
       return defaultRegionStyle;
     }
+
     // 5 MAP TYPES
     if (JSON.stringify(currLayer?.feature) === JSON.stringify(feature)) {
       return hoverRegionStyle;
@@ -531,28 +535,6 @@ function MapScreen() {
     if (!layer?.feature) {
       return;
     }
-
-    // // come back later
-    // const name = getRegionName(layer);
-
-    // layer
-    //   .bindTooltip(name, {
-    //     permanent: true,
-    //   })
-    //   .openTooltip();
-
-    // if (layer?.feature.properties.fillColor && !dataEditModeRef.current) {
-    //   layer.setStyle({
-    //     fillColor: layer?.feature.properties.fillColor,
-    //     fillOpacity: 1,
-    //   });
-    // } else {
-    //   layer.setStyle({
-    //     fillColor: "#FFFFFF",
-    //     fillOpacity: 0.1,
-    //   });
-    // }
-    // layer.bringToFront();
 
     layer.on({
       mouseover: highlightFeature,

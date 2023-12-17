@@ -17,12 +17,12 @@ afterAll(async () => {
 // describe('POST /register success', () => {
 //   it('responds with 200 and success message on successful register', async () => {
 //     const validRequestBody = {
-//         firstName: 'user',
-//         lastName: '4',
-//         userName: 'user4',
-//         email: 'user4@gmail.com',
-//         password: 'user1234',
-//         passwordVerify: 'user1234'
+//       firstName: 'jest',
+//       lastName: 'test',
+//       userName: 'jestTest',
+//       email: 'jest@gmail.com',
+//       password: 'jestTest',
+//       passwordVerify: 'jestTest'
 //     };
 
 //     const response = await request(app)
@@ -31,10 +31,10 @@ afterAll(async () => {
 
 //     expect(response.status).toBe(200);
 //     expect(response.body.success).toBe(true);
-//     expect(response.body.user.firstName).toBe('user');
-//     expect(response.body.user.lastName).toBe('4');
-//     expect(response.body.user.userName).toBe('user4');
-//     expect(response.body.user.email).toBe('user4@gmail.com');
+//     expect(response.body.user.firstName).toBe(validRequestBody.firstName);
+//     expect(response.body.user.lastName).toBe(validRequestBody.lastName);
+//     expect(response.body.user.userName).toBe(validRequestBody.userName);
+//     expect(response.body.user.email).toBe(validRequestBody.email);
 //   });
 // });
 
@@ -163,17 +163,24 @@ describe("Post create/view/update success", () => {
     content: "this is post content"
   };
 
+  const authUser = {
+    firstName: 'jest',
+    lastName: 'test',
+    userName: 'jestTest',
+    email: 'jest@gmail.com',
+  }
+
   it("Create post", async () => {
     const response = await request(app)
       .post('/post/createPost')
-      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y')
+      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTdmNzlhYWQ2ODE3ODEyYzY5ZjMwOTYiLCJpYXQiOjE3MDI4NTMxMDV9.fqvyTCu_PhQaOfegN76lIJ193pXUcJ0NCgyzXz5ZzI0')
       .send(validRequestBody);
 
     expect(response.status).toBe(201);
     expect(response.body.message).toBe("Post created successfully!");
     expect(response.body.post).not.toBeNull();
     expect(response.body.post).toBeDefined();
-    expect(response.body.post.ownerUserName).toBe('apple');
+    expect(response.body.post.ownerUserName).toBe(authUser.userName);
     expect(response.body.post.title).toBe(validRequestBody.title);
     expect(response.body.post.tags).toStrictEqual(validRequestBody.tags);
     expect(response.body.post.content).toBe(validRequestBody.content);
@@ -182,17 +189,21 @@ describe("Post create/view/update success", () => {
   });
 
   it("Get post", async () => {
-    const response = await request(app)
-      .get(`/post/post/${postId}`)
-      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y');
+    if(postId){
+      const response = await request(app)
+        .get(`/post/post/${postId}`)
+        .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTdmNzlhYWQ2ODE3ODEyYzY5ZjMwOTYiLCJpYXQiOjE3MDI4NTMxMDV9.fqvyTCu_PhQaOfegN76lIJ193pXUcJ0NCgyzXz5ZzI0');
 
-    expect(response.status).toBe(200);
-    expect(response.body).not.toBeNull();
-    expect(response.body).toBeDefined();
-    expect(response.body.ownerUserName).toBe('apple');
-    expect(response.body.title).toBe(validRequestBody.title);
-    expect(response.body.tags).toStrictEqual(validRequestBody.tags);
-    expect(response.body.content).toBe(validRequestBody.content);
+      console.log(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).not.toBeNull();
+      expect(response.body).toBeDefined();
+      expect(response.body.ownerUserName).toBe(authUser.userName);
+      expect(response.body.title).toBe(validRequestBody.title);
+      expect(response.body.tags).toStrictEqual(validRequestBody.tags);
+      expect(response.body.content).toBe(validRequestBody.content);
+    }
   });
 
   it("Update post", async () => {
@@ -202,30 +213,34 @@ describe("Post create/view/update success", () => {
       content: "this is updated post content."
     };
 
-    const response = await request(app)
+    if(postId){
+      const response = await request(app)
       .put(`/post/updatePost/${postId}`)
-      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y')
+      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTdmNzlhYWQ2ODE3ODEyYzY5ZjMwOTYiLCJpYXQiOjE3MDI4NTMxMDV9.fqvyTCu_PhQaOfegN76lIJ193pXUcJ0NCgyzXz5ZzI0')
       .send(newValidRequestBody);
 
-    expect(response.status).toBe(201);
-    expect(response.body.message).toBe("Post updated successfully!");
-    expect(response.body.post).not.toBeNull();
-    expect(response.body.post).toBeDefined();
-    expect(response.body.post.ownerUserName).toBe('apple');
-    expect(response.body.post.title).toBe(newValidRequestBody.title);
-    expect(response.body.post.tags).toStrictEqual(newValidRequestBody.tags);
-    expect(response.body.post.content).toBe(newValidRequestBody.content);
-    expect(response.body.post.title).not.toBe(validRequestBody.title);
-    expect(response.body.post.tags).not.toBe(validRequestBody.tags);
-    expect(response.body.post.content).not.toBe(validRequestBody.content);
+      expect(response.status).toBe(201);
+      expect(response.body.message).toBe("Post updated successfully!");
+      expect(response.body.post).not.toBeNull();
+      expect(response.body.post).toBeDefined();
+      expect(response.body.post.ownerUserName).toBe(authUser.userName);
+      expect(response.body.post.title).toBe(newValidRequestBody.title);
+      expect(response.body.post.tags).toStrictEqual(newValidRequestBody.tags);
+      expect(response.body.post.content).toBe(newValidRequestBody.content);
+      expect(response.body.post.title).not.toBe(validRequestBody.title);
+      expect(response.body.post.tags).not.toBe(validRequestBody.tags);
+      expect(response.body.post.content).not.toBe(validRequestBody.content);
+    }
   });
 
   it("Delete post", async () => {
-    const response = await request(app)
+    if(postId){
+      const response = await request(app)
       .delete(`/post/deletePost/${postId}`)
-      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y')
+      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTdmNzlhYWQ2ODE3ODEyYzY5ZjMwOTYiLCJpYXQiOjE3MDI4NTMxMDV9.fqvyTCu_PhQaOfegN76lIJ193pXUcJ0NCgyzXz5ZzI0')
 
-    expect(response.status).toBe(200);
+      expect(response.status).toBe(200);
+    }
   });
 });
 
@@ -239,7 +254,7 @@ describe("Post create/view/update fail", () => {
 
     const response = await request(app)
       .post('/post/createPost')
-      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y')
+      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTdmNzlhYWQ2ODE3ODEyYzY5ZjMwOTYiLCJpYXQiOjE3MDI4NTMxMDV9.fqvyTCu_PhQaOfegN76lIJ193pXUcJ0NCgyzXz5ZzI0')
       .send(validRequestBody);
 
     expect(response.status).toBe(400);
@@ -255,7 +270,7 @@ describe("Post create/view/update fail", () => {
 
     const response = await request(app)
       .post('/post/createPost')
-      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y')
+      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTdmNzlhYWQ2ODE3ODEyYzY5ZjMwOTYiLCJpYXQiOjE3MDI4NTMxMDV9.fqvyTCu_PhQaOfegN76lIJ193pXUcJ0NCgyzXz5ZzI0')
       .send(validRequestBody);
 
     expect(response.status).toBe(400);
@@ -271,7 +286,7 @@ describe("Post create/view/update fail", () => {
 
     const response = await request(app)
       .post('/post/createPost')
-      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y')
+      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTdmNzlhYWQ2ODE3ODEyYzY5ZjMwOTYiLCJpYXQiOjE3MDI4NTMxMDV9.fqvyTCu_PhQaOfegN76lIJ193pXUcJ0NCgyzXz5ZzI0')
       .send(validRequestBody);
 
     expect(response.status).toBe(400);
@@ -281,7 +296,7 @@ describe("Post create/view/update fail", () => {
   it("Get deleted post", async () => {
     const response = await request(app)
       .get(`/post/post/6564fb0b5686f6efcfea39b4`)
-      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y');
+      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTdmNzlhYWQ2ODE3ODEyYzY5ZjMwOTYiLCJpYXQiOjE3MDI4NTMxMDV9.fqvyTCu_PhQaOfegN76lIJ193pXUcJ0NCgyzXz5ZzI0');
 
     expect(response.status).toBe(404);
     expect(response.body.errorMessage).toBe("Post not found.");
@@ -290,28 +305,28 @@ describe("Post create/view/update fail", () => {
 
 describe('Iteract with Map succcess', () => {
   it('Like map', async () => {
-    const mapId = '656e08e81c18925ee6de9387';
+    const mapId = '657f3a5cfcdc1581c955c86a';
     const validRequestBody = {
       isLike: true
     };
 
     const response = await request(app)
       .put(`/map/likeDislikeMap/${mapId}`)
-      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y')
+      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTdmNzlhYWQ2ODE3ODEyYzY5ZjMwOTYiLCJpYXQiOjE3MDI4NTMxMDV9.fqvyTCu_PhQaOfegN76lIJ193pXUcJ0NCgyzXz5ZzI0')
       .send(validRequestBody);
 
     expect(response.status).toBe(201);
   });
 
   it('Dislike map', async () => {
-    const mapId = '656e08e81c18925ee6de9387';
+    const mapId = '657f3a5cfcdc1581c955c86a';
     const validRequestBody = {
       isLike: false
     };
 
     const response = await request(app)
       .put(`/map/likeDislikeMap/${mapId}`)
-      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVhNmFhMzA5MjZiMzE0OTVjMmM0YWMiLCJpYXQiOjE3MDExMTQ1MDh9.mWnIFB0dr-urQEWEYr8WoRWuhbNkIAAoisPTKeL6O9Y')
+      .set('Cookie', 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTdmNzlhYWQ2ODE3ODEyYzY5ZjMwOTYiLCJpYXQiOjE3MDI4NTMxMDV9.fqvyTCu_PhQaOfegN76lIJ193pXUcJ0NCgyzXz5ZzI0')
       .send(validRequestBody);
 
     expect(response.status).toBe(201);

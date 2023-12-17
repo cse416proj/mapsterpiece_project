@@ -81,13 +81,13 @@
 
 #map-comments-container{
     width: 100%;
-    height: 70%;
+    /* height: 70%; */
     
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
 
-    overflow-Y: auto;
+    overflow-Y: scroll;
 }
 
 #comment-owner-name{
@@ -173,9 +173,18 @@
 
 #comment-card{
     height: auto;
+    width: 100%;
     margin-bottom: 1.5vh;
+    overflow-Y: auto;
     /* min-height: 15vh; */
-    /* overflow-Y: auto; */
+}
+
+#empty-subcomment{
+    width: 100%;
+    height: 3.25vh;
+    padding-left: 1.5vw;
+    text-align: left;
+    background-color: #ddebe4;
 }
 
 #map-subcomment{
