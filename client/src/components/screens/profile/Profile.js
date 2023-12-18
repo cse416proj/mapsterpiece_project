@@ -27,6 +27,7 @@ function Profile() {
   // fetch user info based on id
   useEffect(() => {
     userInfo.getUserById(userId);
+    mapInfo.clearTrans();
   }, [userId]);
 
   // only load other user's publish map

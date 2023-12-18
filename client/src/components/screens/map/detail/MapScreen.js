@@ -451,7 +451,7 @@ function MapScreen() {
         setGeoJsonKey(geoJsonKey + 1);
         setInitialLoad(true);
       }
-      mapInfo.updateMapTypeData(newDataObj, indexElementTobeChanged);
+      mapInfo.addDataTransaction(newDataObj, indexElementTobeChanged);
       setIndexElementTobeChanged(-1);
     };
 
@@ -485,7 +485,7 @@ function MapScreen() {
       mapTypeDataRef.current.data[indexElementTobeChanged] = newDataObj;
     }
 
-    mapInfo.updateMapTypeData(newDataObj, indexElementTobeChanged);
+    mapInfo.addDataTransaction(newDataObj, indexElementTobeChanged);
     setIndexElementTobeChanged(-1);
   };
 

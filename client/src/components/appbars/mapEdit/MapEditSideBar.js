@@ -11,9 +11,12 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  Button,
 } from "@mui/material";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
+import UndoIcon from "@mui/icons-material/Undo";
+import RedoIcon from "@mui/icons-material/Redo";
 
 import { Tags } from "../../index";
 import MapContext from "../../../contexts/map";
@@ -65,25 +68,25 @@ function MapEditSideBar() {
     setSelectedColor(color.hex);
   };
 
-  function getText(type){
+  function getText(type) {
     const dict = {
-      '': 'Loading...',
-      'PINMAP': 'Pin Map',
-      'HEATMAP': 'Heat Map',
-      'CHOROPLETH': 'Choropleth Map',
-      'DOT_DISTRIBUTION': 'Dot Distribution Map',
-      'GRADUATED_SYMBOL': 'Graduated Symbol Map'
-    }
+      "": "Loading...",
+      PINMAP: "Pin Map",
+      HEATMAP: "Heat Map",
+      CHOROPLETH: "Choropleth Map",
+      DOT_DISTRIBUTION: "Dot Distribution Map",
+      GRADUATED_SYMBOL: "Graduated Symbol Map",
+    };
     return dict[type];
   }
 
-  function handleEditMapType(event){
+  function handleEditMapType(event) {
     event.preventDefault();
     event.stopPropagation();
     setEditActive(true);
   }
 
-  function handleChangeMapType(event){
+  function handleChangeMapType(event) {
     event.preventDefault();
     event.stopPropagation();
     setEditActive(false);
@@ -109,10 +112,17 @@ function MapEditSideBar() {
     }
   }
 
-  function handleCloseSelect(event){
+  function handleCloseSelect(event) {
     event.preventDefault();
     event.stopPropagation();
     setEditActive(false);
+  }
+
+  function handleUndo() {
+    mapInfo.undo();
+  }
+  function handleRedo() {
+    mapInfo.redo();
   }
 
   // console.log(mapInfo.currentMap);
@@ -121,38 +131,48 @@ function MapEditSideBar() {
   return (
     <Sidebar style={sideBarStyle}>
       <Toolbar className="map-screen-sidebar">
-        <Divider id='edit-map-divider' style={{ margin: '2.5vh auto' }}>
+        <Divider id="edit-map-divider" style={{ margin: "2.5vh auto" }}>
           Edit Map
         </Divider>
 
         <Box className="sidebar-block">
-          <Box className='flex-row' style={{ width: '100%' }}>
-            {
-              (editActive) ?
-                <FormControl style={{ width: '100%' }}>
-                  <InputLabel id="map-type-dropdown-label">Select Map Type...</InputLabel>
-                  <Select
-                    open={editActive}
-                    onClose={handleCloseSelect}
-                    onChange={handleChangeMapType}
-                    style={{ width: '100%' }}
-                  >
-                    <MenuItem disabled value="">Select A Map Type...</MenuItem>
-                    <MenuItem value={"PINMAP"}>Pin Map</MenuItem>
-                    <MenuItem value={"HEATMAP"}>Heat Map</MenuItem>
-                    <MenuItem value={"CHOROPLETH"}>Choropleth Map</MenuItem>
-                    <MenuItem value={"DOT_DISTRIBUTION"}>Dot Distribution Map</MenuItem>
-                    <MenuItem value={"GRADUATED_SYMBOL"}>Graduated Symbol Map</MenuItem>
-                  </Select>
-                </FormControl> :
-                <>
-                  <Typography className="sidebar-block-title">
-                    {`Map Type: `}
-                    <span id='map-type-text' onClick={handleEditMapType}>{getText(mapInfo.currentMapEditType)}</span>
-                  </Typography>
-                  <EditIcon id='edit-map-type' onClick={handleEditMapType}/>
-                </>
-            }
+          <Box className="flex-row" style={{ width: "100%" }}>
+            {editActive ? (
+              <FormControl style={{ width: "100%" }}>
+                <InputLabel id="map-type-dropdown-label">
+                  Select Map Type...
+                </InputLabel>
+                <Select
+                  open={editActive}
+                  onClose={handleCloseSelect}
+                  onChange={handleChangeMapType}
+                  style={{ width: "100%" }}
+                >
+                  <MenuItem disabled value="">
+                    Select A Map Type...
+                  </MenuItem>
+                  <MenuItem value={"PINMAP"}>Pin Map</MenuItem>
+                  <MenuItem value={"HEATMAP"}>Heat Map</MenuItem>
+                  <MenuItem value={"CHOROPLETH"}>Choropleth Map</MenuItem>
+                  <MenuItem value={"DOT_DISTRIBUTION"}>
+                    Dot Distribution Map
+                  </MenuItem>
+                  <MenuItem value={"GRADUATED_SYMBOL"}>
+                    Graduated Symbol Map
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            ) : (
+              <>
+                <Typography className="sidebar-block-title">
+                  {`Map Type: `}
+                  <span id="map-type-text" onClick={handleEditMapType}>
+                    {getText(mapInfo.currentMapEditType)}
+                  </span>
+                </Typography>
+                <EditIcon id="edit-map-type" onClick={handleEditMapType} />
+              </>
+            )}
           </Box>
         </Box>
 
@@ -194,28 +214,42 @@ function MapEditSideBar() {
         </Box>
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Map Data</Typography>
+          <Button
+            disabled={!mapInfo.canUndo()}
+            onClick={handleUndo}
+            variant="text"
+          >
+            <UndoIcon />
+          </Button>
+          <Button
+            disabled={!mapInfo.canRedo()}
+            onClick={handleRedo}
+            variant="text"
+          >
+            <RedoIcon />
+          </Button>
           <Box className="sidebar-block-content data-block"></Box>
           {/* {
             mapInfo?.currentMap?.mapType !== "CHOROPLETH" ?
               <CompactPicker color={selectedColor} onChange={handleColorChange}/> :
               null
           } */}
-          {
-            mapInfo.currentMapEditType !== "PINMAP" ? (
-              <Stack spacing={1} style={{marginTop: `10px`}}>
-                {mapInfo?.currentMap?.mapTypeData?.data?.map((props, index) => (
+          {mapInfo.currentMapEditType !== "PINMAP" ? (
+            <Stack spacing={1} style={{ marginTop: `10px` }}>
+              {mapInfo?.currentMap?.mapTypeData?.data
+                ?.sort((a, b) => a.regionName.localeCompare(b.regionName))
+                .map((props, index) => (
                   <Chip
                     key={index}
                     label={`${props.regionName}: ${props.value}`}
-                    style={{backgroundColor: `#dfe9eb`, width: `50%`}}
+                    style={{ backgroundColor: `#dfe9eb`, width: `50%` }}
                     onDelete={() => {
-                      mapInfo?.deleteMapTypeData(props.regionName);
+                      mapInfo?.removeDataTransaction(props.regionName);
                     }}
                   />
                 ))}
-              </Stack>
-            ) : null
-          }
+            </Stack>
+          ) : null}
         </Box>
       </Toolbar>
     </Sidebar>
