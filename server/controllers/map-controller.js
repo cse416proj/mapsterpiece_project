@@ -64,8 +64,6 @@ createMap = async (req, res) => {
     featuresFiltered[i] = currFeature;
   }
 
-  console.log('trying to create map');
-
   // create map
   const newMap = new Map({
     ownerUserName,
@@ -74,6 +72,7 @@ createMap = async (req, res) => {
     mapType: "REGULAR",
     mapContent: featuresFiltered,
     mapTypeData: {
+      bubbleMapColor: '#FF0000',
       legendTitle: 'Default legend title',
       max: 0,
       data: []
@@ -421,7 +420,6 @@ updateMapById = async (req, res) => {
       }
 
       const { title, mapContent, tags, mapType, mapTypeData } = req.body;
-
       map.title = title;
       map.mapContent = mapContent;
       map.tags = tags;
@@ -518,7 +516,8 @@ getAllCommentsFromPublishedMap = async (req, res) => {
       return res.status(400).json({ errorMessage: "Map is not published." });
     }
 
-    const comments = await Comment.find({ _id: { $in: map.comments } });
+    const comments = await Comment.find({ _id: { $in: map.comments } }).populate('subComments');
+
     return res.status(200).json({ comments });
   } catch (error) {
     // console.error(error);
@@ -594,6 +593,9 @@ likeDislikeMapById = async (req, res) => {
     Map.findById(mapId, (err, map) => {
       if (err) {
         return res.status(500).json({ errorMessage: err.message });
+      }
+      else if(!map) {
+        return res.status(404).json({ errorMessage: "Map cannot be found." });
       }
 
       const userLikedMap = map.likedUsers.find(
@@ -712,6 +714,77 @@ duplicateMap = async (req, res) => {
   }
 };
 
+createSubcomment = async (req, res) => {
+  console.log("Entered create subcomment server")
+  const commentId = req.params.commentId;
+  const { commenterUserName, content } = req.body;
+
+  Comment.findById(commentId, (err, comment) => {
+    if (err) {
+      return res.status(500).json({ errorMessage: err.message });
+    } else if (!comment) {
+      return res.status(404).json({ errorMessage: "Comment not found" });
+    }
+
+    const newSubcomment = new Subcomment({
+      commenterUserName: commenterUserName,
+      content: content,
+    });
+
+    comment.subComments.push(newSubcomment);
+    comment.save().then(() => {
+      newSubcomment.save().then(() => {
+        return res.status(201).json({
+          message: "Subcomment created successfully!",
+          subcomment: newSubcomment,
+        });
+      });
+    });
+  });
+};
+
+deleteSubCommentById = async (req, res) => {
+  const subcommentId = req.params.commentId;
+  if(!subcommentId){
+    return res.status(400).json({ errorMessage: "No comment ID found." });
+  }
+
+  Subcomment.findById(subcommentId, (err, subcomment) =>{
+    if (err) {
+      return res.status(500).json({ errorMessage: err.message });
+    }
+
+    console.log('subcomment');
+    console.log(subcomment);
+
+    async function findComment(){
+      try{
+        const comment = await Comment.findOne({subComments: { $in: subcommentId }});
+        if (!comment){
+          return res.status(404).json({ errorMessage: 'Comment not found.' });
+        }
+
+        comment.subComments.pull(subcomment);
+        await comment.save();
+        await subcomment.remove();
+
+        return res.status(200).json({
+          message: 'subcomment deleted successfully!',
+          comment: subcomment,
+        });
+      } catch(err) {
+        console.log(err);
+        if(err.errorMessage){
+          return res.status(500).json({errorMessage: err.errorMessage});
+        }
+        return res.status(500).json({errorMessage: err.message});
+      }
+    }
+
+    findComment();
+  })
+};
+
 module.exports = {
   createMap,
   getMapById,
@@ -726,5 +799,7 @@ module.exports = {
   getAllCommentsFromPublishedMap,
   deleteMapCommentById,
   likeDislikeMapById,
-  duplicateMap
+  duplicateMap,
+  createSubcomment,
+  deleteSubCommentById
 };

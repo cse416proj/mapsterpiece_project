@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import api from "./map-request-api";
 import AuthContext from "../auth";
 import GlobalStoreContext from "../store";
-
 const MapContext = createContext({});
 
 export function MapContextProvider({ children }) {
@@ -21,6 +20,7 @@ export function MapContextProvider({ children }) {
     currentComment: null,
     errorMessage: null,
     currentMapEditType: "REGULAR",
+    colorPickerChanged: false,
     // download: false,
     // downloadFormat: ''
   });
@@ -40,6 +40,7 @@ export function MapContextProvider({ children }) {
     LOAD_ALL_MAPS_FROM_USER: "LOAD_ALL_MAPS_FROM_USER",
     SET_CURRENT_REGION_COLOR: "SET_CURRENT_REGION_COLOR",
     SET_CURRENT_COMMENT: "SET_CURRENT_COMMENT",
+    SET_CURRENT_SUBCOMMENT: "SET_CURRENT_SUBCOMMENT",
     SET_ERROR_MSG: "SET_ERROR_MSG",
     SET_CURRENT_MAP_EDIT_TYPE: "SET_CURRENT_MAP_EDIT_TYPE",
     // SET_DOWNLOAD_FORMAT: 'SET_DOWNLOAD_FORMAT',
@@ -75,6 +76,7 @@ export function MapContextProvider({ children }) {
         return setMapInfo((prevMapInfo) => ({
           ...prevMapInfo,
           currentRegionColor: payload,
+          colorPickerChanged: true,
           errorMessage: null
         }));
       case MapActionType.SET_CURRENT_COMMENT:
@@ -82,6 +84,12 @@ export function MapContextProvider({ children }) {
           ...prevMapInfo,
           currentComment: payload,
         }));
+      case MapActionType.SET_CURRENT_SUBCOMMENT:
+        return setMapInfo({
+          ...mapInfo,
+          currentMap: mapInfo.currentMap,
+          currentCommentIndex: payload.comment,
+        });
       case MapActionType.SET_ERROR_MSG:
         return setMapInfo((prevMapInfo) => ({
           ...prevMapInfo,
@@ -266,8 +274,6 @@ export function MapContextProvider({ children }) {
           currMap = response.data?.find((map) => (map._id === currMapId));
         }
 
-        console.log(response.data);
-
         mapReducer({
           type: MapActionType.LOAD_ALL_MAPS_FROM_USER,
           payload: {
@@ -344,21 +350,16 @@ export function MapContextProvider({ children }) {
         return;
       }
 
-      console.log('mapInfo.updateMapTypeData');
-      console.log('mapDataIndividualObj');
-      console.log(mapDataIndividualObj);
-      console.log(`indexElementTobeChanged: ${indexElementTobeChanged}`);
-
       let oldMap = mapInfo.currentMap;
       let originalMapTypeData = oldMap.mapTypeData ? oldMap.mapTypeData : {max: 0, data: []};
-      if (mapDataIndividualObj.value > originalMapTypeData.max) {
-        originalMapTypeData.max = mapDataIndividualObj.value;
-      }
       if (indexElementTobeChanged >= 0) {
         originalMapTypeData.data[indexElementTobeChanged] = mapDataIndividualObj;
       } else {
         originalMapTypeData.data.push(mapDataIndividualObj);
       }
+
+      // reset max
+      originalMapTypeData.max = Math.max(...originalMapTypeData.data.map((data) => data.value));
       
       oldMap.mapTypeData = originalMapTypeData;
       setMapInfo((prevMapInfo) => ({
@@ -370,6 +371,37 @@ export function MapContextProvider({ children }) {
       console.log((error.response?.data?.errorMessage) ? error.response?.data?.errorMessage : "Error updating map type data.");
     }
   };
+
+  mapInfo.updateBubbleMapColor = function (color) {
+    if (!mapInfo.currentMap) {
+      return;
+    }
+    let oldMap = mapInfo.currentMap;
+    oldMap.mapTypeData.bubbleMapColor = color;
+    setMapInfo((prevMapInfo) => ({
+      ...prevMapInfo,
+      currentMap: oldMap,
+    }));
+  };
+
+  mapInfo.deleteMapTypeData = function (regionName) {
+    if (!mapInfo.currentMap) {
+      return;
+    }
+    let oldMap = mapInfo.currentMap;
+    let originalMapTypeData = oldMap.mapTypeData;
+    originalMapTypeData.data = originalMapTypeData.data.filter((data) => data.regionName !== regionName);
+    // reset max
+    originalMapTypeData.max = Math.max(...originalMapTypeData.data.map((data) => data.value));
+    if (originalMapTypeData.max === -Infinity) {
+      originalMapTypeData.max = 0;
+    }
+    oldMap.mapTypeData = originalMapTypeData;
+    setMapInfo((prevMapInfo) => ({
+      ...prevMapInfo,
+      currentMap: oldMap,
+    }));
+  }
 
   mapInfo.updateMapLikeDislike = async function (mapId, isLike) {
     try {
@@ -438,25 +470,29 @@ export function MapContextProvider({ children }) {
         type: MapActionType.SET_ERROR_MSG,
         payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error fetching current map or its comments from database"
       });
-      return;
     }
   };
 
-  mapInfo.createMapComment = async function (
-    mapId,
-    commenterUserName,
-    content
-  ) {
+  mapInfo.createMapComment = async function (mapId, commenterUserName, content) {
     if (!mapId || !commenterUserName || !content) {
       return setMapInfo({
         ...mapInfo,
         allCommentsForMap: [],
       });
     }
-    const response = api.createMapComment(mapId, commenterUserName, content);
-    mapInfo.getMapById(mapId);
-
-    console.log(mapInfo.currentMap);
+    try{
+      const response = await api.createMapComment(mapId, commenterUserName, content);
+      if(response.status === 201){
+        console.log('create comment success');
+        mapInfo.getMapById(mapId);
+      }
+    }
+    catch(error){
+      mapReducer({
+        type: MapActionType.SET_ERROR_MSG,
+        payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error creating comment for current map"
+      });
+    }
   }
 
   mapInfo.setCurrentComment = function (commentPayload) {
@@ -466,8 +502,69 @@ export function MapContextProvider({ children }) {
     });
   };
 
+  mapInfo.setCurrentSubcomment = function(commentPayload, subcommentPayload) {
+    console.log("Setting subcomment: ", commentPayload, subcommentPayload)
+    mapReducer({
+      type: MapActionType.SET_CURRENT_SUBCOMMENT,
+      payload: {
+        comment: commentPayload,
+        subcomment: subcommentPayload
+      },
+    });
+  };
+
   mapInfo.deleteCommentById = async function (commentId) {
     console.log(`delete map comment by id: ${commentId}`);
+
+    try{
+      const response = await api.deleteCommentById(commentId);
+      console.log(response);
+      if(response?.status === 200){
+        console.log('delete comment success');
+        await mapInfo.getMapById(mapInfo.currentMap._id);
+      }
+    }
+    catch(error){
+      console.log(error);
+      mapReducer({
+        type: MapActionType.SET_ERROR_MSG,
+        payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error deleting comment for current map"
+      });
+    }
+  };
+
+  mapInfo.createSubcomment = async function (commentId, commenterUserName, content) {
+    try{
+      const response = await api.createSubcomment(commentId, commenterUserName,content);
+      if(response?.status === 201){
+        await mapInfo.getMapById(mapInfo.currentMap._id);
+      }
+    }
+    catch(error){
+      console.log(error);
+      mapReducer({
+        type: MapActionType.SET_ERROR_MSG,
+        payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error creating subcomment for current map"
+      });
+    }
+  };
+
+  mapInfo.deleteSubCommentById = async function (subId){
+    try{
+      console.log('deleteSubCommentById');
+      const response = await api.deleteSubCommentById(subId);
+      console.log(response);
+      if(response.status === 200){
+        await mapInfo.getMapById(mapInfo.currentMap._id);
+      }
+    }
+    catch(error){
+      console.log(error);
+      mapReducer({
+        type: MapActionType.SET_ERROR_MSG,
+        payload: (error.body?.errorMessage) ? error.body?.errorMessage : "Error deleting subcomment for current map"
+      });
+    }
   };
 
   mapInfo.setAllMaps = function(maps){

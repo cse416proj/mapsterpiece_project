@@ -66,6 +66,25 @@ export const createMapComment = (mapId, commenterUserName, content) => {
   })
 }
 
+export const createSubcomment = (commentId, commenterUserName, content) => {
+  return api.post(`/createSubcomment/${commentId}`, {
+    commenterUserName: commenterUserName,
+    content: content,
+  });
+};
+
+export const deleteCommentById =(commentId) => {
+  return api.delete(`/deleteMapComment/${commentId}`);
+}
+
+export const deleteSubCommentById = (subcommentId) => {
+  return api.delete(`/deleteMapSubcomment/${subcommentId}`);
+}
+
+export const getSubcommsByParentCommsId = (commentId) => {
+  return api.get(`/getSubComments/${commentId}`);
+}
+
 export const duplicateMapById = (mapId)=>{
   return api.post(`/duplicate/${mapId}`);
 }
@@ -82,7 +101,11 @@ const apis = {
   updateMapById, 
   getAllCommentsFromPublishedMap,
   createMapComment,
-  likeDislikeMapById, 
+  likeDislikeMapById,
+  createSubcomment,
+  deleteCommentById,
+  deleteSubCommentById,
+  getSubcommsByParentCommsId,
   duplicateMapById
 };
 
