@@ -126,7 +126,7 @@ function MapEditSideBar() {
         </Divider>
 
         <Box className="sidebar-block">
-          <Box className='flex-row' style={{ width: '80%' }}>
+          <Box className='flex-row' style={{ width: '100%' }}>
             {
               (editActive) ?
                 <FormControl style={{ width: '100%' }}>

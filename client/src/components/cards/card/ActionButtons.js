@@ -42,7 +42,9 @@ export default function ActionButtons({ type, cardId, currentUserName, comments,
     setAnchorEl(event.currentTarget);
   };
 
-  const closeMenu = () => {
+  const closeMenu = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
     setAnchorEl(null);
   };
 
@@ -101,7 +103,7 @@ export default function ActionButtons({ type, cardId, currentUserName, comments,
 
     return actions.map((action) => {
       return (
-        <MenuItem key={action.name} onClick={action.handler} onMouseLeave={closeMenu}>
+        <MenuItem key={action.name} onClick={action.handler}>
           {action.icon}
           <Typography id='action-button-text'>{action.name}</Typography>
         </MenuItem>

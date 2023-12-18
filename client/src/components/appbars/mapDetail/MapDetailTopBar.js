@@ -291,10 +291,10 @@ export default function MapDetailTopBar() {
             }}
           >
             <MenuItem onMouseLeave={closeMenu}>
-              <EmailShareButton url={window.location.href} onMouseLeave={closeMenu}><EmailIcon>E-Mail</EmailIcon></EmailShareButton>
-              <FacebookShareButton url={window.location.href} hashtag={"#Mapsterpiece"} onMouseLeave={closeMenu}><FacebookIcon>Facebook</FacebookIcon></FacebookShareButton>
-              <RedditShareButton url={window.location.href} onMouseLeave={closeMenu}><RedditIcon>Reddit</RedditIcon></RedditShareButton>
-              <TwitterShareButton url={window.location.href} onMouseLeave={closeMenu}><TwitterIcon>Twitter</TwitterIcon></TwitterShareButton>
+              <EmailShareButton url={window.location.href} onShareWindowClose={closeMenu}><EmailIcon>E-Mail</EmailIcon></EmailShareButton>
+              <FacebookShareButton url={window.location.href} hashtag={"#Mapsterpiece"} onShareWindowClose={closeMenu}><FacebookIcon>Facebook</FacebookIcon></FacebookShareButton>
+              <RedditShareButton url={window.location.href} onShareWindowClose={closeMenu}><RedditIcon>Reddit</RedditIcon></RedditShareButton>
+              <TwitterShareButton url={window.location.href} onShareWindowClose={closeMenu}><TwitterIcon>Twitter</TwitterIcon></TwitterShareButton>
             </MenuItem>
           </Menu>
           { renderLikeButtons() }
