@@ -9,6 +9,7 @@ import { kml } from "@tmcw/togeojson";
 
 import FileUpload from './FileUpload';
 import SelectFileFormat from './SelectFileFormat';
+import SelectMapType from './SelectMapType';
 import { Tags, ButtonSet } from '../../commonProps';
 import { Modals, SuccessAlert } from "../../../index";
 
@@ -38,6 +39,7 @@ function CreateMap(){
     // set up input variables
     const [title, setTitle] = useState('');
     const [fileFormat, setFileFormat] = useState('');
+    const [mapType, setMapType] = useState('');
     const [tags, setTags] = useState([]);
     const [isEditingTag, setIsEditingTag] = useState(false);
     const [shpBuffer, setShpBuffer] = useState(null);
@@ -53,12 +55,12 @@ function CreateMap(){
     // set up error flags for these input
     const [missingTitle, setMissingTitle] = useState(false);
     const [missingFileFormat, setMissingFileFormat] = useState(false);
-
-    // console.log(fileFormat);
+    const [missingMapType, setMissingMapType] = useState(false);
 
     // reset success alert when first enter
     useEffect(() => {
         handleClear();
+        store.closeModal();
         setCreateSuccess(false);
     }, []);
 
@@ -140,6 +142,7 @@ function CreateMap(){
     const handleClear = () => {
         setTitle('');
         setFileFormat('');
+        setMapType('');
         setTags([]);
         setIsEditingTag(false);
         setShpBuffer(null);
@@ -148,6 +151,7 @@ function CreateMap(){
         setIsLoading(false);
         setMissingTitle(false);
         setMissingFileFormat(false);
+        setMissingMapType(false);
         clearInputFile();
     }
 
@@ -159,6 +163,11 @@ function CreateMap(){
     // check if file format exists
     const checkFileFormatExists = () => {
         setMissingFileFormat((!fileFormat) ? true : false);
+    }
+
+    // check if map type exists
+    const checkMapTypeExists = () => {
+        setMissingMapType((!mapType) ? true : false);
     }
 
     // validate file format
@@ -300,9 +309,10 @@ function CreateMap(){
 
         checkTitleExists();
         checkFileFormatExists();
+        checkMapTypeExists();
 
-        if(missingTitle || missingFileFormat){
-            console.log('missingTitle || missingFileFormat')
+        if(missingTitle || missingFileFormat || missingMapType){
+            console.log('missingTitle || missingFileFormat');
             return;
         }
         else if(!fileContent){
@@ -326,6 +336,7 @@ function CreateMap(){
             const newMap = {
                 title: title,
                 fileFormat: fileFormat,
+                mapType: mapType,
                 mapContent: mapContent,
                 tags: tags
             }
@@ -347,15 +358,26 @@ function CreateMap(){
                 helperText={!title && missingTitle && 'Required to enter map title'}
                 onChange={handleTitleChange}
             />
-            <SelectFileFormat
-                isLoading={isLoading}
-                fileFormat={fileFormat}
-                fileContent={fileContent}
-                setFileFormat={setFileFormat}
-                missingFileFormat={missingFileFormat}
-                tags={tags}
-                setTags={setTags}
-            />
+            <Box className='flex-row' id='create-selection'>
+                <SelectFileFormat
+                    isLoading={isLoading}
+                    fileFormat={fileFormat}
+                    fileContent={fileContent}
+                    setFileFormat={setFileFormat}
+                    missingFileFormat={missingFileFormat}
+                    tags={tags}
+                    setTags={setTags}
+                />
+                <SelectMapType
+                    isLoading={isLoading}
+                    fileContent={fileContent}
+                    mapType={mapType}
+                    setMapType={setMapType}
+                    missingMapType={missingMapType}
+                    tags={tags}
+                    setTags={setTags}
+                />
+            </Box>
             <FileUpload
                 isLoading={isLoading}
                 inputFile={inputFile}

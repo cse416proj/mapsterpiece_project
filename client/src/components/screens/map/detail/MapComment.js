@@ -77,8 +77,6 @@ export default function MapComment({ payload }) {
 
     if(mapId && auth?.user?.userName) {
       const trimmedComment = subCommentInput.replace(/(\s|\r\n|\n|\r)/gm, '');
-
-      console.log(trimmedComment.length);
       if(trimmedComment.length > 0){
         setError('');
         mapInfo.createSubcomment(mapId, auth?.user?.userName, subCommentInput);

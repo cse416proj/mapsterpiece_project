@@ -10,7 +10,6 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Alert,
 } from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
@@ -107,16 +106,10 @@ export default function MapDetailTopBar() {
   function handleMyMaps() {
     userInfo.setCurrentUser(auth.user);
     navigate(`/profile/${auth.user._id}`);
-}
-function handleCommunity(){
-    navigate('/community');
-}
-
-  function handleExportPNG() {
-    console.log("export PNG file");
   }
-  function handleExportJPG() {
-    console.log("export JPG file.");
+
+  function handleCommunity(){
+    navigate('/community');
   }
 
   function handleForkMap(event) {
@@ -135,12 +128,8 @@ function handleCommunity(){
     console.log("share this map");
     event.stopPropagation();
     event.preventDefault();
-    // setAnchorEl(event.currentTarget);
-  }
-
-  const openMenu = (event) => {
     setAnchorEl(event.currentTarget);
-  };
+  }
 
   const closeMenu = () => {
     setAnchorEl(null);
@@ -232,7 +221,6 @@ function handleCommunity(){
       { text: "Unpublish", handler: handleUnpublishMap },
       { text: "Fork", handler: handleForkMap },
       { text: "Share Link", handler: handleShareMap },
-      { text: "Export/Download", handler: handleExportJPG },
     ];
 
     if (mapId && auth?.user) {
@@ -293,14 +281,14 @@ function handleCommunity(){
 
         <Box className="map-button-container">
           <Menu
-              id = "share-menu"
-              style={{ zIndex: '2500' }}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={closeMenu}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
-              }}
+            id="share-menu"
+            style={{ zIndex: '2500' }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={closeMenu}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
           >
             <MenuItem onMouseLeave={closeMenu}>
               <EmailShareButton url={window.location.href} onShareWindowClose={closeMenu}><EmailIcon>E-Mail</EmailIcon></EmailShareButton>

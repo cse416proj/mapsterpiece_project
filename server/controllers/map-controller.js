@@ -12,7 +12,7 @@ createMap = async (req, res) => {
   }
 
   const userId = req.userId;
-  const { ownerUserName, title, fileFormat, mapContent, tags } = req.body;
+  const { ownerUserName, title, fileFormat, mapType, mapContent, tags } = req.body;
 
   // check user existence & payload
   if (!userId) {
@@ -69,7 +69,7 @@ createMap = async (req, res) => {
     ownerUserName,
     title,
     fileFormat,
-    mapType: "REGULAR",
+    mapType: mapType,
     mapContent: featuresFiltered,
     mapTypeData: {
       bubbleMapColor: '#FF0000',
@@ -666,9 +666,13 @@ duplicateMap = async (req, res) => {
 
   const userId = req.userId;
   const mapId = req.params.mapId;
+  const { title } = req.body;
 
   if (!userId || !mapId) {
     return res.status(400).json({ errorMessage: "Invalid request parameters." });
+  }
+  if(!title){
+    return res.status(400).json({ errorMessage: "User hould provide map title." });
   }
 
   try {
@@ -686,7 +690,7 @@ duplicateMap = async (req, res) => {
 
     const duplicatedMap = new Map({
       ownerUserName: user.userName,
-      title: `Copy of ${mapToDuplicate.title}`,
+      title: title,
       fileFormat: mapToDuplicate.fileFormat,
       mapType: mapToDuplicate.mapType,
       mapContent: mapToDuplicate.mapContent,

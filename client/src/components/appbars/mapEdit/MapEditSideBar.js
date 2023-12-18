@@ -1,15 +1,19 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { Sidebar } from "react-pro-sidebar";
 import {
-  Select,
   Typography,
   Box,
-  MenuItem,
   Input,
-  Toolbar,
   Stack,
   Chip,
+  Toolbar,
+  Divider,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from "@mui/material";
+import EditIcon from '@mui/icons-material/Edit';
 
 import { Tags } from "../../index";
 import MapContext from "../../../contexts/map";
@@ -22,10 +26,10 @@ function MapEditSideBar() {
 
   const [title, setTitle] = useState(mapInfo?.currentMap?.title);
   const [tags, setTags] = useState(mapInfo?.currentMap?.tags);
+  const [editActive, setEditActive] = useState(false);
+
   const [selectedColor, setSelectedColor] = useState("#ffffff");
-  const [mapType, setMapType] = useState(
-    mapInfo?.currentMap?.mapType ? mapInfo?.currentMap?.mapType : "REGULAR"
-  );
+  // const [mapType, setMapType] = useState(mapInfo?.currentMap?.mapType);
   const [isEditingTag, setIsEditingTag] = useState(false);
   const [legendTitle, setLegendTitle] = useState(
     mapInfo?.currentMap?.mapTypeData?.legendTitle
@@ -37,14 +41,14 @@ function MapEditSideBar() {
   const legendTitleRef = useRef();
   titleRef.current = mapInfo?.currentMap?.title;
   tagsRef.current = mapInfo?.currentMap?.tags;
-  mapTypeRef.current = mapInfo?.currentMap?.mapType;
+  // mapTypeRef.current = mapInfo?.currentMap?.mapType;
   legendTitleRef.current = mapInfo?.currentMap?.mapTypeData?.legendTitle;
 
   useEffect(() => {
-    if (title && tags && mapType) {
-      mapInfo?.updateMapGeneralInfo(title, tags, mapType, legendTitle);
+    if (title && tags) {
+      mapInfo?.updateMapGeneralInfo(title, tags, legendTitle);
     }
-  }, [title, tags, mapType, legendTitle]);
+  }, [title, tags, legendTitle]);
 
   const sideBarStyle = {
     height: "74.5vh",
@@ -61,12 +65,36 @@ function MapEditSideBar() {
     setSelectedColor(color.hex);
   };
 
-  const handleSetMapType = (e) => {
-    setMapType(e);
-    mapInfo?.setCurrentMapEditType(e);
+  function getText(type){
+    const dict = {
+      '': 'Loading...',
+      'PINMAP': 'Pin Map',
+      'HEATMAP': 'Heat Map',
+      'CHOROPLETH': 'Choropleth Map',
+      'DOT_DISTRIBUTION': 'Dot Distribution Map',
+      'GRADUATED_SYMBOL': 'Graduated Symbol Map'
+    }
+    return dict[type];
+  }
 
+  function handleEditMapType(event){
+    event.preventDefault();
+    event.stopPropagation();
+    setEditActive(true);
+  }
+
+  function handleChangeMapType(event){
+    event.preventDefault();
+    event.stopPropagation();
+    setEditActive(false);
+
+    // update tag
+    const type = event.target.value;
+    mapInfo?.setCurrentMapEditType(type);
+    // setMapType(type);
+
+    // update tag for map type
     const mapTypeList = [
-      "REGULAR",
       "HEATMAP",
       "CHOROPLETH",
       "DOT_DISTRIBUTION",
@@ -75,33 +103,57 @@ function MapEditSideBar() {
     ];
     const newtags = tags?.filter((tag) => !mapTypeList.includes(tag));
     if (newtags) {
-      setTags([...newtags, e]);
+      setTags([...newtags, type]);
     } else {
-      setTags([e]);
+      setTags([type]);
     }
-  };
+  }
+
+  function handleCloseSelect(event){
+    event.preventDefault();
+    event.stopPropagation();
+    setEditActive(false);
+  }
+
+  // console.log(mapInfo.currentMap);
+  // console.log(mapInfo.currentMapEditType);
 
   return (
     <Sidebar style={sideBarStyle}>
       <Toolbar className="map-screen-sidebar">
-        <Typography sx={{ fontWeight: "bold", fontSize: "25px" }}>
+        <Divider id='edit-map-divider' style={{ margin: '2.5vh auto' }}>
           Edit Map
-        </Typography>
+        </Divider>
+
         <Box className="sidebar-block">
-          <Typography className="sidebar-block-title">Map Type</Typography>
-          <Select
-            defaultValue="REGULAR"
-            value={mapType ? mapType : "REGULAR"}
-            onChange={(e) => handleSetMapType(e.target.value)}
-            className="sidebar-block-content"
-          >
-            <MenuItem value={"REGULAR"}>Regular</MenuItem>
-            <MenuItem value={"PINMAP"}>Pin Map</MenuItem>
-            <MenuItem value={"CHOROPLETH"}>Choropleth Map</MenuItem>
-            <MenuItem value={"DOT_DISTRIBUTION"}>Dot Distribution Map</MenuItem>
-            <MenuItem value={"GRADUATED_SYMBOL"}>Graduated Symbol Map</MenuItem>
-            <MenuItem value={"HEATMAP"}>Heat Map</MenuItem>
-          </Select>
+          <Box className='flex-row' style={{ width: '100%' }}>
+            {
+              (editActive) ?
+                <FormControl style={{ width: '100%' }}>
+                  <InputLabel id="map-type-dropdown-label">Select Map Type...</InputLabel>
+                  <Select
+                    open={editActive}
+                    onClose={handleCloseSelect}
+                    onChange={handleChangeMapType}
+                    style={{ width: '100%' }}
+                  >
+                    <MenuItem disabled value="">Select A Map Type...</MenuItem>
+                    <MenuItem value={"PINMAP"}>Pin Map</MenuItem>
+                    <MenuItem value={"HEATMAP"}>Heat Map</MenuItem>
+                    <MenuItem value={"CHOROPLETH"}>Choropleth Map</MenuItem>
+                    <MenuItem value={"DOT_DISTRIBUTION"}>Dot Distribution Map</MenuItem>
+                    <MenuItem value={"GRADUATED_SYMBOL"}>Graduated Symbol Map</MenuItem>
+                  </Select>
+                </FormControl> :
+                <>
+                  <Typography className="sidebar-block-title">
+                    {`Map Type: `}
+                    <span id='map-type-text' onClick={handleEditMapType}>{getText(mapInfo.currentMapEditType)}</span>
+                  </Typography>
+                  <EditIcon id='edit-map-type' onClick={handleEditMapType}/>
+                </>
+            }
+          </Box>
         </Box>
 
         <Box className="sidebar-block">
@@ -143,23 +195,27 @@ function MapEditSideBar() {
         <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Map Data</Typography>
           <Box className="sidebar-block-content data-block"></Box>
-          {mapType === "REGULAR" ? (
-            <CompactPicker color={selectedColor} onChange={handleColorChange} />
-          ) : null}
-          {mapType !== "REGULAR" ? (
-            <Stack spacing={1} style={{marginTop: `10px`}}>
-              {mapInfo?.currentMap?.mapTypeData?.data?.map((props, index) => (
-                <Chip
-                  key={index}
-                  label={`${props.regionName}: ${props.value}`}
-                  style={{backgroundColor: `#dfe9eb`, width: `50%`}}
-                  onDelete={() => {
-                    mapInfo?.deleteMapTypeData(props.regionName);
-                  }}
-                />
-              ))}
-            </Stack>
-          ) : null}
+          {/* {
+            mapInfo?.currentMap?.mapType !== "CHOROPLETH" ?
+              <CompactPicker color={selectedColor} onChange={handleColorChange}/> :
+              null
+          } */}
+          {
+            mapInfo.currentMapEditType !== "PINMAP" ? (
+              <Stack spacing={1} style={{marginTop: `10px`}}>
+                {mapInfo?.currentMap?.mapTypeData?.data?.map((props, index) => (
+                  <Chip
+                    key={index}
+                    label={`${props.regionName}: ${props.value}`}
+                    style={{backgroundColor: `#dfe9eb`, width: `50%`}}
+                    onDelete={() => {
+                      mapInfo?.deleteMapTypeData(props.regionName);
+                    }}
+                  />
+                ))}
+              </Stack>
+            ) : null
+          }
         </Box>
       </Toolbar>
     </Sidebar>

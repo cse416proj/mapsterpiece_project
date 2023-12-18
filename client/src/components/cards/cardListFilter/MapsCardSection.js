@@ -5,14 +5,13 @@ import { DynamicCard } from '../../index';
 
 function MapsCardSection({ data, search, sortBy, currScreen }) {
   const [filterData, setFilteredData] = useState([]);
-  // console.log(sortBy, currScreen);
-
   // update filteredData when data/search property changes
   useEffect(() => {
     if(!data){
       return;
     }
-    const result = data.filter((pair) => {
+
+    let result = data.filter((pair) => {
       const searchTerm = search.toLowerCase();
       return (
         searchTerm === '' ||
@@ -43,6 +42,8 @@ function MapsCardSection({ data, search, sortBy, currScreen }) {
           const dateEditedB = new Date(b.dateEdited);
           return sortBy.includes('MostRecentEdit') ? dateEditedB - dateEditedA : dateEditedA - dateEditedB;
         });
+
+        result = result.filter(map => !map.isPublished);
       }
       // most recent publish & least recent publish
       else if (sortBy.includes('RecentPublish')){
@@ -50,7 +51,9 @@ function MapsCardSection({ data, search, sortBy, currScreen }) {
           const datePublishedA = new Date(a.datePublished);
           const datePublishedB = new Date(b.datePublished);
           return sortBy.includes('MostRecentPublish') ? datePublishedB - datePublishedA: datePublishedA - datePublishedB;
-        })
+        });
+
+        result = result.filter(map => map.isPublished);
       }
 
     }

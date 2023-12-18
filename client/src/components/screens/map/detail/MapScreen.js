@@ -1,13 +1,9 @@
 import { useState, useContext, useEffect, useRef } from "react";
-import { useParams, useLocation } from "react-router-dom";
-import { Modals, DataEntryModal, PinDataEntryModal } from "../../../index";
-// import html2canvas from 'html2canvas';
+import { useLocation } from "react-router-dom";
+
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
 import * as turf from '@turf/turf';
-
-import { DataInfoControl, LegendControl } from "../index";
-import MapContext from "../../../../contexts/map";
 import {
   MapContainer,
   GeoJSON,
@@ -23,6 +19,9 @@ import tinycolor from "tinycolor2";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import { Typography, Box } from "@mui/material";
 
+import { Modals, DataEntryModal, PinDataEntryModal } from "../../../index";
+import { DataInfoControl, LegendControl, PrintControl } from "../index";
+import MapContext from "../../../../contexts/map";
 
 function MapScreen() {
   const location = useLocation();
@@ -107,37 +106,6 @@ function MapScreen() {
   useEffect(() => {
     setMap(mapInfo.currentMap);
   }, [mapInfo?.currentMap]);
-
-  // // if map type changes & it is choropleth map, find the palette
-  // useEffect(() => {
-  //   if(map?.mapType === "CHOROPLETH" || mapInfo?.currentMapEditType === "CHOROPLETH"){
-  //     const minLight = 0.35;
-  //     const maxLight = 0.65;
-
-  //     // calculate 4 steps away from current color
-  //     const colorObj = tinycolor('#86C9B5');
-  //     const palette = new Array(5);
-  //     const steps = 4;
-  //     const calcLight = (i) => (i * (maxLight - minLight)) / steps + minLight;
-
-  //     // generate palette from darkest and lightest
-  //     for(let i = 0; i < palette.length; i++) {
-  //       const baseColor = colorObj.clone().toHsl();
-  //       const outputColor = { ...baseColor, l: calcLight(i) };
-  //       palette[i] = tinycolor(outputColor).toHexString();
-  //     }
-
-  //     // rank from lightest to darkesst
-  //     setPalette(palette.reverse());
-  //   }
-  // }, [map?.mapType]);
-
-  // // come back later: do sth when mapContent changes for choropleth
-  // useEffect(() => {
-  //   if(mapContentRef?.current){
-  //     setCurrMaxData(Math.max(...mapContentRef?.current?.map((feature) => feature.properties[currProp])));
-  //   }
-  // }, [mapContentRef?.current]);
 
   function getPalette() {
     const minLight = 0.35;
@@ -226,8 +194,10 @@ function MapScreen() {
       return hoverRegionStyle;
     }
 
+    const mapType = (editMode) ? mapInfo.currentMapEditType : map?.mapType;
+
     // CHOROPLETH MAP HAS TO FILL COLORS BY INTENSITY
-    if (map?.mapType === "CHOROPLETH") {
+    if(mapType === "CHOROPLETH") {
       let i = -1;
       for (i = 0; i < map.mapTypeData?.data?.length; i++) {
         const currData = map.mapTypeData?.data[i];
@@ -298,22 +268,22 @@ function MapScreen() {
     setGeoJsonKey(geoJsonKey + 1);
     if (
       mapInfo?.currentMapEditType !== "HEATMAP" &&
-      map?.mapType !== "HEATMAP" &&
+      // map?.mapType !== "HEATMAP" &&
       mapContainerRef?.current &&
       heatMapLayer
     ) {
       mapContainerRef.current.removeLayer(heatMapLayer);
       setMapContainterKey(mapContainterKey + 1);
     }
-  }, [mapInfo?.currentMapEditType, map?.mapType]);
+  }, [mapInfo?.currentMapEditType]);
 
   // render when map type changes
   useEffect(() => {
-    if (!mapContainerRef?.current || !geoJsonRef?.current || !map) {
+    if (!mapContainerRef?.current || !geoJsonRef?.current || !mapInfo?.currentMapEditType) {
       return;
     }
 
-    if (map.mapType === "HEATMAP") {
+    if (mapInfo?.currentMapEditType === "HEATMAP") {
       const initialHeatMapLayer = new HeatmapOverlay({
         maxOpacity: 1,
         latField: "lat",
@@ -330,10 +300,10 @@ function MapScreen() {
       initialHeatMapLayer.setData(heatMapdata);
       mapContainerRef.current.addLayer(initialHeatMapLayer);
       setHeatMapLayer(initialHeatMapLayer);
-    } else if (map.mapType === "PINMAP") {
+    } else if (mapInfo?.currentMapEditType === "PINMAP") {
       console.log(map?.mapTypeData);
     }
-  }, [mapContainerRef?.current && geoJsonRef?.current, map?.mapType]);
+  }, [mapContainerRef?.current && geoJsonRef?.current, mapInfo?.currentMapEditType]);
 
   // set current heatmap data
   useEffect(() => {
@@ -341,7 +311,8 @@ function MapScreen() {
   }, [mapInfo?.currentMap?.mapTypeData]);
 
   useEffect(() => {
-    if (map?.mapType === "HEATMAP" && heatMapLayer && mapTypeDataRef.current) {
+    const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
+    if (mapType === "HEATMAP" && heatMapLayer && mapTypeDataRef.current) {
       heatMapLayer.setData(mapTypeDataRef.current);
       setMapContainterKey(mapContainterKey + 1);
       setGeoJsonKey(geoJsonKey + 1);
@@ -349,6 +320,11 @@ function MapScreen() {
     }
   }, [mapTypeDataRef?.current?.data]);
 
+  if (!mapInfo) {
+    return null;
+  }
+  
+  // first load, set up center & map edit type
   if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
     mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
     if (Object.values(geoJsonRef.current._layers).length <= 0) {
@@ -363,14 +339,11 @@ function MapScreen() {
     setInitialLoad(false);
   }
 
-  if (!mapInfo) {
-    return null;
-  }
-
   // when map region is clicked
   const handleFeatureClick = (event) => {
     const layer = event.sourceTarget;
     const regularMap = editMode && !dataEditModeRef.current;
+    const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
 
     if (layer) {
       // REGULAR MAP DISPLAY
@@ -418,7 +391,7 @@ function MapScreen() {
           setIndexElementTobeChanged(index);
         }
 
-        if (map?.mapType === "PINMAP") {
+        if(mapType === "PINMAP") {
           setPinDataEntryModal(true);
           setLatLng([position.lat, position.lng]);
         } else {
@@ -464,16 +437,16 @@ function MapScreen() {
           mapTypeDataRef.current.max,
           value
         );
-        if (map.mapType === "HEATMAP") {
+        if (mapType === "HEATMAP") {
           heatMapLayer.setData(mapTypeDataRef.current);
         }
       } else {
-        if (map.mapType === "HEATMAP") {
+        if (mapType === "HEATMAP") {
           heatMapLayer.addData(newDataObj);
         }
       }
       
-      if (map?.mapType === "HEATMAP") {
+      if (mapType === "HEATMAP") {
         setMapContainterKey(mapContainterKey + 1);
         setGeoJsonKey(geoJsonKey + 1);
         setInitialLoad(true);
@@ -553,6 +526,8 @@ function MapScreen() {
     });
   };
 
+  const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
+
   const mapContent = (
     <>
       <Modals />
@@ -573,38 +548,34 @@ function MapScreen() {
         ref={mapContainerRef}
         key={mapContainterKey}
         id="map-viewer"
-        style={{ width: editMode ? "70vw" : "100vw", zIndex: 0 }}
+        style={{ width: (editMode) ? "70%" : "100%", zIndex: 0 }}
         center={mapCenter}
         zoom={3}
         zoomControl={false}
       >
         <LayersControl position="topleft">
-          <LayersControl.Overlay name="Show Tile Layer (Light Mode)">
+          <LayersControl.Overlay name="Show Tile Layer">
             <TileLayer
               attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-          </LayersControl.Overlay>
-          <LayersControl.Overlay name="Show Tile Layer (Dark Mode)">
-            <TileLayer
-              attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
-            />
-          </LayersControl.Overlay>
-          <LayersControl.Overlay name="Show Tile Layer (Printing Mode)">
-            <TileLayer
-              attribution='&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.png"
-              minZoom={0}
-              maxZoom={20}
             />
           </LayersControl.Overlay>
         </LayersControl>
 
         <ZoomControl position="topleft" />
 
+        <PrintControl
+          position='topleft'
+          title='Export as PNG'
+          filename={map?.title}
+          sizeModes={['Current', 'A4Landscape']}
+          hideControlContainer={true}
+          exportOnly
+        />
+
         <DataInfoControl
-          type={map?.mapType ? map?.mapType : mapInfo?.currentMapEditType}
+          type={mapType}
+          // type={map?.mapType ? map?.mapType : mapInfo?.currentMapEditType}
           property={currProp}
           regionName={getRegionName(currLayer?.feature)}
           data={currLayer?.feature?.properties}
@@ -613,7 +584,8 @@ function MapScreen() {
 
         <LegendControl
           legendTitle={mapInfo?.currentMap?.mapTypeData?.legendTitle}
-          type={map?.mapType ? map?.mapType : mapInfo?.currentMapEditType}
+          type={mapType}
+          // type={map?.mapType ? map?.mapType : mapInfo?.currentMapEditType}
           max={
             currMaxData ? currMaxData : mapInfo?.currentMap?.mapTypeData?.max
           }
@@ -627,7 +599,7 @@ function MapScreen() {
           onEachFeature={onEachFeature}
           ref={geoJsonRef}
         />
-        {map?.mapType === "GRADUATED_SYMBOL" && (
+        {mapType === "GRADUATED_SYMBOL" && (
           <div key={bubbleMapKey}>
             {mapTypeDataRef?.current?.data?.map((prop) => {
               return (
@@ -648,7 +620,7 @@ function MapScreen() {
             })}
           </div>
         )}
-        {map?.mapType === "PINMAP" && (
+        {mapType === "PINMAP" && (
           <>
             {mapTypeDataRef?.current?.data?.map((prop) => {
               const icon = L.icon({
@@ -683,7 +655,7 @@ function MapScreen() {
             })}
           </>
         )}
-        {map?.mapType === "DOT_DISTRIBUTION" && (
+        {mapType === "DOT_DISTRIBUTION" && (
           <>
             {mapTypeDataRef?.current?.data?.map((prop) => {
               return (

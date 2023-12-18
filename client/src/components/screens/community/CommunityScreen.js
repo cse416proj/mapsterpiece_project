@@ -78,7 +78,7 @@ export default function CommunityScreen() {
     <Box className="queryScreenWrapper">
       <SideNavBar setSearch={setSearch}/>
       <Box className="queryScreenContent">
-        <SearchBar setSearch={setSearch} setSortBy = {setSortBy}/>
+        <SearchBar setSearch={setSearch} setSortBy={setSortBy}/>
         <Box className="listsDisplay">
           {
             renderCard()

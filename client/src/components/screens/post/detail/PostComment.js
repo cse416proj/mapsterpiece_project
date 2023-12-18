@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 
 import { Box, Typography, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -11,18 +11,18 @@ import { PostContext } from "../../../../contexts/post";
 import AuthContext from "../../../../contexts/auth";
 
 import PostSubComment from './PostSubComment';
-import PostCommentInput from "./PostCommentInput";
-
-import { Modals } from "../../../index";
+import { Modals, CommentInput } from "../../../index";
 
 export default function PostComment({payload, index}) {
   const { postInfo } = useContext(PostContext);
   const { auth } = useContext(AuthContext);
-  const [addActive, setAddActive] = useState(false);
-  const [commentInput, setInput] = useState("");
   const { store } = useContext(GlobalStoreContext);
 
   const [expandSubcomments, setExpandSubcomments] = useState(false);
+  const [addActive, setAddActive] = useState(false);
+  const inputRef = useRef(null);
+  const [subCommentInput, setSubCommentInput] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if(expandSubcomments){
@@ -42,18 +42,35 @@ export default function PostComment({payload, index}) {
     setExpandSubcomments(!expandSubcomments);
   }
 
-  function handleInputChange(event) {
-    setInput(event.target.value);
+  function handleSubcommentInputChange(event) {
+    setSubCommentInput(event.target.value);
   }
 
-  function handleSubmitComment() {
-    postInfo.createSubcomment(payload._id, auth.user.userName, commentInput);
-    setAddActive(false);
-    setExpandSubcomments(expandSubcomments);
-  }
+  function handleAddSubcomments(event) {
+    event.preventDefault();
+    event.stopPropagation();
 
-  function handleSetEditFalse() {
-    setAddActive(false);
+    const postId = payload._id;
+
+    if(postId && auth?.user?.userName) {
+      const trimmedComment = subCommentInput.replace(/(\s|\r\n|\n|\r)/gm, '');
+      if(trimmedComment.length > 0){
+        setError('');
+        setAddActive(false);
+        setExpandSubcomments(expandSubcomments);
+        postInfo.createSubcomment(payload._id, auth.user.userName, subCommentInput);
+      }
+      else{
+        console.log('Cannot submit blank text!');
+        setError('Cannot submit blank text!');
+      }
+      
+      // Reset the input value using the ref
+      setSubCommentInput('');
+      if(inputRef.current){
+        inputRef.current.value = '';
+      }
+    }
   }
 
   function deleteHandler(event){
@@ -66,6 +83,8 @@ export default function PostComment({payload, index}) {
 
   function handleExpand(event){
     event.preventDefault();
+    setError('');
+    setAddActive(false);
     setExpandSubcomments(!expandSubcomments);
   }
 
@@ -75,12 +94,21 @@ export default function PostComment({payload, index}) {
         <PostSubComment key={`subcomment-${index}`} parentComment={payload} subcomment={subcomment} />
       ));
     }
-    return <Typography>No comment has added yet.</Typography>;
+    return <Typography style={{ marginBottom:'1vh' }}>No comment has added yet.</Typography>;
   }
 
   function renderCommentInput(){
     if(addActive){
-      return <PostCommentInput handleInputChange={handleInputChange} handleSetEditFalse={handleSetEditFalse} handleSubmitComment={handleSubmitComment}/>;
+      return(
+        <CommentInput
+          type='subcomment'
+          commentInput={subCommentInput}
+          inputRef={inputRef}
+          error={error}
+          handleInputChange={handleSubcommentInputChange}
+          handleSubmitComment={handleAddSubcomments}
+        />
+      )
     }
     return null;
   }
@@ -92,7 +120,7 @@ export default function PostComment({payload, index}) {
   return (
     <div>
       <Accordion expanded={expandSubcomments} sx={{ bgcolor: "#ddebe4", width: "80vw", marginBottom: "2vh", marginTop: "2vh" }}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon onClick={handleExpand} />}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon onClick={handleExpand}/>}>
           <Box className="accordionSummary">
             <Box>
               <Box className="commentUserInfo">

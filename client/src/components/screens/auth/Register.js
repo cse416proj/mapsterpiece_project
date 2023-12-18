@@ -123,7 +123,7 @@ function Register(){
                 id='signup-form'
                 onSubmit={handleSubmit}
             >
-                <Box>
+                <Box style={{ height: '45vh' }}>
                     <Box id='signup-textfield-container'>
                         <Box className='flex-row' style={{ width: '100%', justifyContent: 'space-between'}}>
                             <TextField required name='firstName' label='First Name' value={form.firstName} onChange={updateForm} style={{ width: '55%'}}/>

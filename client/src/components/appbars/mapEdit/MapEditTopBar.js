@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Box, Typography, Button, Menu, MenuItem, AppBar, Toolbar, Alert } from '@mui/material';
+import { Box, Typography, Button, AppBar, Toolbar, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import AuthContext from '../../../contexts/auth';
@@ -31,13 +31,10 @@ export default function MapEditTopBar() {
     const [hasPublished, setHasPublished] = useState(false);
     const [startPublishing, setStartPublishing] = useState(false);
 
-    const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
-
     useEffect(() => {
         if(mapInfo?.currentMap){
-            setTitle(mapInfo.currentMap.title);
-            setTags(mapInfo.currentMap.tags);
+            setTitle(mapInfo.currentMap?.title);
+            setTags(mapInfo.currentMap?.tags);
             setHasPublished((mapInfo?.currentMap?.isPublished) ? true : false);
         }
     }, [mapInfo?.currentMap]);
@@ -46,21 +43,13 @@ export default function MapEditTopBar() {
         if(hasPublished){
             setStartPublishing(false);
             console.log('hasPublished');
-            navigate(`/map-detail/${mapInfo.currentMap._id}`);
+            navigate(`/map-detail/${mapInfo.currentMap?._id}`);
         }
     }, [hasPublished])
 
     function handleMyMaps(){
         userInfo.setCurrentUser(auth.user);
         navigate(`/profile/${auth.user._id}`);
-    }
-    
-    function handleExportPNG(){
-        console.log("export PNG file");
-    }
-
-    function handleExportJPG(){
-        console.log("export JPG file.");
     }
     
     function handlePublishMap(event){
@@ -74,8 +63,8 @@ export default function MapEditTopBar() {
         console.log("save this map");
 
         if(mapInfo.currentMap){
-            const trimmedTitle = mapInfo.currentMap.title?.replace(/(\s|\r\n|\n|\r)/gm, '');
-            const trimmedLegendTitle = mapInfo.currentMap.mapTypeData?.legendTitle?.replace(/(\s|\r\n|\n|\r)/gm, '');
+            const trimmedTitle = mapInfo.currentMap?.title?.replace(/(\s|\r\n|\n|\r)/gm, '');
+            const trimmedLegendTitle = mapInfo.currentMap?.mapTypeData?.legendTitle?.replace(/(\s|\r\n|\n|\r)/gm, '');
 
             if(trimmedTitle.length <= 0){
                 mapInfo.setErrorMsg(`Cannot enter blank value for map's title!`);
@@ -87,7 +76,7 @@ export default function MapEditTopBar() {
             }
             else{
                 // setStartSaving(true);
-                mapInfo.updateMapById(mapInfo.currentMap._id);
+                mapInfo.updateMapById(mapInfo.currentMap?._id);
                 // navigate('/');
             }
         }
@@ -98,35 +87,6 @@ export default function MapEditTopBar() {
         event.preventDefault();
         console.log('delete map')
         store.markMapForDeletion(mapInfo.currentMap);
-    }
-
-    const openMenu = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const closeMenu = () => {
-        setAnchorEl(null);
-    };
-
-    function getDropDownMenu(loggedIn, user){
-        if(loggedIn && user){
-            return (
-                <Menu
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={closeMenu}
-                    MenuListProps={{
-                        'aria-labelledby': 'basic-button',
-                    }}
-                >
-                    <MenuItem onClick={handleExportPNG}>.PNG</MenuItem>
-                    <MenuItem onClick={handleExportJPG}>.JPG</MenuItem>
-                </Menu>
-            );
-        }
-        else{
-            return null;
-        }
     }
 
     function handleDuplicateMap(event){
@@ -158,9 +118,7 @@ export default function MapEditTopBar() {
                 <Button variant="contained" style = {toolButtonStyle} onClick={handleSaveMap}>Save Edit</Button>
                 <Button variant="contained" style = {toolButtonStyle} onClick={handlePublishMap}>Publish</Button>
                 <Button variant="contained" style = {toolButtonStyle} onClick={handleDuplicateMap}>Duplicate</Button>
-                <Button variant="contained" style = {toolButtonStyle} onClick={openMenu}>Export/Download</Button>
             </Box>
-            { getDropDownMenu(auth?.loggedIn, auth?.user) }
         </Toolbar>
     </AppBar>
   )

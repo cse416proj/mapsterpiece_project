@@ -27,6 +27,18 @@
     cursor: pointer;
 }
 
+.map-action:hover{
+    background-color: var(--primary-color-hover);
+}
+
+.post-action{
+    border: 1.25px solid white;
+}
+
+.post-action:hover{
+    border: 1.25px solid #393c40;
+}
+
 #map-action-button-text, #post-action-button-text{
     font-size: 0.8em;
 }
