@@ -10,7 +10,6 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Alert,
 } from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
@@ -129,12 +128,8 @@ export default function MapDetailTopBar() {
     console.log("share this map");
     event.stopPropagation();
     event.preventDefault();
-    // setAnchorEl(event.currentTarget);
-  }
-
-  const openMenu = (event) => {
     setAnchorEl(event.currentTarget);
-  };
+  }
 
   const closeMenu = () => {
     setAnchorEl(null);
@@ -286,20 +281,20 @@ export default function MapDetailTopBar() {
 
         <Box className="map-button-container">
           <Menu
-              id = "share-menu"
-              style={{ zIndex: '2500' }}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={closeMenu}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
-              }}
+            id="share-menu"
+            style={{ zIndex: '2500' }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={closeMenu}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
           >
             <MenuItem onMouseLeave={closeMenu}>
-              <EmailShareButton url={window.location.href} onShareWindowClose={closeMenu}><EmailIcon>E-Mail</EmailIcon></EmailShareButton>
-              <FacebookShareButton url={window.location.href} hashtag={"#Mapsterpiece"} onShareWindowClose={closeMenu}><FacebookIcon>Facebook</FacebookIcon></FacebookShareButton>
-              <RedditShareButton url={window.location.href} onShareWindowClose={closeMenu}><RedditIcon>Reddit</RedditIcon></RedditShareButton>
-              <TwitterShareButton url={window.location.href} onShareWindowClose={closeMenu}><TwitterIcon>Twitter</TwitterIcon></TwitterShareButton>
+              <EmailShareButton url={window.location.href} onMouseLeave={closeMenu}><EmailIcon>E-Mail</EmailIcon></EmailShareButton>
+              <FacebookShareButton url={window.location.href} hashtag={"#Mapsterpiece"} onMouseLeave={closeMenu}><FacebookIcon>Facebook</FacebookIcon></FacebookShareButton>
+              <RedditShareButton url={window.location.href} onMouseLeave={closeMenu}><RedditIcon>Reddit</RedditIcon></RedditShareButton>
+              <TwitterShareButton url={window.location.href} onMouseLeave={closeMenu}><TwitterIcon>Twitter</TwitterIcon></TwitterShareButton>
             </MenuItem>
           </Menu>
           { renderLikeButtons() }

@@ -101,7 +101,7 @@ export default function ActionButtons({ type, cardId, currentUserName, comments,
 
     return actions.map((action) => {
       return (
-        <MenuItem key={action.name} onClick={action.handler}>
+        <MenuItem key={action.name} onClick={action.handler} onMouseLeave={closeMenu}>
           {action.icon}
           <Typography id='action-button-text'>{action.name}</Typography>
         </MenuItem>
@@ -112,7 +112,8 @@ export default function ActionButtons({ type, cardId, currentUserName, comments,
   const openShareMenu = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    // setAnchorShareEl(event.currentTarget);
+    console.log('openShareMenu');
+    setAnchorShareEl(event.currentTarget);
   };
 
   const closeShareMenu = () => {
@@ -124,10 +125,12 @@ export default function ActionButtons({ type, cardId, currentUserName, comments,
   function renderShare(){
     if(type === 'post' || (type === 'map' && isPublished)){
       return(
-        <Box className="flex-row" id="action-button-container" onClick={openShareMenu}>
+        <Box className={`flex-row ${type}-action`} id="action-button-container" onClick={openShareMenu}>
           <ShareIcon id={`${type}-action-icon`}/>
           <Typography id={`${type}-action-button-text`}>share {type}</Typography>
           <Menu
+            id="share-menu"
+            style={{ zIndex: '2500' }}
             anchorEl={anchorShareEl}
             open={openShare}
             onClose={closeShareMenu}
@@ -136,10 +139,10 @@ export default function ActionButtons({ type, cardId, currentUserName, comments,
             }}
           >
             <MenuItem onMouseLeave={closeShareMenu}>
-              <EmailShareButton url={url} onShareWindowClose={closeShareMenu}><EmailIcon><Typography id='action-button-text'>E-Mail</Typography></EmailIcon></EmailShareButton>
+              <EmailShareButton url={url} onShareWindowClose={closeShareMenu}><EmailIcon>E-Mail</EmailIcon></EmailShareButton>
               <FacebookShareButton url={url} hashtag={"#Mapsterpiece"} onShareWindowClose={closeShareMenu}><FacebookIcon>Facebook</FacebookIcon></FacebookShareButton>
               <RedditShareButton url={url} onShareWindowClose={closeShareMenu}><RedditIcon>Reddit</RedditIcon></RedditShareButton>
-              <TwitterShareButton url={url} onShareWindowClose={closeShareMenu}><TwitterIcon>Reddit</TwitterIcon></TwitterShareButton>
+              <TwitterShareButton url={url} onShareWindowClose={closeShareMenu}><TwitterIcon>Twitter</TwitterIcon></TwitterShareButton>
             </MenuItem>
           </Menu>
         </Box>
@@ -147,8 +150,6 @@ export default function ActionButtons({ type, cardId, currentUserName, comments,
     }
     return null;
   }
-
-  // document.addEventListener('mousedown',closeShareMenu)
 
   return (
     <CardActions className="cardActions">

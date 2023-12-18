@@ -12,7 +12,7 @@
 
 #post-outline-btn, #post-filled-btn {
     height: 100%;
-    width: 15vw;
+    width: 32.5%;
 }
 
 #post-header-container{
@@ -77,7 +77,7 @@
 
 #post-btn-container{
     height: 100%;
-    width: 32.5vw;
+    width: 40vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
