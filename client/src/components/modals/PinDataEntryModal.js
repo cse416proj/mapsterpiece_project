@@ -16,6 +16,7 @@ export default function PinDataEntryModal({isOpen, latLng, mapTypeData, setMapTy
     function handleCloseModal(event){
         event.stopPropagation();
         event.preventDefault();
+        setErrorMsg(null);
         handleClose();
     }
 

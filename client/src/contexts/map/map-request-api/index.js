@@ -7,11 +7,12 @@ const api = axios.create({
   baseURL: `${server_base_url}/map`,
 })
 
-export const createMap = (ownerUserName, title, fileFormat, mapContent, tags) => {
+export const createMap = (ownerUserName, title, fileFormat, mapType, mapContent, tags) => {
   return api.post(`/create/`, {
     ownerUserName: ownerUserName,
     title: title,
     fileFormat: fileFormat,
+    mapType: mapType,
     mapContent: mapContent,
     tags: tags
   });
@@ -85,8 +86,10 @@ export const getSubcommsByParentCommsId = (commentId) => {
   return api.get(`/getSubComments/${commentId}`);
 }
 
-export const duplicateMapById = (mapId)=>{
-  return api.post(`/duplicate/${mapId}`);
+export const duplicateMapById = (mapId, title)=>{
+  return api.post(`/duplicate/${mapId}`, {
+    title: title,
+  });
 }
 
 const apis = {

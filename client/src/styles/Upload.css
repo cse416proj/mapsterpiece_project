@@ -49,14 +49,24 @@
     width: 85vw;
     background-color: white;
 }
-  
-#select-file-format{
-    height: 10vh;
-    width: 70%;
+
+#create-selection{
+    width: 100%;
     margin-top: 5vh;
-    margin-left: 4%;
-    justify-content: flex-start;
-    align-self: flex-start;
+    margin-left: 6vw;
+}
+
+#select-file-format, #select-map-type{
+    height: 10vh;
+}
+
+#select-map-type{
+    margin-left: 2.5vw;
+}
+
+#map-type-dropdown{
+    width: 20vw;
+    background-color: white;
 }
   
 #file-create-container{

@@ -33,8 +33,8 @@ export default function MapEditTopBar() {
 
     useEffect(() => {
         if(mapInfo?.currentMap){
-            setTitle(mapInfo.currentMap.title);
-            setTags(mapInfo.currentMap.tags);
+            setTitle(mapInfo.currentMap?.title);
+            setTags(mapInfo.currentMap?.tags);
             setHasPublished((mapInfo?.currentMap?.isPublished) ? true : false);
         }
     }, [mapInfo?.currentMap]);
@@ -43,7 +43,7 @@ export default function MapEditTopBar() {
         if(hasPublished){
             setStartPublishing(false);
             console.log('hasPublished');
-            navigate(`/map-detail/${mapInfo.currentMap._id}`);
+            navigate(`/map-detail/${mapInfo.currentMap?._id}`);
         }
     }, [hasPublished])
 
@@ -63,8 +63,8 @@ export default function MapEditTopBar() {
         console.log("save this map");
 
         if(mapInfo.currentMap){
-            const trimmedTitle = mapInfo.currentMap.title?.replace(/(\s|\r\n|\n|\r)/gm, '');
-            const trimmedLegendTitle = mapInfo.currentMap.mapTypeData?.legendTitle?.replace(/(\s|\r\n|\n|\r)/gm, '');
+            const trimmedTitle = mapInfo.currentMap?.title?.replace(/(\s|\r\n|\n|\r)/gm, '');
+            const trimmedLegendTitle = mapInfo.currentMap?.mapTypeData?.legendTitle?.replace(/(\s|\r\n|\n|\r)/gm, '');
 
             if(trimmedTitle.length <= 0){
                 mapInfo.setErrorMsg(`Cannot enter blank value for map's title!`);
@@ -76,7 +76,7 @@ export default function MapEditTopBar() {
             }
             else{
                 // setStartSaving(true);
-                mapInfo.updateMapById(mapInfo.currentMap._id);
+                mapInfo.updateMapById(mapInfo.currentMap?._id);
                 // navigate('/');
             }
         }

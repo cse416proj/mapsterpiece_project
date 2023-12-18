@@ -194,8 +194,10 @@ function MapScreen() {
       return hoverRegionStyle;
     }
 
+    const mapType = (editMode) ? mapInfo.currentMapEditType : map?.mapType;
+
     // CHOROPLETH MAP HAS TO FILL COLORS BY INTENSITY
-    if (map?.mapType === "CHOROPLETH") {
+    if(mapType === "CHOROPLETH") {
       let i = -1;
       for (i = 0; i < map.mapTypeData?.data?.length; i++) {
         const currData = map.mapTypeData?.data[i];
@@ -266,22 +268,22 @@ function MapScreen() {
     setGeoJsonKey(geoJsonKey + 1);
     if (
       mapInfo?.currentMapEditType !== "HEATMAP" &&
-      map?.mapType !== "HEATMAP" &&
+      // map?.mapType !== "HEATMAP" &&
       mapContainerRef?.current &&
       heatMapLayer
     ) {
       mapContainerRef.current.removeLayer(heatMapLayer);
       setMapContainterKey(mapContainterKey + 1);
     }
-  }, [mapInfo?.currentMapEditType, map?.mapType]);
+  }, [mapInfo?.currentMapEditType]);
 
   // render when map type changes
   useEffect(() => {
-    if (!mapContainerRef?.current || !geoJsonRef?.current || !map) {
+    if (!mapContainerRef?.current || !geoJsonRef?.current || !mapInfo?.currentMapEditType) {
       return;
     }
 
-    if (map.mapType === "HEATMAP") {
+    if (mapInfo?.currentMapEditType === "HEATMAP") {
       const initialHeatMapLayer = new HeatmapOverlay({
         maxOpacity: 1,
         latField: "lat",
@@ -298,10 +300,10 @@ function MapScreen() {
       initialHeatMapLayer.setData(heatMapdata);
       mapContainerRef.current.addLayer(initialHeatMapLayer);
       setHeatMapLayer(initialHeatMapLayer);
-    } else if (map.mapType === "PINMAP") {
+    } else if (mapInfo?.currentMapEditType === "PINMAP") {
       console.log(map?.mapTypeData);
     }
-  }, [mapContainerRef?.current && geoJsonRef?.current, map?.mapType]);
+  }, [mapContainerRef?.current && geoJsonRef?.current, mapInfo?.currentMapEditType]);
 
   // set current heatmap data
   useEffect(() => {
@@ -309,7 +311,8 @@ function MapScreen() {
   }, [mapInfo?.currentMap?.mapTypeData]);
 
   useEffect(() => {
-    if (map?.mapType === "HEATMAP" && heatMapLayer && mapTypeDataRef.current) {
+    const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
+    if (mapType === "HEATMAP" && heatMapLayer && mapTypeDataRef.current) {
       heatMapLayer.setData(mapTypeDataRef.current);
       setMapContainterKey(mapContainterKey + 1);
       setGeoJsonKey(geoJsonKey + 1);
@@ -317,6 +320,11 @@ function MapScreen() {
     }
   }, [mapTypeDataRef?.current?.data]);
 
+  if (!mapInfo) {
+    return null;
+  }
+  
+  // first load, set up center & map edit type
   if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
     mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
     if (Object.values(geoJsonRef.current._layers).length <= 0) {
@@ -331,14 +339,11 @@ function MapScreen() {
     setInitialLoad(false);
   }
 
-  if (!mapInfo) {
-    return null;
-  }
-
   // when map region is clicked
   const handleFeatureClick = (event) => {
     const layer = event.sourceTarget;
     const regularMap = editMode && !dataEditModeRef.current;
+    const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
 
     if (layer) {
       // REGULAR MAP DISPLAY
@@ -386,7 +391,7 @@ function MapScreen() {
           setIndexElementTobeChanged(index);
         }
 
-        if (map?.mapType === "PINMAP") {
+        if(mapType === "PINMAP") {
           setPinDataEntryModal(true);
           setLatLng([position.lat, position.lng]);
         } else {
@@ -432,16 +437,16 @@ function MapScreen() {
           mapTypeDataRef.current.max,
           value
         );
-        if (map.mapType === "HEATMAP") {
+        if (mapType === "HEATMAP") {
           heatMapLayer.setData(mapTypeDataRef.current);
         }
       } else {
-        if (map.mapType === "HEATMAP") {
+        if (mapType === "HEATMAP") {
           heatMapLayer.addData(newDataObj);
         }
       }
       
-      if (map?.mapType === "HEATMAP") {
+      if (mapType === "HEATMAP") {
         setMapContainterKey(mapContainterKey + 1);
         setGeoJsonKey(geoJsonKey + 1);
         setInitialLoad(true);
@@ -521,6 +526,8 @@ function MapScreen() {
     });
   };
 
+  const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
+
   const mapContent = (
     <>
       <Modals />
@@ -567,7 +574,8 @@ function MapScreen() {
         />
 
         <DataInfoControl
-          type={map?.mapType ? map?.mapType : mapInfo?.currentMapEditType}
+          type={mapType}
+          // type={map?.mapType ? map?.mapType : mapInfo?.currentMapEditType}
           property={currProp}
           regionName={getRegionName(currLayer?.feature)}
           data={currLayer?.feature?.properties}
@@ -576,7 +584,8 @@ function MapScreen() {
 
         <LegendControl
           legendTitle={mapInfo?.currentMap?.mapTypeData?.legendTitle}
-          type={map?.mapType ? map?.mapType : mapInfo?.currentMapEditType}
+          type={mapType}
+          // type={map?.mapType ? map?.mapType : mapInfo?.currentMapEditType}
           max={
             currMaxData ? currMaxData : mapInfo?.currentMap?.mapTypeData?.max
           }
@@ -590,7 +599,7 @@ function MapScreen() {
           onEachFeature={onEachFeature}
           ref={geoJsonRef}
         />
-        {map?.mapType === "GRADUATED_SYMBOL" && (
+        {mapType === "GRADUATED_SYMBOL" && (
           <div key={bubbleMapKey}>
             {mapTypeDataRef?.current?.data?.map((prop) => {
               return (
@@ -611,7 +620,7 @@ function MapScreen() {
             })}
           </div>
         )}
-        {map?.mapType === "PINMAP" && (
+        {mapType === "PINMAP" && (
           <>
             {mapTypeDataRef?.current?.data?.map((prop) => {
               const icon = L.icon({
@@ -646,7 +655,7 @@ function MapScreen() {
             })}
           </>
         )}
-        {map?.mapType === "DOT_DISTRIBUTION" && (
+        {mapType === "DOT_DISTRIBUTION" && (
           <>
             {mapTypeDataRef?.current?.data?.map((prop) => {
               return (

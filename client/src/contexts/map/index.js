@@ -120,13 +120,13 @@ export function MapContextProvider({ children }) {
   };
 
   mapInfo.createMap = async function (newMap) {
-    const { title, fileFormat, mapContent, tags } = newMap;
+    const { title, fileFormat, mapType, mapContent, tags } = newMap;
 
     // create map for user
     const user = auth.user;
     if (user) {
       try{
-        const response = await api.createMap(user.userName, title, fileFormat, mapContent, tags);
+        const response = await api.createMap(user.userName, title, fileFormat, mapType, mapContent, tags);
         if (response.status === 201) {
           // close error modal & open create success alert first
           store.createSuccessAlert();
@@ -317,30 +317,26 @@ export function MapContextProvider({ children }) {
     }));
   };
 
-  mapInfo.updateMapGeneralInfo = function (title, tags, mapType, legendTitle) {
+  // mapInfo.updateMapGeneralInfo = function (title, tags, mapType, legendTitle) {
+  mapInfo.updateMapGeneralInfo = function (title, tags, legendTitle) {
     if (!mapInfo.currentMap) {
       return;
     }
-    let oldMap = mapInfo.currentMap;
-    if (title) {
-      oldMap.title = title;
-    }
-    if (tags) {
-      oldMap.tags = tags;
-    }
 
-    oldMap.mapType = mapType;
-
-    if (legendTitle) {
-      oldMap.mapTypeData.legendTitle = legendTitle;
-    }
-
-    if (!title && !tags) {
+    if(!title && !tags) {
       return;
     }
+
+    let updatedMap = mapInfo.currentMap;
+
+    updatedMap.title = (title) ? title : updatedMap.title;
+    updatedMap.tags = (tags) ? tags : updatedMap.tags;
+    // updatedMap.mapType = (mapType) ? mapType : updatedMap.mapType;
+    updatedMap.legendTitle = (legendTitle) ? legendTitle : updatedMap.legendTitle;
+
     setMapInfo((prevMapInfo) => ({
       ...prevMapInfo,
-      currentMap: oldMap,
+      currentMap: updatedMap,
     }));
   };
 
@@ -581,16 +577,15 @@ export function MapContextProvider({ children }) {
     });
   }
 
-  mapInfo.duplicateMapById = async function (mapId){
-    console.log("forking/duplicating this map: ",mapId);
+  mapInfo.duplicateMapById = async function (mapId, title){
+    console.log("forking/duplicating this map: ", mapId);
     if(!mapId){
       console.log("no map Id");
       return;
     }
 
     try{
-      const response = await api.duplicateMapById(mapId);
-      // console.log(response.data);
+      const response = await api.duplicateMapById(mapId, title);
 
       if(response.status === 201){
         const newMap = response?.data?.map._id;
