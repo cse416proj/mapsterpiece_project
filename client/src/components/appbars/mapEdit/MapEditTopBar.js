@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Box, Typography, Button, Menu, MenuItem, AppBar, Toolbar, Alert } from '@mui/material';
+import { Box, Typography, Button, AppBar, Toolbar, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import AuthContext from '../../../contexts/auth';
@@ -31,9 +31,6 @@ export default function MapEditTopBar() {
     const [hasPublished, setHasPublished] = useState(false);
     const [startPublishing, setStartPublishing] = useState(false);
 
-    const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
-
     useEffect(() => {
         if(mapInfo?.currentMap){
             setTitle(mapInfo.currentMap.title);
@@ -53,14 +50,6 @@ export default function MapEditTopBar() {
     function handleMyMaps(){
         userInfo.setCurrentUser(auth.user);
         navigate(`/profile/${auth.user._id}`);
-    }
-    
-    function handleExportPNG(){
-        console.log("export PNG file");
-    }
-
-    function handleExportJPG(){
-        console.log("export JPG file.");
     }
     
     function handlePublishMap(event){
@@ -100,35 +89,6 @@ export default function MapEditTopBar() {
         store.markMapForDeletion(mapInfo.currentMap);
     }
 
-    const openMenu = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const closeMenu = () => {
-        setAnchorEl(null);
-    };
-
-    function getDropDownMenu(loggedIn, user){
-        if(loggedIn && user){
-            return (
-                <Menu
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={closeMenu}
-                    MenuListProps={{
-                        'aria-labelledby': 'basic-button',
-                    }}
-                >
-                    <MenuItem onClick={handleExportPNG}>.PNG</MenuItem>
-                    <MenuItem onClick={handleExportJPG}>.JPG</MenuItem>
-                </Menu>
-            );
-        }
-        else{
-            return null;
-        }
-    }
-
     function handleDuplicateMap(event){
         event.stopPropagation();
         event.preventDefault();
@@ -158,9 +118,7 @@ export default function MapEditTopBar() {
                 <Button variant="contained" style = {toolButtonStyle} onClick={handleSaveMap}>Save Edit</Button>
                 <Button variant="contained" style = {toolButtonStyle} onClick={handlePublishMap}>Publish</Button>
                 <Button variant="contained" style = {toolButtonStyle} onClick={handleDuplicateMap}>Duplicate</Button>
-                <Button variant="contained" style = {toolButtonStyle} onClick={openMenu}>Export/Download</Button>
             </Box>
-            { getDropDownMenu(auth?.loggedIn, auth?.user) }
         </Toolbar>
     </AppBar>
   )

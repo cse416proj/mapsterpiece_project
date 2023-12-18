@@ -107,16 +107,10 @@ export default function MapDetailTopBar() {
   function handleMyMaps() {
     userInfo.setCurrentUser(auth.user);
     navigate(`/profile/${auth.user._id}`);
-}
-function handleCommunity(){
-    navigate('/community');
-}
-
-  function handleExportPNG() {
-    console.log("export PNG file");
   }
-  function handleExportJPG() {
-    console.log("export JPG file.");
+
+  function handleCommunity(){
+    navigate('/community');
   }
 
   function handleForkMap(event) {
@@ -232,7 +226,6 @@ function handleCommunity(){
       { text: "Unpublish", handler: handleUnpublishMap },
       { text: "Fork", handler: handleForkMap },
       { text: "Share Link", handler: handleShareMap },
-      { text: "Export/Download", handler: handleExportJPG },
     ];
 
     if (mapId && auth?.user) {

@@ -23,7 +23,7 @@ export default function DuplicateMapModal() {
   }
 
   return (
-    <Modal open={store.currentModal === 'DUPLICATE_MAP_MODAL'} id = "duplicate-modal">
+    <Modal id='modal-overlay' open={store.currentModal === 'DUPLICATE_MAP_MODAL'} id = "duplicate-modal">
         <Box
             severity='warning'
             className='popUpBox'
