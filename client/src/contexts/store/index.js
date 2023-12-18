@@ -558,13 +558,26 @@ function GlobalStoreContextProvider(props) {
     heatMaps: allMaps.filter((pair)=>{return pair?.tags?.includes("HEATMAP")}),
   });
 
+  const filterPosts = (pair, searchStrings) => {
+    const lowerCaseTags = pair?.tags?.map(tag => tag.toLowerCase()) || "";
+    const lowerCaseTitle = pair?.title?.toLowerCase() || "";
+    const lowerCaseContent = pair?.content?.toLowerCase() || "";
+  
+    return searchStrings.some(
+      searchString =>
+        lowerCaseTags.some(tag => tag.toLowerCase().includes(searchString)) ||
+        lowerCaseTitle.includes(searchString) ||
+        lowerCaseContent.includes(searchString)
+    );
+  };
+  
   const updatePosts = (allPosts) => ({
-    pinPosts: allPosts.filter((pair) => pair?.tags?.some(tag => tag.toLowerCase().includes("pin"))),
-    choroplethPosts: allPosts.filter((pair) => pair?.tags?.some(tag => tag.toLowerCase().includes("choropleth"))),
-    dotPosts: allPosts.filter((pair) => pair?.tags?.some(tag => tag.toLowerCase().includes("dot"))),
-    gradPosts: allPosts.filter((pair) => pair?.tags?.some(tag => tag.toLowerCase().includes("graduated"))),
-    heatPosts: allPosts.filter((pair) => pair?.tags?.some(tag => tag.toLowerCase().includes("heatmap"))),
-  });
+    pinPosts: allPosts.filter(pair => filterPosts(pair, ["pin"])),
+    choroplethPosts: allPosts.filter(pair => filterPosts(pair, ["choropleth"])),
+    dotPosts: allPosts.filter(pair => filterPosts(pair, ["dot"])),
+    gradPosts: allPosts.filter(pair => filterPosts(pair, ["graduated"])),
+    heatPosts: allPosts.filter(pair => filterPosts(pair, ["heat"])),
+  });  
 
   store.setData = function () {
     setStore((prevStore) => ({
