@@ -239,6 +239,7 @@ export function MapContextProvider({ children }) {
 
         console.log("map published");
         console.log(response.data);
+        mapInfo.clearTrans();
         await mapInfo.updateMapList();
       }
     } catch (error) {
