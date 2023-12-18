@@ -124,10 +124,12 @@
     align-items: center;
 }
 
-#post-comments{
-    margin-top: 2vw;
-    height: 30vh;
+#post-comment-section{
+    width: 80vw;
+    height: 35vh;
     overflow-Y: auto;
+    overflow-x: hidden;
+    background-color: white;
 }
 
 .commentUserInfo {

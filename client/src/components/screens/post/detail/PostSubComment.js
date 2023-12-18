@@ -27,7 +27,7 @@ export default function PostSubComment({parentComment, subcomment}) {
   return (
     <Box className="commentCard">
       <Box className="commentUserInfo">
-        <AccountCircleIcon />
+        <AccountCircleIcon/>
         <Typography
           style={{
             textAlign: `start`,

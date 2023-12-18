@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography, Chip, Stack } from "@mui/material";
 
 import { formatDistanceToNow } from 'date-fns';
 
@@ -54,7 +54,13 @@ function PostCard({postData, clickHandler, editHandler, deleteHandler}){
                             : postData.content
                     }
                 </Typography>
-
+                <Stack direction="row" spacing={1} style={{ marginTop: '1vh' }}>
+                    {
+                        postData.tags?.map((tag) => (
+                            <Chip key={tag} label={tag} size="small" style={{ color: 'white', backgroundColor: 'var(--primary-color)' }}/>
+                        ))
+                    }
+                </Stack>
                 <ActionButtons
                     type='post'
                     cardId={postData._id}

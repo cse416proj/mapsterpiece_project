@@ -154,8 +154,7 @@ export default function SearchBar(props) {
       )
     }
     else if(currScreen==='ALL_MAPS_POSTS'){
-      setPlaceholder('Search by map title or post title...');
-      // setPlaceholder('Search by map title/tag or post title/tag...');
+      setPlaceholder('Search by map title/tag or post title/tag...');
       setMenuItems(
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortBothA2Z },
@@ -166,8 +165,7 @@ export default function SearchBar(props) {
       )
     }
     else if(currScreen==='USER_OWNED_MAPS' && auth?.user?.userName===userInfo?.currentUser?.userName){
-      setPlaceholder('Search by map title...');
-      // setPlaceholder('Search by map title/tag...');
+      setPlaceholder('Search by map title/tag...');
       setMenuItems(
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortMapA2Z },
@@ -180,8 +178,7 @@ export default function SearchBar(props) {
       )
     }
     else if(currScreen.includes("MAPS")){
-      setPlaceholder('Search by map title...');
-      // setPlaceholder('Search by map title/tag...');
+      setPlaceholder('Search by map title/tag...');
       setMenuItems(
         [
           { sortBy: 'Alphabet (A-Z)', handler: handleSortMapA2Z },
@@ -193,7 +190,7 @@ export default function SearchBar(props) {
       )
     }
     else if(currScreen.includes("POSTS")){
-      setPlaceholder('Search by post title...');
+      setPlaceholder('Search by post title/tag...');
       // setPlaceholder('Search by post title/tag/content...');
       setMenuItems(
         [
