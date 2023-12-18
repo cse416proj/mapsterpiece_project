@@ -550,13 +550,13 @@ function GlobalStoreContextProvider(props) {
     return (currScreen in screenDataDict) ? screenDataDict[currScreen] : null;
   };
 
-  const updateMaps = (allMaps) => ({
-    pinMaps: allMaps.filter((pair)=>{return pair?.tags?.includes("PINMAP")}),
-    choroplethMaps: allMaps.filter((pair)=>{return pair?.tags?.includes("CHOROPLETH")}),
-    dotMaps: allMaps.filter((pair)=>{return pair?.tags?.includes("DOT_DISTRIBUTION")}),
-    gradMaps:allMaps.filter((pair)=>{return pair?.tags?.includes("GRADUATED_SYMBOL")}),
-    heatMaps: allMaps.filter((pair)=>{return pair?.tags?.includes("HEATMAP")}),
-  });
+  const updateMaps = (allMaps) =>  ({
+    pinMaps: allMaps.filter((pair)=>{return pair?.mapType?.includes("PINMAP")}),
+    choroplethMaps: allMaps.filter((pair)=>{return pair?.mapType?.includes("CHOROPLETH")}),
+    dotMaps: allMaps.filter((pair)=>{return pair?.mapType?.includes("DOT_DISTRIBUTION")}),
+    gradMaps:allMaps.filter((pair)=>{return pair?.mapType?.includes("GRADUATED_SYMBOL")}),
+    heatMaps: allMaps.filter((pair)=>{return pair?.mapType?.includes("HEATMAP")}),
+    });
 
   const filterPosts = (pair, searchStrings) => {
     const lowerCaseTags = pair?.tags?.map(tag => tag.toLowerCase()) || "";
