@@ -134,9 +134,7 @@ function MapScreen() {
     console.log(palette);
 
     const levels = 5;
-    const max = currMaxData
-      ? currMaxData
-      : mapInfo?.currentMap?.mapTypeData?.max;
+    const max = mapInfo?.currentMap?.mapTypeData?.max;
     const step = max / levels;
 
     const index = Math.min(Math.floor(data / step), levels - 1);
@@ -625,9 +623,7 @@ function MapScreen() {
           legendTitle={mapInfo?.currentMap?.mapTypeData?.legendTitle}
           type={(editMode && mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : map?.mapType}
           // type={map?.mapType ? map?.mapType : mapInfo?.currentMapEditType}
-          max={
-            currMaxData ? currMaxData : mapInfo?.currentMap?.mapTypeData?.max
-          }
+          max={mapInfo?.currentMap?.mapTypeData?.max}
           getColor={getColor}
         />
 
