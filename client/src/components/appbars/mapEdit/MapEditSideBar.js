@@ -80,6 +80,7 @@ function MapEditSideBar() {
       CHOROPLETH: "Choropleth Map",
       DOT_DISTRIBUTION: "Dot Distribution Map",
       GRADUATED_SYMBOL: "Graduated Symbol Map",
+      REGULAR: "Regular Map",
     };
     return dict[type];
   }
@@ -107,6 +108,7 @@ function MapEditSideBar() {
       "DOT_DISTRIBUTION",
       "GRADUATED_SYMBOL",
       "PINMAP",
+      "REGULAR"
     ];
     const newtags = tags?.filter((tag) => !mapTypeList.includes(tag));
     if (newtags) {
@@ -160,6 +162,9 @@ function MapEditSideBar() {
                   </MenuItem>
                   <MenuItem value={"GRADUATED_SYMBOL"}>
                     Graduated Symbol Map
+                  </MenuItem>
+                  <MenuItem value={"REGULAR"}>
+                    Regular Map
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -230,11 +235,11 @@ function MapEditSideBar() {
             <RedoIcon />
           </Button>
           <Box className="sidebar-block-content data-block"></Box>
-          {/* {
-            mapInfo?.currentMap?.mapType !== "CHOROPLETH" ?
+          {
+            mapInfo.currentMapEditType === "REGULAR" ?
               <CompactPicker color={selectedColor} onChange={handleColorChange}/> :
               null
-          } */}
+          }
           {mapInfo.currentMapEditType !== "PINMAP" ? (
             <Stack spacing={1} style={{ marginTop: `10px` }}>
               {mapInfo?.currentMap?.mapTypeData?.data
