@@ -58,9 +58,9 @@ function MapScreen() {
   // to be replaced with currentMap.property, currentMap.mapTypeData.max, currentMap.mapTypeData.color later
   // const [currProp, setCurrProp] = useState('gdp_md');
   const [currProp, setCurrProp] = useState("property");
-  const [currMaxData, setCurrMaxData] = useState(
-    mapInfo?.currentMap?.mapTypeData?.max
-  );
+  // const [currMaxData, setCurrMaxData] = useState(
+  //   mapInfo?.currentMap?.mapTypeData?.max
+  // );
   const [latLng, setLatLng] = useState(null);
   const [pinMapTypeData, setPinMapTypeData] = useState({
     property1: "",
@@ -110,6 +110,9 @@ function MapScreen() {
   useEffect(() => {
     if(mapInfo.currentMap){
       setMap(mapInfo.currentMap);
+      if(!mapInfo?.dataColor){
+        mapInfo.setDataColor(mapInfo.currentMap.mapTypeData?.dataColor);
+      }
     }
     else{
       mapInfo.getMapById(mapId);
@@ -121,8 +124,6 @@ function MapScreen() {
     const maxLight = 0.65;
 
     // // calculate 4 steps away from current color
-    // // const colorObj = tinycolor(mapInfo?.dataColor);
-    // // const colorObj = tinycolor("#86C9B5");
     // const color = (dataColorRef.current) ?
     //                 dataColorRef.current :
     //                 (
@@ -135,8 +136,10 @@ function MapScreen() {
     // console.log(`dataColorRef.current: ${dataColorRef.current}`);
     // console.log(`mapInfo?.currentMap?.mapTypeData?.dataColor: ${mapInfo?.currentMap?.mapTypeData?.dataColor}`);
     // console.log(`color: ${color}`);
+    
+    const color = (mapInfo?.dataColor) ? mapInfo?.dataColor : mapInfo?.currentMap?.mapTypeData?.dataColor;
 
-    const colorObj = tinycolor(mapInfo?.dataColor);
+    const colorObj = tinycolor(color);
     const palette = new Array(5);
     const steps = 4;
     const calcLight = (i) => (i * (maxLight - minLight)) / steps + minLight;
@@ -156,9 +159,7 @@ function MapScreen() {
     const palette = getPalette();
 
     const levels = 5;
-    const max = currMaxData
-      ? currMaxData
-      : mapInfo?.currentMap?.mapTypeData?.max;
+    const max =  mapInfo?.currentMap?.mapTypeData?.max;
     const step = max / levels;
 
     const index = Math.min(Math.floor(data / step), levels - 1);
@@ -259,22 +260,24 @@ function MapScreen() {
 
     let max = -1;
 
-    const nameProperties = mapContentRef.current[0].properties;
-    for (const key in nameProperties) {
-      max = Math.max(max, parseInt(key.split("_")[1]));
-    }
+    if(mapContentRef.current[0]){
+      const nameProperties = mapContentRef.current[0].properties;
+      for (const key in nameProperties) {
+        max = Math.max(max, parseInt(key.split("_")[1]));
+      }
 
-    let name =
-      max === 3
-        ? "name_3"
-        : max === 2
-        ? "name_2"
-        : max === 1
-        ? "name_1"
-        : max === 0
-        ? "name_0"
-        : "name";
-    setRegionNameLevel(name);
+      let name =
+        max === 3
+          ? "name_3"
+          : max === 2
+          ? "name_2"
+          : max === 1
+          ? "name_1"
+          : max === 0
+          ? "name_0"
+          : "name";
+      setRegionNameLevel(name);
+    }
   }, [map]);
 
   // // clear color fill, update map type in map object & determine if this map type suppoesd to edit by data when map type changes in edit screen
@@ -364,7 +367,7 @@ function MapScreen() {
   useEffect(() => {
     console.log('mapTypeDataRef?.current?.data');
 
-    const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
+    const mapType = (editMode && mapInfo?.currentMapEditType) ? mapInfo?.currentMapEditType : map?.mapType;
     if (mapType === "HEATMAP" && heatMapLayer && mapTypeDataRef.current) {
       heatMapLayer.setData(mapTypeDataRef.current);
       setMapContainterKey(mapContainterKey + 1);
@@ -398,7 +401,7 @@ function MapScreen() {
 
     const layer = event.sourceTarget;
     const regularMap = editMode && !dataEditModeRef.current;
-    const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
+    const mapType = (editMode && mapInfo?.currentMapEditType) ? mapInfo?.currentMapEditType : map?.mapType;
 
     if (layer) {
       // REGULAR MAP DISPLAY
@@ -484,9 +487,9 @@ function MapScreen() {
       properties: []
     };
 
-    setCurrMaxData(Math.max(currMaxData, value));
+    // setCurrMaxData(Math.max(currMaxData, value));
 
-    const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
+    const mapType = (editMode && mapInfo?.currentMapEditType) ? mapInfo?.currentMapEditType : map?.mapType;
     
     // update existing data or add data to region
     if (indexElementTobeChanged >= 0) {
@@ -588,15 +591,17 @@ function MapScreen() {
 
   function renderMapLayer(mapType){
     console.log(`renderMapLayer, mapType: ${mapType}`);
-                    
+
+    const color = (mapInfo?.dataColor) ? mapInfo?.dataColor : mapInfo?.currentMap?.mapTypeData?.dataColor;
+
     if(mapType === 'PINMAP'){
       return <PinMap data={mapTypeDataRef?.current?.data}/>
     }
     else if(mapType === 'GRADUATED_SYMBOL'){
-      return <GraduatedSymbolMap dataMapKey={dataMapKey} data={mapTypeDataRef?.current?.data} color={mapInfo?.dataColor}/>
+      return <GraduatedSymbolMap dataMapKey={dataMapKey} data={mapTypeDataRef?.current?.data} color={color}/>
     }
     else if(mapType === 'DOT_DISTRIBUTION'){
-      return <DotDistributionMap dataMapKey={dataMapKey} data={mapTypeDataRef?.current?.data} color={mapInfo?.dataColor}/>
+      return <DotDistributionMap dataMapKey={dataMapKey} data={mapTypeDataRef?.current?.data} color={color}/>
     }
     return null;
   }
@@ -647,7 +652,7 @@ function MapScreen() {
         />
 
         <DataInfoControl
-          type={(editMode) ? mapInfo?.currentMapEditType : map?.mapType}
+          type={(editMode && mapInfo?.currentMapEditType) ? mapInfo?.currentMapEditType : map?.mapType}
           // type={map?.mapType ? map?.mapType : mapInfo?.currentMapEditType}
           property={currProp}
           regionName={getRegionName(currLayer?.feature)}
@@ -657,12 +662,10 @@ function MapScreen() {
 
         <LegendControl
           legendTitle={mapInfo?.currentMap?.mapTypeData?.legendTitle}
-          type={(editMode) ? mapInfo?.currentMapEditType : map?.mapType}
+          type={(editMode && mapInfo?.currentMapEditType) ? mapInfo?.currentMapEditType : map?.mapType}
           // type={map?.mapType ? map?.mapType : mapInfo?.currentMapEditType}
-          max={
-            currMaxData ? currMaxData : mapInfo?.currentMap?.mapTypeData?.max
-          }
-          color={mapInfo?.dataColor}
+          max={mapInfo?.currentMap?.mapTypeData?.max}
+          color={(mapInfo?.dataColor) ? mapInfo?.dataColor : mapInfo?.currentMap?.mapTypeData?.dataColor}
           getColor={getColor}
         />
 

@@ -312,8 +312,7 @@ updateMapPublishStatusById = async (req, res, newPublishStatus) => {
       if (newPublishStatus) {
         const oldMap = req.body;
         map.mapType = oldMap.mapType;
-        map.mapTypeData.dataColor = oldMap.mapTypeData.dataColor;
-        
+        map.mapTypeData = oldMap.mapTypeData;
         map.datePublished = currTime;
       }
       else {

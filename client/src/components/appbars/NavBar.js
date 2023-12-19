@@ -1,16 +1,19 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppBar, Toolbar, Box, Avatar, Menu, MenuItem } from '@mui/material';
 
+import { AppBar, Toolbar, Box, Avatar, Menu, MenuItem } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
+
 import AuthContext from '../../contexts/auth';
 import UserContext from '../../contexts/user';
+import MapContext from '../../contexts/map';
 import GlobalStoreContext from '../../contexts/store';
 
 function NavBar(){
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const { userInfo } = useContext(UserContext);
+    const { mapInfo } = useContext(MapContext);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -29,6 +32,7 @@ function NavBar(){
         event.stopPropagation();
         event.preventDefault();
         store.setCurrentView("USER_HOME");
+        mapInfo.clearInfo();
         navigate('/');
     }
 
@@ -36,6 +40,7 @@ function NavBar(){
         event.stopPropagation();
         event.preventDefault();
         closeMenu();
+        mapInfo.clearInfo();
         navigate('/login');
     }
 
@@ -43,6 +48,7 @@ function NavBar(){
         event.stopPropagation();
         event.preventDefault();
         closeMenu();
+        mapInfo.clearInfo();
         navigate('/register');
     }
 

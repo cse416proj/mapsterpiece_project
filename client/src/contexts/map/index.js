@@ -21,7 +21,7 @@ export function MapContextProvider({ children }) {
     errorMessage: null,
     currentMapEditType: "",
     colorPickerChanged: false,
-    dataColor: ''
+    dataColor: null
     // download: false,
     // downloadFormat: ''
   });
@@ -146,9 +146,17 @@ export function MapContextProvider({ children }) {
           // close error modal & open create success alert first
           store.createSuccessAlert();
           console.log(response.data);
+
+          // update user array
+          const newMap = response.data.map;
+          if(!user.maps.includes(newMap._id)){
+            const newMaps = [...user.maps, newMap._id];
+            auth.userUpdateMaps(newMaps);
+          }
+          console.log(user);
           mapReducer({
             type: MapActionType.SET_CURRENT_MAP,
-            payload: response.data.map
+            payload: newMap
           });
         }
       }
@@ -232,6 +240,8 @@ export function MapContextProvider({ children }) {
       if(mapInfo.dataColor){
         newMap.mapTypeData.dataColor = mapInfo.dataColor;
       }
+
+      console.log(newMap);
 
       const response = await api.publishMapById(mapId, newMap);
       if(response.status === 201){
@@ -344,7 +354,6 @@ export function MapContextProvider({ children }) {
     }));
   };
 
-  // mapInfo.updateMapGeneralInfo = function (title, tags, mapType, legendTitle) {
   mapInfo.updateMapGeneralInfo = function (title, tags, legendTitle) {
     if (!mapInfo.currentMap) {
       return;
@@ -358,8 +367,10 @@ export function MapContextProvider({ children }) {
 
     updatedMap.title = (title) ? title : updatedMap.title;
     updatedMap.tags = (tags) ? tags : updatedMap.tags;
-    // updatedMap.mapType = (mapType) ? mapType : updatedMap.mapType;
-    updatedMap.legendTitle = (legendTitle) ? legendTitle : updatedMap.legendTitle;
+
+    if(updatedMap.mapTypeData){
+      updatedMap.mapTypeData.legendTitle = (legendTitle) ? legendTitle : updatedMap.mapTypeData.legendTitle;
+    }
 
     setMapInfo((prevMapInfo) => ({
       ...prevMapInfo,
@@ -650,15 +661,21 @@ export function MapContextProvider({ children }) {
         console.log((error.response.status === 400) ? error.response.data.errorMessage : 'Unable to duplicate current map.');
       }
     }
+  };
 
-    //   // get all user maps to refresh page
-    //   // some transactions
-    //   await mapInfo.getMapById(newMap);
-    //   navigate(`/map-edit/${newMap}`);
-      
-    // }else{
-    //   console.log(response);
-    };
+  mapInfo.clearInfo = function(){
+    setMapInfo({
+      currentMap: null,
+      allMapsByUser: null,
+      currentRegionColor: "#fff",
+      allCommentsForMap: [],
+      currentComment: null,
+      errorMessage: null,
+      currentMapEditType: "",
+      colorPickerChanged: false,
+      dataColor: null
+    });
+  }
 
   return (
     <MapContext.Provider value={{ mapInfo }}>{children}</MapContext.Provider>

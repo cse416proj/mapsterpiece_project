@@ -225,7 +225,7 @@ export default function MapDetailTopBar() {
 
     if (mapId && auth?.user) {
       // logged in but non-owner
-      if (!auth.user.maps?.includes(mapId)) {
+      if(mapInfo?.currentMap?.ownerUserName !== auth?.user.userName){
         buttonSet = buttonSet.slice(2);
       }
     } else {
