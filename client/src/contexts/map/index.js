@@ -27,6 +27,7 @@ export function MapContextProvider({ children }) {
     errorMessage: null,
     currentMapEditType: "REGULAR",
     colorPickerChanged: false,
+    isAddingDataByTransaction: false,
     // download: false,
     // downloadFormat: ''
   });
@@ -49,6 +50,7 @@ export function MapContextProvider({ children }) {
     SET_CURRENT_SUBCOMMENT: "SET_CURRENT_SUBCOMMENT",
     SET_ERROR_MSG: "SET_ERROR_MSG",
     SET_CURRENT_MAP_EDIT_TYPE: "SET_CURRENT_MAP_EDIT_TYPE",
+    SET_IS_ADDING_DATA_BY_TRANSACTION: "SET_IS_ADDING_DATA_BY_TRANSACTION",
     // SET_DOWNLOAD_FORMAT: 'SET_DOWNLOAD_FORMAT',
     // CANCEL_DOWNLOAD: 'CANCEL_DOWNLOAD',
   };
@@ -58,8 +60,6 @@ export function MapContextProvider({ children }) {
     // console.log(payload);
     switch (type) {
       case MapActionType.SET_CURRENT_MAP:
-        console.log("set curr map");
-        console.log(payload);
         return setMapInfo((prevMapInfo) => ({
           ...prevMapInfo,
           currentMap: payload,
@@ -106,6 +106,11 @@ export function MapContextProvider({ children }) {
           ...prevMapInfo,
           currentMapEditType: payload,
         }));
+      case MapActionType.SET_IS_ADDING_DATA_BY_TRANSACTION:
+        return setMapInfo((prevMapInfo) => ({
+          ...prevMapInfo,
+          isAddingDataByTransaction: payload,
+        }));
       default:
         return mapInfo;
     }
@@ -122,6 +127,13 @@ export function MapContextProvider({ children }) {
     mapReducer({
       type: MapActionType.SET_CURRENT_MAP_EDIT_TYPE,
       payload: mapTypeForEdit,
+    });
+  };
+
+  mapInfo.setIsAddingDataByTransaction = function (isAddingDataByTransaction) {
+    mapReducer({
+      type: MapActionType.SET_IS_ADDING_DATA_BY_TRANSACTION,
+      payload: isAddingDataByTransaction,
     });
   };
 

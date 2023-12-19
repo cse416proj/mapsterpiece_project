@@ -11,9 +11,11 @@ export default class RemoveData_Transaction extends jsTPS_Transaction {
 
     doTransaction() {
         this.mapInfo.deleteMapTypeData(this.regionName);
+        this.mapInfo.setIsAddingDataByTransaction(false);
     }
 
     undoTransaction() {
         this.mapInfo.updateMapTypeData(this.mapDataIndividualObj, -1);
+        this.mapInfo.setIsAddingDataByTransaction(true);
     }
 }

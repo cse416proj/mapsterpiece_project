@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
-import * as turf from '@turf/turf';
+import * as turf from "@turf/turf";
 import {
   MapContainer,
   GeoJSON,
@@ -194,10 +194,10 @@ function MapScreen() {
       return hoverRegionStyle;
     }
 
-    const mapType = (editMode) ? mapInfo.currentMapEditType : map?.mapType;
+    const mapType = editMode ? mapInfo.currentMapEditType : map?.mapType;
 
     // CHOROPLETH MAP HAS TO FILL COLORS BY INTENSITY
-    if(mapType === "CHOROPLETH") {
+    if (mapType === "CHOROPLETH") {
       let i = -1;
       for (i = 0; i < map.mapTypeData?.data?.length; i++) {
         const currData = map.mapTypeData?.data[i];
@@ -279,7 +279,11 @@ function MapScreen() {
 
   // render when map type changes
   useEffect(() => {
-    if (!mapContainerRef?.current || !geoJsonRef?.current || !mapInfo?.currentMapEditType) {
+    if (
+      !mapContainerRef?.current ||
+      !geoJsonRef?.current ||
+      !mapInfo?.currentMapEditType
+    ) {
       return;
     }
 
@@ -303,7 +307,10 @@ function MapScreen() {
     } else if (mapInfo?.currentMapEditType === "PINMAP") {
       console.log(map?.mapTypeData);
     }
-  }, [mapContainerRef?.current && geoJsonRef?.current, mapInfo?.currentMapEditType]);
+  }, [
+    mapContainerRef?.current && geoJsonRef?.current,
+    mapInfo?.currentMapEditType,
+  ]);
 
   // set current heatmap data
   useEffect(() => {
@@ -311,7 +318,7 @@ function MapScreen() {
   }, [mapInfo?.currentMap?.mapTypeData]);
 
   useEffect(() => {
-    const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
+    const mapType = editMode ? mapInfo?.currentMapEditType : map?.mapType;
     if (mapType === "HEATMAP" && heatMapLayer && mapTypeDataRef.current) {
       heatMapLayer.setData(mapTypeDataRef.current);
       setMapContainterKey(mapContainterKey + 1);
@@ -320,10 +327,20 @@ function MapScreen() {
     }
   }, [mapTypeDataRef?.current?.data]);
 
+  useEffect(() => {
+    if (mapInfo?.currentMapEditType === "HEATMAP") {
+      if (mapInfo?.isAddingDataByTransaction) {
+        setMapContainterKey(mapContainterKey + 1);
+        setGeoJsonKey(geoJsonKey + 1);
+        setInitialLoad(true);
+      }
+    }
+  }, [mapInfo?.isAddingDataByTransaction]);
+
   if (!mapInfo) {
     return null;
   }
-  
+
   // first load, set up center & map edit type
   if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
     mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
@@ -343,7 +360,7 @@ function MapScreen() {
   const handleFeatureClick = (event) => {
     const layer = event.sourceTarget;
     const regularMap = editMode && !dataEditModeRef.current;
-    const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
+    const mapType = editMode ? mapInfo?.currentMapEditType : map?.mapType;
 
     if (layer) {
       // REGULAR MAP DISPLAY
@@ -391,7 +408,7 @@ function MapScreen() {
           setIndexElementTobeChanged(index);
         }
 
-        if(mapType === "PINMAP") {
+        if (mapType === "PINMAP") {
           setPinDataEntryModal(true);
           setLatLng([position.lat, position.lng]);
         } else {
@@ -401,59 +418,56 @@ function MapScreen() {
     }
   };
 
-    // edit data value for region on click
-    const editValue = (value) => {
-      const mini = 10;
-      const factor = 10;
-      const radius = Math.floor(Math.log(value) * factor) + mini;
+  // edit data value for region on click
+  const editValue = (value) => {
+    const mini = 10;
+    const factor = 10;
+    const radius = Math.floor(Math.log(value) * factor) + mini;
 
-      let randomPoints = [];
-      let points = turf.randomPoint(value, { bbox: curBbox });
-      let ptsWithin = turf.pointsWithinPolygon(points, curFeature);
+    let randomPoints = [];
+    let points = turf.randomPoint(value, { bbox: curBbox });
+    let ptsWithin = turf.pointsWithinPolygon(points, curFeature);
+    randomPoints = randomPoints.concat(ptsWithin.features);
+
+    while (randomPoints.length < value) {
+      points = turf.randomPoint(value - randomPoints.length, { bbox: curBbox });
+      ptsWithin = turf.pointsWithinPolygon(points, curFeature);
       randomPoints = randomPoints.concat(ptsWithin.features);
+    }
 
-      while (randomPoints.length < value) {
-        points = turf.randomPoint(value - randomPoints.length, { bbox: curBbox });
-        ptsWithin = turf.pointsWithinPolygon(points, curFeature);
-        randomPoints = randomPoints.concat(ptsWithin.features);
-      }
-      
-      const newDataObj = {
-        lat: selectedRegionProps.position.lat,
-        lng: selectedRegionProps.position.lng,
-        value: value,
-        regionName: selectedRegionProps.regionName,
-        radius: radius,
-        randomDotsForRegion: randomPoints,
-        properties: []
-      };
-  
-      setCurrMaxData(Math.max(currMaxData, value));
-      
-      // update existing data or add data to region
-      if (indexElementTobeChanged >= 0) {
-        mapTypeDataRef.current.data[indexElementTobeChanged] = newDataObj;
-        mapTypeDataRef.current.max = Math.max(
-          mapTypeDataRef.current.max,
-          value
-        );
-        if (mapType === "HEATMAP") {
-          heatMapLayer.setData(mapTypeDataRef.current);
-        }
-      } else {
-        if (mapType === "HEATMAP") {
-          heatMapLayer.addData(newDataObj);
-        }
-      }
-      
-      if (mapType === "HEATMAP") {
-        setMapContainterKey(mapContainterKey + 1);
-        setGeoJsonKey(geoJsonKey + 1);
-        setInitialLoad(true);
-      }
-      mapInfo.addDataTransaction(newDataObj, indexElementTobeChanged);
-      setIndexElementTobeChanged(-1);
+    const newDataObj = {
+      lat: selectedRegionProps.position.lat,
+      lng: selectedRegionProps.position.lng,
+      value: value,
+      regionName: selectedRegionProps.regionName,
+      radius: radius,
+      randomDotsForRegion: randomPoints,
+      properties: [],
     };
+
+    setCurrMaxData(Math.max(currMaxData, value));
+
+    // update existing data or add data to region
+    if (indexElementTobeChanged >= 0) {
+      mapTypeDataRef.current.data[indexElementTobeChanged] = newDataObj;
+      mapTypeDataRef.current.max = Math.max(mapTypeDataRef.current.max, value);
+      if (mapType === "HEATMAP") {
+        heatMapLayer.setData(mapTypeDataRef.current);
+      }
+    } else {
+      if (mapType === "HEATMAP") {
+        heatMapLayer.addData(newDataObj);
+      }
+    }
+
+    if (mapType === "HEATMAP") {
+      setMapContainterKey(mapContainterKey + 1);
+      setGeoJsonKey(geoJsonKey + 1);
+      setInitialLoad(true);
+    }
+    mapInfo.addDataTransaction(newDataObj, indexElementTobeChanged);
+    setIndexElementTobeChanged(-1);
+  };
 
   // add pin for region on cilck
   const createPin = (newProperties) => {
@@ -526,7 +540,7 @@ function MapScreen() {
     });
   };
 
-  const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
+  const mapType = editMode ? mapInfo?.currentMapEditType : map?.mapType;
 
   const mapContent = (
     <>
@@ -548,7 +562,7 @@ function MapScreen() {
         ref={mapContainerRef}
         key={mapContainterKey}
         id="map-viewer"
-        style={{ width: (editMode) ? "70%" : "100%", zIndex: 0 }}
+        style={{ width: editMode ? "70%" : "100%", zIndex: 0 }}
         center={mapCenter}
         zoom={3}
         zoomControl={false}
@@ -565,10 +579,10 @@ function MapScreen() {
         <ZoomControl position="topleft" />
 
         <PrintControl
-          position='topleft'
-          title='Export as PNG'
+          position="topleft"
+          title="Export as PNG"
           filename={map?.title}
-          sizeModes={['Current', 'A4Landscape']}
+          sizeModes={["Current", "A4Landscape"]}
           hideControlContainer={true}
           exportOnly
         />
@@ -663,7 +677,10 @@ function MapScreen() {
                   {prop.randomDotsForRegion.map((dot) => {
                     return (
                       <CircleMarker
-                        center={[dot.geometry.coordinates[1], dot.geometry.coordinates[0]]}
+                        center={[
+                          dot.geometry.coordinates[1],
+                          dot.geometry.coordinates[0],
+                        ]}
                         radius={3}
                         fillOpacity={1}
                         stroke={false}
@@ -673,7 +690,7 @@ function MapScreen() {
                             layer.bringToBack();
                           },
                         }}
-                        color={'green'}
+                        color={"green"}
                       />
                     );
                   })}
