@@ -28,24 +28,24 @@ export default function MapEditTopBar() {
 
     const [title, setTitle] = useState('');
     const [tags, setTags] = useState([]);
-    const [hasPublished, setHasPublished] = useState(false);
-    const [startPublishing, setStartPublishing] = useState(false);
+    // const [hasPublished, setHasPublished] = useState(false);
+    // const [startPublishing, setStartPublishing] = useState(false);
 
     useEffect(() => {
         if(mapInfo?.currentMap){
             setTitle(mapInfo.currentMap?.title);
             setTags(mapInfo.currentMap?.tags);
-            setHasPublished((mapInfo?.currentMap?.isPublished) ? true : false);
+            // setHasPublished((mapInfo?.currentMap?.isPublished) ? true : false);
         }
     }, [mapInfo?.currentMap]);
 
-    useEffect(() => {
-        if(hasPublished){
-            setStartPublishing(false);
-            console.log('hasPublished');
-            navigate(`/map-detail/${mapInfo.currentMap?._id}`);
-        }
-    }, [hasPublished])
+    // useEffect(() => {
+    //     if(hasPublished){
+    //         setStartPublishing(false);
+    //         console.log('hasPublished');
+    //         navigate(`/map-detail/${mapInfo.currentMap?._id}`);
+    //     }
+    // }, [hasPublished])
 
     function handleMyMaps(){
         userInfo.setCurrentUser(auth.user);
@@ -55,7 +55,7 @@ export default function MapEditTopBar() {
     function handlePublishMap(event){
         event.stopPropagation();
         event.preventDefault();
-        setStartPublishing(true);
+        // setStartPublishing(true);
         store.markMapForPublish(mapInfo.currentMap);
     };
 
@@ -98,13 +98,13 @@ export default function MapEditTopBar() {
 
   return (
     <AppBar position='static'>
-        {
+        {/* {
             (startPublishing) ?
                 <Alert style={{ position: 'absolute' }}>Now publishing map...</Alert> :
                 (hasPublished) ?
                     <Alert style={{ position: 'absolute' }}>Publish success!</Alert>:
                     null
-        }
+        } */}
         <Toolbar className='map-screen-topbar'>
             <Button 
                 style = {BackButtonStyle}

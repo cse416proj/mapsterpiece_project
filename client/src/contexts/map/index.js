@@ -173,9 +173,16 @@ export function MapContextProvider({ children }) {
           // close error modal & open create success alert first
           store.createSuccessAlert();
           console.log(response.data);
+
+          const newMap = response.data.map;
+          if(user.maps && !user.maps.includes(newMap._id)){
+            const newMaps = [...user.maps, newMap._id];
+            auth.userUpdateMaps(newMaps);
+          }
+
           mapReducer({
             type: MapActionType.SET_CURRENT_MAP,
-            payload: response.data.map,
+            payload: newMap
           });
         }
       } catch (error) {
@@ -261,7 +268,19 @@ export function MapContextProvider({ children }) {
 
   mapInfo.publishMapById = async function (mapId) {
     try {
-      const response = await api.publishMapById(mapId);
+      const newMap = {...mapInfo.currentMap};
+      
+      if(mapInfo.currentMapEditType){
+        newMap.mapType = mapInfo.currentMapEditType;
+      }
+      if(mapInfo.dataColor){
+        newMap.mapTypeData.dataColor = mapInfo.dataColor;
+      }
+
+      console.log(newMap);
+
+      const response = await api.publishMapById(mapId, newMap);
+      
       if (response.status === 201) {
         // close publish map modal & open publish success alert first
         store.closeModalAfterPublish();
@@ -568,7 +587,19 @@ export function MapContextProvider({ children }) {
 
   mapInfo.updateMapById = async function (mapId) {
     try {
-      const response = await api.updateMapById(mapId, mapInfo.currentMap);
+      console.log('mapInfo.updateMapById');
+      const newMap = {...mapInfo.currentMap};
+      
+      if(mapInfo.currentMapEditType){
+        newMap.mapType = mapInfo.currentMapEditType;
+      }
+      if(mapInfo.dataColor){
+        newMap.mapTypeData.dataColor = mapInfo.dataColor;
+      }
+
+      console.log(newMap);
+
+      const response = await api.updateMapById(mapId, newMap);
       if (response.status === 200) {
         console.log("start saving");
         store.saveSuccessAlert();

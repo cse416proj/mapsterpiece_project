@@ -44,7 +44,7 @@ function MapEditSideBar() {
 
   const titleRef = useRef();
   const tagsRef = useRef();
-  const mapTypeRef = useRef();
+  // const mapTypeRef = useRef();
   const legendTitleRef = useRef();
   titleRef.current = mapInfo?.currentMap?.title;
   tagsRef.current = mapInfo?.currentMap?.tags;
@@ -131,6 +131,10 @@ function MapEditSideBar() {
     mapInfo.redo();
   }
 
+  console.log(mapInfo.currentMapEditType);
+  console.log(mapInfo.currentMap);
+  console.log(mapInfo.currentMap?.mapType);
+
   return (
     <Sidebar style={sideBarStyle}>
       <Toolbar className="map-screen-sidebar">
@@ -172,9 +176,14 @@ function MapEditSideBar() {
               <>
                 <Typography className="sidebar-block-title">
                   {`Map Type: `}
-                  <span id="map-type-text" onClick={handleEditMapType}>
-                    {getText(mapInfo.currentMapEditType)}
+                  <span id='map-type-text'
+                    onClick={handleEditMapType}
+                  >
+                    {getText((mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : mapInfo.currentMap?.mapType)}
                   </span>
+                  {/* <span id="map-type-text" onClick={handleEditMapType}>
+                    {getText(mapInfo.currentMapEditType)}
+                  </span> */}
                 </Typography>
                 <EditIcon id="edit-map-type" onClick={handleEditMapType} />
               </>
@@ -239,8 +248,7 @@ function MapEditSideBar() {
             mapInfo.currentMapEditType === "REGULAR" ?
               <CompactPicker color={selectedColor} onChange={handleColorChange}/> :
               null
-          }
-          {mapInfo.currentMapEditType !== "PINMAP" ? (
+          {((mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : mapInfo.currentMap?.mapType) !== "PINMAP" ? (
             <Stack spacing={1} style={{ marginTop: `10px` }}>
               {mapInfo?.currentMap?.mapTypeData?.data
                 ?.sort((a, b) => a.regionName.localeCompare(b.regionName))
@@ -256,7 +264,7 @@ function MapEditSideBar() {
                 ))}
             </Stack>
           ) : null}
-          {mapInfo.currentMapEditType === "PINMAP" ? (
+          {((mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : mapInfo.currentMap?.mapType) === "PINMAP" ? (
             <>
               {mapInfo?.currentMap?.mapTypeData?.data?.map((prop) => (
                 <Accordion>

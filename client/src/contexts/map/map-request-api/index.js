@@ -34,8 +34,8 @@ export const getMapsByMapIds = (idList) => {
   return api.get(`/userMaps/${idList}`)
 };
 
-export const publishMapById = (mapId) =>{
-  return api.put(`/publishMap/${mapId}`);
+export const publishMapById = (mapId, map) =>{
+  return api.put(`/publishMap/${mapId}`, map);
 }
 
 export const unpublishMapById = (mapId) =>{
