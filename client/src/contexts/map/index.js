@@ -18,6 +18,8 @@ export function MapContextProvider({ children }) {
 
   const navigate = useNavigate();
 
+  console.log(tps.transactions);
+
   const [mapInfo, setMapInfo] = useState({
     currentMap: null,
     allMapsByUser: null,
@@ -25,15 +27,15 @@ export function MapContextProvider({ children }) {
     allCommentsForMap: [],
     currentComment: null,
     errorMessage: null,
-    currentMapEditType: "REGULAR",
+    currentMapEditType: "",
     colorPickerChanged: false,
-    isAddingDataByTransaction: false,
+    dataColor: '',
     // download: false,
     // downloadFormat: ''
   });
 
   const curMapEditType = {
-    REGULAR: "REGULAR",
+    REGULAR: "",
     HEATMAP: "HEATMAP",
     CHOROPLETH: "CHOROPLETH",
     DOT_DISTRIBUTION: "DOT_DISTRIBUTION",
@@ -51,6 +53,7 @@ export function MapContextProvider({ children }) {
     SET_ERROR_MSG: "SET_ERROR_MSG",
     SET_CURRENT_MAP_EDIT_TYPE: "SET_CURRENT_MAP_EDIT_TYPE",
     SET_IS_ADDING_DATA_BY_TRANSACTION: "SET_IS_ADDING_DATA_BY_TRANSACTION",
+    SET_DATA_COLOR: "SET_DATA_COLOR",
     // SET_DOWNLOAD_FORMAT: 'SET_DOWNLOAD_FORMAT',
     // CANCEL_DOWNLOAD: 'CANCEL_DOWNLOAD',
   };
@@ -112,6 +115,12 @@ export function MapContextProvider({ children }) {
           ...prevMapInfo,
           isAddingDataByTransaction: payload,
         }));
+      case MapActionType.SET_DATA_COLOR:
+        console.log(`setDataColor: ${payload}`);
+        return setMapInfo((prevMapInfo) => ({
+          ...prevMapInfo,
+          dataColor: payload
+        }));
       default:
         return mapInfo;
     }
@@ -120,6 +129,13 @@ export function MapContextProvider({ children }) {
   mapInfo.setCurrentRegionColor = function (color) {
     mapReducer({
       type: MapActionType.SET_CURRENT_REGION_COLOR,
+      payload: color,
+    });
+  };
+
+  mapInfo.setDataColor = function (color) {
+    mapReducer({
+      type: MapActionType.SET_DATA_COLOR,
       payload: color,
     });
   };
@@ -246,8 +262,17 @@ export function MapContextProvider({ children }) {
 
   mapInfo.publishMapById = async function (mapId) {
     try {
-      const response = await api.publishMapById(mapId);
-      if (response.status === 201) {
+      const newMap = {...mapInfo.currentMap};
+      
+      if(mapInfo.currentMapEditType){
+        newMap.mapType = mapInfo.currentMapEditType;
+      }
+      if(mapInfo.dataColor){
+        newMap.mapTypeData.dataColor = mapInfo.dataColor;
+      }
+
+      const response = await api.publishMapById(mapId, newMap);
+      if(response.status === 201){
         // close publish map modal & open publish success alert first
         store.closeModalAfterPublish();
 
@@ -310,12 +335,12 @@ export function MapContextProvider({ children }) {
   };
 
   mapInfo.getMapsByMapIds = async function (idList) {
-    try {
+    try{
       const response = await api.getMapsByMapIds(idList);
       if (response?.status === 200) {
         // sometimes currentMap would get updated (publish/unpublish/delete)
         let currMap = null;
-        const currMapId = mapInfo.currentMap ? mapInfo.currentMap._id : null;
+        const currMapId = (mapInfo.currentMap) ? mapInfo.currentMap._id : null;
 
         if (currMapId) {
           currMap = response.data?.find((map) => map._id === currMapId);
@@ -365,7 +390,6 @@ export function MapContextProvider({ children }) {
     }));
   };
 
-  // mapInfo.updateMapGeneralInfo = function (title, tags, mapType, legendTitle) {
   mapInfo.updateMapGeneralInfo = function (title, tags, legendTitle) {
     if (!mapInfo.currentMap) {
       return;
@@ -375,12 +399,14 @@ export function MapContextProvider({ children }) {
       return;
     }
 
-    let updatedMap = mapInfo.currentMap;
+    let updatedMap = {...mapInfo.currentMap};
 
     updatedMap.title = title ? title : updatedMap.title;
     updatedMap.tags = tags ? tags : updatedMap.tags;
-    // updatedMap.mapType = (mapType) ? mapType : updatedMap.mapType;
-    updatedMap.legendTitle = legendTitle ? legendTitle : updatedMap.legendTitle;
+    
+    if(updatedMap.mapTypeData){
+      updatedMap.mapTypeData.legendTitle = (legendTitle) ? legendTitle : updatedMap.mapTypeData?.legendTitle;
+    }
 
     setMapInfo((prevMapInfo) => ({
       ...prevMapInfo,
@@ -392,6 +418,7 @@ export function MapContextProvider({ children }) {
     mapDataIndividualObj,
     indexElementTobeChanged
   ) => {
+    console.log('mapInfo.addDataTransaction');
     let regionName = mapDataIndividualObj.regionName;
     let transaction = new AddData_Transaction(
       mapInfo,
@@ -475,12 +502,12 @@ export function MapContextProvider({ children }) {
     }
   };
 
-  mapInfo.updateBubbleMapColor = function (color) {
+  mapInfo.updateDataColor = function (color) {
     if (!mapInfo.currentMap) {
       return;
     }
     let oldMap = mapInfo.currentMap;
-    oldMap.mapTypeData.bubbleMapColor = color;
+    oldMap.mapTypeData.dataColor = color;
     setMapInfo((prevMapInfo) => ({
       ...prevMapInfo,
       currentMap: oldMap,
@@ -526,12 +553,21 @@ export function MapContextProvider({ children }) {
 
   mapInfo.updateMapById = async function (mapId) {
     try {
-      const response = await api.updateMapById(mapId, mapInfo.currentMap);
-      if (response.status === 200) {
-        console.log("start saving");
-        store.saveSuccessAlert();
-        await mapInfo.getMapsByMapIds(auth.user.maps);
-        // navigate("/");
+      if(mapInfo.currentMap){
+        const newMap = {...mapInfo.currentMap};
+
+        if(mapInfo.currentMapEditType){
+          newMap.mapType = mapInfo.currentMapEditType;
+        }
+        if(mapInfo.dataColor){
+          newMap.mapTypeData.dataColor = mapInfo.dataColor;
+        }
+        const response = await api.updateMapById(mapId, newMap);
+        if (response.status === 200) {
+          store.saveSuccessAlert();
+          await mapInfo.getMapsByMapIds(auth.user.maps);
+          // navigate("/");
+        }
       }
     } catch (error) {
       console.log(

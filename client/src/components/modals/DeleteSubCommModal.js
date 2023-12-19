@@ -37,7 +37,7 @@ export default function DeleteSubCommModal() {
   }
 
   return (
-    <Modal id='modal-overlay' open={store.currentModal === 'DELETE_SUBCOMMENT_MODAL'}>
+    <Modal id='modal-overlay' open={store?.currentModal === 'DELETE_SUBCOMMENT_MODAL'}>
       <Box
         severity='warning'
         className='popUpBox'

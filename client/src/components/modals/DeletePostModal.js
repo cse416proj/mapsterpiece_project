@@ -31,7 +31,7 @@ export default function DeletePostModal() {
   }
 
   return (
-    <Modal id='modal-overlay' open={store.currentModal === 'DELETE_POST_MODAL'}>
+    <Modal id='modal-overlay' open={store?.currentModal === 'DELETE_POST_MODAL'}>
       <Box
         severity='warning'
         className='popUpBox'

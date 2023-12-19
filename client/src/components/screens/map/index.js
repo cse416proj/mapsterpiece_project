@@ -7,4 +7,12 @@ import DataInfoControl from "./control/DataInfoControl";
 import LegendControl from "./control/LegendControl";
 import PrintControl from "./control/PrintControl";
 
-export { MapScreen, MapComment, MapDetailsScreen, MapEditScreen, DataInfoControl, LegendControl, PrintControl }
+import PinMap from "./mapType/PinMap";
+import DotDistributionMap from "./mapType/DotDistributionMap";
+import GraduatedSymbolMap from "./mapType/GraduatedSymbolMap";
+
+export {
+    MapScreen, MapComment, MapDetailsScreen, MapEditScreen,
+    DataInfoControl, LegendControl, PrintControl,
+    PinMap, DotDistributionMap, GraduatedSymbolMap
+}

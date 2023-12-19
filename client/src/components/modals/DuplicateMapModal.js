@@ -33,7 +33,6 @@ export default function DuplicateMapModal() {
     function handleDuplicateMap(event) {
         event.stopPropagation();
         event.preventDefault();
-        console.log("real duplicate map.");
 
         const trimmedTitle = title.replace(/(\s|\r\n|\n|\r)/gm, '');
         if(trimmedTitle.length <= 0){
@@ -52,7 +51,7 @@ export default function DuplicateMapModal() {
     }
 
     return (
-        <Modal id='modal-overlay' open={store.currentModal === 'DUPLICATE_MAP_MODAL'}>
+        <Modal id='modal-overlay' open={store?.currentModal === 'DUPLICATE_MAP_MODAL'}>
             <Box
                 severity='warning'
                 className='popUpBox'

@@ -1,9 +1,13 @@
-import { useState, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Modal, Button, Typography, Divider, TextField } from '@mui/material';
 import DataArrayIcon from '@mui/icons-material/DataArray';
 
 export default function DataEntryModal({ isOpen, handleClose, setData }) {
   const [inputValue, setInputValue] = useState('');
+
+  useEffect(() => {
+    setInputValue('');
+  },[])
 
   const handleInputChange = (event) => {
     event.preventDefault();

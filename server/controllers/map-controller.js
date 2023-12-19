@@ -72,7 +72,7 @@ createMap = async (req, res) => {
     mapType: mapType,
     mapContent: featuresFiltered,
     mapTypeData: {
-      bubbleMapColor: '#FF0000',
+      dataColor: '#5bab93',
       legendTitle: 'Default legend title',
       max: 0,
       data: []
@@ -307,9 +307,16 @@ updateMapPublishStatusById = async (req, res, newPublishStatus) => {
 
       const currTime = new Date();
       map.isPublished = newPublishStatus;
+      
+
       if (newPublishStatus) {
+        const oldMap = req.body;
+        map.mapType = oldMap.mapType;
+        map.mapTypeData.dataColor = oldMap.mapTypeData.dataColor;
+        
         map.datePublished = currTime;
-      } else {
+      }
+      else {
         map.datePublished = null;
         map.dateEdited = currTime;
       }

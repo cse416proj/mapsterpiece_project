@@ -22,7 +22,7 @@ export default function UnpublishMapModal() {
   }
 
   return (
-    <Modal id='modal-overlay' open={store.currentModal === 'UNPUBLISH_MAP_MODAL'}>
+    <Modal id='modal-overlay' open={store?.currentModal === 'UNPUBLISH_MAP_MODAL'}>
         <Box
             severity='warning'
             className='popUpBox'

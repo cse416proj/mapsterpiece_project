@@ -114,8 +114,8 @@ export default function MapEditTopBar() {
             </Button>
             <Typography sx={{fontWeight: `bold`, color:`black`, fontSize:`30px`}}>{title}</Typography>
             <Box className="map-button-container">
-                <Button variant="contained" style = {toolButtonStyle} onClick={handleDeleteMap}>Delete Map</Button>
                 <Button variant="contained" style = {toolButtonStyle} onClick={handleSaveMap}>Save Edit</Button>
+                <Button variant="contained" style = {toolButtonStyle} onClick={handleDeleteMap}>Delete Map</Button>
                 <Button variant="contained" style = {toolButtonStyle} onClick={handlePublishMap}>Publish</Button>
                 <Button variant="contained" style = {toolButtonStyle} onClick={handleDuplicateMap}>Duplicate</Button>
             </Box>

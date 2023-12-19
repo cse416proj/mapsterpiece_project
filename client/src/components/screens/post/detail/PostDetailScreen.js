@@ -104,7 +104,7 @@ export default function PostDetailScreen() {
     event.preventDefault();
     store.markPostForDeletion(postInfo.currentPost);
 
-    // if(store.currentModal !== "DELETE_POST_MODAL" && postInfo.errorMessage === null) {
+    // if(store?.currentModal !== "DELETE_POST_MODAL" && postInfo.errorMessage === null) {
     //   setDeleteSuccess(true);
     //   setTimeout(() => {
     //     setDeleteSuccess(false);

@@ -549,21 +549,34 @@ function GlobalStoreContextProvider(props) {
     return (currScreen in screenDataDict) ? screenDataDict[currScreen] : null;
   };
 
-  const updateMaps = (allMaps) => ({
-    PinMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Pin Map"}),
-    choroplethMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Choropleth Map"}),
-    dotMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Dot Distribution Map"}),
-    gradMaps:allMaps.filter((pair)=>{return pair?.tags[0]==="Graduated Symbol Map"}),
-    heatMaps: allMaps.filter((pair)=>{return pair?.tags[0]==="Heat Map"}),
-  });
+  const updateMaps = (allMaps) =>  ({
+    pinMaps: allMaps.filter((pair)=>{return pair?.mapType?.includes("PINMAP")}),
+    choroplethMaps: allMaps.filter((pair)=>{return pair?.mapType?.includes("CHOROPLETH")}),
+    dotMaps: allMaps.filter((pair)=>{return pair?.mapType?.includes("DOT_DISTRIBUTION")}),
+    gradMaps:allMaps.filter((pair)=>{return pair?.mapType?.includes("GRADUATED_SYMBOL")}),
+    heatMaps: allMaps.filter((pair)=>{return pair?.mapType?.includes("HEATMAP")}),
+    });
+
+  const filterPosts = (pair, searchStrings) => {
+    const lowerCaseTags = pair?.tags?.map(tag => tag.toLowerCase()) || "";
+    const lowerCaseTitle = pair?.title?.toLowerCase() || "";
+    const lowerCaseContent = pair?.content?.toLowerCase() || "";
+  
+    return searchStrings.some(
+      searchString =>
+        lowerCaseTags.some(tag => tag.toLowerCase().includes(searchString)) ||
+        lowerCaseTitle.includes(searchString) ||
+        lowerCaseContent.includes(searchString)
+    );
+  };
   
   const updatePosts = (allPosts) => ({
-    PinPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Pin Map"}),
-    choroplethPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Choropleth Map"}),
-    dotPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Dot Distribution Map"}),
-    gradPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Graduated Symbol Map"}),
-    heatPosts: allPosts.filter((pair)=>{return pair?.tags[0]==="Heat Map"}),
-  });
+    pinPosts: allPosts.filter(pair => filterPosts(pair, ["pin"])),
+    choroplethPosts: allPosts.filter(pair => filterPosts(pair, ["choropleth"])),
+    dotPosts: allPosts.filter(pair => filterPosts(pair, ["dot"])),
+    gradPosts: allPosts.filter(pair => filterPosts(pair, ["graduated"])),
+    heatPosts: allPosts.filter(pair => filterPosts(pair, ["heat"])),
+  });  
 
   store.setData = function () {
     setStore((prevStore) => ({

@@ -36,7 +36,7 @@ export default function DeleteAccountModal() {
   return (
     <Modal
       className="modal"
-      open={store.currentModal === "DELETE_ACCOUNT_MODAL"}
+      open={store?.currentModal === "DELETE_ACCOUNT_MODAL"}
     >
       <Box className="modal-box">
         <Box className="modal-dialog">

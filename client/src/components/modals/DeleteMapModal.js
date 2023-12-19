@@ -23,7 +23,7 @@ export default function DeleteMapModal() {
   }
 
   return (
-    <Modal id='modal-overlay' open={store.currentModal === 'DELETE_MAP_MODAL'}>
+    <Modal id='modal-overlay' open={store?.currentModal === 'DELETE_MAP_MODAL'}>
       <Box
         severity='warning'
         className='popUpBox'

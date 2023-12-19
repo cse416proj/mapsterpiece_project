@@ -27,24 +27,28 @@ function MapEditSideBar() {
   const { mapInfo } = useContext(MapContext);
   const { store } = useContext(GlobalStoreContext);
 
+  const [map, setMap] = useState(mapInfo?.currentMap);
   const [title, setTitle] = useState(mapInfo?.currentMap?.title);
   const [tags, setTags] = useState(mapInfo?.currentMap?.tags);
   const [editActive, setEditActive] = useState(false);
 
-  const [selectedColor, setSelectedColor] = useState("#ffffff");
-  const [mapType, setMapType] = useState('');
+  const [selectedColor, setSelectedColor] = useState((mapInfo?.currentMap?.mapTypeData?.dataColor) ? mapInfo?.currentMap?.mapTypeData?.dataColor : "#5bab93");
+  const [selectColorActive, setSelectColorActive] = useState(false);
+
+  // const [mapType, setMapType] = useState(mapInfo?.currentMap?.mapType);
   const [isEditingTag, setIsEditingTag] = useState(false);
   const [legendTitle, setLegendTitle] = useState(
     mapInfo?.currentMap?.mapTypeData?.legendTitle
   );
 
+  const mapRef = useRef();
   const titleRef = useRef();
   const tagsRef = useRef();
   // const mapTypeRef = useRef();
   const legendTitleRef = useRef();
+  mapRef.current = mapInfo?.currentMap;
   titleRef.current = mapInfo?.currentMap?.title;
   tagsRef.current = mapInfo?.currentMap?.tags;
-  // mapTypeRef.current = mapInfo?.currentMap?.mapType;
   legendTitleRef.current = mapInfo?.currentMap?.mapTypeData?.legendTitle;
 
   useEffect(() => {
@@ -64,8 +68,10 @@ function MapEditSideBar() {
   };
 
   const handleColorChange = (color) => {
-    mapInfo?.setCurrentRegionColor(color.hex);
+    console.log(`color change to: ${color.hex}`);
+    mapInfo?.setDataColor(color.hex);
     setSelectedColor(color.hex);
+    setSelectColorActive(false);
   };
 
   function getText(type) {
@@ -98,7 +104,6 @@ function MapEditSideBar() {
     // update tag
     const type = event.target.value;
     mapInfo?.setCurrentMapEditType(type);
-    // setMapType(type);
 
     // update tag for map type
     const mapTypeList = [
@@ -129,6 +134,70 @@ function MapEditSideBar() {
     mapInfo.redo();
   }
 
+  function getSelectColorPrompt(mapType){
+    if(mapType === 'DOT_DISTRIBUTION'){
+      return 'Select Dot Color';
+    }
+    else if(mapType === 'GRADUATED_SYMBOL'){
+      return 'Select Graduated Symbol Color';
+    }
+    else if(mapType === 'CHOROPLETH'){
+      return 'Select Choropleth Shade Color';
+    }
+  }
+
+  function renderSelectColor(){
+    const mapType = (mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : mapInfo.currentMap?.mapType;
+    
+    if(mapType === "PINMAP" || mapType === "HEATMAP"){
+      return null;
+    }
+    else{
+      return(
+        <Box className='flex-row' id='color-selector'>
+          <Typography>{getSelectColorPrompt(mapType)}</Typography>
+          {
+            (selectColorActive) ?
+              <CompactPicker color={ selectedColor } onChange={handleColorChange}/>
+              :
+              <Box
+                id='color-box'
+                style={{ backgroundColor: selectedColor }}
+                onClick={() => setSelectColorActive(true)}
+              />
+          }
+        </Box>
+      )
+    }
+  }
+
+  function renderData(){
+    const mapType = (mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : mapInfo.currentMap?.mapType;
+
+    if(mapType === "PINMAP"){
+      return null;
+    }
+    else{
+      return (
+        <Stack spacing={1} style={{ marginTop: `10px` }}>
+          {mapInfo?.currentMap?.mapTypeData?.data?.map((props, index) => (
+            <Chip
+              key={index}
+              label={`${props?.regionName}: ${props.value}`}
+              style={{backgroundColor: `#dfe9eb`, width: `50%`}}
+              onDelete={() => {
+                mapInfo?.removeDataTransaction(props?.regionName);
+              }}
+            />
+          ))}
+        </Stack>
+      )
+    }
+  }
+
+  console.log(mapInfo?.currentMap);
+  console.log(`mapInfo.currentMapEditType: ${mapInfo.currentMapEditType}`);
+
   return (
     <Sidebar style={sideBarStyle}>
       <Toolbar className="map-screen-sidebar">
@@ -137,71 +206,48 @@ function MapEditSideBar() {
         </Divider>
 
         <Box className="sidebar-block">
-          <Box className="flex-row" style={{ width: "100%" }}>
-            {editActive ? (
-              <FormControl style={{ width: "100%" }}>
-                <InputLabel id="map-type-dropdown-label">
-                  Select Map Type...
-                </InputLabel>
-                <Select
-                  open={editActive}
-                  defaultValue=''
-                  onClose={handleCloseSelect}
-                  onChange={handleChangeMapType}
-                  style={{ width: "100%" }}
-                >
-                  <MenuItem disabled value="">
-                    Select A Map Type...
-                  </MenuItem>
-                  <MenuItem value={"PINMAP"}>Pin Map</MenuItem>
-                  <MenuItem value={"HEATMAP"}>Heat Map</MenuItem>
-                  <MenuItem value={"CHOROPLETH"}>Choropleth Map</MenuItem>
-                  <MenuItem value={"DOT_DISTRIBUTION"}>
-                    Dot Distribution Map
-                  </MenuItem>
-                  <MenuItem value={"GRADUATED_SYMBOL"}>
-                    Graduated Symbol Map
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            ) : (
-              <>
-                <Typography className="sidebar-block-title">
-                  {`Map Type: `}
-                  <span id="map-type-text" onClick={handleEditMapType}>
-                    {getText(mapInfo.currentMapEditType)}
-                  </span>
-                </Typography>
-                <EditIcon id="edit-map-type" onClick={handleEditMapType} />
-              </>
-            )}
+          <Box className='flex-row' style={{ width: '100%' }}>
+              {
+                (editActive) ?
+                  <FormControl style={{ width: '100%' }}>
+                    <InputLabel id="map-type-dropdown-label">Select Map Type...</InputLabel>
+                    <Select
+                      open={editActive}
+                      onClose={handleCloseSelect}
+                      onChange={handleChangeMapType}
+                      style={{ width: '100%' }}
+                    >
+                      <MenuItem disabled value="">Select A Map Type...</MenuItem>
+                      <MenuItem value={"PINMAP"}>Pin Map</MenuItem>
+                      <MenuItem value={"HEATMAP"}>Heat Map</MenuItem>
+                      <MenuItem value={"CHOROPLETH"}>Choropleth Map</MenuItem>
+                      <MenuItem value={"DOT_DISTRIBUTION"}>Dot Distribution Map</MenuItem>
+                      <MenuItem value={"GRADUATED_SYMBOL"}>Graduated Symbol Map</MenuItem>
+                    </Select>
+                  </FormControl> :
+                  <>
+                    <Typography className="sidebar-block-title">
+                      {`Map Type: `}
+                      <span id='map-type-text' onClick={handleEditMapType}>{getText((mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : mapInfo.currentMap?.mapType)}</span>
+                    </Typography>
+                    <EditIcon id='edit-map-type' onClick={handleEditMapType}/>
+                  </>
+              }
+            </Box>
           </Box>
-        </Box>
 
-        <Box className="sidebar-block">
-          <Typography className="sidebar-block-title">
-            Map Title/Name
-          </Typography>
-          <Input
-            className="sidebar-block-content sidebar-input"
-            aria-label="title input"
-            placeholder="Type new title"
-            onChange={(e) => setTitle(e.target.value)}
-            value={title ? title : titleRef.current}
-          />
-        </Box>
+          <Box className="sidebar-block">
+            <Typography className="sidebar-block-title">Tags</Typography>
+            <Tags
+              style={{ width: "5vw" }}
+              tags={tags ? tags : tagsRef.current}
+              setTags={setTags}
+              isEditingTag={isEditingTag}
+              setIsEditingTag={setIsEditingTag}
+            />
+          </Box>
 
-        <Box className="sidebar-block">
-          <Typography className="sidebar-block-title">Tags</Typography>
-          <Tags
-            style={{ width: "5vw" }}
-            tags={tags ? tags : tagsRef.current}
-            setTags={setTags}
-            isEditingTag={isEditingTag}
-            setIsEditingTag={setIsEditingTag}
-          />
-        </Box>
-        <Box className="sidebar-block">
+          <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Legend</Typography>
           <Box className="legend-title-container sidebar-block-content">
             <Typography>Title: </Typography>
@@ -215,43 +261,26 @@ function MapEditSideBar() {
           </Box>
         </Box>
         <Box className="sidebar-block">
+          { renderSelectColor() }
+        </Box>
+        <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Map Data</Typography>
           <Button
             disabled={!mapInfo.canUndo()}
             onClick={handleUndo}
             variant="text"
           >
-            <UndoIcon />
+            <UndoIcon/>
           </Button>
           <Button
             disabled={!mapInfo.canRedo()}
             onClick={handleRedo}
             variant="text"
           >
-            <RedoIcon />
+            <RedoIcon/>
           </Button>
           <Box className="sidebar-block-content data-block"></Box>
-          {/* {
-            mapInfo?.currentMap?.mapType !== "CHOROPLETH" ?
-              <CompactPicker color={selectedColor} onChange={handleColorChange}/> :
-              null
-          } */}
-          {mapInfo.currentMapEditType !== "PINMAP" ? (
-            <Stack spacing={1} style={{ marginTop: `10px` }}>
-              {mapInfo?.currentMap?.mapTypeData?.data
-                ?.sort((a, b) => a.regionName.localeCompare(b.regionName))
-                .map((props, index) => (
-                  <Chip
-                    key={index}
-                    label={`${props.regionName}: ${props.value}`}
-                    style={{ backgroundColor: `#dfe9eb`, width: `50%` }}
-                    onDelete={() => {
-                      mapInfo?.removeDataTransaction(props.regionName);
-                    }}
-                  />
-                ))}
-            </Stack>
-          ) : null}
+          { renderData() }
         </Box>
       </Toolbar>
     </Sidebar>
