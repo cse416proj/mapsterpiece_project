@@ -337,6 +337,14 @@ function MapScreen() {
     }
   }, [mapInfo?.isAddingDataByTransaction]);
 
+  useEffect(() => {
+    if (mapInfo?.currentMapEditType === "HEATMAP") {
+      setMapContainterKey(mapContainterKey + 1);
+      setGeoJsonKey(geoJsonKey + 1);
+      setInitialLoad(true);
+    }
+  }, [mapInfo?.isEditingDataByTransaction]);
+
   if (!mapInfo) {
     return null;
   }
@@ -449,11 +457,13 @@ function MapScreen() {
 
     // update existing data or add data to region
     if (indexElementTobeChanged >= 0) {
+      const oldDataObj = mapTypeDataRef.current.data[indexElementTobeChanged];
       mapTypeDataRef.current.data[indexElementTobeChanged] = newDataObj;
       mapTypeDataRef.current.max = Math.max(mapTypeDataRef.current.max, value);
       if (mapType === "HEATMAP") {
         heatMapLayer.setData(mapTypeDataRef.current);
       }
+      mapInfo.changeDataTransaction(indexElementTobeChanged, oldDataObj, newDataObj)
     } else {
       if (mapType === "HEATMAP") {
         heatMapLayer.addData(newDataObj);
@@ -465,7 +475,10 @@ function MapScreen() {
       setGeoJsonKey(geoJsonKey + 1);
       setInitialLoad(true);
     }
-    mapInfo.addDataTransaction(newDataObj, indexElementTobeChanged);
+    
+    if (indexElementTobeChanged < 0) {
+      mapInfo.addDataTransaction(newDataObj, indexElementTobeChanged);
+    }
     setIndexElementTobeChanged(-1);
   };
 

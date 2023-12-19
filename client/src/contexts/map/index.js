@@ -7,6 +7,7 @@ import GlobalStoreContext from "../store";
 import jsTPS from "../../common/jsTPS";
 import AddData_Transaction from "../../transactions/AddData_Transaction";
 import RemoveData_Transaction from "../../transactions/RemoveData_Transaction";
+import EditData_Transaction from "../../transactions/EditData_Transaction";
 
 const MapContext = createContext({});
 
@@ -28,6 +29,7 @@ export function MapContextProvider({ children }) {
     currentMapEditType: "REGULAR",
     colorPickerChanged: false,
     isAddingDataByTransaction: false,
+    isEditingDataByTransaction: false,
     // download: false,
     // downloadFormat: ''
   });
@@ -51,6 +53,7 @@ export function MapContextProvider({ children }) {
     SET_ERROR_MSG: "SET_ERROR_MSG",
     SET_CURRENT_MAP_EDIT_TYPE: "SET_CURRENT_MAP_EDIT_TYPE",
     SET_IS_ADDING_DATA_BY_TRANSACTION: "SET_IS_ADDING_DATA_BY_TRANSACTION",
+    SET_IS_EDITING_DATA_BY_TRANSACTION: "SET_IS_EDITING_DATA_BY_TRANSACTION",
     // SET_DOWNLOAD_FORMAT: 'SET_DOWNLOAD_FORMAT',
     // CANCEL_DOWNLOAD: 'CANCEL_DOWNLOAD',
   };
@@ -111,6 +114,11 @@ export function MapContextProvider({ children }) {
           ...prevMapInfo,
           isAddingDataByTransaction: payload,
         }));
+      case MapActionType.SET_IS_EDITING_DATA_BY_TRANSACTION:
+        return setMapInfo((prevMapInfo) => ({
+          ...prevMapInfo,
+          isEditingDataByTransaction: payload,
+        }));
       default:
         return mapInfo;
     }
@@ -134,6 +142,15 @@ export function MapContextProvider({ children }) {
     mapReducer({
       type: MapActionType.SET_IS_ADDING_DATA_BY_TRANSACTION,
       payload: isAddingDataByTransaction,
+    });
+  };
+
+  mapInfo.setIsEditingDataByTransaction = function (
+    isEditingDataByTransaction
+  ) {
+    mapReducer({
+      type: MapActionType.SET_IS_EDITING_DATA_BY_TRANSACTION,
+      payload: isEditingDataByTransaction,
     });
   };
 
@@ -416,6 +433,18 @@ export function MapContextProvider({ children }) {
     tps.addTransaction(transaction);
   };
 
+  mapInfo.changeDataTransaction = (
+    indexElementTobeChanged, oldDataObj, newDataObj
+  ) => {
+    let transaction = new EditData_Transaction(
+      mapInfo,
+      indexElementTobeChanged,
+      oldDataObj,
+      newDataObj
+    );
+    tps.addTransaction(transaction);
+  };
+
   mapInfo.canUndo = function () {
     return tps.hasTransactionToUndo();
   };
@@ -447,10 +476,7 @@ export function MapContextProvider({ children }) {
       let originalMapTypeData = oldMap.mapTypeData
         ? oldMap.mapTypeData
         : { max: 0, data: [] };
-      if (indexElementTobeChanged >= 0) {
-        originalMapTypeData.data[indexElementTobeChanged] =
-          mapDataIndividualObj;
-      } else {
+      if (indexElementTobeChanged < 0) {
         originalMapTypeData.data.push(mapDataIndividualObj);
       }
 
@@ -471,6 +497,24 @@ export function MapContextProvider({ children }) {
           : "Error updating map type data."
       );
     }
+  };
+
+  // for editing exising mapType data
+  mapInfo.changeMapTypeData = function (
+    indexElementTobeChanged,
+    mapDataIndividualObj
+  ) {
+    const oldMap = mapInfo.currentMap;
+    const originalMapTypeData = oldMap.mapTypeData;
+    originalMapTypeData.data[indexElementTobeChanged] = mapDataIndividualObj;
+    originalMapTypeData.max = Math.max(
+      ...originalMapTypeData.data.map((data) => data.value)
+    );
+    oldMap.mapTypeData = originalMapTypeData;
+    setMapInfo((prevMapInfo) => ({
+      ...prevMapInfo,
+      currentMap: oldMap,
+    }));
   };
 
   mapInfo.updateBubbleMapColor = function (color) {
