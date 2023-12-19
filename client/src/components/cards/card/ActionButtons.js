@@ -43,14 +43,12 @@ export default function ActionButtons({ type, cardId, currentUserName, comments,
   };
 
   const closeMenu = (event) => {
-    event.stopPropagation();
-    event.preventDefault();
+    event?.stopPropagation();
+    event?.preventDefault();
     setAnchorEl(null);
   };
 
   const handleDelete = (event) => {
-    event.stopPropagation();
-    event.preventDefault();
     closeMenu();
     deleteHandler(event);
   };

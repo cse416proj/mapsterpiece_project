@@ -1,7 +1,7 @@
 import { Box, FormControl, Select, MenuItem, FormLabel, InputLabel, RadioGroup, Radio, FormControlLabel, FormHelperText, Typography } from '@mui/material';
 
 export default function SelectMapType({ isLoading, fileContent, mapType, setMapType, missingMapType, tags, setTags }) {    
-    const mapTypes = ['PINMAP', 'HEATMAP', 'CHOROPLETH', 'DOT_DISTRIBUTION', 'GRADUATED_SYMBOL'];
+    const mapTypes = ['PINMAP', 'HEATMAP', 'CHOROPLETH', 'DOT_DISTRIBUTION', 'GRADUATED_SYMBOL', 'REGULAR'];
 
     // save map type & add new tag based on type
     function handleMapTypeChange(event) {
@@ -20,7 +20,8 @@ export default function SelectMapType({ isLoading, fileContent, mapType, setMapT
             'HEATMAP': 'Heat Map',
             'CHOROPLETH': 'Choropleth Map',
             'DOT_DISTRIBUTION': 'Dot Distribution Map',
-            'GRADUATED_SYMBOL': 'Graduated Symbol Map'
+            'GRADUATED_SYMBOL': 'Graduated Symbol Map',
+            'REGULAR': 'Regular Map'
         }
         return dict[type];
     }
@@ -50,6 +51,7 @@ export default function SelectMapType({ isLoading, fileContent, mapType, setMapT
                     <MenuItem value={"CHOROPLETH"}>Choropleth Map</MenuItem>
                     <MenuItem value={"DOT_DISTRIBUTION"}>Dot Distribution Map</MenuItem>
                     <MenuItem value={"GRADUATED_SYMBOL"}>Graduated Symbol Map</MenuItem>
+                    <MenuItem value={"REGULAR"}>Regular Map</MenuItem>
                 </Select>
                 <FormHelperText>{!mapType && missingMapType && 'Please select map type.'}</FormHelperText>
             </FormControl>
