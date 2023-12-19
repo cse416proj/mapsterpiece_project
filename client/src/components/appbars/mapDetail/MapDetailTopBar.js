@@ -63,15 +63,15 @@ export default function MapDetailTopBar() {
   useEffect(() => {
     setHasUnpublished(false);
     if(mapInfo?.currentMap?.likedUsers && mapInfo?.currentMap?.dislikedUsers){
-      setLikes(mapInfo.currentMap.likedUsers);
-      setDislikes(mapInfo.currentMap.dislikedUsers);
+      setLikes(mapInfo.currentMap?.likedUsers);
+      setDislikes(mapInfo.currentMap?.dislikedUsers);
     }
   }, []);
 
   useEffect(() => {
     if (mapInfo?.currentMap) {
-      setTitle(mapInfo.currentMap.title);
-      setTags(mapInfo.currentMap.tags);
+      setTitle(mapInfo.currentMap?.title);
+      setTags(mapInfo.currentMap?.tags);
       setHasUnpublished(!mapInfo?.currentMap?.isPublished ? true : false);
     }
   }, [mapInfo?.currentMap]);

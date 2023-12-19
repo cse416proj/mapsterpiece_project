@@ -356,8 +356,9 @@ function MapScreen() {
   // set current heatmap data
   useEffect(() => {
     console.log('useEffect mapInfo?.currentMap.mapTypeData');
-
-    mapTypeDataRef.current = mapInfo?.currentMap?.mapTypeData;
+    if(mapInfo?.currentMap?.mapTypeData){
+      mapTypeDataRef.current = mapInfo?.currentMap?.mapTypeData;
+    }
   }, [mapInfo?.currentMap?.mapTypeData]);
 
   useEffect(() => {

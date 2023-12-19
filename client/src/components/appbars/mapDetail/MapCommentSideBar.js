@@ -25,7 +25,7 @@ export default function MapCommentSideBar({ toggleCommentBox }){
     }
 
     const handleSubmitComment = () => {
-        const mapId = mapInfo.currentMap._id;
+        const mapId = mapInfo.currentMap?._id;
 
         if (mapId && auth?.user?.userName) {
             const trimmedComment = commentInput.replace(/(\s|\r\n|\n|\r)/gm, '');

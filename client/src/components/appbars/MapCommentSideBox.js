@@ -57,7 +57,7 @@ export default function MapCommentSideBox() {
   };
   
   const handleSubmitComment = () => {
-    const mapId = mapInfo.currentMap._id;
+    const mapId = mapInfo.currentMap?._id;
     if (mapId && auth?.user?.userName && commentInput !== "") {
       mapInfo.createMapComment(mapId, auth?.user?.userName, commentInput);
       setInput("");
