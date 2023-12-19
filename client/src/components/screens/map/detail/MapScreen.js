@@ -9,18 +9,17 @@ import {
   GeoJSON,
   ZoomControl,
   LayersControl,
-  TileLayer,
-  CircleMarker,
-  Marker,
-  Popup,
+  TileLayer
 } from "react-leaflet";
 import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
 import tinycolor from "tinycolor2";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import { Typography, Box } from "@mui/material";
+
+import {
+  DataInfoControl, LegendControl, PrintControl,
+  PinMap, DotDistributionMap, GraduatedSymbolMap
+} from "../index";
 
 import { Modals, DataEntryModal, PinDataEntryModal } from "../../../index";
-import { DataInfoControl, LegendControl, PrintControl } from "../index";
 import MapContext from "../../../../contexts/map";
 
 function MapScreen() {
@@ -52,7 +51,7 @@ function MapScreen() {
   const [indexElementTobeChanged, setIndexElementTobeChanged] = useState(-1);
   const [geoJsonKey, setGeoJsonKey] = useState(1);
   const [mapContainterKey, setMapContainterKey] = useState(1);
-  const [bubbleMapKey, setBubbleMapKey] = useState(1);
+  const [dataMapKey, setDataMapKey] = useState(1);
 
   // to be replaced with currentMap.property, currentMap.mapTypeData.max, currentMap.mapTypeData.color later
   // const [currProp, setCurrProp] = useState('gdp_md');
@@ -60,7 +59,6 @@ function MapScreen() {
   const [currMaxData, setCurrMaxData] = useState(
     mapInfo?.currentMap?.mapTypeData?.max
   );
-  const [currColor, setCurrColor] = useState("#86C9B5");
   const [latLng, setLatLng] = useState(null);
   const [pinMapTypeData, setPinMapTypeData] = useState({
     property1: "",
@@ -98,9 +96,9 @@ function MapScreen() {
   // color region
   useEffect(() => {
     colorRef.current = mapInfo?.currentRegionColor;
-    setBubbleMapKey(bubbleMapKey + 1);
-    mapInfo?.updateBubbleMapColor(colorRef.current);
-  }, [mapInfo?.currentRegionColor]);
+    setDataMapKey(dataMapKey + 1);
+    mapInfo?.updateDataColor(colorRef.current);
+  }, [mapInfo?.dataColor]);
 
   // update map when currentMap changes
   useEffect(() => {
@@ -112,7 +110,8 @@ function MapScreen() {
     const maxLight = 0.65;
 
     // calculate 4 steps away from current color
-    const colorObj = tinycolor("#86C9B5");
+    const colorObj = tinycolor(mapInfo?.dataColor);
+    // const colorObj = tinycolor("#86C9B5");
     const palette = new Array(5);
     const steps = 4;
     const calcLight = (i) => (i * (maxLight - minLight)) / steps + minLight;
@@ -199,8 +198,8 @@ function MapScreen() {
     // CHOROPLETH MAP HAS TO FILL COLORS BY INTENSITY
     if(mapType === "CHOROPLETH") {
       let i = -1;
-      for (i = 0; i < map.mapTypeData?.data?.length; i++) {
-        const currData = map.mapTypeData?.data[i];
+      for (i = 0; i < map?.mapTypeData?.data?.length; i++) {
+        const currData = map?.mapTypeData?.data[i];
         if (currData.regionName === getRegionName(feature)) {
           break;
         }
@@ -211,8 +210,8 @@ function MapScreen() {
       return {
         // fillColor: (i > -1) ? getColor(feature.properties[currProp]) : 'white',
         fillColor:
-          i > -1 && map.mapTypeData?.data[i]
-            ? getColor(map.mapTypeData?.data[i].value)
+          i > -1 && map?.mapTypeData?.data[i]
+            ? getColor(map?.mapTypeData?.data[i].value)
             : "white",
         fillOpacity: 0.7,
         color: "white",
@@ -224,6 +223,8 @@ function MapScreen() {
 
     return defaultRegionStyle;
   };
+
+  console.log(mapInfo?.currentMap);
 
   // update map region names when map changes
   useEffect(() => {
@@ -401,59 +402,61 @@ function MapScreen() {
     }
   };
 
-    // edit data value for region on click
-    const editValue = (value) => {
-      const mini = 10;
-      const factor = 10;
-      const radius = Math.floor(Math.log(value) * factor) + mini;
+  // edit data value for region on click
+  const editValue = (value) => {
+    const mini = 10;
+    const factor = 10;
+    const radius = Math.floor(Math.log(value) * factor) + mini;
 
-      let randomPoints = [];
-      let points = turf.randomPoint(value, { bbox: curBbox });
-      let ptsWithin = turf.pointsWithinPolygon(points, curFeature);
+    let randomPoints = [];
+    let points = turf.randomPoint(value, { bbox: curBbox });
+    let ptsWithin = turf.pointsWithinPolygon(points, curFeature);
+    randomPoints = randomPoints.concat(ptsWithin.features);
+
+    while (randomPoints.length < value) {
+      points = turf.randomPoint(value - randomPoints.length, { bbox: curBbox });
+      ptsWithin = turf.pointsWithinPolygon(points, curFeature);
       randomPoints = randomPoints.concat(ptsWithin.features);
-
-      while (randomPoints.length < value) {
-        points = turf.randomPoint(value - randomPoints.length, { bbox: curBbox });
-        ptsWithin = turf.pointsWithinPolygon(points, curFeature);
-        randomPoints = randomPoints.concat(ptsWithin.features);
-      }
-      
-      const newDataObj = {
-        lat: selectedRegionProps.position.lat,
-        lng: selectedRegionProps.position.lng,
-        value: value,
-        regionName: selectedRegionProps.regionName,
-        radius: radius,
-        randomDotsForRegion: randomPoints,
-        properties: []
-      };
-  
-      setCurrMaxData(Math.max(currMaxData, value));
-      
-      // update existing data or add data to region
-      if (indexElementTobeChanged >= 0) {
-        mapTypeDataRef.current.data[indexElementTobeChanged] = newDataObj;
-        mapTypeDataRef.current.max = Math.max(
-          mapTypeDataRef.current.max,
-          value
-        );
-        if (mapType === "HEATMAP") {
-          heatMapLayer.setData(mapTypeDataRef.current);
-        }
-      } else {
-        if (mapType === "HEATMAP") {
-          heatMapLayer.addData(newDataObj);
-        }
-      }
-      
-      if (mapType === "HEATMAP") {
-        setMapContainterKey(mapContainterKey + 1);
-        setGeoJsonKey(geoJsonKey + 1);
-        setInitialLoad(true);
-      }
-      mapInfo.updateMapTypeData(newDataObj, indexElementTobeChanged);
-      setIndexElementTobeChanged(-1);
+    }
+    
+    const newDataObj = {
+      lat: selectedRegionProps.position.lat,
+      lng: selectedRegionProps.position.lng,
+      value: value,
+      regionName: selectedRegionProps.regionName,
+      radius: radius,
+      randomDotsForRegion: randomPoints,
+      properties: []
     };
+
+    setCurrMaxData(Math.max(currMaxData, value));
+
+    const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
+    
+    // update existing data or add data to region
+    if (indexElementTobeChanged >= 0) {
+      mapTypeDataRef.current.data[indexElementTobeChanged] = newDataObj;
+      mapTypeDataRef.current.max = Math.max(
+        mapTypeDataRef.current.max,
+        value
+      );
+      if (mapType === "HEATMAP") {
+        heatMapLayer.setData(mapTypeDataRef.current);
+      }
+    } else {
+      if (mapType === "HEATMAP") {
+        heatMapLayer.addData(newDataObj);
+      }
+    }
+    
+    if (mapType === "HEATMAP") {
+      setMapContainterKey(mapContainterKey + 1);
+      setGeoJsonKey(geoJsonKey + 1);
+      setInitialLoad(true);
+    }
+    mapInfo.updateMapTypeData(newDataObj, indexElementTobeChanged);
+    setIndexElementTobeChanged(-1);
+  };
 
   // add pin for region on cilck
   const createPin = (newProperties) => {
@@ -526,7 +529,18 @@ function MapScreen() {
     });
   };
 
-  const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
+  function renderMapLayer(mapType){
+    if(mapType === 'PINMAP'){
+      return <PinMap data={mapTypeDataRef?.current?.data}/>
+    }
+    else if(mapType === 'GRADUATED_SYMBOL'){
+      return <GraduatedSymbolMap dataMapKey={dataMapKey} data={mapTypeDataRef?.current?.data} color={mapInfo?.dataColor}/>
+    }
+    else if(mapType === 'DOT_DISTRIBUTION'){
+      return <DotDistributionMap dataMapKey={dataMapKey} data={mapTypeDataRef?.current?.data} color={mapInfo?.dataColor}/>
+    }
+    return null;
+  }
 
   const mapContent = (
     <>
@@ -574,7 +588,7 @@ function MapScreen() {
         />
 
         <DataInfoControl
-          type={mapType}
+          type={(editMode) ? mapInfo?.currentMapEditType : map?.mapType}
           // type={map?.mapType ? map?.mapType : mapInfo?.currentMapEditType}
           property={currProp}
           regionName={getRegionName(currLayer?.feature)}
@@ -584,11 +598,12 @@ function MapScreen() {
 
         <LegendControl
           legendTitle={mapInfo?.currentMap?.mapTypeData?.legendTitle}
-          type={mapType}
+          type={(editMode) ? mapInfo?.currentMapEditType : map?.mapType}
           // type={map?.mapType ? map?.mapType : mapInfo?.currentMapEditType}
           max={
             currMaxData ? currMaxData : mapInfo?.currentMap?.mapTypeData?.max
           }
+          color={mapInfo?.dataColor}
           getColor={getColor}
         />
 
@@ -599,89 +614,9 @@ function MapScreen() {
           onEachFeature={onEachFeature}
           ref={geoJsonRef}
         />
-        {mapType === "GRADUATED_SYMBOL" && (
-          <div key={bubbleMapKey}>
-            {mapTypeDataRef?.current?.data?.map((prop) => {
-              return (
-                <CircleMarker
-                  center={[prop.lat, prop.lng]}
-                  radius={prop.radius}
-                  fillOpacity={0.5}
-                  stroke={false}
-                  eventHandlers={{
-                    mouseover: (e) => {
-                      const layer = e.sourceTarget;
-                      layer.bringToBack();
-                    },
-                  }}
-                  color="red"
-                />
-              );
-            })}
-          </div>
-        )}
-        {mapType === "PINMAP" && (
-          <>
-            {mapTypeDataRef?.current?.data?.map((prop) => {
-              const icon = L.icon({
-                iconUrl: markerIcon,
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-              });
-              return (
-                <Marker
-                  position={[prop.lat, prop.lng]}
-                  title={prop?.regionName}
-                  alt={`marker for ${prop?.regionName}`}
-                  icon={icon}
-                >
-                  <Popup>
-                    {prop.properties.length === 0 ? (
-                      `No properties has added for ${prop?.regionName} yet.`
-                    ) : (
-                      <Box className="flex-column">
-                        {prop.properties.map((property) => {
-                          return (
-                            <Typography variant="p">
-                              {property.property}: {property.value}
-                            </Typography>
-                          );
-                        })}
-                      </Box>
-                    )}
-                  </Popup>
-                </Marker>
-              );
-            })}
-          </>
-        )}
-        {mapType === "DOT_DISTRIBUTION" && (
-          <>
-            {mapTypeDataRef?.current?.data?.map((prop) => {
-              return (
-                <div>
-                  {prop.randomDotsForRegion.map((dot) => {
-                    return (
-                      <CircleMarker
-                        center={[dot.geometry.coordinates[1], dot.geometry.coordinates[0]]}
-                        radius={3}
-                        fillOpacity={1}
-                        stroke={false}
-                        eventHandlers={{
-                          mouseover: (e) => {
-                            const layer = e.sourceTarget;
-                            layer.bringToBack();
-                          },
-                        }}
-                        color={'green'}
-                      />
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </>
-        )}
+        {
+          renderMapLayer((editMode) ? mapInfo?.currentMapEditType : map?.mapType)
+        }
       </MapContainer>
     </>
   );

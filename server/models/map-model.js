@@ -10,8 +10,8 @@ const MapSchema = new Schema(
     mapType: { type: String, required: true },
     mapContent: [{ type: Object, required: true }],
     mapTypeData: {
-      bubbleMapColor: { type: String },
       legendTitle: { type: String, required: true },
+      dataColor: { type: String },
       max: { type: Number, required: true },
       data: [
         {

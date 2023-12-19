@@ -9,8 +9,6 @@ export default function DuplicateMapModal() {
     const { store } = useContext(GlobalStoreContext);
     const { mapInfo } = useContext(MapContext);
 
-    console.log(store.mapMarked);
-
     const [title, setTitle] = useState('Map Copy');
     const [errorMsg, setErrorMsg] = useState(null);
 
@@ -35,7 +33,6 @@ export default function DuplicateMapModal() {
     function handleDuplicateMap(event) {
         event.stopPropagation();
         event.preventDefault();
-        console.log("real duplicate map.");
 
         const trimmedTitle = title.replace(/(\s|\r\n|\n|\r)/gm, '');
         if(trimmedTitle.length <= 0){

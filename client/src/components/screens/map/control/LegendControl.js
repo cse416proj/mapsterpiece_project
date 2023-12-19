@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 
-export default function LegendInfoControl({ legendTitle, type, max, getColor }) {
+export default function LegendControl({ legendTitle, type, max, color, getColor }) {
     if(!type || type === 'REGULAR'){
         return null;
     }
@@ -89,7 +89,7 @@ export default function LegendInfoControl({ legendTitle, type, max, getColor }) 
                             const radius = getRadius(index) * 2;
                             return(
                                 <Box key={index} className='flex-row' id='legend-row'>
-                                    <Box id='legend-color-box' style={{ borderRadius: '100%', backgroundColor: 'red', width: `${radius}px`, height: `${radius}px` }}></Box>
+                                    <Box id='legend-color-box' style={{ borderRadius: '100%', backgroundColor: color, width: `${radius}px`, height: `${radius}px` }}></Box>
                                     {
                                         (index < levelArray.length - 1)?
                                             (
@@ -132,6 +132,17 @@ export default function LegendInfoControl({ legendTitle, type, max, getColor }) 
                         })
                     }
                 </>
+            )
+        }
+        else if(type === 'DOT_DISTRIBUTION'){
+            if(!max){
+                return <Typography>No data has been provided.</Typography>;
+            }
+            return(
+                <Box className='flex-row' id='legend-row' style={{ width: '70%' }}>
+                    <Box id='legend-dot' style={{ backgroundColor: color }}></Box>
+                    <Typography>Dot</Typography>
+                </Box>
             )
         }
         return;

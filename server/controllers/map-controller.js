@@ -72,7 +72,7 @@ createMap = async (req, res) => {
     mapType: mapType,
     mapContent: featuresFiltered,
     mapTypeData: {
-      bubbleMapColor: '#FF0000',
+      dataColor: '#5bab93',
       legendTitle: 'Default legend title',
       max: 0,
       data: []

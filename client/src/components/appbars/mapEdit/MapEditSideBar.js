@@ -28,7 +28,9 @@ function MapEditSideBar() {
   const [tags, setTags] = useState(mapInfo?.currentMap?.tags);
   const [editActive, setEditActive] = useState(false);
 
-  const [selectedColor, setSelectedColor] = useState("#ffffff");
+  const [selectedColor, setSelectedColor] = useState((mapInfo?.currentMap?.mapTypeData?.dataColor) ? mapInfo?.currentMap?.mapTypeData?.dataColor : "#5bab93");
+  const [selectColorActive, setSelectColorActive] = useState(false);
+
   // const [mapType, setMapType] = useState(mapInfo?.currentMap?.mapType);
   const [isEditingTag, setIsEditingTag] = useState(false);
   const [legendTitle, setLegendTitle] = useState(
@@ -37,11 +39,9 @@ function MapEditSideBar() {
 
   const titleRef = useRef();
   const tagsRef = useRef();
-  const mapTypeRef = useRef();
   const legendTitleRef = useRef();
   titleRef.current = mapInfo?.currentMap?.title;
   tagsRef.current = mapInfo?.currentMap?.tags;
-  // mapTypeRef.current = mapInfo?.currentMap?.mapType;
   legendTitleRef.current = mapInfo?.currentMap?.mapTypeData?.legendTitle;
 
   useEffect(() => {
@@ -61,8 +61,10 @@ function MapEditSideBar() {
   };
 
   const handleColorChange = (color) => {
-    mapInfo?.setCurrentRegionColor(color.hex);
+    console.log(`color change to: ${color.hex}`);
+    mapInfo?.setDataColor(color.hex);
     setSelectedColor(color.hex);
+    setSelectColorActive(false);
   };
 
   function getText(type){
@@ -91,7 +93,6 @@ function MapEditSideBar() {
     // update tag
     const type = event.target.value;
     mapInfo?.setCurrentMapEditType(type);
-    // setMapType(type);
 
     // update tag for map type
     const mapTypeList = [
@@ -115,8 +116,62 @@ function MapEditSideBar() {
     setEditActive(false);
   }
 
-  // console.log(mapInfo.currentMap);
-  // console.log(mapInfo.currentMapEditType);
+  function getSelectColorPrompt(mapType){
+    if(mapType === 'DOT_DISTRIBUTION'){
+      return 'Select Dot Color';
+    }
+    else if(mapType === 'GRADUATED_SYMBOL'){
+      return 'Select Graduated Symbol Color';
+    }
+    else if(mapType === 'CHOROPLETH'){
+      return 'Select Choropleth Shade Color';
+    }
+  }
+
+  function renderSelectColor(){
+    if(mapInfo.currentMapEditType === "PINMAP" || mapInfo.currentMapEditType === "HEATMAP"){
+      return null;
+    }
+    else{
+      return(
+        <Box className='flex-row' id='color-selector'>
+          <Typography>{getSelectColorPrompt(mapInfo.currentMapEditType)}</Typography>
+          {
+            (selectColorActive) ?
+              <CompactPicker color={selectedColor} onChange={handleColorChange}/>
+              :
+              <Box
+                id='color-box'
+                style={{ backgroundColor: selectedColor }}
+                onClick={() => setSelectColorActive(true)}
+              />
+          }
+        </Box>
+      )
+    }
+  }
+
+  function renderData(){
+    if(mapInfo.currentMapEditType === "PINMAP"){
+      return null;
+    }
+    else{
+      return (
+        <Stack spacing={1} style={{ marginTop: `10px` }}>
+          {mapInfo?.currentMap?.mapTypeData?.data?.map((props, index) => (
+            <Chip
+              key={index}
+              label={`${props.regionName}: ${props.value}`}
+              style={{backgroundColor: `#dfe9eb`, width: `50%`}}
+              onDelete={() => {
+                mapInfo?.deleteMapTypeData(props.regionName);
+              }}
+            />
+          ))}
+        </Stack>
+      )
+    }
+  }
 
   return (
     <Sidebar style={sideBarStyle}>
@@ -193,29 +248,12 @@ function MapEditSideBar() {
           </Box>
         </Box>
         <Box className="sidebar-block">
+          { renderSelectColor() }
+        </Box>
+        <Box className="sidebar-block">
           <Typography className="sidebar-block-title">Map Data</Typography>
           <Box className="sidebar-block-content data-block"></Box>
-          {/* {
-            mapInfo?.currentMap?.mapType !== "CHOROPLETH" ?
-              <CompactPicker color={selectedColor} onChange={handleColorChange}/> :
-              null
-          } */}
-          {
-            mapInfo.currentMapEditType !== "PINMAP" ? (
-              <Stack spacing={1} style={{marginTop: `10px`}}>
-                {mapInfo?.currentMap?.mapTypeData?.data?.map((props, index) => (
-                  <Chip
-                    key={index}
-                    label={`${props.regionName}: ${props.value}`}
-                    style={{backgroundColor: `#dfe9eb`, width: `50%`}}
-                    onDelete={() => {
-                      mapInfo?.deleteMapTypeData(props.regionName);
-                    }}
-                  />
-                ))}
-              </Stack>
-            ) : null
-          }
+          { renderData() }
         </Box>
       </Toolbar>
     </Sidebar>
