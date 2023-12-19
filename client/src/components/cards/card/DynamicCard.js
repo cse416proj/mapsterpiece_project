@@ -22,6 +22,7 @@ export default function DynamicCard({ userData, mapData, postData }) {
   function handleUserCardClick(event) {
     event.stopPropagation();
     event.preventDefault();
+    mapInfo.clearInfo();
     userInfo.setCurrentUser(userData);
     navigate(`/profile/${userData._id}`);
   }

@@ -59,6 +59,7 @@ export function MapContextProvider({ children }) {
         return setMapInfo((prevMapInfo) => ({
           ...prevMapInfo,
           currentMap: payload,
+          dataColor: null,
           errorMessage: null
         }));
       case MapActionType.SET_ALL_MAPS_FROM_USER:

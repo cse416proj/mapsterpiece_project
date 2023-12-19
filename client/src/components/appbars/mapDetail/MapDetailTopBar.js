@@ -101,15 +101,18 @@ export default function MapDetailTopBar() {
 
   // redirect user to view community / their own profile
   function handleCommunity() {
+    mapInfo.clearInfo();
     navigate("/community");
   }
 
   function handleMyMaps() {
+    mapInfo.clearInfo();
     userInfo.setCurrentUser(auth.user);
     navigate(`/profile/${auth.user._id}`);
   }
 
   function handleCommunity(){
+    mapInfo.clearInfo();
     navigate('/community');
   }
 
@@ -139,6 +142,7 @@ export default function MapDetailTopBar() {
   // update likedUsers array when user click on like
   function handleLikeMap() {
     if (!auth.user) {
+      mapInfo.clearInfo();
       navigate("/login");
       return;
     }
@@ -164,6 +168,7 @@ export default function MapDetailTopBar() {
   // update dislikedUsers array when user click on like
   function handleDislikeMap() {
     if (!auth.user) {
+      mapInfo.clearInfo();
       navigate("/login");
       return;
     }

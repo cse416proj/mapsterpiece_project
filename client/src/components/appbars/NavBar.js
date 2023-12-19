@@ -56,6 +56,7 @@ function NavBar(){
         event.stopPropagation();
         event.preventDefault();
         closeMenu();
+        mapInfo.clearInfo();
         userInfo.setCurrentUser(auth.user);
         navigate(`/profile/${auth.user._id}`);
     }

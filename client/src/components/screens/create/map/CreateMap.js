@@ -116,6 +116,7 @@ function CreateMap(){
     useEffect(() => {
         if(createSuccess && mapInfo?.currentMap){
             setTimeout(() => {
+                mapInfo.clearInfo();
                 navigate(`/map-edit/${mapInfo?.currentMap?._id}`);
                 store.clearCreateSuccess();
             }, 2250);

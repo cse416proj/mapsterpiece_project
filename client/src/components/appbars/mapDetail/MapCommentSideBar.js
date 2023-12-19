@@ -47,10 +47,12 @@ export default function MapCommentSideBar({ toggleCommentBox }){
     }
 
     const handleSignUp = () => {
+        mapInfo.clearInfo();
         navigate('/register');
     }
 
     const handleSignIn = () => {
+        mapInfo.clearInfo();
         navigate('/login');
     }
 

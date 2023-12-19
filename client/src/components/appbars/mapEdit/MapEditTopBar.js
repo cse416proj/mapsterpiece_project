@@ -37,6 +37,7 @@ export default function MapEditTopBar() {
     }, [mapInfo?.currentMap]);
 
     function handleMyMaps(){
+        mapInfo.clearInfo();
         userInfo.setCurrentUser(auth.user);
         navigate(`/profile/${auth.user._id}`);
     }
