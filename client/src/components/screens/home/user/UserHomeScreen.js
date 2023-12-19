@@ -46,6 +46,8 @@ function UserHomeScreen() {
         setLoadingPosts(true);
         postInfo.getPostsByPostIds(auth.user.posts);
       }
+
+      mapInfo.clearTrans();
     }
   }, [auth?.user]);
 

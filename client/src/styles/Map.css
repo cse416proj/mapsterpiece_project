@@ -308,7 +308,7 @@
 #data-entry-container{
     height: 25vh;
     width: 90%;
-    justify-content: space-between;
+    /* justify-content: space-between; */
 }
 
 #data-entry{
@@ -354,12 +354,26 @@
     justify-content: space-around;
 }
 
-#edit-map-type{
+#edit-property-type, #edit-map-type{
     color: var(--secondary-color);
+}
+
+#edit-map-type:hover, #edit-property-type:hover{
+    cursor: pointer;
+    color: var(--secondary-color-hover);
+}
+
+#edit-map-type{
     margin-left: 2.5vw;
 }
 
-#edit-map-type:hover{
-    cursor: pointer;
-    color: var(--secondary-color-hover);
+#edit-property-type{
+    margin-left: 1vw;
+}
+
+.pinSidebarEntry {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
