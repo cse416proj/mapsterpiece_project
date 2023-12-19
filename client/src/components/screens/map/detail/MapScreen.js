@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
@@ -25,7 +25,7 @@ import MapContext from "../../../../contexts/map";
 
 function MapScreen() {
   const location = useLocation();
-  // const { mapId } = useParams();
+  const { mapId } = useParams();
   const { mapInfo } = useContext(MapContext);
   // const { store } = useContext(GlobalStoreContext);
   // store.setCurrentView("MAP_VIEW");
@@ -100,7 +100,12 @@ function MapScreen() {
 
   // update map when currentMap changes
   useEffect(() => {
-    setMap(mapInfo.currentMap);
+    if(mapInfo?.currentMap){
+      setMap(mapInfo.currentMap);
+    }
+    else{
+      mapInfo.getMapById(mapId);
+    }
   }, [mapInfo?.currentMap]);
 
   function getPalette() {
@@ -190,7 +195,7 @@ function MapScreen() {
       return hoverRegionStyle;
     }
 
-    const mapType = editMode ? mapInfo.currentMapEditType : map?.mapType;
+    const mapType = (editMode && mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : map?.mapType;
 
     // CHOROPLETH MAP HAS TO FILL COLORS BY INTENSITY
     if (mapType === "CHOROPLETH") {
@@ -314,7 +319,7 @@ function MapScreen() {
   }, [mapInfo?.currentMap?.mapTypeData]);
 
   useEffect(() => {
-    const mapType = editMode ? mapInfo?.currentMapEditType : map?.mapType;
+    const mapType = (editMode && mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : map?.mapType;
     if (mapType === "HEATMAP" && heatMapLayer && mapTypeDataRef.current) {
       heatMapLayer.setData(mapTypeDataRef.current);
       setMapContainterKey(mapContainterKey + 1);
@@ -364,7 +369,7 @@ function MapScreen() {
   const handleFeatureClick = (event) => {
     const layer = event.sourceTarget;
     const regularMap = editMode && !dataEditModeRef.current;
-    const mapType = editMode ? mapInfo?.currentMapEditType : map?.mapType;
+    const mapType = (editMode && mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : map?.mapType;
 
     if (layer) {
       // REGULAR MAP DISPLAY
@@ -393,7 +398,7 @@ function MapScreen() {
       setCurBbox(bbox);
       setCurFeature(layer.feature);
       // update mapcontent ref
-      const index = mapContentRef.current.findIndex(
+      const index = mapContentRef.current?.findIndex(
         (region) =>
           region.properties[regionNameLevel] ===
           layer?.feature.properties[regionNameLevel]
@@ -456,7 +461,8 @@ function MapScreen() {
     };
 
     setCurrMaxData(Math.max(currMaxData, value));
-
+    const mapType = (editMode && mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : map?.mapType;
+    
     // update existing data or add data to region
     if (indexElementTobeChanged >= 0) {
       const oldDataObj = mapTypeDataRef.current.data[indexElementTobeChanged];
@@ -559,7 +565,7 @@ function MapScreen() {
     setLatLng(null);
   };
 
-  const mapType = editMode ? mapInfo?.currentMapEditType : map?.mapType;
+  console.log((editMode && mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : map?.mapType);
 
   const mapContent = (
     <>
@@ -607,7 +613,7 @@ function MapScreen() {
         />
 
         <DataInfoControl
-          type={mapType}
+          type={(editMode && mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : map?.mapType}
           // type={map?.mapType ? map?.mapType : mapInfo?.currentMapEditType}
           property={currProp}
           regionName={getRegionName(currLayer?.feature)}
@@ -617,7 +623,7 @@ function MapScreen() {
 
         <LegendControl
           legendTitle={mapInfo?.currentMap?.mapTypeData?.legendTitle}
-          type={mapType}
+          type={(editMode && mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : map?.mapType}
           // type={map?.mapType ? map?.mapType : mapInfo?.currentMapEditType}
           max={
             currMaxData ? currMaxData : mapInfo?.currentMap?.mapTypeData?.max
@@ -632,7 +638,7 @@ function MapScreen() {
           onEachFeature={onEachFeature}
           ref={geoJsonRef}
         />
-        {mapType === "GRADUATED_SYMBOL" && (
+        {((editMode && mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : map?.mapType) === "GRADUATED_SYMBOL" && (
           <div key={bubbleMapKey}>
             {mapTypeDataRef?.current?.data?.map((prop) => {
               return (
@@ -653,7 +659,7 @@ function MapScreen() {
             })}
           </div>
         )}
-        {mapType === "PINMAP" && (
+        {((editMode && mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : map?.mapType) === "PINMAP" && (
           <>
             {mapTypeDataRef?.current?.data?.map((prop) => {
               const icon = L.icon({
@@ -688,7 +694,7 @@ function MapScreen() {
             })}
           </>
         )}
-        {mapType === "DOT_DISTRIBUTION" && (
+        {((editMode && mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : map?.mapType) === "DOT_DISTRIBUTION" && (
           <>
             {mapTypeDataRef?.current?.data?.map((prop) => {
               return (
