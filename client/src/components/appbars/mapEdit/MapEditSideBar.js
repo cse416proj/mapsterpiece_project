@@ -125,9 +125,6 @@ function MapEditSideBar() {
     mapInfo.redo();
   }
 
-  // console.log(mapInfo.currentMap);
-  // console.log(mapInfo.currentMapEditType);
-
   return (
     <Sidebar style={sideBarStyle}>
       <Toolbar className="map-screen-sidebar">
