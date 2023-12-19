@@ -695,7 +695,7 @@ function MapScreen() {
             {mapTypeDataRef?.current?.data?.map((prop) => {
               return (
                 <div>
-                  {prop.randomDotsForRegion.map((dot) => {
+                  {prop.randomDotsForRegion?.map((dot) => {
                     return (
                       <CircleMarker
                         center={[

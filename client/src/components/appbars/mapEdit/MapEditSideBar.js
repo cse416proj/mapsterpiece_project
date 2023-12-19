@@ -108,7 +108,7 @@ function MapEditSideBar() {
       "DOT_DISTRIBUTION",
       "GRADUATED_SYMBOL",
       "PINMAP",
-      "REGULAR"
+      "REGULAR",
     ];
     const newtags = tags?.filter((tag) => !mapTypeList.includes(tag));
     if (newtags) {
@@ -167,19 +167,19 @@ function MapEditSideBar() {
                   <MenuItem value={"GRADUATED_SYMBOL"}>
                     Graduated Symbol Map
                   </MenuItem>
-                  <MenuItem value={"REGULAR"}>
-                    Regular Map
-                  </MenuItem>
+                  <MenuItem value={"REGULAR"}>Regular Map</MenuItem>
                 </Select>
               </FormControl>
             ) : (
               <>
                 <Typography className="sidebar-block-title">
                   {`Map Type: `}
-                  <span id='map-type-text'
-                    onClick={handleEditMapType}
-                  >
-                    {getText((mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : mapInfo.currentMap?.mapType)}
+                  <span id="map-type-text" onClick={handleEditMapType}>
+                    {getText(
+                      mapInfo.currentMapEditType
+                        ? mapInfo.currentMapEditType
+                        : mapInfo.currentMap?.mapType
+                    )}
                   </span>
                   {/* <span id="map-type-text" onClick={handleEditMapType}>
                     {getText(mapInfo.currentMapEditType)}
@@ -244,11 +244,12 @@ function MapEditSideBar() {
             <RedoIcon />
           </Button>
           <Box className="sidebar-block-content data-block"></Box>
-          {
-            mapInfo.currentMapEditType === "REGULAR" ?
-              <CompactPicker color={selectedColor} onChange={handleColorChange}/> :
-              null
-          {((mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : mapInfo.currentMap?.mapType) !== "PINMAP" ? (
+          {mapInfo.currentMapEditType === "REGULAR" ? (
+            <CompactPicker color={selectedColor} onChange={handleColorChange} />
+          ) : null}
+          {(mapInfo.currentMapEditType
+            ? mapInfo.currentMapEditType
+            : mapInfo.currentMap?.mapType) !== "PINMAP" ? (
             <Stack spacing={1} style={{ marginTop: `10px` }}>
               {mapInfo?.currentMap?.mapTypeData?.data
                 ?.sort((a, b) => a.regionName.localeCompare(b.regionName))
@@ -264,7 +265,9 @@ function MapEditSideBar() {
                 ))}
             </Stack>
           ) : null}
-          {((mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : mapInfo.currentMap?.mapType) === "PINMAP" ? (
+          {(mapInfo.currentMapEditType
+            ? mapInfo.currentMapEditType
+            : mapInfo.currentMap?.mapType) === "PINMAP" ? (
             <>
               {mapInfo?.currentMap?.mapTypeData?.data?.map((prop) => (
                 <Accordion>
