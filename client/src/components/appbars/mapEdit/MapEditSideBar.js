@@ -24,6 +24,7 @@ function MapEditSideBar() {
   const { mapInfo } = useContext(MapContext);
   const { store } = useContext(GlobalStoreContext);
 
+  const [map, setMap] = useState(mapInfo?.currentMap);
   const [title, setTitle] = useState(mapInfo?.currentMap?.title);
   const [tags, setTags] = useState(mapInfo?.currentMap?.tags);
   const [editActive, setEditActive] = useState(false);
@@ -37,9 +38,11 @@ function MapEditSideBar() {
     mapInfo?.currentMap?.mapTypeData?.legendTitle
   );
 
+  const mapRef = useRef();
   const titleRef = useRef();
   const tagsRef = useRef();
   const legendTitleRef = useRef();
+  mapRef.current = mapInfo?.currentMap;
   titleRef.current = mapInfo?.currentMap?.title;
   tagsRef.current = mapInfo?.currentMap?.tags;
   legendTitleRef.current = mapInfo?.currentMap?.mapTypeData?.legendTitle;
@@ -129,16 +132,18 @@ function MapEditSideBar() {
   }
 
   function renderSelectColor(){
-    if(mapInfo.currentMapEditType === "PINMAP" || mapInfo.currentMapEditType === "HEATMAP"){
+    const mapType = (mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : mapInfo.currentMap?.mapType;
+    
+    if(mapType === "PINMAP" || mapType === "HEATMAP"){
       return null;
     }
     else{
       return(
         <Box className='flex-row' id='color-selector'>
-          <Typography>{getSelectColorPrompt(mapInfo.currentMapEditType)}</Typography>
+          <Typography>{getSelectColorPrompt(mapType)}</Typography>
           {
             (selectColorActive) ?
-              <CompactPicker color={selectedColor} onChange={handleColorChange}/>
+              <CompactPicker color={ selectedColor } onChange={handleColorChange}/>
               :
               <Box
                 id='color-box'
@@ -152,7 +157,9 @@ function MapEditSideBar() {
   }
 
   function renderData(){
-    if(mapInfo.currentMapEditType === "PINMAP"){
+    const mapType = (mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : mapInfo.currentMap?.mapType;
+
+    if(mapType === "PINMAP"){
       return null;
     }
     else{
@@ -172,6 +179,9 @@ function MapEditSideBar() {
       )
     }
   }
+
+  console.log(mapInfo?.currentMap);
+  console.log(`mapInfo.currentMapEditType: ${mapInfo.currentMapEditType}`);
 
   return (
     <Sidebar style={sideBarStyle}>
@@ -203,7 +213,7 @@ function MapEditSideBar() {
                 <>
                   <Typography className="sidebar-block-title">
                     {`Map Type: `}
-                    <span id='map-type-text' onClick={handleEditMapType}>{getText(mapInfo.currentMapEditType)}</span>
+                    <span id='map-type-text' onClick={handleEditMapType}>{getText((mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : mapInfo.currentMap?.mapType)}</span>
                   </Typography>
                   <EditIcon id='edit-map-type' onClick={handleEditMapType}/>
                 </>

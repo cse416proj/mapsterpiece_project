@@ -307,9 +307,16 @@ updateMapPublishStatusById = async (req, res, newPublishStatus) => {
 
       const currTime = new Date();
       map.isPublished = newPublishStatus;
+      
+
       if (newPublishStatus) {
+        const oldMap = req.body;
+        map.mapType = oldMap.mapType;
+        map.mapTypeData.dataColor = oldMap.mapTypeData.dataColor;
+        
         map.datePublished = currTime;
-      } else {
+      }
+      else {
         map.datePublished = null;
         map.dateEdited = currTime;
       }

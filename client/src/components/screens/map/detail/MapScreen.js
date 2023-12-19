@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
@@ -24,7 +24,7 @@ import MapContext from "../../../../contexts/map";
 
 function MapScreen() {
   const location = useLocation();
-  // const { mapId } = useParams();
+  const { mapId } = useParams();
   const { mapInfo } = useContext(MapContext);
   // const { store } = useContext(GlobalStoreContext);
   // store.setCurrentView("MAP_VIEW");
@@ -41,6 +41,8 @@ function MapScreen() {
   dataEditModeRef.current = mapInfo?.currentMapEditType !== "REGULAR";
   const mapTypeDataRef = useRef();
   mapTypeDataRef.current = mapInfo?.currentMap?.mapTypeData;
+  const dataColorRef = useRef();
+  dataColorRef.current = mapInfo?.currentMap?.mapTypeData?.dataColor;
   const [initialLoad, setInitialLoad] = useState(true);
   const [regionNameLevel, setRegionNameLevel] = useState("");
   const [heatMapLayer, setHeatMapLayer] = useState(null);
@@ -90,28 +92,51 @@ function MapScreen() {
 
   // determine if we are on map-edit screen or map-detail screen
   useEffect(() => {
+    console.log('useEffect location');
     setEditMode(location.pathname.includes("map-detail") ? false : true);
   }, [location]);
 
   // color region
   useEffect(() => {
-    colorRef.current = mapInfo?.currentRegionColor;
+    console.log('useEffect mapInfo?.dataColor');
+
+    // colorRef.current = mapInfo?.currentRegionColor;
     setDataMapKey(dataMapKey + 1);
-    mapInfo?.updateDataColor(colorRef.current);
+    dataColorRef.current = mapInfo?.dataColor;
+    // mapInfo?.updateDataColor(colorRef.current);
   }, [mapInfo?.dataColor]);
 
   // update map when currentMap changes
   useEffect(() => {
-    setMap(mapInfo.currentMap);
+    if(mapInfo.currentMap){
+      setMap(mapInfo.currentMap);
+    }
+    else{
+      mapInfo.getMapById(mapId);
+    }
   }, [mapInfo?.currentMap]);
 
   function getPalette() {
     const minLight = 0.35;
     const maxLight = 0.65;
 
-    // calculate 4 steps away from current color
+    // // calculate 4 steps away from current color
+    // // const colorObj = tinycolor(mapInfo?.dataColor);
+    // // const colorObj = tinycolor("#86C9B5");
+    // const color = (dataColorRef.current) ?
+    //                 dataColorRef.current :
+    //                 (
+    //                   (mapInfo?.currentMap?.mapTypeData?.dataColor) ? 
+    //                     mapInfo?.currentMap?.mapTypeData?.dataColor :
+    //                     '#86C9B5'
+    //                 );
+
+    // console.log('~~~~~~~~~~~getPalette~~~~~~~~~~~');
+    // console.log(`dataColorRef.current: ${dataColorRef.current}`);
+    // console.log(`mapInfo?.currentMap?.mapTypeData?.dataColor: ${mapInfo?.currentMap?.mapTypeData?.dataColor}`);
+    // console.log(`color: ${color}`);
+
     const colorObj = tinycolor(mapInfo?.dataColor);
-    // const colorObj = tinycolor("#86C9B5");
     const palette = new Array(5);
     const steps = 4;
     const calcLight = (i) => (i * (maxLight - minLight)) / steps + minLight;
@@ -129,7 +154,6 @@ function MapScreen() {
   // get color for corresponding data from each feature
   function getColor(data) {
     const palette = getPalette();
-    console.log(palette);
 
     const levels = 5;
     const max = currMaxData
@@ -193,7 +217,7 @@ function MapScreen() {
       return hoverRegionStyle;
     }
 
-    const mapType = (editMode) ? mapInfo.currentMapEditType : map?.mapType;
+    const mapType = (editMode && mapInfo.currentMapEditType) ? mapInfo.currentMapEditType : map?.mapType;
 
     // CHOROPLETH MAP HAS TO FILL COLORS BY INTENSITY
     if(mapType === "CHOROPLETH") {
@@ -205,10 +229,7 @@ function MapScreen() {
         }
       }
 
-      console.log(`index: ${i}`);
-
       return {
-        // fillColor: (i > -1) ? getColor(feature.properties[currProp]) : 'white',
         fillColor:
           i > -1 && map?.mapTypeData?.data[i]
             ? getColor(map?.mapTypeData?.data[i].value)
@@ -224,10 +245,12 @@ function MapScreen() {
     return defaultRegionStyle;
   };
 
-  console.log(mapInfo?.currentMap);
+  // console.log(mapInfo?.currentMap);
 
   // update map region names when map changes
   useEffect(() => {
+    console.log('useEffect map');
+
     mapContentRef.current = map?.mapContent;
 
     if (!mapContentRef?.current) {
@@ -254,34 +277,58 @@ function MapScreen() {
     setRegionNameLevel(name);
   }, [map]);
 
-  // clear color fill, update map type in map object & determine if this map type suppoesd to edit by data when map type changes in edit screen
+  // // clear color fill, update map type in map object & determine if this map type suppoesd to edit by data when map type changes in edit screen
+  // useEffect(() => {
+  //   console.log('useEffect mapInfo?.currentMapEditType');
+
+  //   if (geoJsonRef?.current) {
+  //     geoJsonRef?.current?.resetStyle();
+  //   }
+
+  //   if (mapInfo?.currentMapEditType === "REGULAR") {
+  //     dataEditModeRef.current = false;
+  //   } else {
+  //     dataEditModeRef.current = true;
+  //   }
+
+  //   setGeoJsonKey(geoJsonKey + 1);
+  //   if (
+  //     mapInfo?.currentMapEditType !== "HEATMAP" &&
+  //     mapContainerRef?.current &&
+  //     heatMapLayer
+  //   ) {
+  //     mapContainerRef.current.removeLayer(heatMapLayer);
+  //     setMapContainterKey(mapContainterKey + 1);
+  //   }
+  // }, [mapInfo?.currentMapEditType]);
+
+  // render when map type changes
   useEffect(() => {
+    console.log('useEffect mapInfo?.currentMapEditType');
+
+    if (!mapContainerRef?.current || !geoJsonRef?.current || !mapInfo?.currentMapEditType) {
+      return;
+    }
+
     if (geoJsonRef?.current) {
       geoJsonRef?.current?.resetStyle();
     }
 
-    if (mapInfo?.currentMapEditType === "REGULAR") {
-      dataEditModeRef.current = false;
-    } else {
-      dataEditModeRef.current = true;
-    }
+    // if (mapInfo?.currentMapEditType === "REGULAR") {
+    //   dataEditModeRef.current = false;
+    // } else {
+    //   dataEditModeRef.current = true;
+    // }
 
     setGeoJsonKey(geoJsonKey + 1);
+
     if (
       mapInfo?.currentMapEditType !== "HEATMAP" &&
-      // map?.mapType !== "HEATMAP" &&
       mapContainerRef?.current &&
       heatMapLayer
     ) {
       mapContainerRef.current.removeLayer(heatMapLayer);
       setMapContainterKey(mapContainterKey + 1);
-    }
-  }, [mapInfo?.currentMapEditType]);
-
-  // render when map type changes
-  useEffect(() => {
-    if (!mapContainerRef?.current || !geoJsonRef?.current || !mapInfo?.currentMapEditType) {
-      return;
     }
 
     if (mapInfo?.currentMapEditType === "HEATMAP") {
@@ -308,10 +355,14 @@ function MapScreen() {
 
   // set current heatmap data
   useEffect(() => {
+    console.log('useEffect mapInfo?.currentMap.mapTypeData');
+
     mapTypeDataRef.current = mapInfo?.currentMap?.mapTypeData;
   }, [mapInfo?.currentMap?.mapTypeData]);
 
   useEffect(() => {
+    console.log('mapTypeDataRef?.current?.data');
+
     const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
     if (mapType === "HEATMAP" && heatMapLayer && mapTypeDataRef.current) {
       heatMapLayer.setData(mapTypeDataRef.current);
@@ -342,6 +393,8 @@ function MapScreen() {
 
   // when map region is clicked
   const handleFeatureClick = (event) => {
+    console.log('handleFeatureClick');
+
     const layer = event.sourceTarget;
     const regularMap = editMode && !dataEditModeRef.current;
     const mapType = (editMode) ? mapInfo?.currentMapEditType : map?.mapType;
@@ -388,7 +441,6 @@ function MapScreen() {
           (data) => data.regionName === regionName
         );
         if (index >= 0) {
-          console.log(`index: ${index}`);
           setIndexElementTobeChanged(index);
         }
 
@@ -404,6 +456,8 @@ function MapScreen() {
 
   // edit data value for region on click
   const editValue = (value) => {
+    console.log('editValue');
+
     const mini = 10;
     const factor = 10;
     const radius = Math.floor(Math.log(value) * factor) + mini;
@@ -460,6 +514,8 @@ function MapScreen() {
 
   // add pin for region on cilck
   const createPin = (newProperties) => {
+    console.log('createPin');
+
     const existingData = indexElementTobeChanged >= 0;
 
     const value =
@@ -530,6 +586,8 @@ function MapScreen() {
   };
 
   function renderMapLayer(mapType){
+    console.log(`renderMapLayer, mapType: ${mapType}`);
+                    
     if(mapType === 'PINMAP'){
       return <PinMap data={mapTypeDataRef?.current?.data}/>
     }
@@ -544,7 +602,7 @@ function MapScreen() {
 
   const mapContent = (
     <>
-      <Modals />
+      <Modals/>
       <DataEntryModal
         isOpen={dataEntryModalOpen}
         handleClose={() => setDataEntryModalOpen(false)}
@@ -615,7 +673,7 @@ function MapScreen() {
           ref={geoJsonRef}
         />
         {
-          renderMapLayer((editMode) ? mapInfo?.currentMapEditType : map?.mapType)
+          renderMapLayer((editMode && mapInfo?.currentMapEditType) ? mapInfo?.currentMapEditType : map?.mapType)
         }
       </MapContainer>
     </>

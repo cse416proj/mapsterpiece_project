@@ -21,7 +21,7 @@ export function MapContextProvider({ children }) {
     errorMessage: null,
     currentMapEditType: "",
     colorPickerChanged: false,
-    dataColor: '#86C9B5'
+    dataColor: ''
     // download: false,
     // downloadFormat: ''
   });
@@ -224,7 +224,16 @@ export function MapContextProvider({ children }) {
 
   mapInfo.publishMapById = async function (mapId) {
     try {
-      const response = await api.publishMapById(mapId);
+      const newMap = {...mapInfo.currentMap};
+      
+      if(mapInfo.currentMapEditType){
+        newMap.mapType = mapInfo.currentMapEditType;
+      }
+      if(mapInfo.dataColor){
+        newMap.mapTypeData.dataColor = mapInfo.dataColor;
+      }
+
+      const response = await api.publishMapById(mapId, newMap);
       if(response.status === 201){
         // close publish map modal & open publish success alert first
         store.closeModalAfterPublish();
@@ -435,8 +444,13 @@ export function MapContextProvider({ children }) {
     try {
       if(mapInfo.currentMap){
         const newMap = {...mapInfo.currentMap};
-        newMap.mapType = mapInfo.currentMapEditType;
-        newMap.mapTypeData.dataColor = mapInfo.dataColor;
+
+        if(mapInfo.currentMapEditType){
+          newMap.mapType = mapInfo.currentMapEditType;
+        }
+        if(mapInfo.dataColor){
+          newMap.mapTypeData.dataColor = mapInfo.dataColor;
+        }
         const response = await api.updateMapById(mapId, newMap);
         if (response.status === 200) {
           store.saveSuccessAlert();
