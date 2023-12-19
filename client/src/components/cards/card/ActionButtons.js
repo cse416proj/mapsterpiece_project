@@ -43,6 +43,8 @@ export default function ActionButtons({ type, cardId, currentUserName, comments,
   };
 
   const closeMenu = (event) => {
+    event?.stopPropagation();
+    event?.preventDefault();
     setAnchorEl(null);
   };
 
