@@ -65,6 +65,7 @@ export default function MapEditScreen() {
     console.log(`publishSuccess: ${publishSuccess}`);
     if(publishSuccess === true){
       setTimeout(() => {
+        setPublishSuccess(false);
         navigate(`/map-detail/${mapId}`);
         store.clearPublishSuccess();
       }, 2250);
@@ -109,6 +110,7 @@ export default function MapEditScreen() {
     console.log(`duplicateSuccess: ${duplicateSuccess}`);
     if(duplicateSuccess === true){
       setTimeout(() => {
+        setDuplicateSuccess(false);
         console.log(store?.mapMarked?._id);
         navigate(`/map-edit/${store?.mapMarked?._id}`);
         window.location.reload();

@@ -55,13 +55,13 @@ export default function MapDetailTopBar() {
   const [tags, setTags] = useState([]);
   const [likes, setLikes] = useState([]);
   const [dislikes, setDislikes] = useState([]);
-  const [hasUnpublished, setHasUnpublished] = useState(false);
+  // const [hasUnpublished, setHasUnpublished] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
   useEffect(() => {
-    setHasUnpublished(false);
+    // setHasUnpublished(false);
     if(mapInfo?.currentMap?.likedUsers && mapInfo?.currentMap?.dislikedUsers){
       setLikes(mapInfo.currentMap?.likedUsers);
       setDislikes(mapInfo.currentMap?.dislikedUsers);
@@ -72,17 +72,18 @@ export default function MapDetailTopBar() {
     if (mapInfo?.currentMap) {
       setTitle(mapInfo.currentMap?.title);
       setTags(mapInfo.currentMap?.tags);
-      setHasUnpublished(!mapInfo?.currentMap?.isPublished ? true : false);
+      // setHasUnpublished(!mapInfo?.currentMap?.isPublished ? true : false);
     }
   }, [mapInfo?.currentMap]);
 
-  // once unpublished, redirect
-  useEffect(() => {
-    if (hasUnpublished) {
-      console.log("hasUnpublished");
-      navigate(`/map-edit/${mapId}`);
-    }
-  }, [hasUnpublished]);
+  // // once unpublished, redirect
+  // useEffect(() => {
+  //   if (hasUnpublished) {
+  //     setHasUnpublished(false);
+  //     console.log("hasUnpublished");
+  //     navigate(`/map-edit/${mapId}`);
+  //   }
+  // }, [hasUnpublished]);
 
   // mark map & open modal when user clicks on delete map
   function handleDeleteMap(event) {

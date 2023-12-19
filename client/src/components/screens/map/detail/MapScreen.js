@@ -90,12 +90,6 @@ function MapScreen() {
     weight: 2,
   };
 
-  // determine if we are on map-edit screen or map-detail screen
-  useEffect(() => {
-    console.log('useEffect location');
-    setEditMode(location.pathname.includes("map-detail") ? false : true);
-  }, [location]);
-
   // color region
   useEffect(() => {
     console.log('useEffect mapInfo?.dataColor');
@@ -108,8 +102,9 @@ function MapScreen() {
 
   // update map when currentMap changes
   useEffect(() => {
-    if(mapInfo.currentMap){
+    if(mapInfo?.currentMap){
       setMap(mapInfo.currentMap);
+      setEditMode(!mapInfo?.currentMap.isPublished);
       if(!mapInfo?.dataColor){
         mapInfo.setDataColor(mapInfo.currentMap.mapTypeData?.dataColor);
       }

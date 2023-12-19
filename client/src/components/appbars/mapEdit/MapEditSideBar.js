@@ -24,15 +24,19 @@ function MapEditSideBar() {
   const { mapInfo } = useContext(MapContext);
   const { store } = useContext(GlobalStoreContext);
 
-  const [map, setMap] = useState(mapInfo?.currentMap);
   const [title, setTitle] = useState(mapInfo?.currentMap?.title);
   const [tags, setTags] = useState(mapInfo?.currentMap?.tags);
   const [editActive, setEditActive] = useState(false);
 
-  const [selectedColor, setSelectedColor] = useState((mapInfo?.currentMap?.mapTypeData?.dataColor) ? mapInfo?.currentMap?.mapTypeData?.dataColor : "#5bab93");
+  const [selectedColor, setSelectedColor] = useState(
+    (mapInfo?.currentMap?.mapTypeData?.dataColor) ?
+      mapInfo?.currentMap?.mapTypeData?.dataColor :
+      (
+        (mapInfo?.dataColor) ?
+        mapInfo?.dataColor : "#5bab93"
+      )
+  );
   const [selectColorActive, setSelectColorActive] = useState(false);
-
-  // const [mapType, setMapType] = useState(mapInfo?.currentMap?.mapType);
   const [isEditingTag, setIsEditingTag] = useState(false);
   const [legendTitle, setLegendTitle] = useState(
     mapInfo?.currentMap?.mapTypeData?.legendTitle
