@@ -11,8 +11,10 @@ import {
   SpeedDialIcon,
   SpeedDialAction,
 } from "@mui/material";
+
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
+import EditIcon from "@mui/icons-material/Edit";
 
 export default function PinDataEntryModal({
   isOpen,
@@ -24,24 +26,35 @@ export default function PinDataEntryModal({
 }) {
   const [errorMsg, setErrorMsg] = useState(null);
 
-  useEffect(() => {
+  const [propertyName, setPropertyName] = useState('');
+  const [editActive, setEditActive] = useState('');
+  const [propertyNameError, setPropertyNameError] = useState('');
+
+  function clearAll(){
     setErrorMsg(null);
+    setEditActive(-1);
+    setPropertyName('');
+    setPropertyNameError('');
+  }
+
+  useEffect(() => {
+    clearAll();
   }, []);
 
-  if (!latLng) {
+  if(!latLng) {
     return;
   }
 
   function handleCloseModal(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    setErrorMsg(null);
+    // event.stopPropagation();
+    // event.preventDefault();
+    clearAll();
     handleClose();
   }
 
   function handleAddPin(event) {
-    event.stopPropagation();
-    event.preventDefault();
+    // event.stopPropagation();
+    // event.preventDefault();
 
     const properties = Object.keys(mapTypeData);
     const newProperties = [];
@@ -64,14 +77,14 @@ export default function PinDataEntryModal({
 
       newProperties[i] = newProperty;
     }
-    setErrorMsg(null);
+    clearAll();
     createPin(newProperties);
     handleClose();
   }
 
   function handleAddField(event) {
-    event.stopPropagation();
-    event.preventDefault();
+    // event.stopPropagation();
+    // event.preventDefault();
     const newField = `property ${Object.keys(mapTypeData).length + 1}`;
     setMapTypeData({
       ...mapTypeData,
@@ -96,8 +109,8 @@ export default function PinDataEntryModal({
   }
 
   function updateMapTypeData(event) {
-    event.stopPropagation();
-    event.preventDefault();
+    // event.stopPropagation();
+    // event.preventDefault();
     const field = event.target.name;
     setMapTypeData({
       ...mapTypeData,
@@ -105,15 +118,79 @@ export default function PinDataEntryModal({
     });
   }
 
+  function handleEditProperty(event, property) {
+    // event.preventDefault();
+    // event.stopPropagation();
+    console.log('handleEditProperty')
+    setEditActive(property);
+  }
+
+  function handleUpdatePropertyName(event) {
+    // event.preventDefault();
+    // event.stopPropagation();
+    setPropertyName(event.target.value);
+  }
+
+  const handleEnterPropertyName = (event, property) => {
+    if(event.key === 'Enter'){
+      const trimmedInput = propertyName.replace(/(\s|\r\n|\n|\r)/gm, '');
+
+      if(trimmedInput.length === 0){
+        setPropertyNameError('Cannot submit blank text for a property name!');
+      }
+      else{
+        handleSavePropertyName(event, property);
+      }
+    }
+  };
+
+  const handleSavePropertyName = (event, property) => {
+    // update property name, update data & clear
+    const trimmedInput = propertyName.replace(/(\s|\r\n|\n|\r)/gm, '');
+    if(trimmedInput.length > 0){
+      const updatedObject = Object.fromEntries(
+        Object.entries(mapTypeData).map(([prop, value]) => {
+          return [(prop === property) ? propertyName : prop, value];
+        })
+      );
+      setMapTypeData(updatedObject);
+      clearAll();
+    }
+  }
+
   function renderFields() {
     const properties = Object.keys(mapTypeData);
+
+    if(properties.length === 0){
+      return <Typography variant='h6'>No pin properties has been added yet.</Typography>
+    }
+
     return properties.map((property, index) => {
+      if(editActive === property){
+        return(
+          <TextField
+            style={{ width: "92.5%" }}
+            label="Value for current property"
+            defaultValue={property}
+            value={propertyName}
+            error={propertyNameError !== ''}
+            helperText={(propertyNameError !== '') ? propertyNameError : ''}
+            onChange={handleUpdatePropertyName}
+            onKeyDown={(e) => handleEnterPropertyName(e, property)}
+            onBlur={(e) => handleSavePropertyName(e, property)}
+          />
+        );
+      }
       return (
         <Box key={index} className="flex-row" id="data-entry">
-          <Typography>{property}</Typography>
+          <Box className="flex-row" id="pin-property" style={{ width: "20%" }}>
+            <Typography>{property}</Typography>
+            <EditIcon id="edit-property-type" onClick={(e) => handleEditProperty(e, property)}/>
+          </Box>
           <TextField
             style={{ width: "75%" }}
             name={property}
+            label="Value for current property"
             value={mapTypeData[property]}
             onChange={updateMapTypeData}
           />
@@ -159,7 +236,7 @@ export default function PinDataEntryModal({
         <SpeedDial
           id="action-button"
           ariaLabel="SpeedDial basic"
-          icon={<SpeedDialIcon />}
+          icon={<SpeedDialIcon/>}
           onClick={handleAddField}
         />
 
@@ -168,6 +245,8 @@ export default function PinDataEntryModal({
             variant="contained"
             id="modal-contained-button"
             onClick={handleAddPin}
+            disabled={editActive.length === 0}
+            style={(editActive.length === 0) ? {backgroundColor: 'gray'} : {backgroundColor: 'var(--secondary-color)'}}
           >
             Add
           </Button>

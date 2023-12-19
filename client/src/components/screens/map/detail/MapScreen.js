@@ -62,11 +62,7 @@ function MapScreen() {
   );
   const [currColor, setCurrColor] = useState("#86C9B5");
   const [latLng, setLatLng] = useState(null);
-  const [pinMapTypeData, setPinMapTypeData] = useState({
-    property1: "",
-    property2: "",
-    property3: "",
-  });
+  const [pinMapTypeData, setPinMapTypeData] = useState({});
 
   // const [palette, setPalette] = useState([]);
   const [currLayer, setCurrLayer] = useState(null);
@@ -420,14 +416,10 @@ function MapScreen() {
           setPinDataEntryModal(true);
           setLatLng([position.lat, position.lng]);
           if (mapTypeDataRef?.current?.data[index]?.properties) {
-            const propertiesArray =
-              mapTypeDataRef.current.data[index].properties;
+            const propertiesArray = mapTypeDataRef.current.data[index].properties;
+            console.log(propertiesArray);
           } else {
-            setPinMapTypeData({
-              property1: "",
-              property2: "",
-              property3: "",
-            });
+            setPinMapTypeData({});
           }
         } else {
           setDataEntryModalOpen(true);
