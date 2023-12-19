@@ -419,6 +419,16 @@ function MapScreen() {
         if (mapType === "PINMAP") {
           setPinDataEntryModal(true);
           setLatLng([position.lat, position.lng]);
+          if (mapTypeDataRef?.current?.data[index]?.properties) {
+            const propertiesArray =
+              mapTypeDataRef.current.data[index].properties;
+          } else {
+            setPinMapTypeData({
+              property1: "",
+              property2: "",
+              property3: "",
+            });
+          }
         } else {
           setDataEntryModalOpen(true);
         }
@@ -463,7 +473,11 @@ function MapScreen() {
       if (mapType === "HEATMAP") {
         heatMapLayer.setData(mapTypeDataRef.current);
       }
-      mapInfo.changeDataTransaction(indexElementTobeChanged, oldDataObj, newDataObj)
+      mapInfo.changeDataTransaction(
+        indexElementTobeChanged,
+        oldDataObj,
+        newDataObj
+      );
     } else {
       if (mapType === "HEATMAP") {
         heatMapLayer.addData(newDataObj);
@@ -475,7 +489,7 @@ function MapScreen() {
       setGeoJsonKey(geoJsonKey + 1);
       setInitialLoad(true);
     }
-    
+
     if (indexElementTobeChanged < 0) {
       mapInfo.addDataTransaction(newDataObj, indexElementTobeChanged);
     }
@@ -509,10 +523,15 @@ function MapScreen() {
 
     // update existing data
     if (indexElementTobeChanged >= 0) {
-      mapTypeDataRef.current.data[indexElementTobeChanged] = newDataObj;
+      const oldDataObj = mapTypeDataRef.current.data[indexElementTobeChanged];
+      mapInfo.changeDataTransaction(
+        indexElementTobeChanged,
+        oldDataObj,
+        newDataObj
+      );
+    } else {
+      mapInfo.addDataTransaction(newDataObj, indexElementTobeChanged);
     }
-
-    mapInfo.addDataTransaction(newDataObj, indexElementTobeChanged);
     setIndexElementTobeChanged(-1);
   };
 
@@ -546,11 +565,6 @@ function MapScreen() {
   const closePinDataEntryModal = () => {
     setPinDataEntryModal(false);
     setLatLng(null);
-    setPinMapTypeData({
-      property1: "",
-      property2: "",
-      property3: "",
-    });
   };
 
   const mapType = editMode ? mapInfo?.currentMapEditType : map?.mapType;

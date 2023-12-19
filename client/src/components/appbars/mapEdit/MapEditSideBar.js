@@ -13,10 +13,14 @@ import {
   Select,
   MenuItem,
   Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
+import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 
 import { Tags } from "../../index";
 import MapContext from "../../../contexts/map";
@@ -249,6 +253,39 @@ function MapEditSideBar() {
                   />
                 ))}
             </Stack>
+          ) : null}
+          {mapInfo.currentMapEditType === "PINMAP" ? (
+            <>
+              {mapInfo?.currentMap?.mapTypeData?.data?.map((prop) => (
+                <Accordion>
+                  <AccordionSummary>
+                    <Box className="pinSidebarEntry">
+                      <Typography>{prop.regionName}</Typography>
+                      <DeleteForeverOutlinedIcon
+                        onClick={() => {
+                          mapInfo?.removeDataTransaction(prop.regionName);
+                        }}
+                      />
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    {prop.properties.length === 0 ? (
+                      `No properties has added for ${prop?.regionName} yet.`
+                    ) : (
+                      <Box className="flex-column">
+                        {prop.properties.map((property) => {
+                          return (
+                            <Typography variant="p">
+                              {property.property}: {property.value}
+                            </Typography>
+                          );
+                        })}
+                      </Box>
+                    )}
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </>
           ) : null}
         </Box>
       </Toolbar>
