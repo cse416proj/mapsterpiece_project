@@ -102,6 +102,7 @@ export function MapContextProvider({ children }) {
           errorMessage: payload,
         }));
       case MapActionType.SET_CURRENT_MAP_EDIT_TYPE:
+        console.log(`SET_CURRENT_MAP_EDIT_TYPE: ${payload}`)
         return setMapInfo((prevMapInfo) => ({
           ...prevMapInfo,
           currentMapEditType: payload,
@@ -124,6 +125,7 @@ export function MapContextProvider({ children }) {
   };
 
   mapInfo.setCurrentMapEditType = function (mapTypeForEdit) {
+    console.log(`mapInfo.setCurrentMapEditType: ${mapTypeForEdit}`);
     mapReducer({
       type: MapActionType.SET_CURRENT_MAP_EDIT_TYPE,
       payload: mapTypeForEdit,

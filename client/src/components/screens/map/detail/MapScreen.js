@@ -341,9 +341,10 @@ function MapScreen() {
     return null;
   }
 
-  // first load, set up center & map edit type
+  // first/re-load, set up center & map edit type
   if (initialLoad && mapContainerRef?.current && geoJsonRef?.current) {
-    mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
+    // mapInfo.setCurrentMapEditType(mapInfo?.currentMap?.mapType);
+
     if (Object.values(geoJsonRef.current._layers).length <= 0) {
       return;
     }

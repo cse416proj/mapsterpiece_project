@@ -32,7 +32,7 @@ function MapEditSideBar() {
   const [editActive, setEditActive] = useState(false);
 
   const [selectedColor, setSelectedColor] = useState("#ffffff");
-  // const [mapType, setMapType] = useState(mapInfo?.currentMap?.mapType);
+  const [mapType, setMapType] = useState('');
   const [isEditingTag, setIsEditingTag] = useState(false);
   const [legendTitle, setLegendTitle] = useState(
     mapInfo?.currentMap?.mapTypeData?.legendTitle
@@ -40,7 +40,7 @@ function MapEditSideBar() {
 
   const titleRef = useRef();
   const tagsRef = useRef();
-  const mapTypeRef = useRef();
+  // const mapTypeRef = useRef();
   const legendTitleRef = useRef();
   titleRef.current = mapInfo?.currentMap?.title;
   tagsRef.current = mapInfo?.currentMap?.tags;
@@ -69,6 +69,10 @@ function MapEditSideBar() {
   };
 
   function getText(type) {
+    if(!type){
+      return 'Loading...';
+    }
+
     const dict = {
       "": "Loading...",
       PINMAP: "Pin Map",
@@ -141,6 +145,7 @@ function MapEditSideBar() {
                 </InputLabel>
                 <Select
                   open={editActive}
+                  defaultValue=''
                   onClose={handleCloseSelect}
                   onChange={handleChangeMapType}
                   style={{ width: "100%" }}
