@@ -611,15 +611,29 @@ function GlobalStoreContextProvider(props) {
         let tempAllMaps = [];
         let tempAllPosts = [];
     
-        userData.forEach((user) => {
-          user.maps.forEach((map) => {
-            tempAllMaps.push(map);
-          });
-    
-          user.posts.forEach((post) => {
-            tempAllPosts.push(post);
-          });
-        });
+        for(let i = 0; i < userData.length; i++){
+            const user = userData[i];
+
+            console.log(auth);
+
+            if(auth?.user?.userName === user?.userName){
+              user?.maps?.forEach((map) => {
+                tempAllMaps.push(map);
+              });
+            }
+            else{
+              const publishedMaps = user?.maps?.filter((map) => map.isPublished);
+              userData[i].maps = publishedMaps;
+              
+              publishedMaps?.forEach((map) => {
+                tempAllMaps.push(map);
+              });
+            }
+      
+            user?.posts?.forEach((post) => {
+              tempAllPosts.push(post);
+            });
+        }
     
         storeReducer({
           type: GlobalStoreActionType.LOAD_ALL_USERS,
