@@ -126,7 +126,7 @@ export default function MapEditScreen() {
     return <Warning message='Guest user has no permission to edit any map.'/>;
   }
 
-  if(mapInfo?.currentMap?.ownerUserName !== auth?.user?.userName){
+  if(mapInfo?.currentMap && mapInfo?.currentMap?.ownerUserName !== auth?.user?.userName){
     return <Warning message="User has no permission to edit other user's private map."/>;
   }
 

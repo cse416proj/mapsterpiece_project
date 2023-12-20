@@ -4,6 +4,7 @@ import { AppBar, Toolbar, Box, Avatar, Menu, MenuItem } from '@mui/material';
 
 import PersonIcon from '@mui/icons-material/Person';
 import AuthContext from '../../contexts/auth';
+import MapContext from '../../contexts/map';
 import UserContext from '../../contexts/user';
 import GlobalStoreContext from '../../contexts/store';
 
@@ -11,6 +12,7 @@ function NavBar(){
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const { userInfo } = useContext(UserContext);
+    const { mapInfo } = useContext(MapContext);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -29,6 +31,7 @@ function NavBar(){
         event.stopPropagation();
         event.preventDefault();
         store.setCurrentView("USER_HOME");
+        mapInfo.clear();
         navigate('/');
     }
 
@@ -52,6 +55,7 @@ function NavBar(){
         event.stopPropagation();
         event.preventDefault();
         closeMenu();
+        mapInfo.clear();
         userInfo.setCurrentUser(auth.user);
         navigate(`/profile/${auth.user._id}`);
     }
@@ -60,6 +64,7 @@ function NavBar(){
         event.stopPropagation();
         event.preventDefault();
         closeMenu();
+        mapInfo.clear();
         auth.logoutUser();
     }
 
