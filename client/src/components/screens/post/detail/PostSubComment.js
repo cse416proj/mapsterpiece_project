@@ -1,4 +1,6 @@
 import { useContext } from "react";
+
+import AuthContext from "../../../../contexts/auth";
 import { PostContext } from "../../../../contexts/post";
 import { GlobalStoreContext } from "../../../../contexts/store";
 
@@ -10,6 +12,7 @@ import { Modals } from "../../../index";
 
 export default function PostSubComment({parentComment, subcomment}) {
   const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
   const { postInfo } = useContext(PostContext);
 
   function deleteSubHandler(event){
@@ -37,7 +40,11 @@ export default function PostSubComment({parentComment, subcomment}) {
         >
           {subcomment.commenterUserName}
         </Typography>
-        <DeleteForeverOutlinedIcon onClick={deleteSubHandler}/>
+        {
+          (auth?.user?.userName === subcomment.commenterUserName) ?
+            <DeleteForeverOutlinedIcon onClick={deleteSubHandler}/> :
+            null
+        }
       </Box>
       <Typography
         style={{

@@ -1,11 +1,13 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Typography, Box } from "@mui/material";
 
+import AuthContext from "../../../contexts/auth";
 import { GlobalStoreContext } from "../../../contexts/store";
 import { SideNavBar, SearchBar, UsersCardSection, MapsCardSection, PostsCardSection, Modals, Loading } from "../../index";
 
 export default function CommunityScreen() {
   const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
 
   const [search, setSearch] = useState('');
   const [listCard, setListCard] = useState(null);

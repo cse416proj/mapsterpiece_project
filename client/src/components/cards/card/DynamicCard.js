@@ -26,13 +26,15 @@ export default function DynamicCard({ userData, mapData, postData }) {
     event.preventDefault();
 
     // filter out unpublished map if viewing other users
-    let data = {...userData};
-    if(!auth?.user || auth?.user?.userName !== userData.userName){
-      data.maps = data.maps.filter((map) => map.isPublished);
+    if(auth?.user?.userName === userData?.userName){
+      userInfo.setCurrentUser(userData);
     }
-
-    userInfo.setCurrentUser(data);
-    navigate(`/profile/${data._id}`);
+    else{
+      let data = {...userData};
+      data.maps = data.maps.filter((map) => map.isPublished);
+      userInfo.setCurrentUser(data);
+    }
+    navigate(`/profile/${userData._id}`);
   }
 
   function handleMapCardClick(event) {

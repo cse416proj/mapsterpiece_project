@@ -841,6 +841,21 @@ export function MapContextProvider({ children }) {
     //   console.log(response);
   };
 
+  mapInfo.clear = function () {
+    return setMapInfo((prevMapInfo) => ({
+      ...prevMapInfo,
+      currentMap: null,
+      currentRegionColor: "#fff",
+      allCommentsForMap: [],
+      currentComment: null,
+      errorMessage: null,
+      currentMapEditType: "REGULAR",
+      colorPickerChanged: false,
+      isAddingDataByTransaction: false,
+      isEditingDataByTransaction: false,
+    }));
+  };
+
   return (
     <MapContext.Provider value={{ mapInfo }}>{children}</MapContext.Provider>
   );

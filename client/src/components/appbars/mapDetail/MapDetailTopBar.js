@@ -104,11 +104,13 @@ export default function MapDetailTopBar() {
   }
 
   function handleMyMaps() {
+    mapInfo.clear();
     userInfo.setCurrentUser(auth.user);
     navigate(`/profile/${auth.user._id}`);
   }
 
   function handleCommunity(){
+    mapInfo.clear();
     navigate('/community');
   }
 

@@ -128,7 +128,11 @@ export default function PostComment({payload, index}) {
                 <Typography style={{ textAlign: `start`, padding: `10px`, fontWeight: `bold` }}>
                   {payload.commenterUserName}
                 </Typography>
-                <DeleteForeverOutlinedIcon onClick={deleteHandler}/>
+                {
+                  (auth?.user?.userName === payload.commenterUserName) ?
+                    <DeleteForeverOutlinedIcon onClick={deleteHandler}/> :
+                    null
+                }
               </Box>
               <Typography style={{ textAlign: `start`, padding: `10px` }}>
                 {payload.content}

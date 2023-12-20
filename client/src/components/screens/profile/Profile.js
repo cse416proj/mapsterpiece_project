@@ -103,7 +103,7 @@ function Profile() {
 
   // set up post cards when it is ready
   useEffect(() => {
-    console.log(userInfo?.currentUser?.posts?.length);
+    console.log(userInfo?.currentUser?.posts);
 
     if(userInfo?.currentUser?.posts?.length > 0){
       setPostCards(userInfo?.currentUser?.posts?.map((post, index) => {

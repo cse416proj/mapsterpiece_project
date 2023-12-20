@@ -68,6 +68,7 @@ function UserHomeScreen() {
   useEffect(() => {
     if(cancelLoadMap){
       if(mapInfo?.allMapsByUser?.length > 0){
+        setLoadingMaps(false);
         setMapCards(mapInfo?.allMapsByUser?.map((pair, index) => (
           <DynamicCard key={index} userData={null} mapData={pair} postData={null}/>
         )));
@@ -81,19 +82,19 @@ function UserHomeScreen() {
 
   // reload maps when current allMaps array changed
   useEffect(() => {
-    setLoadingMaps(false);
-
     if(mapInfo?.allMapsByUser?.length > 0){
+      setLoadingMaps(false);
       setMapCards(mapInfo?.allMapsByUser.map((pair, index) => (
         <DynamicCard key={index} userData={null} mapData={pair} postData={null}/>
       )));
     }
     else{
-      if(loadingMaps && mapInfo?.allMapsByUser?.length > 0){
-        setMapCards(<Loading message='Currently fetching all maps created by user...' cancelHandler={handleCancelLoadMap}/>);
+      if(!loadingMaps && auth?.user?.maps?.length === 0 && mapInfo?.allMapsByUser && mapInfo?.allMapsByUser?.length === 0){
+        setLoadingMaps(false);
+        setMapCards(<CreatePrompt type='map'/>);
       }
       else{
-        setMapCards(<CreatePrompt type='map'/>);
+        setMapCards(<Loading message='Currently fetching all maps created by user...' cancelHandler={handleCancelLoadMap}/>);
       }
     }
   }, [mapInfo?.allMapsByUser]);
@@ -122,6 +123,7 @@ function UserHomeScreen() {
   useEffect(() => {
     if(cancelLoadPost){
       if(postInfo.allPostsByUser?.length>0){
+        setLoadingPosts(false);
         setPostCards(postInfo?.allPostsByUser?.map((pair, index) => (
           <DynamicCard key={index} userData={null} mapData={null} postData={pair}/>
         )));
@@ -135,19 +137,19 @@ function UserHomeScreen() {
 
   // reload post when current allPosts array changed
   useEffect(() => {
-    setLoadingPosts(false);
-
     if(postInfo?.allPostsByUser?.length > 0){
+      setLoadingPosts(false);
       setPostCards(postInfo?.allPostsByUser?.map((pair, index) => (
         <DynamicCard key={index} userData={null} mapData={null} postData={pair}/>
       )));
     }
     else{
-      if(loadingPosts && postInfo?.allPostsByUser?.length > 0){
-        setPostCards(<Loading message='Currently fetching all posts created by user...' cancelHandler={handleCancelLoadPost}/>);
+      if(!loadingPosts && auth?.user?.posts?.length === 0 && postInfo?.allPostsByUser && postInfo?.allPostsByUser?.length === 0){
+        setLoadingPosts(false);
+        setPostCards(<CreatePrompt type='post'/>);
       }
       else{
-        setPostCards(<CreatePrompt type='post'/>);
+        setPostCards(<Loading message='Currently fetching all posts created by user...' cancelHandler={handleCancelLoadPost}/>);
       }
     }
   }, [postInfo?.allPostsByUser]);
