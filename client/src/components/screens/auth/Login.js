@@ -94,8 +94,15 @@ function Login(){
         });
     }
 
+    function handleSignUp(event){
+        event.preventDefault();
+        auth.setErrorMsg(null);
+        navigate('/register');
+    }
+
     function handleForgotPw(event){
         event.preventDefault();
+        auth.setErrorMsg(null);
         navigate('/forgot-password');
     }
 
@@ -130,7 +137,7 @@ function Login(){
                     { textFields }
                 </Box>
                 <Typography id='signin-redirect-prompt' variant='p'>
-                    Haven't registered for an account? Sign up <Link id='redirect' to='/register'>here</Link>.
+                    Haven't registered for an account? Sign up <span id='redirect' onClick={handleSignUp}>here</span>.
                 </Typography>
                 <Box id='btn-container' className='flex-row'>
                     <Button id='outline-btn' variant='outlined' onClick={handleForgotPw}>Forgot Password</Button>

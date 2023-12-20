@@ -293,8 +293,8 @@ export function MapContextProvider({ children }) {
     } catch (error) {
       if (error.response) {
         console.log(
-          error.response.status === 400
-            ? error.response.data.errorMessage
+          error.response?.status === 400
+            ? error.response?.data?.errorMessage
             : "Unable to publish current map."
         );
       }
@@ -316,8 +316,8 @@ export function MapContextProvider({ children }) {
     } catch (error) {
       if (error.response) {
         console.log(
-          error.response.status === 400
-            ? error.response.data.errorMessage
+          error.response?.status === 400
+            ? error.response?.data?.errorMessage
             : "Unable to unpublish current map."
         );
       }
@@ -334,12 +334,9 @@ export function MapContextProvider({ children }) {
         payload: response.data.map,
       });
     } catch (error) {
-      mapReducer({
-        type: MapActionType.SET_ERROR_MSG,
-        payload: error.body?.errorMessage
-          ? error.body?.errorMessage
-          : "Error fetching current map from database",
-      });
+      mapInfo.setErrorMsg(error.body?.errorMessage
+        ? error.body?.errorMessage
+        : "Error fetching current map from database");
     }
   };
 
@@ -374,19 +371,24 @@ export function MapContextProvider({ children }) {
   };
 
   mapInfo.getAllPublishedMapsFromGivenUser = async function (userId) {
-    const response = await api.getAllPublishedMapsFromGivenUser(userId);
+    try{
+      const response = await api.getAllPublishedMapsFromGivenUser(userId);
 
-    // should clear currentMap bec nothing is open
-    if (response.status === 200) {
-      mapReducer({
-        type: MapActionType.LOAD_ALL_MAPS_FROM_USER,
-        payload: {
-          currentMap: null,
-          allMaps: response.data.maps,
-        },
-      });
-    } else {
-      console.log(response);
+      // should clear currentMap bec nothing is open
+      if (response.status === 200) {
+        mapReducer({
+          type: MapActionType.LOAD_ALL_MAPS_FROM_USER,
+          payload: {
+            currentMap: null,
+            allMaps: response.data.maps,
+          },
+        });
+      }
+    }
+    catch (error) {
+      mapInfo.setErrorMsg(error.body?.errorMessage
+        ? error.body?.errorMessage
+        : "Error getting user's published maps from database");
     }
   };
 
@@ -577,9 +579,9 @@ export function MapContextProvider({ children }) {
     } catch (error) {
       if (error.response) {
         console.log(
-          error.response.status === 400
-            ? error.response.data.errorMessage
-            : error.response.data
+          error.response?.status === 400
+            ? error.response?.data?.errorMessage
+            : error.response?.data
         );
       }
     }
@@ -823,8 +825,8 @@ export function MapContextProvider({ children }) {
     } catch (error) {
       if (error.response) {
         console.log(
-          error.response.status === 400
-            ? error.response.data.errorMessage
+          error.response?.status === 400
+            ? error.response?.data?.errorMessage
             : "Unable to duplicate current map."
         );
       }

@@ -27,6 +27,7 @@ function UserContextProvider(props) {
       case UserActionType.SET_CURRENT_USER: {
         return setUserInfo((prevUserInfo) => ({
             ...prevUserInfo,
+            error: null,
             currentUser: payload
         }));
       }
@@ -91,7 +92,7 @@ function UserContextProvider(props) {
       });
     }
     catch(error){
-      userInfo.setErrorMsg((error?.response?.data?.errorMessage) ? error.response.data.errorMessage : 'Error getting user');
+      userInfo.setErrorMsg((error?.response?.data?.errorMessage) ? error.response?.data?.errorMessage : 'Error getting user');
     }
   };
 
@@ -102,7 +103,7 @@ function UserContextProvider(props) {
     catch(error){
       userReducer({
         type: UserActionType.SET_ERROR,
-        payload: (error?.response?.data?.errorMessage) ? error.response.data.errorMessage : 'Error deleting user'
+        payload: (error?.response?.data?.errorMessage) ? error.response?.data?.errorMessage : 'Error deleting user'
       });
     }
   };

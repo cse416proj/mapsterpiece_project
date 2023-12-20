@@ -18,10 +18,10 @@ export default function Warning({ message }){
 
     const handleReturn = () => {
         navigate('/');
-        store.setError(null);
-        mapInfo.setErrorMsg(null);
-        postInfo.setErrorMsg(null);
-        userInfo.setErrorMsg(null);
+        store?.setError(null);
+        mapInfo?.setErrorMsg(null);
+        postInfo?.setErrorMsg(null);
+        userInfo?.setErrorMsg(null);
     }
 
     return(

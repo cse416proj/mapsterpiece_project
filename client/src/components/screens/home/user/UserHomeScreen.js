@@ -96,7 +96,7 @@ function UserHomeScreen() {
     return (
       <Box className='flex-column' id='all-container'>
         {
-          (loadingMaps) ?
+          (loadingMaps && mapInfo?.allMapsByUser?.length > 0) ?
             <Loading message='Currently fetching all maps created by user...' cancelHandler={handleCancelLoadMap}/> :
             <>{mapCards}</>
         }

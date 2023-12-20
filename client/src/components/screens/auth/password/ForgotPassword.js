@@ -21,7 +21,14 @@ export default function ForgotPassword({ form, setForm }){
 
     function handleSignUp(event){
         event.preventDefault();
+        auth.setErrorMsg(null);
         navigate('/register');
+    }
+
+    function handleSignIn(event){
+        event.preventDefault();
+        auth.setErrorMsg(null);
+        navigate('/login');
     }
 
     function handleSubmit(event){
@@ -61,7 +68,7 @@ export default function ForgotPassword({ form, setForm }){
                     />
                 </Box>
                 <Typography id='forgot-pw-redirect-prompt' variant='p'>
-                    Remember your password? Sign in <Link id='redirect' to='/login'>here</Link>.
+                    Remember your password Now? Login <span id='redirect' onClick={handleSignIn}>here</span>.
                 </Typography>
                 <Box id='btn-container' className='flex-row'>
                     <Button id='outline-btn' variant='outlined' onClick={handleSignUp}>Sign Up</Button>

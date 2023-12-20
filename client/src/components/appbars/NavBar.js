@@ -36,6 +36,7 @@ function NavBar(){
         event.stopPropagation();
         event.preventDefault();
         closeMenu();
+        auth.clearMsg();
         navigate('/login');
     }
 
@@ -43,6 +44,7 @@ function NavBar(){
         event.stopPropagation();
         event.preventDefault();
         closeMenu();
+        auth.clearMsg();
         navigate('/register');
     }
 

@@ -118,8 +118,16 @@ export default function MapEditScreen() {
     }
   }, [duplicateSuccess]);
 
-  if(!auth.user){
-    return <Warning message='You have no permission to access this page. Please login first if you think you are the owner!'/>
+  if(mapInfo?.errorMessage){
+    return <Warning message={mapInfo?.errorMessage}/>;
+  }
+
+  if(!auth?.user){
+    return <Warning message='Guest user has no permission to edit any map.'/>;
+  }
+
+  if(mapInfo?.currentMap?.ownerUserName !== auth?.user?.userName){
+    return <Warning message="User has no permission to edit other user's private map."/>;
   }
 
   return (
