@@ -51,7 +51,7 @@ function Profile() {
   useEffect(() => {
     if(isLoggedInUser) {
       if(userInfo?.currentUser?.maps?.length !== auth?.user?.maps?.length){
-        const updatedMaps = userInfo.currentUser.maps.filter((map) => auth.user.maps.includes(map._id));
+        const updatedMaps = userInfo.currentUser.maps?.filter((map) => auth.user.maps.includes(map._id));
         userInfo.updateMaps(updatedMaps);
       }
     }
@@ -61,7 +61,7 @@ function Profile() {
   useEffect(() => {
     if(isLoggedInUser) {
       if(userInfo?.currentUser?.posts?.length !== auth?.user?.posts?.length){
-        const updatedPosts = userInfo.currentUser.posts.filter((post) => auth.user.posts.includes(post._id));
+        const updatedPosts = userInfo.currentUser.posts?.filter((post) => auth.user.posts.includes(post._id));
         userInfo.updatePosts(updatedPosts);
       }
     }
@@ -69,10 +69,17 @@ function Profile() {
 
   // set up map cards when it is ready
   useEffect(() => {
-    if(userInfo?.currentUser?.maps.length > 0){
-      setMapCards(userInfo?.currentUser?.maps?.map((map, index) => {
+    let maps = userInfo?.currentUser?.maps;
+
+    if(!auth || !isLoggedInUser){
+      maps = maps?.filter(map => map.isPublished);
+    }
+
+    if(maps?.length > 0){
+      setMapCards(maps?.map((map, index) => {
         if(typeof map === 'string'){
           setLoadingMaps(true);
+          return null;
         }
         else{
           setLoadingMaps(false);
@@ -96,10 +103,13 @@ function Profile() {
 
   // set up post cards when it is ready
   useEffect(() => {
-    if(userInfo?.currentUser?.posts.length > 0){
+    console.log(userInfo?.currentUser?.posts?.length);
+
+    if(userInfo?.currentUser?.posts?.length > 0){
       setPostCards(userInfo?.currentUser?.posts?.map((post, index) => {
         if(typeof post === 'string'){
           setLoadingPosts(true);
+          return null;
         }
         else{
           setLoadingPosts(false);
@@ -140,6 +150,40 @@ function Profile() {
     )
   }
 
+  // function to render all map cards
+  function renderAllMaps(){
+    if(!userInfo?.currentUser?.maps && loadingMaps){
+      return <Loading message='Currently fetching all maps created by user...'/>;
+    }
+
+    if(userInfo?.currentUser?.maps?.length > 0){
+      return (
+        <Box className='flex-column' id='all-container'>
+          <>{mapCards}</>
+        </Box>
+      );
+    }
+
+    return getNotice('Seems like you have not created any map yet.', 'Seems like this user has not created any map yet.')
+  }
+
+  // function to render all posts cards
+  function renderAllPosts(){
+    if(!userInfo?.currentUser?.posts && loadingPosts){
+      return <Loading message='Currently fetching all posts created by user...'/>;
+    }
+
+    if(userInfo?.currentUser?.posts?.length > 0){
+      return (
+        <Box className='flex-column' id='all-container'>
+          <>{postCards}</>
+        </Box>
+      );
+    }
+
+    return getNotice('Seems like you have not created any post yet.', 'Seems like this user has not created any post yet.')
+  }
+
   if(userInfo?.error){
     return <Warning message={userInfo?.error}/>;
   }
@@ -177,6 +221,7 @@ function Profile() {
               type={(tab === 'ALL_MAPS') ? 'map' : 'post'}
               sortBy={sortBy}
               setSortBy={setSortBy}
+              isLoggedInUser={isLoggedInUser}
               data={(tab === 'ALL_MAPS') ? userInfo?.currentUser?.maps : userInfo?.currentUser?.posts}
               setCards={(tab === 'ALL_MAPS') ? setMapCards : setPostCards}
               style={{width: '30%'}}
@@ -185,8 +230,8 @@ function Profile() {
           <Box id='profile-cards'>
             {
               (tab === "ALL_MAPS") ?
-                <>{mapCards}</> :
-                <>{postCards}</>
+                renderAllMaps() :
+                renderAllPosts()
             }
           </Box>
         </Box>

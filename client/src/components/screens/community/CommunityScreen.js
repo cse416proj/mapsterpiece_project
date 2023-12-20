@@ -2,19 +2,24 @@ import React, { useContext, useState, useEffect } from "react";
 import { Typography, Box } from "@mui/material";
 
 import { GlobalStoreContext } from "../../../contexts/store";
-import { PostContext } from "../../../contexts/post";
-import { SideNavBar, SearchBar, UsersCardSection, MapsCardSection, PostsCardSection, Modals } from "../../index";
+import { SideNavBar, SearchBar, UsersCardSection, MapsCardSection, PostsCardSection, Modals, Loading } from "../../index";
 
 export default function CommunityScreen() {
   const { store } = useContext(GlobalStoreContext);
-  const { postInfo } = useContext(PostContext);
 
   const [search, setSearch] = useState('');
   const [listCard, setListCard] = useState(null);
   const [currScreen, setCurrScreen] = useState('');
   const [sortBy, setSortBy] = useState('');
 
+  const [loadingMaps, setLoadingMaps] = useState(false);
+  const [loadingPosts, setLoadingPosts] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+
   useEffect(() => {
+    setLoadingMaps(true);
+    setLoadingPosts(true);
+    setLoadingUsers(true);
     store.getAllMaps();
     store.getAllPosts();
     store.getAllUsers();
@@ -27,10 +32,45 @@ export default function CommunityScreen() {
     }
   }, [store?.currentView]);
 
+  // loading maps
+  useEffect(() => {
+    if(store?.allMaps){
+      setLoadingMaps(false);
+    }
+  },[store?.allMaps]);
+
+  // loading posts
+  useEffect(() => {
+    if(store?.allPosts){
+      setLoadingPosts(false);
+    }
+  },[store?.allPosts]);
+
+  // loading users
+  useEffect(() => {
+    if(store?.allUsers){
+      setLoadingUsers(false);
+    }
+  },[store?.allUsers]);
+
   // Now update list card rendering; reason: store changes in Store or search changes in SearchScreen
   useEffect(() => {
     if(store){
       console.log(`currScreen: ${currScreen}`);
+
+      if(currScreen === 'ALL_USERS' && loadingUsers){
+        setListCard(<Loading message='Currently fetching all users...'/>);
+        return;
+      }
+      else if(currScreen === 'ALL_MAPS' && loadingMaps){
+        setListCard(<Loading message='Currently fetching all maps...'/>);
+        return;
+      }
+      else if(currScreen === 'ALL_POSTS' && loadingPosts){
+        setListCard(<Loading message='Currently fetching all posts...'/>);
+        return;
+      }
+
       var data = store.getData(currScreen);
 
       if(!data){

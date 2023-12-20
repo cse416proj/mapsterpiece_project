@@ -94,6 +94,7 @@
 }
 
 #redirect{
+    cursor: pointer;
     color: var(--secondary-color);
     border-bottom: 1px solid var(--secondary-color);
 }

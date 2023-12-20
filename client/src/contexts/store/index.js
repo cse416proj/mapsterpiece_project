@@ -88,11 +88,11 @@ function GlobalStoreContextProvider(props) {
 
     currentModal: CurrentModal.NONE,
     currentView: CurrentView.USER_HOME,
-    allUsers: [],
-    allPosts: [],
-    allMaps: [],
-    allMapsPosts: [],
-    // allMapsPosts: fakeAllMapsPosts,
+
+    allUsers: null,
+    allPosts: null,
+    allMaps: null,
+    allMapsPosts: null,
 
     pinMaps: null,
     choroplethMaps: null,
@@ -153,7 +153,7 @@ function GlobalStoreContextProvider(props) {
           saveSuccess: false,
           duplicateSuccess: false, 
           allUsers: payload.users,
-          allMaps: payload.maps.filter((map) => map.isPublished),
+          allMaps: payload.maps?.filter((map) => map.isPublished),
           allPosts: payload.posts
         }));
       case GlobalStoreActionType.MARK_CURRENT_SCREEN:
@@ -550,11 +550,11 @@ function GlobalStoreContextProvider(props) {
   };
 
   const updateMaps = (allMaps) =>  ({
-    pinMaps: allMaps.filter((pair)=>{return pair?.mapType?.includes("PINMAP")}),
-    choroplethMaps: allMaps.filter((pair)=>{return pair?.mapType?.includes("CHOROPLETH")}),
-    dotMaps: allMaps.filter((pair)=>{return pair?.mapType?.includes("DOT_DISTRIBUTION")}),
-    gradMaps:allMaps.filter((pair)=>{return pair?.mapType?.includes("GRADUATED_SYMBOL")}),
-    heatMaps: allMaps.filter((pair)=>{return pair?.mapType?.includes("HEATMAP")}),
+    pinMaps: allMaps?.filter((pair)=>{return pair?.mapType?.includes("PINMAP")}),
+    choroplethMaps: allMaps?.filter((pair)=>{return pair?.mapType?.includes("CHOROPLETH")}),
+    dotMaps: allMaps?.filter((pair)=>{return pair?.mapType?.includes("DOT_DISTRIBUTION")}),
+    gradMaps: allMaps?.filter((pair)=>{return pair?.mapType?.includes("GRADUATED_SYMBOL")}),
+    heatMaps: allMaps?.filter((pair)=>{return pair?.mapType?.includes("HEATMAP")}),
     });
 
   const filterPosts = (pair, searchStrings) => {
@@ -571,11 +571,11 @@ function GlobalStoreContextProvider(props) {
   };
   
   const updatePosts = (allPosts) => ({
-    pinPosts: allPosts.filter(pair => filterPosts(pair, ["pin"])),
-    choroplethPosts: allPosts.filter(pair => filterPosts(pair, ["choropleth"])),
-    dotPosts: allPosts.filter(pair => filterPosts(pair, ["dot"])),
-    gradPosts: allPosts.filter(pair => filterPosts(pair, ["graduated"])),
-    heatPosts: allPosts.filter(pair => filterPosts(pair, ["heat"])),
+    pinPosts: allPosts?.filter(pair => filterPosts(pair, ["pin"])),
+    choroplethPosts: allPosts?.filter(pair => filterPosts(pair, ["choropleth"])),
+    dotPosts: allPosts?.filter(pair => filterPosts(pair, ["dot"])),
+    gradPosts: allPosts?.filter(pair => filterPosts(pair, ["graduated"])),
+    heatPosts: allPosts?.filter(pair => filterPosts(pair, ["heat"])),
   });  
 
   store.setData = function () {
@@ -587,69 +587,90 @@ function GlobalStoreContextProvider(props) {
   };
 
   store.getAllPosts = async function () {
-    const response = await api.getAllPosts();
-    storeReducer({
-      type: GlobalStoreActionType.LOAD_ALL_POSTS,
-      payload: response.data,
-    });
+    try{
+      const response = await api.getAllPosts();
+      storeReducer({
+        type: GlobalStoreActionType.LOAD_ALL_POSTS,
+        payload: response.data,
+      });
+    }
+    catch(error){
+      store.setError((error?.response?.data?.errorMessage) ? error?.response?.data?.errorMessage : 'Error getting all posts');
+    }
   };
 
   store.getAllUsers = async function () {
-    const response = await api.getAllUsers();
-
-    const userData = response.data;
-    if(!userData){
-      return;
-    }
-
-    let tempAllMaps = [];
-    let tempAllPosts = [];
-
-    userData.forEach((user) => {
-      user.maps.forEach((map) => {
-        tempAllMaps.push(map);
-      });
-
-      user.posts.forEach((post) => {
-        tempAllPosts.push(post);
-      });
-    });
-
-    storeReducer({
-      type: GlobalStoreActionType.LOAD_ALL_USERS,
-      payload: {
-        users: userData,
-        maps: tempAllMaps,
-        posts: tempAllPosts,
+    try{
+      const response = await api.getAllUsers();
+      if(response.status === 200){
+        const userData = response.data;
+        if(!userData){
+          return;
+        }
+    
+        let tempAllMaps = [];
+        let tempAllPosts = [];
+    
+        userData.forEach((user) => {
+          user.maps.forEach((map) => {
+            tempAllMaps.push(map);
+          });
+    
+          user.posts.forEach((post) => {
+            tempAllPosts.push(post);
+          });
+        });
+    
+        storeReducer({
+          type: GlobalStoreActionType.LOAD_ALL_USERS,
+          payload: {
+            users: userData,
+            maps: tempAllMaps,
+            posts: tempAllPosts,
+          }
+        });
       }
-    });
+    }
+    catch(error){
+      store.setError((error?.response?.data?.errorMessage) ? error?.response?.data?.errorMessage : 'Error getting all users');
+    }
   };
 
   store.getAllMaps = async function () {
-    const response = await api.getAllMaps();
-    if(response.status === 200){
-      storeReducer({
-        type: GlobalStoreActionType.LOAD_ALL_MAPS,
-        payload: response.data.maps
-      });
+    try{
+      const response = await api.getAllMaps();
+      if(response.status === 200){
+        storeReducer({
+          type: GlobalStoreActionType.LOAD_ALL_MAPS,
+          payload: response.data.maps
+        });
+      }
+    }
+    catch(error){
+      store.setError((error?.response?.data?.errorMessage) ? error?.response?.data?.errorMessage : 'Error getting all maps');
     }
   };
 
   // close modal and get all maps after delete
   store.getAllMapsAfterDelete = async function () {
-    const response = await api.getAllMaps();
-    if(response.status === 200){
-      return setStore((prevStore) => ({
-        ...prevStore,
-        createSuccess: false,
-        deleteSuccess: true,
-        publishSuccess: false,
-        unpublishSuccess: false,
-        saveSuccess: false,
-        duplicateSuccess: false, 
-        currentModal: CurrentModal.NONE,
-        allMaps: response.data.maps,
-      }));
+    try{
+      const response = await api.getAllMaps();
+      if(response.status === 200){
+        return setStore((prevStore) => ({
+          ...prevStore,
+          createSuccess: false,
+          deleteSuccess: true,
+          publishSuccess: false,
+          unpublishSuccess: false,
+          saveSuccess: false,
+          duplicateSuccess: false, 
+          currentModal: CurrentModal.NONE,
+          allMaps: response.data.maps,
+        }));
+      }
+    }
+    catch(error){
+      store.setError((error?.response?.data?.errorMessage) ? error?.response?.data?.errorMessage : 'Error getting all maps after deletion');
     }
   };
 
@@ -713,7 +734,7 @@ function GlobalStoreContextProvider(props) {
     if(typeof userMaps[0] !=='string' && typeof userPosts[0] !=='string'){
       let tmpMaps = [];
       if(!auth?.user || !auth?.user?.userName || auth?.user?.userName !== user?.userName){
-        tmpMaps = userMaps.filter((pair)=>{return pair.isPublished});
+        tmpMaps = userMaps?.filter((pair)=>{return pair.isPublished});
       }else{
         tmpMaps = userMaps;
       }
@@ -733,10 +754,6 @@ function GlobalStoreContextProvider(props) {
         store.setData();
       }
     }
-    else{
-      return;
-    }
-    
   }
 
   store.markMapForDuplicate = function(mapData){

@@ -21,7 +21,7 @@ function PostContextProvider(props) {
     currentPost: null,
     currentCommentIndex: null,
     errorMessage: null,
-    allPostsByUser: [],
+    allPostsByUser: null,
     allCommentsForPost: [],
   });
 

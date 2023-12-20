@@ -4,7 +4,7 @@ import SortIcon from '@mui/icons-material/Sort';
 
 import { DynamicCard } from '../../../cards';
 
-export default function SortBy({sortBy, setSortBy, type, searchResult=null, data, setCards, style}){
+export default function SortBy({sortBy, setSortBy, isLoggedInUser, type, searchResult=null, data, setCards, style}){
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -101,15 +101,26 @@ export default function SortBy({sortBy, setSortBy, type, searchResult=null, data
         let menuItems = [];
 
         if(type === 'map'){
-            menuItems = [
-                { sortBy: 'Default', handler: (e) => handleSort(e, 'default-map') },
-                { sortBy: 'Alphabet (A-Z)', handler: (e) => handleSort(e, 'A2Z-map') },
-                { sortBy: 'Alphabet (Z-A)', handler: (e) => handleSort(e, 'Z2A-map') },
-                { sortBy: 'Most recent edit', handler: (e) => handleSort(e, 'MostRecentEdit-map') },
-                { sortBy: 'Least recent edit', handler: (e) => handleSort(e, 'LeastRecentEdit-map') },
-                { sortBy: 'Most recent publish', handler: (e) => handleSort(e, 'MostRecentPublish-map') },
-                { sortBy: 'Least recent publish', handler: (e) => handleSort(e, 'LeastRecentPublish-map') },
-            ];
+            if(!isLoggedInUser){
+                menuItems = [
+                    { sortBy: 'Default', handler: (e) => handleSort(e, 'default-map') },
+                    { sortBy: 'Alphabet (A-Z)', handler: (e) => handleSort(e, 'A2Z-map') },
+                    { sortBy: 'Alphabet (Z-A)', handler: (e) => handleSort(e, 'Z2A-map') },
+                    { sortBy: 'Most recent publish', handler: (e) => handleSort(e, 'MostRecentPublish-map') },
+                    { sortBy: 'Least recent publish', handler: (e) => handleSort(e, 'LeastRecentPublish-map') },
+                ];
+            }
+            else{
+                menuItems = [
+                    { sortBy: 'Default', handler: (e) => handleSort(e, 'default-map') },
+                    { sortBy: 'Alphabet (A-Z)', handler: (e) => handleSort(e, 'A2Z-map') },
+                    { sortBy: 'Alphabet (Z-A)', handler: (e) => handleSort(e, 'Z2A-map') },
+                    { sortBy: 'Most recent edit', handler: (e) => handleSort(e, 'MostRecentEdit-map') },
+                    { sortBy: 'Least recent edit', handler: (e) => handleSort(e, 'LeastRecentEdit-map') },
+                    { sortBy: 'Most recent publish', handler: (e) => handleSort(e, 'MostRecentPublish-map') },
+                    { sortBy: 'Least recent publish', handler: (e) => handleSort(e, 'LeastRecentPublish-map') },
+                ];
+            }
         }
         else{
             menuItems = [
