@@ -116,3 +116,11 @@
     height: 95%;
     overflow-Y: auto;
 }
+
+#delete-account{
+    background-color: var(--primary-color);
+}
+
+#delete-account:hover{
+    background-color: var(--primary-color-hover);
+}

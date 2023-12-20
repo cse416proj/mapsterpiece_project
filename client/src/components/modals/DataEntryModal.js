@@ -20,6 +20,7 @@ export default function DataEntryModal({ isOpen, handleClose, setData }) {
     const trimmedInput = inputValue.replace(/(\s|\r\n|\n|\r)/gm, '');
     if(trimmedInput.length > 0){
       setData(inputValue);
+      setInputValue('');
       handleClose();
     }
   };

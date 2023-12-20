@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { Box, Typography, TextField, Button, Alert } from '@mui/material';
 
+import { Warning } from '../../../warnings';
 import AuthContext from '../../../../contexts/auth';
 
 export default function ForgotPassword({ form, setForm }){
@@ -28,6 +29,10 @@ export default function ForgotPassword({ form, setForm }){
         if(form?.email?.length > 0){
             auth.findUser(form.email);
         }
+    }
+
+    if(auth?.user){
+        return <Warning message='User have already logged in.'/>;
     }
 
     return(

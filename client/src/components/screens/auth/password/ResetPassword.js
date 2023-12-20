@@ -5,6 +5,7 @@ import { Box, Typography, TextField, Button, Alert, Checkbox } from '@mui/materi
 import CheckIcon from '@mui/icons-material/Check';
 import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
 
+import { Warning } from '../../../warnings';
 import ValidatePassword from './ValidatePassword';
 import AuthContext from '../../../../contexts/auth';
 
@@ -90,6 +91,10 @@ export default function ResetPassword({ form, setForm }){
         console.log('handleResetPassword');
         auth.resetPassword(form.newPassword, form.confirmNewPassword);
     }
+
+    if(auth?.user){
+        return <Warning message='User have already logged in.'/>;
+    }
     
     if(!auth?.lostPwUser && !auth?.msg){
         return(
@@ -102,6 +107,7 @@ export default function ResetPassword({ form, setForm }){
             </Box>
         )
     }
+
     return(
         <Box className='form-content'>
             { alert }

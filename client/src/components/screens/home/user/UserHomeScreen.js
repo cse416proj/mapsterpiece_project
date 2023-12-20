@@ -209,6 +209,7 @@ function UserHomeScreen() {
               searchResult={searchResult}
               data={(tab === 'ALL_MAPS') ? mapInfo?.allMapsByUser : postInfo?.allPostsByUser}
               setCards={(tab === 'ALL_MAPS') ? setMapCards : setPostCards}
+              style={{width: '10%'}}
             />
           </Box>
           <Box className="display-container">

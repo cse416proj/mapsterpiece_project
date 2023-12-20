@@ -4,14 +4,17 @@ import { Box, Typography, Button } from '@mui/material';
 import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
 
 import MapContext from "../../contexts/map";
+import UserContext from "../../contexts/user";
 
 export default function Warning({ message }){
     const navigate = useNavigate();
     const { mapInfo } = useContext(MapContext);
+    const { userInfo } = useContext(UserContext);
 
     const handleReturn = () => {
         navigate('/');
         mapInfo.setErrorMsg(null);
+        userInfo.setErrorMsg(null);
     }
 
     return(

@@ -4,7 +4,7 @@ import SortIcon from '@mui/icons-material/Sort';
 
 import { DynamicCard } from '../../../cards';
 
-export default function SortBy({sortBy, setSortBy, type, searchResult, data, setCards}){
+export default function SortBy({sortBy, setSortBy, type, searchResult=null, data, setCards, style}){
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -126,8 +126,12 @@ export default function SortBy({sortBy, setSortBy, type, searchResult, data, set
     }
 
     function getSortName(){
-        let sortName = '';
+        if(!sortBy){
+            return;
+        }
 
+        let sortName = '';
+        
         if(sortBy === '' || sortBy.includes('default')){
             sortName = 'Default';
         }
@@ -183,7 +187,11 @@ export default function SortBy({sortBy, setSortBy, type, searchResult, data, set
     }
 
     return (
-        <Box className="flex-row" id='sort-box' onClick={openMenu}>
+        <Box
+            className="flex-row" id='sort-box'
+            style={(sortBy?.includes('MostRecent') || sortBy?.includes('LeastRecent')) ? style : { width: '10%' }}
+            onClick={openMenu}
+        >
             <Typography variant="p" id="sort-text" style={{ color: 'var(--secondary-color)' }}>
                 Sort By <br/>{getSortName(sortBy)}
             </Typography>

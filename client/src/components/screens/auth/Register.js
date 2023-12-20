@@ -3,8 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Box, Typography, TextField, Button, Alert, Checkbox } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 
-import AuthContext from '../../../contexts/auth';
+import { Warning } from '../../warnings';
 import ValidatePassword from './password/ValidatePassword';
+
+import AuthContext from '../../../contexts/auth';
 
 function Register(){
     const { auth } = useContext(AuthContext); 
@@ -110,6 +112,11 @@ function Register(){
 
         console.log('form has been submitted');
     }
+
+    if(auth?.user){
+        return <Warning message='User have already logged in.'/>;
+    }
+
     return(
         <Box className='form-content'>
             { alert }

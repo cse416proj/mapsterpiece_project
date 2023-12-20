@@ -6,6 +6,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CheckIcon from '@mui/icons-material/Check';
 
+import { Warning } from '../../warnings';
 import AuthContext from '../../../contexts/auth';
 
 function Login(){
@@ -106,6 +107,10 @@ function Login(){
             form.email,
             form.password,
         );
+    }
+
+    if(auth?.user){
+        return <Warning message='User have already logged in.'/>;
     }
     
     return(
