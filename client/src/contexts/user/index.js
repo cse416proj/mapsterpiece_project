@@ -5,13 +5,15 @@ export const UserContext = createContext({});
 
 export const UserActionType = {
   SET_CURRENT_USER: "SET_CURRENT_USER",
+  SET_ERROR: "SET_ERROR",
 };
 
 function UserContextProvider(props) {
   const [userInfo, setUserInfo] = useState({
     currentUser: null,
     currentMaps: null,
-    currentPosts: null
+    currentPosts: null,
+    error: null
   });
 
   // // to be removed: print when userInfo update
@@ -22,12 +24,19 @@ function UserContextProvider(props) {
   const userReducer = (action) => {
     const { type, payload } = action;
     switch (type) {
-        case UserActionType.SET_CURRENT_USER: {
-          return setUserInfo((prevUserInfo) => ({
-              ...prevUserInfo,
-              currentUser: payload
-          }));
-        }
+      case UserActionType.SET_CURRENT_USER: {
+        return setUserInfo((prevUserInfo) => ({
+            ...prevUserInfo,
+            error: null,
+            currentUser: payload
+        }));
+      }
+      case UserActionType.SET_ERROR: {
+        return setUserInfo((prevUserInfo) => ({
+            ...prevUserInfo,
+            error: payload
+        }));
+      }
       default:
         return userInfo;
     }
@@ -67,16 +76,36 @@ function UserContextProvider(props) {
     return `${count} ${(count > 1) ? 'posts' : 'post'}`;
   }
 
-  userInfo.getUserById = async function (userId) {
-    const response = await api.getUserById(userId);
+  userInfo.setErrorMsg = function (msg){
     userReducer({
-      type: UserActionType.SET_CURRENT_USER,
-      payload: response.data,
+      type: UserActionType.SET_ERROR,
+      payload: msg
     });
+  }
+
+  userInfo.getUserById = async function (userId) {
+    try{
+      const response = await api.getUserById(userId);
+      userReducer({
+        type: UserActionType.SET_CURRENT_USER,
+        payload: response.data,
+      });
+    }
+    catch(error){
+      userInfo.setErrorMsg((error?.response?.data?.errorMessage) ? error.response?.data?.errorMessage : 'Error getting user');
+    }
   };
 
   userInfo.deleteUserById = async function (userId) {
-    const response = await api.deleteUserById(userId);
+    try{
+      const response = await api.deleteUserById(userId);
+    }
+    catch(error){
+      userReducer({
+        type: UserActionType.SET_ERROR,
+        payload: (error?.response?.data?.errorMessage) ? error.response?.data?.errorMessage : 'Error deleting user'
+      });
+    }
   };
 
   userInfo.updateMaps = function (newMaps) {

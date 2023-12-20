@@ -219,6 +219,14 @@ resetPassword = async (req, res) => {
                 })
         }
 
+        if(newPassword.length < 8){
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "Please enter new password of at least 8 characters."
+                })
+        }
+
         if(newPassword !== confirmNewPassword){
             return res
                 .status(400)

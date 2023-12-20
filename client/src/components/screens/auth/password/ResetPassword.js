@@ -5,6 +5,7 @@ import { Box, Typography, TextField, Button, Alert, Checkbox } from '@mui/materi
 import CheckIcon from '@mui/icons-material/Check';
 import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
 
+import { Warning } from '../../../warnings';
 import ValidatePassword from './ValidatePassword';
 import AuthContext from '../../../../contexts/auth';
 
@@ -25,11 +26,12 @@ export default function ResetPassword({ form, setForm }){
     }, [auth?.errMsg])
 
     useEffect(() => {
-        if(auth?.msg){
+        if(auth?.msg && !auth?.errMsg){
             setAlert(<Alert icon={<CheckIcon fontSize="inherit" />} variant="filled" severity="success" id='auth-alert'>
                 {auth.msg}
             </Alert>);
             setTimeout(() => {
+                auth.clearMsg();
                 navigate('/');
             }, 1000);
         }
@@ -75,8 +77,21 @@ export default function ResetPassword({ form, setForm }){
         });
     }
 
+    function handleSignUp(event){
+        event.preventDefault();
+        auth.setErrorMsg(null);
+        navigate('/register');
+    }
+
+    function handleSignIn(event){
+        event.preventDefault();
+        auth.setErrorMsg(null);
+        navigate('/login');
+    }
+
     function handleGoBack(event){
         event.preventDefault();
+        auth.setErrorMsg(null);
         setForm({
             ...form,
             newPassword: '',
@@ -90,6 +105,10 @@ export default function ResetPassword({ form, setForm }){
         console.log('handleResetPassword');
         auth.resetPassword(form.newPassword, form.confirmNewPassword);
     }
+
+    if(auth?.user){
+        return <Warning message='User have already logged in.'/>;
+    }
     
     if(!auth?.lostPwUser && !auth?.msg){
         return(
@@ -102,6 +121,7 @@ export default function ResetPassword({ form, setForm }){
             </Box>
         )
     }
+
     return(
         <Box className='form-content'>
             { alert }
@@ -128,11 +148,11 @@ export default function ResetPassword({ form, setForm }){
                 </Box>
                 <Typography id='reset-pw-redirect-prompt' variant='p'>
                     Remember your password?
-                    Sign in <Link id='redirect' to='/login'>here</Link>.
+                    Sign in <span id='redirect' onClick={handleSignIn}>here</span>.
                 </Typography>
                 <Typography id='reset-pw-redirect-prompt' variant='p'>
                     Need an account?
-                    Sign up <Link id='redirect' to='/register'>here</Link>.
+                    Sign up <span id='redirect' onClick={handleSignUp}>here</span>.
                 </Typography>
                 <Box id='btn-container' className='flex-row'>
                     <Button id='outline-btn' variant='outlined' onClick={handleGoBack}>Go back</Button>

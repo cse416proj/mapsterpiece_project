@@ -3,8 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Box, Typography, TextField, Button, Alert, Checkbox } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 
-import AuthContext from '../../../contexts/auth';
+import { Warning } from '../../warnings';
 import ValidatePassword from './password/ValidatePassword';
+
+import AuthContext from '../../../contexts/auth';
 
 function Register(){
     const { auth } = useContext(AuthContext); 
@@ -110,6 +112,17 @@ function Register(){
 
         console.log('form has been submitted');
     }
+
+    function handleSignIn(event){
+        event.preventDefault();
+        auth.setErrorMsg(null);
+        navigate('/login');
+    }
+
+    if(auth?.user){
+        return <Warning message='User have already logged in.'/>;
+    }
+
     return(
         <Box className='form-content'>
             { alert }
@@ -143,7 +156,7 @@ function Register(){
                         <Typography id='checkbox-prompt' variant='p'>View password</Typography>
                     </Box>
                     <Typography id='signup-redirect-prompt' variant='p' style={{ marginLeft: '0'}}>
-                        Already has an account? Login <Link id='redirect' to='/login'>here</Link>.
+                        Already has an account? Login <span id='redirect' onClick={handleSignIn}>here</span>.
                     </Typography>
                 </Box>
                 <Button id='filled-btn' type='submit' variant='contained'>

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { Box, Typography, TextField, Button, Alert } from '@mui/material';
 
+import { Warning } from '../../../warnings';
 import AuthContext from '../../../../contexts/auth';
 
 export default function ForgotPassword({ form, setForm }){
@@ -20,7 +21,14 @@ export default function ForgotPassword({ form, setForm }){
 
     function handleSignUp(event){
         event.preventDefault();
+        auth.setErrorMsg(null);
         navigate('/register');
+    }
+
+    function handleSignIn(event){
+        event.preventDefault();
+        auth.setErrorMsg(null);
+        navigate('/login');
     }
 
     function handleSubmit(event){
@@ -28,6 +36,10 @@ export default function ForgotPassword({ form, setForm }){
         if(form?.email?.length > 0){
             auth.findUser(form.email);
         }
+    }
+
+    if(auth?.user){
+        return <Warning message='User have already logged in.'/>;
     }
 
     return(
@@ -56,7 +68,7 @@ export default function ForgotPassword({ form, setForm }){
                     />
                 </Box>
                 <Typography id='forgot-pw-redirect-prompt' variant='p'>
-                    Remember your password? Sign in <Link id='redirect' to='/login'>here</Link>.
+                    Remember your password Now? Login <span id='redirect' onClick={handleSignIn}>here</span>.
                 </Typography>
                 <Box id='btn-container' className='flex-row'>
                     <Button id='outline-btn' variant='outlined' onClick={handleSignUp}>Sign Up</Button>

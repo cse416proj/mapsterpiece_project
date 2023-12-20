@@ -68,7 +68,6 @@ function MapScreen() {
   const [currLayer, setCurrLayer] = useState(null);
   const [coloredRegion, setColoredRegion] = useState({});
   const [curBbox, setCurBbox] = useState(null);
-  const [latlngs, setLatlngs] = useState([]);
   const [curFeature, setCurFeature] = useState(null);
 
   const hoverRegionStyle = {

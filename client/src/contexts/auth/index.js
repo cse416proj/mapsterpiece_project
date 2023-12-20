@@ -136,14 +136,23 @@ function AuthContextProvider(props) {
   };
 
   auth.getLoggedIn = async function () {
-    const response = await api.getLoggedIn();
-    if (response.status === 200) {
+    try{
+      const response = await api.getLoggedIn();
+      if (response.status === 200) {
+        authReducer({
+          type: AuthActionType.GET_LOGGED_IN,
+          payload: {
+            loggedIn: response.data.loggedIn,
+            user: response.data.user,
+          },
+        });
+      }
+    }
+    catch (error) {
+      let errMsg = error.response?.data?.errorMessage;
       authReducer({
-        type: AuthActionType.GET_LOGGED_IN,
-        payload: {
-          loggedIn: response.data.loggedIn,
-          user: response.data.user,
-        },
+        type: AuthActionType.SET_ERROR,
+        payload: (errMsg) ? errMsg : 'error getting logged in'
       });
     }
   };
@@ -164,12 +173,11 @@ function AuthContextProvider(props) {
         auth.loginUser(email, password);
       }
     } catch (error) {
-      let errMsg = error.response.data.errorMessage;
+      let errMsg = error.response?.data?.errorMessage;
       authReducer({
         type: AuthActionType.SET_ERROR,
-        payload: errMsg
+        payload: (errMsg) ? errMsg : 'error registering user account'
       });
-      return;
     }
   };
 
@@ -188,24 +196,33 @@ function AuthContextProvider(props) {
           },
         });
       }
-    } catch (error) {
-      let errMsg = error.response.data.errorMessage;
+    }
+    catch (error) {
+      let errMsg = error.response?.data?.errorMessage;
       authReducer({
         type: AuthActionType.SET_ERROR,
-        payload: errMsg
+        payload: (errMsg) ? errMsg : 'error login user'
       });
-      return;
     }
   };
 
   auth.logoutUser = async function () {
-    const response = await api.logoutUser();
-    if (response.status === 200) {
+    try{
+      const response = await api.logoutUser();
+      if (response.status === 200) {
+        authReducer({
+          type: AuthActionType.LOGOUT_USER,
+          payload: null,
+        });
+        navigate("/");
+      }
+    }
+    catch (error) {
+      let errMsg = error.response?.data?.errorMessage;
       authReducer({
-        type: AuthActionType.LOGOUT_USER,
-        payload: null,
+        type: AuthActionType.SET_ERROR,
+        payload: (errMsg) ? errMsg : 'error logout user'
       });
-      navigate("/");
     }
   };
 
@@ -231,14 +248,23 @@ function AuthContextProvider(props) {
     console.log(user);
     const userName = user.userName;
     console.log(`userName: ${userName}, callling api to remove now`);
-    const response = await api.deleteUser(userName);
+    try{
+      const response = await api.deleteUser(userName);
 
-    if (response.status === 200) {
+      if (response.status === 200) {
+        authReducer({
+          type: AuthActionType.DELETE_USER,
+          payload: null,
+        });
+        navigate("/");
+      }
+    }
+    catch (error) {
+      let errMsg = error.response?.data?.errorMessage;
       authReducer({
-        type: AuthActionType.DELETE_USER,
-        payload: null,
+        type: AuthActionType.SET_ERROR,
+        payload: (errMsg) ? errMsg : 'error deleting user'
       });
-      navigate("/");
     }
   };
 
@@ -275,7 +301,9 @@ function AuthContextProvider(props) {
       if (error.response) {
         authReducer({
           type: AuthActionType.SET_ERROR,
-          payload: (error.response.status === 400) ? error.response.data.errorMessage : error.response.data
+          payload: (error.response?.status === 400) ?
+          error.response?.data?.errorMessage :
+          (error.response?.data) ? error.response?.data : 'Error searching user'
         })
       }
     }
@@ -316,7 +344,9 @@ function AuthContextProvider(props) {
       if (error.response) {
         authReducer({
           type: AuthActionType.SET_ERROR,
-          payload: (error.response.status === 400 || error.response.status === 401) ? error.response.data.errorMessage : error.response.data
+          payload: (error.response?.status === 400 || error.response?.status === 401) ?
+          error.response?.data?.errorMessage :
+          (error.response?.data) ? error.response?.data : 'Error resetting user password'
         })
       }
     }
@@ -333,6 +363,21 @@ function AuthContextProvider(props) {
       }
     }));
     console.log(auth.user.maps);
+  }
+
+  auth.setErrorMsg = function(msg){
+    authReducer({
+      type: AuthActionType.SET_ERROR,
+      payload: msg
+    })
+  }
+
+  auth.clearMsg = function(){
+    setAuth((prevAuth) => ({
+      ...prevAuth,
+      msg: null,
+      errMsg: null
+    }))
   }
 
   return (

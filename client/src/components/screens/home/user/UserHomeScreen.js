@@ -35,6 +35,8 @@ function UserHomeScreen() {
   // load maps & posts everytime user has update
   useEffect(() => {
     if(auth && auth.user) {
+      console.log(auth.user);
+      
       userInfo.setCurrentUser(auth.user);
 
       // close all success alert message
@@ -60,10 +62,12 @@ function UserHomeScreen() {
     setCancelLoadMap(true);
   }
 
+  console.log(mapInfo?.allMapsByUser);
+
   // reload maps when current allMaps array changed
   useEffect(() => {
     if(cancelLoadMap){
-      if(mapInfo?.allMapsByUser){
+      if(mapInfo?.allMapsByUser?.length > 0){
         setMapCards(mapInfo?.allMapsByUser?.map((pair, index) => (
           <DynamicCard key={index} userData={null} mapData={pair} postData={null}/>
         )));
@@ -78,30 +82,36 @@ function UserHomeScreen() {
   // reload maps when current allMaps array changed
   useEffect(() => {
     setLoadingMaps(false);
-    if(mapInfo.allMapsByUser?.length === 0){
-      setMapCards(<CreatePrompt type='map'/>);
-    }
-    else if(mapInfo?.allMapsByUser?.length > 0 && auth?.user.maps?.length === mapInfo?.allMapsByUser?.length){
+
+    if(mapInfo?.allMapsByUser?.length > 0){
       setMapCards(mapInfo?.allMapsByUser.map((pair, index) => (
         <DynamicCard key={index} userData={null} mapData={pair} postData={null}/>
       )));
     }
     else{
-      setMapCards(<Loading message='Currently fetching all maps created by user...' cancelHandler={handleCancelLoadMap}/>);
+      if(loadingMaps && mapInfo?.allMapsByUser?.length > 0){
+        setMapCards(<Loading message='Currently fetching all maps created by user...' cancelHandler={handleCancelLoadMap}/>);
+      }
+      else{
+        setMapCards(<CreatePrompt type='map'/>);
+      }
     }
   }, [mapInfo?.allMapsByUser]);
 
   // function to render all map cards
   function renderAllMaps(){
-    return (
-      <Box className='flex-column' id='all-container'>
-        {
-          (loadingMaps) ?
-            <Loading message='Currently fetching all maps created by user...' cancelHandler={handleCancelLoadMap}/> :
-            <>{mapCards}</>
-        }
-      </Box>
-    );
+    if(!mapInfo?.allMapsByUser && loadingMaps){
+      return <Loading message='Currently fetching all maps created by user...' cancelHandler={handleCancelLoadMap}/>;
+    }
+
+    if(mapInfo?.allMapsByUser?.length > 0){
+      return (
+        <Box className='flex-column' id='all-container'>
+          <>{mapCards}</>
+        </Box>
+      );
+    }
+    return <CreatePrompt type='map'/>;
   }
 
   function handleCancelLoadPost(){
@@ -111,7 +121,7 @@ function UserHomeScreen() {
   // reload maps when current allMaps array changed
   useEffect(() => {
     if(cancelLoadPost){
-      if(postInfo.allPostsByUser){
+      if(postInfo.allPostsByUser?.length>0){
         setPostCards(postInfo?.allPostsByUser?.map((pair, index) => (
           <DynamicCard key={index} userData={null} mapData={null} postData={pair}/>
         )));
@@ -127,30 +137,35 @@ function UserHomeScreen() {
   useEffect(() => {
     setLoadingPosts(false);
 
-    if(postInfo.allPostsByUser?.length === 0){
-      setPostCards(<CreatePrompt type='post'/>);
-    }
-    else if(postInfo?.allPostsByUser?.length > 0 && auth.user.posts?.length === postInfo?.allPostsByUser?.length){
+    if(postInfo?.allPostsByUser?.length > 0){
       setPostCards(postInfo?.allPostsByUser?.map((pair, index) => (
         <DynamicCard key={index} userData={null} mapData={null} postData={pair}/>
       )));
     }
     else{
-      setPostCards(<Loading message='Currently fetching all posts created by user...' cancelHandler={handleCancelLoadPost}/>);
+      if(loadingPosts && postInfo?.allPostsByUser?.length > 0){
+        setPostCards(<Loading message='Currently fetching all posts created by user...' cancelHandler={handleCancelLoadPost}/>);
+      }
+      else{
+        setPostCards(<CreatePrompt type='post'/>);
+      }
     }
   }, [postInfo?.allPostsByUser]);
 
   // function to render all post cards
   function renderAllPosts(){
-    return (
-      <Box className='flex-column' id='all-container'>
-        {
-          (loadingPosts) ?
-            <Loading message='Currently fetching all posts created by user...' cancelHandler={handleCancelLoadPost}/> :
-            <>{postCards}</>
-        }
-      </Box>
-    );
+    if(!postInfo?.allPostsByUser && loadingPosts){
+      return <Loading message='Currently fetching all posts created by user...' cancelHandler={handleCancelLoadPost}/>;
+    }
+    
+    if(postInfo?.allPostsByUser?.length > 0){
+      return (
+        <Box className='flex-column' id='all-container'>
+          <>{postCards}</>
+        </Box>
+      );
+    }
+    return <CreatePrompt type='post'/>;
   }
 
   // update view when tab get clicked
@@ -206,9 +221,11 @@ function UserHomeScreen() {
               type={(tab === 'ALL_MAPS') ? 'map' : 'post'}
               sortBy={sortBy}
               setSortBy={setSortBy}
+              isLoggedInUser={true}
               searchResult={searchResult}
               data={(tab === 'ALL_MAPS') ? mapInfo?.allMapsByUser : postInfo?.allPostsByUser}
               setCards={(tab === 'ALL_MAPS') ? setMapCards : setPostCards}
+              style={{width: '10%'}}
             />
           </Box>
           <Box className="display-container">

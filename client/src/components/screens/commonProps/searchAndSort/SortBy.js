@@ -4,7 +4,7 @@ import SortIcon from '@mui/icons-material/Sort';
 
 import { DynamicCard } from '../../../cards';
 
-export default function SortBy({sortBy, setSortBy, type, searchResult, data, setCards}){
+export default function SortBy({sortBy, setSortBy, isLoggedInUser, type, searchResult=null, data, setCards, style}){
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -101,15 +101,26 @@ export default function SortBy({sortBy, setSortBy, type, searchResult, data, set
         let menuItems = [];
 
         if(type === 'map'){
-            menuItems = [
-                { sortBy: 'Default', handler: (e) => handleSort(e, 'default-map') },
-                { sortBy: 'Alphabet (A-Z)', handler: (e) => handleSort(e, 'A2Z-map') },
-                { sortBy: 'Alphabet (Z-A)', handler: (e) => handleSort(e, 'Z2A-map') },
-                { sortBy: 'Most recent edit', handler: (e) => handleSort(e, 'MostRecentEdit-map') },
-                { sortBy: 'Least recent edit', handler: (e) => handleSort(e, 'LeastRecentEdit-map') },
-                { sortBy: 'Most recent publish', handler: (e) => handleSort(e, 'MostRecentPublish-map') },
-                { sortBy: 'Least recent publish', handler: (e) => handleSort(e, 'LeastRecentPublish-map') },
-            ];
+            if(!isLoggedInUser){
+                menuItems = [
+                    { sortBy: 'Default', handler: (e) => handleSort(e, 'default-map') },
+                    { sortBy: 'Alphabet (A-Z)', handler: (e) => handleSort(e, 'A2Z-map') },
+                    { sortBy: 'Alphabet (Z-A)', handler: (e) => handleSort(e, 'Z2A-map') },
+                    { sortBy: 'Most recent publish', handler: (e) => handleSort(e, 'MostRecentPublish-map') },
+                    { sortBy: 'Least recent publish', handler: (e) => handleSort(e, 'LeastRecentPublish-map') },
+                ];
+            }
+            else{
+                menuItems = [
+                    { sortBy: 'Default', handler: (e) => handleSort(e, 'default-map') },
+                    { sortBy: 'Alphabet (A-Z)', handler: (e) => handleSort(e, 'A2Z-map') },
+                    { sortBy: 'Alphabet (Z-A)', handler: (e) => handleSort(e, 'Z2A-map') },
+                    { sortBy: 'Most recent edit', handler: (e) => handleSort(e, 'MostRecentEdit-map') },
+                    { sortBy: 'Least recent edit', handler: (e) => handleSort(e, 'LeastRecentEdit-map') },
+                    { sortBy: 'Most recent publish', handler: (e) => handleSort(e, 'MostRecentPublish-map') },
+                    { sortBy: 'Least recent publish', handler: (e) => handleSort(e, 'LeastRecentPublish-map') },
+                ];
+            }
         }
         else{
             menuItems = [
@@ -126,8 +137,12 @@ export default function SortBy({sortBy, setSortBy, type, searchResult, data, set
     }
 
     function getSortName(){
-        let sortName = '';
+        if(!sortBy){
+            return;
+        }
 
+        let sortName = '';
+        
         if(sortBy === '' || sortBy.includes('default')){
             sortName = 'Default';
         }
@@ -183,7 +198,11 @@ export default function SortBy({sortBy, setSortBy, type, searchResult, data, set
     }
 
     return (
-        <Box className="flex-row" id='sort-box' onClick={openMenu}>
+        <Box
+            className="flex-row" id='sort-box'
+            style={(sortBy?.includes('MostRecent') || sortBy?.includes('LeastRecent')) ? style : { width: '10%' }}
+            onClick={openMenu}
+        >
             <Typography variant="p" id="sort-text" style={{ color: 'var(--secondary-color)' }}>
                 Sort By <br/>{getSortName(sortBy)}
             </Typography>

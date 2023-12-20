@@ -21,7 +21,7 @@ function PostContextProvider(props) {
     currentPost: null,
     currentCommentIndex: null,
     errorMessage: null,
-    allPostsByUser: [],
+    allPostsByUser: null,
     allCommentsForPost: [],
   });
 
@@ -130,141 +130,143 @@ function PostContextProvider(props) {
       }
     }
     catch(error){
-      store.setError((error.response.data.errorMessage) ? error.response.data.errorMessage : 'Error creating post');
+      store.setError((error?.response?.data?.errorMessage) ? error?.response?.data?.errorMessage : 'Error creating post');
     }
   };
 
   postInfo.updatePostById = async function (postId, title, tags, content) {
-    const response = await api.updatePostById(postId, title, tags, content);
-    console.log(response);
-    if (response.data.error) {
-      setPostInfo({
-        ...postInfo,
-        errorMessage: response.data.error,
-      });
-    } else {
-      setPostInfo({
-        ...postInfo,
-        errorMessage: null,
-      });
+    try{
+      const response = await api.updatePostById(postId, title, tags, content);
+      if(response.status === 201){
+        postInfo.setErrorMsg(null);
+      }
+    }
+    catch(error){
+      postInfo.setErrorMsg((error?.response?.data?.errorMessage) ? error?.response?.data?.errorMessage : 'Error updating post');
     }
   };
 
   postInfo.getPostsByPostIds = async function (idList) {
-    const response = await api.getPostsByPostIds(idList);
-    setPostInfo({
-      ...postInfo,
-      allPostsByUser: response.data,
-    });
+    try{
+      const response = await api.getPostsByPostIds(idList);
+      setPostInfo({
+        ...postInfo,
+        allPostsByUser: response.data,
+      });
+    }
+    catch(error){
+      postInfo.setErrorMsg((error?.response?.data?.errorMessage) ? error?.response?.data?.errorMessage : 'Error getting posts');
+    }
   };
 
   postInfo.deletePostById = async function (postId) {
-    const response = await api.deletePostById(postId);
-    if (response.data.error) {
-      setPostInfo({
-        ...postInfo,
-        errorMessage: response.data.error,
-      });
-    } else {
-      let tempIds = auth.user.posts;
-      const index = tempIds.indexOf(postId);
-      if (index > -1) {
-        tempIds.splice(index, 1);
+    try{
+      const response = await api.deletePostById(postId);
+      if(response.status === 200){
+        let tempIds = auth.user.posts;
+        const index = tempIds.indexOf(postId);
+        if (index > -1) {
+          tempIds.splice(index, 1);
+        }
+        store.getAllPosts();
+        if (tempIds.length > 0) {
+          postInfo.getPostsByPostIds(tempIds);
+        } else {
+          setPostInfo({
+            ...postInfo,
+            allPostsByUser: [],
+          });
+        }
       }
-      store.getAllPosts();
-      if (tempIds.length > 0) {
-        postInfo.getPostsByPostIds(tempIds);
-      } else {
-        setPostInfo({
-          ...postInfo,
-          allPostsByUser: [],
-        });
-      }
+    }
+    catch(error){
+      postInfo.setErrorMsg((error?.response?.data?.errorMessage) ? error?.response?.data?.errorMessage : 'Error deleting post');
     }
   };
 
   postInfo.deleteCommentById = async function (commentId) {
-    console.log("delete comment id: ",commentId);
-    const response = await api.deleteCommentById(commentId);
-    if (response.data.error){
-      setPostInfo({
-        ...postInfo, 
-        errorMessage: response.data.error,
-      });
-    }else{
-      let tempIds = postInfo.currentPost.comments;
-      console.log(tempIds);
-      const index = tempIds.indexOf(commentId);
-      if (index > -1){
-        tempIds.splice(index, 1);
+    try{
+      console.log("delete comment id: ",commentId);
+      const response = await api.deleteCommentById(commentId);
+    
+      if(response.status === 200){
+        let tempIds = postInfo.currentPost.comments;
+        console.log(tempIds);
+        const index = tempIds.indexOf(commentId);
+        if (index > -1){
+          tempIds.splice(index, 1);
+        }
+        if (tempIds.length > 0) {
+          postInfo.getCommentsByCommentIds(tempIds);
+        } else {
+          postReducer({
+            type: PostActionType.UPDATE_ALL_COMMENTS,
+            payload: []
+          });
+        }
       }
-      if (tempIds.length > 0) {
-        postInfo.getCommentsByCommentIds(tempIds);
-      } else {
-        postReducer({
-          type: PostActionType.UPDATE_ALL_COMMENTS,
-          payload: []
-        });
-      }
+    }
+    catch(error){
+      postInfo.setErrorMsg((error?.response?.data?.errorMessage) ? error?.response?.data?.errorMessage : 'Error deleting post comment');
     }
   };
 
   postInfo.deleteSubCommById = async function (subId){
-    // delete current subcomment
-    const response = await api.deleteSubCommById(subId);
-    if(response.status === 200){
-      const parentCommentId = postInfo.currentCommentIndex?._id;
-      if(!parentCommentId){
-        return;
-      }
-
-      // obtain new subcomment list
-      const subcommentResponse = await api.getSubcommsByParentCommsId(parentCommentId);
-      if(subcommentResponse.status === 200){
-        const newSubcomments = subcommentResponse.data;
-
-        // reflect this update to allCommentsForPost
-        var newAllCommentsForPost = postInfo.allCommentsForPost.slice().map((comment) => {
-          if(comment._id === parentCommentId){
-            comment.subComments = newSubcomments;
-          }
-          return comment;
-        });
-
-        postReducer({
-          type: PostActionType.UPDATE_ALL_COMMENTS,
-          payload: newAllCommentsForPost
-        });
-
-        return;
+    try{
+      // delete current subcomment
+      const response = await api.deleteSubCommById(subId);
+      if(response.status === 200){
+        const parentCommentId = postInfo.currentCommentIndex?._id;
+        if(!parentCommentId){
+          return;
+        }
+  
+        // obtain new subcomment list
+        const subcommentResponse = await api.getSubcommsByParentCommsId(parentCommentId);
+        if(subcommentResponse.status === 200){
+          const newSubcomments = subcommentResponse.data;
+  
+          // reflect this update to allCommentsForPost
+          var newAllCommentsForPost = postInfo.allCommentsForPost.slice().map((comment) => {
+            if(comment._id === parentCommentId){
+              comment.subComments = newSubcomments;
+            }
+            return comment;
+          });
+  
+          postReducer({
+            type: PostActionType.UPDATE_ALL_COMMENTS,
+            payload: newAllCommentsForPost
+          });
+        }
       }
     }
-    
-    // print error if exists
-    if (response.data.error){
-      setPostInfo({
-        ...postInfo, 
-        errorMessage: response.data.error,
-      });
+    catch(error){
+      postInfo.setErrorMsg((error?.response?.data?.errorMessage) ? error?.response?.data?.errorMessage : 'Error deleting post comment');
     }
   }
 
   postInfo.createComment = async function (postId, commenterUserName, content) {
-    const response = await api.createComment(
-      postId,
-      commenterUserName,
-      content
-    );
-    postInfo.getPostById(postId);
+    try{
+      const response = await api.createComment(postId, commenterUserName, content);
+      if(response.status === 201){
+        postInfo.getPostById(postId);
+      }
+    }
+    catch(error){
+      postInfo.setErrorMsg((error?.response?.data?.errorMessage) ? error?.response?.data?.errorMessage : 'Error deleting post comment');
+    }
   };
 
   postInfo.getPostById = async function (postId) {
     try{
       const response = await api.getPostById(postId);
-      setPostInfo({
-        ...postInfo,
-        currentPost: response.data,
-      });
+      if(response.status === 200){
+        setPostInfo({
+          ...postInfo,
+          currentPost: response.data,
+        });
+      }
     }
     catch(error){
       postReducer({
@@ -282,26 +284,39 @@ function PostContextProvider(props) {
       });
     }
     else{
-      const response = await api.getCommentsByCommentIds(idList);
-      postReducer({
-        type: PostActionType.UPDATE_ALL_COMMENTS,
-        payload: response.data
-      });
+      try{
+        const response = await api.getCommentsByCommentIds(idList);
+        if(response.status === 200){
+          postReducer({
+            type: PostActionType.UPDATE_ALL_COMMENTS,
+            payload: response.data
+          });
+        }
+      }
+      catch(error){
+        postReducer({
+          type: PostActionType.SET_ERROR_MSG,
+          payload: "Error fetching user's post. Possible reason: non-existing post."
+        });
+      }
     }
   };
 
-  postInfo.createSubcomment = async function (
-    commentId,
-    commenterUserName,
-    content
-  ) {
-    console.log(commentId, commenterUserName, content);
-    const response = await api.createSubcomment(
-      commentId,
-      commenterUserName,
-      content
-    );
-    postInfo.getPostById(postInfo.currentPost._id);
+  postInfo.createSubcomment = async function (commentId, commenterUserName, content) {
+    try{
+      console.log(commentId, commenterUserName, content);
+
+      const response = await api.createSubcomment(commentId, commenterUserName, content);
+      if(response.status === 201){
+        postInfo.getPostById(postInfo.currentPost._id);
+      }
+    }
+    catch(error){
+      postReducer({
+        type: PostActionType.SET_ERROR_MSG,
+        payload: "Error fetching user's post. Possible reason: non-existing post."
+      });
+    }
   };
 
   postInfo.setAllPosts = function(posts){

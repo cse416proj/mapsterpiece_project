@@ -16,7 +16,9 @@ function ProfileCard({ initials, name, userName, numMaps, numPosts, isLoggedInUs
     
     function renderDeleteAccountButton(){
         return(
-            (isLoggedInUser) ? <Button onClick={markAccountForDeletion}>Delete Account</Button> : null
+            (isLoggedInUser) ?
+                <Button variant='contained' id='delete-account' onClick={markAccountForDeletion}>Delete Account</Button> :
+                null
         );
     }
 
