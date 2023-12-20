@@ -1,16 +1,23 @@
 import { useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from "react-router-dom";
 
 import { Box, FormControl, Typography, Alert } from '@mui/material';
 
 import { Tags, PostInput, ButtonSet } from '../../commonProps';
+import { Warning } from '../../../warnings';
+
+import AuthContext from '../../../../contexts/auth';
 import PostContext from '../../../../contexts/post';
 
 export default function PostEditScreen() {
+    const { auth } = useContext(AuthContext);
     const { postInfo } = useContext(PostContext);
 
     // set up navigation to visit other link
     const navigate = useNavigate();
+
+    // get postID
+    const { postId } = useParams();
 
     // set up input variables
     const [title, setTitle] = useState('');
@@ -26,12 +33,16 @@ export default function PostEditScreen() {
     const [openSuccess, setOpenSuccess] = useState(false);
 
     useEffect(() => {
-        if(postInfo){
-            setTitle(postInfo.currentPost.title);
-            setContent(postInfo.currentPost.content);
-            setTags(postInfo.currentPost.tags);
+        postInfo?.getPostById(postId);
+    }, []);
+
+    useEffect(() => {
+        if(postInfo?.currentPost){
+            setTitle(postInfo?.currentPost.title);
+            setContent(postInfo?.currentPost.content);
+            setTags(postInfo?.currentPost.tags);
         }
-    }, [])
+    }, [postInfo?.currentPost])
 
     // handler when title/content changes
     const handleTitleChange = (event) => {
@@ -63,21 +74,33 @@ export default function PostEditScreen() {
         else{
             setMissingTitle(false);
             setMissingContent(false);
-            postInfo.updatePostById(postInfo.currentPost._id, title, tags, content);
+            postInfo?.updatePostById(postInfo?.currentPost._id, title, tags, content);
 
-            if (postInfo.errorMessage === null) {
+            if (postInfo?.errorMessage === null) {
                 setOpenSuccess(true);
             }
 
             setTimeout(() => {
                 setOpenSuccess(false);
-                navigate(`/post-detail/${postInfo.currentPost._id}`);
+                navigate(`/post-detail/${postInfo?.currentPost._id}`);
             }, 1000);
         }
     }
 
-    if(!postInfo || !postInfo.currentPost){
-        return <Typography>Post does not exist</Typography>;
+    if(!postInfo){
+        return <Warning message='Post does not exist'/>
+    }
+
+    if(postInfo?.errorMessage){
+        return <Warning message={postInfo?.errorMessage}/>
+    }
+
+    if(!auth?.user){
+        return <Warning message='Guest user has no permission to edit any post.'/>
+    }
+
+    if(auth?.user && postInfo?.currentPost.ownerUserName !== auth?.user.userName){
+        return <Warning message="User has no permission to edit other user's post."/>
     }
 
     return (
