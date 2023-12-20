@@ -305,7 +305,7 @@ describe("Post create/view/update fail", () => {
 
 describe('Iteract with Map succcess', () => {
   it('Like map', async () => {
-    const mapId = '657f3a5cfcdc1581c955c86a';
+    const mapId = '6581c604de10f98c62c86367';
     const validRequestBody = {
       isLike: true
     };
@@ -319,7 +319,7 @@ describe('Iteract with Map succcess', () => {
   });
 
   it('Dislike map', async () => {
-    const mapId = '657f3a5cfcdc1581c955c86a';
+    const mapId = '6581c604de10f98c62c86367';
     const validRequestBody = {
       isLike: false
     };
