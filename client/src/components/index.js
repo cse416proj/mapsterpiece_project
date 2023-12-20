@@ -40,8 +40,11 @@ export {
     Tags,
     CommentInput,
     CommentCard,
+    Loading,
     LoadingOverlay,
-    CreatePrompt
+    CreatePrompt,
+    DataSeachBar,
+    SortBy
 } from './screens/commonProps';
 
 export {

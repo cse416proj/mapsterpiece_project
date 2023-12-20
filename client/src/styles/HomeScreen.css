@@ -5,7 +5,7 @@
 }
 
 #welcome-text{
-    margin: 5vh auto 2vh auto;
+    margin: 3.5vh auto 2vh auto;
 }
 
 .home-feed{
@@ -19,7 +19,7 @@
 
 .display-container{
     width: 65vw;
-    height: 70vh;
+    height: 62.5vh;
     display: flex;
     flex-direction: column;
     overflow: auto;
@@ -45,4 +45,18 @@
 #all-title{
     font-size: 2vw;
     margin-bottom: 2vh;
+}
+
+#cancel-load-button{
+    background-color: var(--secondary-color);
+}
+
+#cancel-load-button:hover{
+    background-color: var(--secondary-color-hover);
+}
+
+#view-bar{
+    width: 65vw;
+    margin-bottom: 2.5vh;
+    justify-content: space-between;
 }

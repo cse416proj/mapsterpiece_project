@@ -9,8 +9,6 @@ export default function DuplicateMapModal() {
     const { store } = useContext(GlobalStoreContext);
     const { mapInfo } = useContext(MapContext);
 
-    console.log(store.mapMarked);
-
     const [title, setTitle] = useState('Map Copy');
     const [errorMsg, setErrorMsg] = useState(null);
 

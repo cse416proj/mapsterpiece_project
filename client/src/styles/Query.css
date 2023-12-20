@@ -58,3 +58,11 @@
     justify-content: space-around;
     overflow-Y: auto;
 }
+
+#sort-box{
+    width: 10%;
+}
+
+#sort-box:hover{
+    cursor: pointer;
+}
